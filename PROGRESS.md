@@ -2,6 +2,25 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## Design rounds 5 to 8: finding Sinima's look (Fri 13 to Sat 14 Nov 2026)
+
+**Changed** (design only; nothing in the app)
+- Round 5: a style and colour board of 241 Mobbin references (`docs/design/reference-board/round5.html`), with a zoom that holds the whole answer form.
+- Round 6: a colour board of 209 references in 14 families (`round6-colours.html`), and 41 variants on frozen snapshots of the real site (`mockup/r6/`), one per style screen Chime picked, built after studying 342 more screens from the 37 liked apps.
+- Round 7: Chime's 19 refined with a UX audit and the design skills (`mockup/r6/refined.html`).
+- Round 8: the 8 Chime kept, redesigned from their notes (`mockup/r6/round8.html`).
+- Outside the repo: 18 design-engineering skills reinstalled; the routing table added to `~/.claude/CLAUDE.md`; four new memories.
+
+**Checked**
+- Every board: no broken images, no sideways scroll and no script errors at 1440 px light and 390 px dark; the zoom, keys and answer saving were tested in a browser.
+- 164 round 6 renders, 76 round 7 and 32 round 8, all with no errors. Before and after compared by eye for every variant.
+
+**Not verified**
+- No variant on a real phone. Bottom docks especially need a phone.
+
+**Next**
+- Chime's round 8 answers, then palettes from the 32 colour picks, the winner on desktop and in light and dark, and a build only when Chime says so.
+
 ## Your cinemas gets its own tab; round 4's look is dropped (Fri 13 Nov 2026, evening)
 
 **Changed** (D-61)

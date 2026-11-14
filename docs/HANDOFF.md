@@ -1,8 +1,46 @@
 # Handoff: read this first when you pick the project back up
 
-## Now: the theme switch follows Rune Icons (Fri 13 Nov 2026, afternoon)
+## Now: finding Sinima's look, design rounds 5 to 8 (Fri 13 to Sat 14 Nov 2026)
 
 Read this section first. Everything below it is background; where they disagree, this is right.
+
+Nothing in the app changed this session. All of it is design exploration, kept local and uncommitted on purpose, because the reference images are other products' copyrighted screens (`docs/design/reference-board/images/` is git-ignored) and the variants imitate them. The last app commit is still `63654cd` (D-61).
+
+### Start here next time
+1. **Wait for Chime's round 8 answers.** The board is `mockup/r6/round8.html` (open it in Dia). It has 8 finalists, each redesigned from Chime's round 7 note. Chime will paste "Copy all answers". Then narrow to one or two, make the winner's desktop layout and light and dark, and only build when Chime says build.
+2. **Colour is not decided yet.** Chime picked 32 colour references (`docs/design/reference-board/round6-colour-answers.txt`). The plan agreed with Chime: turn them into about 10 Sinima palettes (light and dark, contrast-checked on real rows), then show the chosen variants in the palettes that suit them. One style per variant, never merged.
+3. **Open questions from round 8, on the board:** PamPam's stickers still have red inside the drawings; Vocabulary's saved hearts are salmon; Town lost its typewriter font and tilted chips; Posh's caret after "Lagos" does nothing; most variants moved the nav into a **bottom dock** (ask if Chime wants that); none was seen on a real phone.
+4. **Still open from round 4:** the Starting soon time filter (30 min · 1 hour · 2 hours · 4 hours · Today); posters for the 13 Nollywood films not on TMDB (Chime to choose: add them to TMDB, or ask distributors); the logo ("all right, but I'm still not convinced").
+
+### How Chime works (saved to memory; follow it)
+- **Plenty of references:** 15 to 20 or more per section on a Mobbin board, never 5 or 6.
+- **One variant per picked style, never merged** (memory `style-picks-become-separate-variants`).
+- **A liked reference means the whole app:** study that app's other Mobbin screens, not just the one picked (memory `liked-reference-means-whole-app`).
+- **"Refine" means elevate:** round 7's polish (25 to 43 small value changes each) was judged "minor changes. They didn't really elevate the design." Make visible, structural improvements; keep exactly what Chime likes, rebuild what they don't (memory `refine-means-elevate`).
+- **Boards:** a zoom view with the full answer form beside the image; keys ← → for screens, ↑ ↓ for variants, B for before and after, Esc to close; "Copy all answers" to paste back. Every refined card shows Chime's note and "You said → We did".
+- **Chime speaks by voice, and the transcription garbles words:** "theme section" means Films, "starting zone" means Starting soon, "hijab" means Ijapa (Town's tortoise), "restaurant" means round.
+- **Design skills:** 18 skills from aiforui.dev/skills (Emil Kowalski) were reinstalled fresh in `~/.claude/skills/` and apply in every project. The routing table is in `~/.claude/CLAUDE.md`; the full notes are in `~/.claude/design-skills-guide.md`. The old copies are kept in `~/.claude/skills/.trash/emil-skills-2026-11-04-backup/`. Four are user-only: `/pick-ui-library`, `/prototype`, `/review-animations`, `/learn-taste`.
+
+### What happened, round by round
+- **Round 5, design style and colour** (`docs/design/reference-board/round5.html`): Chime said the site "doesn't have character… not a modern design", so the current site became the **wireframe** (structure stays). 241 Mobbin references: 153 for style in six families (bold, playful, editorial, soft, dark, minimal) and 88 for colour. Its zoom was rebuilt so the whole answer form sits beside the image. Chime's picks: `round5-answers.txt` (41 style screens; Ahead's illustration and logo noted).
+- **Round 6, colour board** (`round6-colours.html`): Chime said round 5 had too many greens and too little choice, so this has 209 references in 14 colour families, with greens capped at 10, plus the 13 round 5 picks. Answers: `round6-colour-answers.txt`. They group into near-black with one vivid accent (the strongest pattern), purple and indigo, gold and yellow, sky and teal and aurora, colour-blocked, and warm light grounds.
+- **Round 6, 41 variants** (`mockup/r6/index.html`): three agents studied 37 liked apps (342 more Mobbin screens in `images/round6/apps/`, notes in the session scratchpad). Six builders made one variant per picked style screen. **How variants work:** `mockup/r6/base/{films,soon,cinemas,yours}.html` are frozen snapshots of the real built site (390 px, light, 17:30 Lagos, 3 hearted cinemas). A variant is `mockup/r6/variants/<id>.css`, `.js` and `.json`, loaded with `?v=<id>`; the JS may add original SVG illustration or restructure the page from what's already on it, never inventing data. Chime marked 19 "Like parts of it" and Nike "Not for us" (`mockup/r6/picks-round6.txt`).
+- **Round 7, the 19 refined** (`mockup/r6/refined.html`, ids `<id>-r`): a senior UX audit plus unslop in polish mode, emil-design-eng, mobile-native, break-ui and apple-design; every change logged before → after. Chime kept 8, with notes (`mockup/r6/notes-round7.json`), and said the changes were too minor.
+- **Round 8, the 8 redesigned** (`mockup/r6/round8.html`, ids `<id>-8`): Chime's notes from all rounds were turned into nine taste rules (in the brief, `ROUND8-BRIEF.md`, in the session scratchpad): soft not harsh colour; the nav needs designing; Starting soon as rich as Films; the countdown as a designed object (liked: Posh's ticket stub, Sweatpals' white pill); rich cinema cards; keep the liked characters (Ijapa, Phantom's ticket with eyes, Vocabulary's drawings, PamPam's stickers); no neo-brutalism; a big number must earn its space; keep Copilot's sun/moon toggle. Finalists: PamPam (from the original), Town, Posh, Copilot, Phantom, Sweatpals, Vocabulary, (Not Boring) Weather.
+
+### Tools (in the session scratchpad, `scratchpad/r6/`; copy them into the repo if they're needed again)
+- `snapshot.mjs` re-makes `mockup/r6/base/` from `out/`.
+- `shot.mjs <id> <prefix>` renders one variant's four pages.
+- `render-all.mjs <ids>` writes the 2x JPEGs the boards use. Its screen is as tall as the shot so bottom docks sit right; it waits for the DOM, then load, with one retry.
+- `gen-index.py`, `gen-refined.py` and `gen-round8.py` build the three boards from the variant JSON; the briefs are `VARIANT-BRIEF.md`, `REFINE-BRIEF.md` and `ROUND8-BRIEF.md`.
+
+### Known faults and things not verified
+- No variant was seen on a real phone; all were judged from desktop renders at 390 px.
+- The Mac slept several times when the lid closed, which stopped the agents. Keep it open during long runs.
+- Mobbin reported high AI usage this month: unlimited during beta, but credits may be needed later, and the budget is $0.
+- From before, unchanged: nothing checked on a real phone (sheets, search keyboard, switch); "Your cinemas" quirks; the freshness line could get long; old `/films` links give "page not found".
+
+## Earlier: the theme switch follows Rune Icons (Fri 13 Nov 2026, afternoon)
 
 ### Start here next time
 0. **Round 4 ended with D-61 (13 Nov, evening).** Chime rejected the Marquee mockup (fonts, colours, no posters) and asked for the previous design plus a Your cinemas tab, which is built (`/yours`). Do not reuse the Marquee look. Still open from Chime's recording: the Starting soon time filter (30 min · 1 hour · 2 hours · 4 hours · Today), to be done in the existing design with posters kept; real posters for 13 Nollywood films not on TMDB (Chime to choose: add them to TMDB, or ask distributors); the logo ("all right, but I'm still not convinced"). For Mobbin boards give 15 to 20 references a section.
