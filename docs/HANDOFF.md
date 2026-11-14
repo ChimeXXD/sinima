@@ -1,6 +1,44 @@
 # Handoff: read this first when you pick the project back up
 
-## Now: finding Sinima's look, design rounds 5 to 8 (Fri 13 to Sat 14 Nov 2026)
+## Now: round 9, desktop, and the four finalists in Figma (Sat 14 Nov 2026)
+
+Read this section first. The round 5 to 8 section below is background; where they disagree, this is right. Nothing in the app changed; the last app commit is still `63654cd` (D-61). All design work stays local and uncommitted, as before.
+
+### Start here next time
+1. **Check UI8.** Chime signed in to the UI8 MCP server (`https://mcp.ui8.net/mcp`, user scope) at the end of this session. `claude mcp get UI8` shows Connected, but the tools only load in a new session. First thing: confirm the UI8 tools are there and tell Chime what they can do. The budget is $0: use only free or already-owned material, never buy.
+2. **The four finalists are in Figma:** https://www.figma.com/design/2WxAK7rxGC6t4Wkd5IQ6p2/Sinima. One page per variant (PamPam, Posh, Phantom, Sweatpals), each with a "Phone · 390" section and a "Desktop · 1440" section holding Films, Starting soon, Cinemas and Your cinemas: 32 screens. Ask Chime what comes next there.
+3. **Offered, not done:** turn the repeated parts in Figma (poster card, countdown pill, cinema card, nav) into real components, so the file can be edited rather than only reviewed.
+4. **Still open from before:** colour (about 10 palettes from Chime's 32 picks), the Starting soon time filter, posters for the 13 Nollywood films not on TMDB, the logo, dark mode for every variant, nothing seen on a real phone.
+
+### What happened this session, in order
+- **Round 8 answers:** Chime kept 5 of 8 (PamPam, Town, Posh, Phantom, Sweatpals); notes saved in `mockup/r6/notes-round8.json`. Chime said not to copy Sweatpals parts into the others this round: fix only what was flagged on the phone, then design desktop.
+- **Round 9** (`mockup/r6/round9.html`, ids `<name>-9`, shots in `mockup/r6/shots9/` at 390, 1024 and 1440): five builder agents, one per variant.
+  - PamPam: the countdown is a plain one-line butter pill; the cinema "Next at" is a small tilted sticker instead of the big serif stub.
+  - Town: rebuilt from town-r (round 7); flat pastel countdown pill; Starting soon all vertical cards; desktop filters in one toolbar row under the heading.
+  - Posh: the round 7 Starting soon ticket restored with posh-r's values; desktop Starting soon is an hour-by-hour agenda.
+  - Phantom: Starting soon and Cinemas rebuilt (mascot-face countdown capsule with a filling ring; profile cards with a round logo).
+  - Sweatpals: phone unchanged; desktop only.
+  - Every variant has a desktop layout from 1024 px; the board has a Phone / Desktop switch (key D) and New / Before on the phone (key B).
+- **Round 9 answers:** Chime marked PamPam, Posh, Phantom and Sweatpals "Like parts of it" with no notes. **Town is out.**
+- **Figma:** the four variants were captured as editable layers (real text in each variant's fonts, frames, image fills) with Figma's page capture, driven by Playwright at exact widths from a local server.
+  - Posters from TMDB came through blank until they were inlined as data URLs before capture.
+  - PamPam's stickers use a shared SVG filter; the capture lost them, then dropped SVG images entirely. Fix: copy the needed defs into each SVG, draw it to a canvas and embed it as PNG. So the stickers are images, not vectors.
+  - A small "Frame 1" on the Phantom page was not made by us; it was left alone.
+- **UI8:** Chime asked to connect it; `claude mcp login UI8` needs a real terminal, so Chime ran it and signed in.
+
+### Tools (`mockup/r6/tools/`)
+- `render9.mjs <id>` renders a variant's four pages at 390 (2x), 1024 and 1440 into `mockup/r6/shots9/` and reports sideways scroll.
+- `gen-round9.py` + `round9.tpl.html` build the round 9 board; `ROUND9-BRIEF.md` is the builders' brief.
+- `fcap.mjs <variant> <page> <width> <captureId> <promptId>` sends one page to Figma. It needs `python3 -m http.server 4321` running in `mockup/r6`, and a capture ID from `generate_figma_design` for each screen. Pass `dry <out.png>` instead of the IDs to preview. Run captures in batches of 6 or fewer: a long-running command was stopped after 5 minutes.
+- `sheet.py` makes side-by-side contact sheets.
+
+### Known faults and things not verified
+- No variant seen on a real phone or a real laptop; dark mode not designed.
+- Between 761 and 1023 px the variants only had to not break; tablets aren't designed.
+- On desktop, four variants hide the in-page "Find a film" box to keep one search; in the real site those two searches behave differently.
+- Figma screens are faithful layouts, not linked components; Starting soon phone screens are about 25,000 px tall because they list every showing.
+
+## Earlier: finding Sinima's look, design rounds 5 to 8 (Fri 13 to Sat 14 Nov 2026)
 
 Read this section first. Everything below it is background; where they disagree, this is right.
 

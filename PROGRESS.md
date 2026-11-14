@@ -2,6 +2,24 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## Round 9, desktop layouts, and the finalists in Figma (Sat 14 Nov 2026)
+
+**Changed** (design only; nothing in the app)
+- Round 9 (`mockup/r6/round9.html`): five variants with only Chime's round 8 points fixed on the phone, plus a desktop layout for all four pages of each. Chime then kept four: PamPam, Posh, Phantom, Sweatpals (Town out).
+- Figma: those four, phone and desktop, as 32 editable screens in https://www.figma.com/design/2WxAK7rxGC6t4Wkd5IQ6p2/Sinima, one page per variant.
+- Tools in `mockup/r6/tools/` (render, board, Figma capture).
+- UI8 MCP server signed in (user scope); its tools load in the next session.
+
+**Checked**
+- Every round 9 variant rendered at 390, 1024 and 1440: no sideways scroll, no page errors; the board's switches and keys tested in a browser.
+- Figma: 8 screens per variant confirmed by listing each page; screens from all four compared with the HTML by eye; posters and PamPam's stickers fixed and recaptured.
+
+**Not verified**
+- No real phone or laptop; no dark mode; tablet widths only checked for breakage.
+
+**Next**
+- Check the UI8 tools; ask Chime what comes next in Figma (components offered); colour palettes still to do.
+
 ## Design rounds 5 to 8: finding Sinima's look (Fri 13 to Sat 14 Nov 2026)
 
 **Changed** (design only; nothing in the app)
