@@ -2,6 +2,10 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 15 Nov 2026 — screen review round 4 (D-75)
+
+- 404 picture: torn ticket made a component and placed at three sizes (checked by screenshot); frame fitted so the caption sits under it. Admit one component deleted after checking Design screens had no instances left.
+
 ## 15 Nov 2026 — screen review round 3 (D-74)
 
 - Drink sticker component; replaced Admit one in 24 Films titles and 6 Where are you watching? screens; checked by screenshot at phone, desktop and iPad.

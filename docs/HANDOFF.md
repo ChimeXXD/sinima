@@ -1,6 +1,11 @@
 # Handoff: read this first when you pick the project back up
 
-## Now: review round 3, waiting for Chime's pick of the 404 picture (15 Nov 2026, latest)
+## Now: review round 4 done, waiting for Chime's next notes (15 Nov 2026, latest)
+
+- **404 (D-75):** the torn ticket ("40" | "4"), component *404 torn ticket* `231:8914` on Design System row 13.1, placed on 404 iPhone, iPad and desktop. Admit one component deleted; the review section is on Archive.
+- Still open from earlier rounds: none. Next: Chime keeps reviewing the screens, then the week 1 gate (approve all screens), O-16, Abuja research, O-14.
+
+## Earlier: review round 3 (15 Nov 2026)
 
 - **Drink (D-74), done:** *Drink sticker* component `226:80` (Design System, 13.1) replaced Admit one in all 24 Films titles and the 6 Where are you watching? screens (iPad, desktop). Admit one component renamed "retired". PNG, licence and `diecut.py` in `docs/design/stickers/`.
 - **404 (D-74), waiting:** *Review · 404 illustration* `225:9281`, right of Films: Now (Admit one), 1 torn ticket, 2 ticket as the zero, 3 on the big screen; close-ups under each screen. Built from the brand ticket path (SVG, `createNodeFromSvg`), booleans for the torn halves. When picked: make it a component, place it on 404 iPhone, iPad and desktop, delete the retired Admit one component.

@@ -67,7 +67,7 @@ Dates are a target. If a week slips, cut its Should items first; never cut the c
 - [x] Screen review round 1 (15 Nov): no Lagocine source lines, no clipped shadows, day toggle fixed, chip rows fade at the edge, iPad Cinemas logos off the title (D-72)
 - [x] Cinemas title centred with logo stickers left and right, "21 of them!" below, three sizes (D-73)
 - [x] Drink sticker replaces Admit one in every Films title and on Where are you watching? (D-74)
-- [ ] Chime picks the 404 picture (review section `225:9281`: torn ticket, ticket as the zero, big screen; D-74); then apply it at three sizes and delete the retired Admit one component
+- [x] 404 picture: the torn ticket, at three sizes; Admit one deleted (D-75)
 - [ ] Chime approves the phone, iPad and desktop screens
 
 **Abuja research**
