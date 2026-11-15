@@ -1,0 +1,18 @@
+/* City sheet (Figma Search and city › City sheet): the shared sheet, 560 wide and centred on an
+   iPad, a 480 dialog on desktop. The element selector outranks the shared sheet's own width. */
+
+.footer {
+  color: var(--text-secondary);
+  font: var(--type-meta);
+}
+@media (min-width: 768px) {
+  dialog.sheet {
+    inset-inline: max(var(--space-8), (100% - 560px) / 2);
+  }
+}
+@media (min-width: 1200px) {
+  dialog.sheet {
+    inset: 0;
+    width: 480px;
+  }
+}

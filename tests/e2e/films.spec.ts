@@ -17,7 +17,12 @@ test("Films (the home page, D-55) lists every film still showing; typing narrows
   await expect(cards).toHaveCount(0);
   await expect(page.getByTestId("films.none")).toHaveText('No film showing matches "zzz".');
 
-  await page.getByTestId("search.field").fill("spider");
+  // Typing opens the search panel over the page (Figma Search and city, unit 5); Enter closes it
+  // and leaves Films showing the matches.
+  await page.getByTestId("search.query").fill("spider");
+  await page.keyboard.press("Enter");
+  await expect(page.getByTestId("search.panel")).toHaveCount(0);
+  await expect(cards).toHaveCount(1);
   await cards.first().getByRole("link").first().click();
   await expect(page).toHaveURL(/\/film\/spider-man-brand-new-day$/);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Spider-Man: Brand New Day");

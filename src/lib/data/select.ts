@@ -109,7 +109,7 @@ export function bannerFor(bands: FreshnessBand[]): Banner | null {
 }
 
 /** The page's one banner for its data: sample data at once; the age of real times only once the browser has the clock (rule 3). */
-export function pageBanner(data: ListData, now: string | null): Banner | null {
+export function pageBanner(data: Pick<ListData, "sample" | "fresh">, now: string | null): Banner | null {
   if (data.sample) return bannerFor(["sample"]);
   if (now === null) return null;
   return bannerFor(data.fresh.map((from) => freshness({ name: from.source, method: from.method }, from.fetchedAt, now, from.via).band));

@@ -9,7 +9,7 @@ import s from "./sheet.module.css";
 // on phones and iPads; a centred dialog, 440 wide, on desktop. Escape, the close button and a tap
 // on the scrim all close it.
 
-export function Sheet({ open, onClose, title, subtitle, children, testId = "sheet" }: { open: boolean; onClose: () => void; title: string; subtitle?: string; children: React.ReactNode; testId?: string }) {
+export function Sheet({ open, onClose, title, subtitle, children, className, testId = "sheet" }: { open: boolean; onClose: () => void; title: string; subtitle?: string; children: React.ReactNode; className?: string; testId?: string }) {
   const ref = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const dialog = ref.current;
@@ -21,7 +21,7 @@ export function Sheet({ open, onClose, title, subtitle, children, testId = "shee
   return (
     <dialog
       ref={ref}
-      className={s.sheet}
+      className={className ? `${s.sheet} ${className}` : s.sheet}
       aria-labelledby={`${testId}.title`}
       data-testid={testId}
       onClose={(event) => {
@@ -46,7 +46,7 @@ export function Sheet({ open, onClose, title, subtitle, children, testId = "shee
   );
 }
 
-type OptionRowProps = { icon: IconName; title: string; desc?: string; selected?: boolean; tone?: "primary" | "soft"; testId?: string } & ({ href: string; onClick?: never } | { href?: never; onClick: () => void } | { href?: never; onClick?: never });
+type OptionRowProps = { icon: IconName; /** In place of the icon tile: the city sheet's sticker. */ lead?: React.ReactNode; title: string; desc?: string; selected?: boolean; tone?: "primary" | "soft"; testId?: string } & ({ href: string; onClick?: never } | { href?: never; onClick: () => void } | { href?: never; onClick?: never });
 
 /**
  * 12.1 Option row: an icon tile, a title and a line under it. A link (to another site, in a new
@@ -54,12 +54,14 @@ type OptionRowProps = { icon: IconName; title: string; desc?: string; selected?:
  * tile is the action colour, or the soft tint for the quieter rows of a sheet (Figma Film). Only a
  * row given `selected` is a toggle (aria-pressed); the others are plain buttons.
  */
-export function OptionRow({ icon, title, desc, selected, tone = "primary", testId, href, onClick }: OptionRowProps) {
+export function OptionRow({ icon, lead, title, desc, selected, tone = "primary", testId, href, onClick }: OptionRowProps) {
   const inner = (
     <>
-      <span className={s.tile} data-tone={tone}>
-        <Icon name={icon} size={22} stroke={2.2} />
-      </span>
+      {lead ?? (
+        <span className={s.tile} data-tone={tone}>
+          <Icon name={icon} size={22} stroke={2.2} />
+        </span>
+      )}
       <span className={s.text}>
         <span className={s.optionTitle}>{title}</span>
         {desc && <span className={s.desc}>{desc}</span>}

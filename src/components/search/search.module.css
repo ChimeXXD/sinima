@@ -1,0 +1,278 @@
+/* Search (Figma Search and city, 192:7519). Phone: the whole screen, field and Cancel on top
+   (Search header 14 16 6 16), the results under it (Body 14 16 0 16). iPad and desktop: a panel over
+   the search bar, 8 8 20 padding, radius 24, the page dimmed at 40% behind it. */
+
+.scrim {
+  display: none;
+}
+.box {
+  position: fixed;
+  inset: 0;
+  z-index: 15; /* under the floating tab bar's 20, which stays on top on a phone (Figma) */
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--space-14) + env(safe-area-inset-top)) var(--space-16) 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  /* Enter: the results fade in under a field that does not move. No exit: closing is instant. */
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+@starting-style {
+  .box {
+    opacity: 0;
+  }
+}
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  padding-bottom: var(--space-6);
+}
+
+/* Search field · active: 50 tall, radius 16, a 2 px action edge drawn inside. */
+.field {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--space-10);
+  min-width: 0;
+  height: 50px;
+  padding: 0 var(--space-6) 0 var(--space-16);
+  border-radius: var(--radius-tile);
+  background: var(--bg-page);
+  box-shadow: inset 0 0 0 2px var(--action-primary);
+}
+.field input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  background: none;
+  color: var(--text-primary);
+  font: var(--type-body-l);
+  outline: none;
+}
+.field input::placeholder {
+  color: var(--text-secondary);
+  opacity: 1;
+}
+.field input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+.glass {
+  flex: none;
+  color: var(--text-secondary);
+}
+.clear {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  -webkit-tap-highlight-color: transparent;
+}
+.clear::after {
+  content: "";
+  position: absolute;
+  inset: -7px;
+}
+.cancel {
+  position: relative;
+  flex: none;
+  min-height: 44px; /* the row is 50 tall, so nothing moves */
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-accent);
+  font: var(--type-body-l);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-20);
+  padding: var(--space-14) 0 120px; /* clear of the floating tab bar */
+}
+.scopes {
+  display: flex;
+  gap: var(--space-8);
+}
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-20);
+}
+.results:empty {
+  display: none;
+}
+.line {
+  color: var(--text-secondary);
+  font: var(--type-meta);
+}
+
+/* Result: a film, its next showing, and a chevron; the whole card opens the film. */
+.result {
+  display: flex;
+  align-items: center;
+  gap: var(--space-14);
+  padding: var(--space-12);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-row);
+  background: var(--bg-page);
+  color: var(--text-primary);
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--dur-press) var(--ease-out);
+}
+.result:active {
+  transform: scale(0.98);
+}
+.poster {
+  flex: none;
+  width: 52px;
+  height: 78px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface); /* while the poster loads, or if it cannot */
+  object-fit: cover;
+}
+.noPoster {
+  display: grid;
+  place-items: center;
+  background: var(--bg-accent-soft);
+}
+.text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.title {
+  font: var(--type-title);
+}
+.meta {
+  color: var(--text-secondary);
+  font: var(--type-meta);
+}
+.next {
+  color: var(--text-body-strong);
+  font: var(--type-label-strong);
+}
+.chevron {
+  flex: none;
+  color: var(--text-secondary);
+}
+
+/* Both cities: a group per city under its sticker. */
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+}
+.groupHead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  font: var(--type-heading-s);
+}
+.soon {
+  align-self: flex-start;
+  padding: var(--space-8) var(--space-12);
+  border-radius: var(--radius-button);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  font: var(--type-meta);
+}
+
+/* No match: the ticket, what was searched, and a way back to what's on. */
+.none {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-12);
+  padding: var(--space-28) var(--space-8) var(--space-12);
+  text-align: center;
+}
+.none h3 {
+  font: var(--type-heading-s);
+}
+.none p {
+  color: var(--text-secondary);
+  font: var(--type-body-m);
+}
+
+/* iPad and desktop: a panel over the bar. The iPad's is centred, 41 in from each side. */
+@media (min-width: 768px) {
+  .scrim {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    display: block;
+    background: var(--scrim);
+    transition: opacity var(--dur-base) var(--ease-out);
+  }
+  @starting-style {
+    .scrim {
+      opacity: 0;
+    }
+  }
+  .box {
+    position: absolute;
+    inset: -8px 9px auto;
+    z-index: 31; /* over the scrim, which covers the tab bar */
+    gap: var(--space-16);
+    max-height: calc(100dvh - 60px);
+    padding: var(--space-8) var(--space-8) var(--space-20);
+    overflow: hidden;
+    border-radius: var(--radius-card);
+    background: var(--bg-raised);
+    box-shadow: var(--fx-shadow-panel);
+    transform-origin: top center;
+    transition-property: opacity, transform;
+  }
+  @starting-style {
+    .box {
+      opacity: 0;
+      transform: scale(0.98);
+    }
+  }
+  .head {
+    padding: 0;
+  }
+  .cancel {
+    display: none;
+  }
+  .body {
+    min-height: 0;
+    padding: var(--space-4) var(--space-12) 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
+@media (min-width: 1200px) {
+  .box {
+    right: auto;
+    left: 0;
+    width: 560px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .box,
+  .result:active {
+    transform: none;
+  }
+  @starting-style {
+    .box {
+      transform: none;
+    }
+  }
+}

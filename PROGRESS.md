@@ -2,6 +2,16 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 15 Nov 2026 — build unit 5, Search and city (D-89)
+
+- **Red:** tests/unit/lib/wording/search.test.ts: `Cannot find package '@/lib/wording/search'`; later "after midnight … today's": expected "Today 14:00 · Sky", received "Tomorrow 14:00 · Sky".
+- **Changed:** `lib/data/search.ts` (index for `/data/search.json` built from toListData, `matchesTitle` ignoring case/accents/punctuation, `searchFilms` per city with today worked out from all the city's times), `lib/wording/search.ts`; `app/data/search.json/route.ts` (static); `components/search/` SearchOverlay (phone full screen with Cancel and the tab bar on top; iPad/desktop panel over the bar, page dimmed; scope chips; results; both cities; no match; Abuja coming; the page's banner) and CitySheet (Lagos picked, Abuja not pickable), both loaded in their own chunk at idle, never behind Suspense (React's reveal timer); AppFrame opens them (`OpenCity` context for the Films title's "Lagos ⌄"); SearchBar `onFocus`/`inputRef`; Sheet `className`, OptionRow `lead`; icon chevron-right; token `--fx-shadow-panel`. Films uses the same matcher.
+- **Checked:** unit 482 (search data 9, wording 8); e2e search.spec 8 (phone search, both cities, no match per scope, Cancel/Escape, Enter from a film page, panel geometry at 834 and 1440, city sheet from both triggers) and the whole suite (119) green; screenshots at 390, 834, 1440 for typing, both cities, no match and the city sheet compared with Figma 192:7519. `/data/search.json` 25 KB, 3.9 KB gzipped, fetched only when search opens.
+- **Flagged (D-89):** Abuja is shown as coming, not sample (no Abuja data until unit 13; rule 8); "Saved on this phone." left out; 22 cinemas, not Figma's 21. films.spec: typing now opens the panel over Films, so the test presses Enter before clicking a card (and now checks the list narrows to 1).
+- **Reviewed:** `/code-review medium --fix` fixed: Enter in the bar did nothing before the panel loaded; Escape cleared the query; the panel always opened on Lagos; an O(films × showings) index build. By hand: "Tomorrow" after midnight for a same-day show. proof:verifier FAIL (8 of 12), all fixed: Cancel 36 → 44 px; after midnight a film's words depended on what else matched (anchor from all the city's rows) and a 14:00 show read "tonight"; the Enter hint counted tomorrow's films; the Abuja scope suggested a spelling mistake; search on a phone hid the Sample data banner (now carried in the index and shown); city stickers hidden from screen readers.
+- **Budget:** Films 214.9; film pages 215.7, over the old 215: Turbopack puts a lazily loaded component's CSS module in the page's first stylesheet (+0.9 KB), plus ~0.5 KB of wiring. Chime raised the limit to 217 until unit 12 (D-90); no more raises after that.
+- **Not verified:** on Chime's phone (iOS keyboard handing focus from the bar to the panel's field).
+
 ## 15 Nov 2026 — build unit 4, Film and the showing sheet (D-88)
 
 - **Red:** tests/unit/lib/data/filmPage.test.ts and tests/unit/lib/wording/filmPage.test.ts: `Cannot find package '@/lib/data/filmPage'` / `'@/lib/wording/filmPage'`.

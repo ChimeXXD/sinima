@@ -24,7 +24,8 @@ const BUDGET = {
   // Raised for the Figma build (D-87, Chime 15 Nov 2026): old and new screens live side by side, and
   // old pages still carry the old components. Re-measure after build unit 12 and set it tighter.
   jsKb: 165,
-  totalKb: 215,
+  // 217 from build unit 5 (D-90): search's styles ship with each page's first stylesheet.
+  totalKb: 217,
 };
 
 /** The largest page in a folder of out/, e.g. "area/lekki.html". Pages of one kind share their scripts. */

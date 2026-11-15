@@ -10,6 +10,7 @@ import { TicketFaceSticker } from "@/components/ui/Stickers";
 import { filmSections, formatCoverage, lastStart, type FilmSection } from "@/lib/data/films";
 import type { FormatTag } from "@/lib/data/format";
 import { dayDates, formatsOf, showingOn, type Day } from "@/lib/data/programme";
+import { matchesTitle } from "@/lib/data/search";
 import { laterName, pageBanner, type ListData } from "@/lib/data/select";
 import { useQuery } from "@/lib/browser";
 import { useNow } from "@/lib/time/useNow";
@@ -35,13 +36,12 @@ export function FilmsScreen({ data, areas, bg }: { data: ListData; areas: string
   const sent = useQuery("q");
   const [typed, setTyped] = useState<string | null>(null);
   const query = typed ?? sent ?? "";
-  const wanted = query.trim().toLowerCase();
 
   const dates = dayDates(data.rows, now);
   const names = [dayWords(0, dates[0], live).name, dayWords(1, dates[1], live).name];
   const on = dayWords(day, dates[day], live).on;
   const sections = filmSections(data.rows, day, now, live, format)
-    .map((section) => ({ ...section, films: section.films.filter((entry) => data.films[entry.film]!.title.toLowerCase().includes(wanted)) }))
+    .map((section) => ({ ...section, films: section.films.filter((entry) => !query.trim() || matchesTitle(data.films[entry.film]!.title, query)) }))
     .filter((section) => section.films.length > 0);
   const coverage = format ? formatCoverage(data.rows, day, now, live, (cinema) => data.cinemas[cinema]!.chain) : null;
   const note = coverage ? formatNote(coverage.chains, coverage.silent) : null;
