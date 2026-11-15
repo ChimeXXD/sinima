@@ -1,0 +1,236 @@
+/* 10 · Cards (Figma 167:72). */
+
+.hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.poster {
+  display: block;
+  overflow: hidden;
+  border-radius: var(--radius-poster);
+  background: var(--bg-surface);
+}
+.poster > img,
+.poster > div {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.meta {
+  color: var(--text-secondary);
+  font: var(--type-meta);
+}
+
+/* 10.1 Film card: column, gap 6. The poster area adds 16 px below the poster for the pill. */
+.film {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  min-width: 0;
+}
+.posterArea {
+  position: relative;
+  display: block;
+  padding-bottom: var(--space-16);
+}
+.posterArea .poster {
+  aspect-ratio: 2 / 3;
+}
+.formatAt {
+  position: absolute;
+  top: var(--space-10);
+  right: var(--space-10);
+  left: var(--space-10);
+  display: flex;
+}
+.pillAt {
+  position: absolute;
+  bottom: 2px; /* Figma: the 32 px pill's top 18 px above the poster's bottom edge */
+  left: 50%;
+  transform: translateX(-50%);
+}
+.filmTitle {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--text-primary);
+  font: var(--type-title);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow-wrap: anywhere;
+}
+.stats {
+  color: var(--text-secondary);
+  font: var(--type-meta);
+}
+.stats b {
+  color: var(--text-primary);
+  font: var(--type-label-strong);
+}
+.dot {
+  margin: 0 0.45em; /* Figma sets two spaces either side of the dot */
+}
+
+/* 10.2 Showing card: raised, hairline, radius 24, padding 8, gap 8. Fills its grid cell's height. */
+.showing {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  height: 100%;
+  min-width: 0;
+  padding: var(--space-8);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-card);
+  background: var(--bg-raised);
+  box-shadow: var(--fx-shadow-card);
+}
+.showingPoster {
+  position: relative;
+  padding-bottom: 22px; /* the 50 px badge sits half over the poster's bottom edge */
+}
+.showingPoster .poster {
+  aspect-ratio: 157 / 223;
+}
+.showing[data-started] .poster {
+  opacity: 0.45;
+}
+.badgeAt {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: 2px var(--space-4) 0;
+  min-width: 0;
+}
+.showingTitle {
+  color: var(--text-primary);
+  font: 600 16px/1.35 var(--font-sans); /* Figma: Urbanist SemiBold 16 */
+  overflow-wrap: anywhere;
+}
+.showing[data-started] .showingTitle {
+  color: var(--state-started);
+}
+.cinema {
+  display: flex;
+  align-items: flex-start; /* a name on two lines keeps the pin on the first */
+  gap: var(--space-4);
+  color: var(--text-primary);
+  font: var(--type-meta);
+}
+.cinema svg {
+  flex: none;
+  margin-top: 2px; /* centred on the first 17.5 px line, as Figma's single line */
+  color: var(--text-secondary);
+}
+
+/* 10.3 Cinema folder: layers in one box, aspect 165:160, then the name and line, centred. */
+.folderCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+  min-width: 0;
+  text-align: center;
+  -webkit-tap-highlight-color: transparent;
+}
+.folder {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 165 / 160;
+}
+.back {
+  position: absolute;
+  inset: 24px 0 0 0;
+  border-radius: var(--radius-card);
+  background: var(--tint);
+}
+.tab {
+  position: absolute;
+  top: 0;
+  left: 12px;
+  width: 78px;
+  height: 40px;
+  border-radius: 16px 16px 0 0;
+  background: var(--tint);
+}
+.folderPoster {
+  position: absolute;
+  width: 30%;
+  aspect-ratio: 50 / 74;
+  overflow: hidden;
+  border-radius: var(--radius-xs);
+  box-shadow: 0 0 0 3px var(--sticker-outline);
+  filter: drop-shadow(var(--fx-sticker-small));
+  /* Keep a poster's own title and doodles out of the folder: they are too small to read here. */
+  font-size: 0;
+}
+.folderPoster > * {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.folderPoster[data-n="0"] {
+  top: 28px;
+  left: 6%;
+  rotate: -12deg;
+}
+.folderPoster[data-n="1"] {
+  top: 22px;
+  left: 32%;
+  rotate: 5deg;
+}
+.folderPoster[data-n="2"] {
+  top: 36px;
+  left: 58%;
+  rotate: 15deg;
+}
+.front {
+  position: absolute;
+  inset: 68px 0 0 0;
+  border: 1.5px solid var(--folder-front-edge);
+  border-radius: var(--radius-card);
+  background: var(--folder-front);
+  -webkit-backdrop-filter: blur(var(--fx-blur-frosted));
+  backdrop-filter: blur(var(--fx-blur-frosted));
+}
+.logoAt {
+  position: absolute;
+  bottom: 12px;
+  left: 14px;
+}
+.logoAt > * {
+  display: grid;
+}
+.count {
+  position: absolute;
+  right: 12px;
+  bottom: 14px;
+  padding: var(--space-4) var(--space-10);
+  border-radius: var(--radius-full);
+  background: var(--bg-raised);
+  color: var(--text-primary);
+  font: 700 12px/1.3 var(--font-sans); /* Figma: Urbanist Bold 12 */
+  white-space: nowrap;
+}
+.folderName {
+  width: 100%;
+  color: var(--text-primary);
+  font: 600 16px/1.4 var(--font-sans); /* Body/L at SemiBold */
+  overflow-wrap: anywhere;
+}
+.folderMeta {
+  color: var(--text-secondary);
+  font: var(--type-meta);
+}

@@ -1,0 +1,68 @@
+/* 13 · Stickers (Figma 167:84). Sticker/Small is a filter, so the shadow follows the die-cut edge. */
+
+.sticker {
+  overflow: visible;
+  filter: drop-shadow(var(--fx-sticker-small));
+}
+.drink {
+  filter: drop-shadow(var(--fx-sticker-small));
+}
+
+/* 13.2 City sticker: pad 5 10 5 8, gap 6, 3 px white outline outside. */
+.city {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding: 5px var(--space-10) 5px var(--space-8);
+  border-radius: var(--radius-full);
+  box-shadow: 0 0 0 3px var(--sticker-outline);
+  color: var(--text-on-action);
+  font: var(--type-badge);
+  letter-spacing: var(--type-badge-tracking);
+  text-transform: uppercase;
+  filter: drop-shadow(var(--fx-sticker-small));
+}
+.lagos {
+  background: var(--city-lagos);
+}
+.abuja {
+  background: var(--city-abuja);
+}
+
+/* 13.3 Logo sticker: tile 72 × 44, radius 12, logo fitted with 8 px padding, 3 px outline. */
+.logo {
+  --k: 1;
+  --pad: calc(8px * var(--k));
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: calc(72px * var(--k));
+  height: calc(44px * var(--k));
+  border-radius: calc(12px * var(--k));
+  box-shadow: 0 0 0 calc(3px * var(--k)) var(--sticker-outline);
+  filter: drop-shadow(var(--fx-sticker-small));
+}
+/* Fitted inside the padding whatever the logo's own shape: square and tall logos included. */
+.logo img {
+  position: absolute;
+  top: var(--pad);
+  left: var(--pad);
+  width: calc(100% - 2 * var(--pad));
+  height: calc(100% - 2 * var(--pad));
+  object-fit: contain;
+}
+.dark {
+  background: var(--tile-dark);
+}
+.light {
+  background: var(--tile-light);
+}
+/* Ozone's logo is its own tile. */
+.fill {
+  --pad: 0px;
+  background: var(--tile-light);
+}
+.fill img {
+  object-fit: cover;
+  border-radius: inherit;
+}

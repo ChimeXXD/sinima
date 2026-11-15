@@ -1,0 +1,68 @@
+/* 8.1 Search bar (Figma 159:220): 48 tall, padding 0 6 0 16, gap 10. */
+.bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-10);
+  height: 48px;
+  padding: 0 var(--space-6) 0 var(--space-16);
+  border-radius: var(--radius-full);
+  background: var(--bg-surface);
+}
+.bar:focus-within {
+  box-shadow: var(--fx-focus-ring);
+}
+.searchIcon {
+  flex: none;
+  color: var(--text-secondary);
+}
+.field {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  background: none;
+  color: var(--text-primary);
+  font: var(--type-body-l);
+  font-size: max(16px, 1em); /* never under 16 px: iOS zooms into smaller fields */
+  outline: none;
+}
+.field::placeholder {
+  color: var(--text-secondary);
+  opacity: 1;
+}
+.field::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+.city {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-8) var(--space-10);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--bg-raised);
+  box-shadow: var(--fx-shadow-segment);
+  color: var(--text-primary);
+  font: 700 15px/1.25 var(--font-sans); /* Figma: Urbanist Bold 15 */
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--dur-press) var(--ease-out);
+}
+.city {
+  position: relative;
+}
+/* The pill is 35 tall in Figma; the touch area reaches 44 without changing how it looks. */
+.city::after {
+  content: "";
+  position: absolute;
+  inset: -5px -4px;
+}
+.city:active {
+  transform: scale(0.96);
+}
+@media (prefers-reduced-motion: reduce) {
+  .city:active {
+    transform: none;
+  }
+}

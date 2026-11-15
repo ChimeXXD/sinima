@@ -1,0 +1,199 @@
+/* 12.1 Sheet and option row (Figma 160:232, 160:231). */
+
+.sheet {
+  position: fixed;
+  inset: auto var(--space-8) max(var(--space-8), env(safe-area-inset-bottom));
+  width: auto;
+  max-width: none;
+  max-height: calc(100dvh - 2 * var(--space-8));
+  margin: 0;
+  padding: var(--space-24) var(--space-20) var(--space-20);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 0;
+  border-radius: var(--radius-sheet);
+  background: var(--bg-raised);
+  box-shadow: var(--fx-shadow-floating);
+  color: var(--text-primary);
+  /* Enter: rises from below on the drawer curve. Leaving is quicker than arriving. */
+  transform: translateY(calc(100% + var(--space-8)));
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    display var(--dur-base) allow-discrete,
+    overlay var(--dur-base) allow-discrete;
+}
+.sheet[open] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  transform: none;
+  transition-duration: var(--dur-sheet);
+  transition-timing-function: var(--ease-drawer);
+}
+@starting-style {
+  .sheet[open] {
+    transform: translateY(calc(100% + var(--space-8)));
+  }
+}
+.sheet::backdrop {
+  background: var(--scrim);
+  opacity: 0;
+  transition:
+    opacity var(--dur-base) var(--ease-out),
+    display var(--dur-base) allow-discrete,
+    overlay var(--dur-base) allow-discrete;
+}
+.sheet[open]::backdrop {
+  opacity: 1;
+}
+@starting-style {
+  .sheet[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+.head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-12);
+}
+.titles {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.title {
+  font: var(--type-heading-s);
+  overflow-wrap: anywhere;
+}
+.subtitle {
+  color: var(--text-secondary);
+  font: var(--type-meta);
+}
+.close {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--tint-close);
+  color: var(--text-primary);
+  -webkit-tap-highlight-color: transparent;
+}
+/* 30 px in Figma; the touch area reaches 44. */
+.close::after {
+  content: "";
+  position: absolute;
+  inset: -7px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-14);
+  width: 100%;
+  padding: var(--space-16);
+  border: 0;
+  border-radius: var(--radius-row);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--dur-press) var(--ease-out);
+}
+.option:active {
+  transform: scale(0.98);
+}
+/* Picked: tinted, with a 1.5 px edge drawn inside so the row does not grow when it is picked. */
+.option[data-selected] {
+  background: var(--bg-accent-soft);
+  box-shadow: inset 0 0 0 1.5px var(--action-primary);
+}
+.tile {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-tile);
+  background: var(--action-primary);
+  color: var(--text-on-action);
+}
+.text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.optionTitle {
+  font: 600 16px/1.35 var(--font-sans); /* Figma: Urbanist SemiBold 16 */
+}
+.desc {
+  color: var(--text-secondary);
+  font: var(--type-meta);
+}
+.check {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  background: var(--action-primary);
+  color: var(--text-on-action);
+}
+
+/* Desktop: a centred dialog, 440 wide, that grows in from 96%. */
+@media (min-width: 1024px) {
+  .sheet {
+    inset: 0;
+    width: 440px;
+    height: fit-content;
+    margin: auto;
+    opacity: 0;
+    transform: scale(0.96);
+    transition-property: transform, opacity, display, overlay;
+  }
+  .sheet[open] {
+    opacity: 1;
+    transform: none;
+    transition-duration: var(--dur-base);
+    transition-timing-function: var(--ease-out);
+  }
+  @starting-style {
+    .sheet[open] {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+  }
+}
+
+/* Reduced motion: it fades instead of moving. */
+@media (prefers-reduced-motion: reduce) {
+  .sheet,
+  .sheet[open] {
+    transform: none;
+    transition-property: opacity, display, overlay;
+  }
+  .sheet {
+    opacity: 0;
+  }
+  .sheet[open] {
+    opacity: 1;
+  }
+  @starting-style {
+    .sheet[open] {
+      opacity: 0;
+      transform: none;
+    }
+  }
+  .option:active {
+    transform: none;
+  }
+}

@@ -1,0 +1,232 @@
+/* 11 · Status (Figma 167:76). */
+
+.hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.caption {
+  color: var(--text-secondary);
+  font: var(--type-caption);
+}
+
+/* Countdowns arrive after the page is drawn (rule 3): they fade up into place. */
+@keyframes arrive {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+/* 11.1 Countdown pill: pad 6 12 6 8, gap 6, 32 tall. */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-6) var(--space-12) var(--space-6) var(--space-8);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-full);
+  background: var(--bg-raised);
+  box-shadow: var(--fx-shadow-pill);
+  white-space: nowrap;
+  animation: arrive var(--dur-base) var(--ease-out);
+}
+.lead {
+  color: var(--text-secondary);
+  font: var(--type-meta);
+}
+.value {
+  color: var(--text-primary);
+  font: var(--type-label-strong);
+}
+
+/* 11.2 Countdown badge: pad 5 14 5 5, gap 8, a 40 px ring. */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  padding: 5px var(--space-14) 5px 5px;
+  border-radius: var(--radius-full);
+  background: var(--bg-raised);
+  box-shadow: var(--fx-shadow-pill);
+  white-space: nowrap;
+  animation: arrive var(--dur-base) var(--ease-out);
+}
+.ring {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--state-countdown-track);
+}
+/* The arc: a conic fill kept to the outer 16% of the radius (Figma inner radius 0.84). */
+.ring::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(var(--action-primary) calc(var(--share) * 1turn), transparent 0);
+  mask: radial-gradient(farthest-side, transparent 84%, var(--p-neutral-1000) calc(84% + 0.5px));
+}
+.ringFace {
+  position: relative;
+}
+.badge[data-started] .ring {
+  background: var(--bg-surface);
+}
+.badge[data-started] .ring::before {
+  content: none;
+}
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--state-started);
+}
+.badgeText {
+  display: flex;
+  flex-direction: column;
+}
+.badgeValue {
+  color: var(--text-primary);
+  font: 700 16px/1.35 var(--font-sans); /* Figma: Urbanist Bold 16 */
+}
+.badge[data-started] .badgeValue {
+  color: var(--state-started);
+}
+
+/* 11.3 Time pill: pad 6 6 6 14, the time and a 34 px Book button at either end. */
+.timePill {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 46px;
+  padding: var(--space-6) var(--space-6) var(--space-6) var(--space-14);
+  border-radius: var(--radius-full);
+  background: var(--bg-accent-soft);
+}
+.timePill[data-started] {
+  min-height: 34px;
+  background: var(--bg-surface);
+}
+.time {
+  color: var(--text-brand-deep);
+  font: var(--type-time);
+}
+.timePill[data-started] .time,
+.timePill[data-started] .caption {
+  color: var(--state-started);
+}
+.book {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--action-primary-edge);
+  border-radius: var(--radius-full);
+  background: var(--action-primary);
+  box-shadow: var(--fx-button-gloss);
+  color: var(--text-on-action);
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--dur-press) var(--ease-out);
+}
+/* 34 px in Figma; the touch area reaches 44. */
+.book::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+}
+.book:active {
+  transform: scale(0.94);
+}
+
+/* 11.3b Time chip: 44 tall, radius 12, pad 0 14, gap 6. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-6);
+  height: 44px;
+  padding: 0 var(--space-14);
+  border: 0;
+  border-radius: var(--radius-button);
+  background: var(--bg-surface);
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--dur-press) var(--ease-out);
+}
+button.chip:active {
+  transform: scale(0.97);
+}
+.chipTime {
+  color: var(--text-primary);
+  font: var(--type-title);
+  text-decoration: none;
+}
+.chipNote {
+  color: var(--text-secondary);
+  font: var(--type-caption);
+}
+.chip[data-state="soonest"] {
+  background: var(--action-primary);
+}
+.chip[data-state="soonest"] .chipTime,
+.chip[data-state="soonest"] .chipNote {
+  color: var(--text-on-action);
+}
+.chip[data-state="started"] .chipTime {
+  color: var(--state-started);
+  text-decoration: line-through;
+}
+
+/* 11.4 Badges and lines. */
+.format {
+  display: inline-block;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis; /* a long list of formats stays on the poster */
+  padding: 5px var(--space-10);
+  border-radius: var(--radius-full);
+  background: var(--badge-format);
+  color: var(--text-on-action);
+  font: 600 12px/1.3 var(--font-sans); /* Caption at SemiBold */
+  white-space: nowrap;
+}
+.sample {
+  display: inline-block;
+  padding: var(--space-8) var(--space-12);
+  border-radius: var(--radius-button);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  font: var(--type-meta);
+}
+.fresh {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-6);
+  color: var(--text-secondary);
+  font: var(--type-meta);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pill,
+  .badge {
+    animation-name: fade;
+  }
+  .book:active,
+  button.chip:active {
+    transform: none;
+  }
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}

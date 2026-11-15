@@ -125,6 +125,22 @@
   --fx-blur-frosted: 14px;
   --fx-blur-bar: 36px;
 
+  /* Component values Figma writes on the layer, not as a variable or style (build unit 2, D-83). */
+  --fx-shadow-tabbar: 0 8px 24px #18181b1f;
+  --fx-shadow-navbar: 0 6px 20px #18181b14;
+  --fx-sticker-count: 0 1.5px 3px #82828240;
+  --fx-focus-ring: 0 0 0 3px var(--bg-accent-soft);
+  --badge-format: #0b0b0fb8; /* Format badge: near-black at 72% on a poster. */
+  --tile-dark: var(--p-neutral-900); /* Logo sticker tile for white logos. */
+  --tile-light: var(--p-neutral-0);
+  --bar-fill: color-mix(in srgb, var(--bg-raised) 90%, transparent);
+  --tint-secondary: color-mix(in srgb, var(--action-secondary) 4%, transparent);
+  --tint-secondary-pressed: color-mix(in srgb, var(--action-secondary) 8%, transparent);
+  --tint-close: color-mix(in srgb, var(--text-primary) 6%, transparent);
+  --scrim: color-mix(in srgb, var(--bg-scrim) 40%, transparent);
+  --folder-front: color-mix(in srgb, var(--p-neutral-0) 55%, transparent);
+  --folder-front-edge: color-mix(in srgb, var(--p-neutral-0) 90%, transparent);
+
   /* Motion (D-82, the design-engineering skills): ease-out to enter, ease-in-out to move on screen,
      the drawer curve for sheets; never ease-in. UI stays under 300 ms; sheets are the exception. */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);

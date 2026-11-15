@@ -13,7 +13,7 @@ export function showingLine(startsAt: string, now: string): string | null {
 const plural = (n: number, unit: string) => `${n} ${unit}${n === 1 ? "" : "s"}`;
 
 /** The countdown with its units spelled out, for screen readers: "starts in 1 hour 20 minutes". */
-function spokenCountdown(startsAt: string, now: string): string | null {
+export function spokenCountdown(startsAt: string, now: string): string | null {
   const { state, minutes } = minutesFromStart(startsAt, now);
   if (state === "ended") return null;
   if (state === "started") return minutes === 0 ? "started just now" : `started ${plural(minutes, "minute")} ago`;
@@ -35,3 +35,12 @@ export function showingSentence(row: { film: string; cinema: string; startsAt: s
   const spokenDay = day === "Today" || day === "Tomorrow" ? day.toLowerCase() : day;
   return `${row.film}, ${row.cinema}, ${spokenDay} at ${formatTime(row.startsAt)}, ${when}. ${row.freshness}.`;
 }
+
+// The countdown in two pieces for the pill and the badge; built in lib/time with `countdown`.
+export { countdownParts } from "@/lib/time/countdown";
+
+/** A cinema folder's count (Figma 10.3): "7 tonight". */
+export const showingsTonight = (count: number) => `${count} tonight`;
+
+/** Under a cinema folder: "Lekki · next 17:40", or the area alone when nothing is left to start. */
+export const cinemaNextLine = (area: string, at: string | null) => (at === null ? area : `${area} · next ${formatLateTime(at)}`);

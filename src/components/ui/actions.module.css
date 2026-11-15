@@ -1,0 +1,174 @@
+/* 7 · Actions (Figma 167:60). Strokes sit in the layout in Figma, so borders add to the size:
+   primary button 49 tall, secondary 47, chip 40. */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+  padding: var(--space-14) var(--space-20);
+  border-radius: var(--radius-button);
+  font: var(--type-button);
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  /* Press feedback: quick to go in, the same to come back. Only transform and colour move. */
+  transition:
+    transform var(--dur-press) var(--ease-out),
+    background-color var(--dur-press) var(--ease-out);
+}
+.button:active:not([aria-disabled="true"]) {
+  transform: scale(0.97);
+}
+.primary {
+  background: var(--action-primary);
+  border: 1px solid var(--action-primary-edge);
+  color: var(--text-on-action);
+  box-shadow: var(--fx-button-gloss);
+}
+.primary:active:not([aria-disabled="true"]) {
+  background: var(--action-primary-edge);
+}
+.secondary {
+  background: var(--tint-secondary);
+  border: 0;
+  color: var(--text-primary);
+}
+.secondary:active:not([aria-disabled="true"]) {
+  background: var(--tint-secondary-pressed);
+}
+/* Focus: a 3 px accent-soft ring and a 1 px action edge (Figma State=Focus). */
+.button:focus-visible {
+  outline: none;
+}
+.primary:focus-visible {
+  border-color: var(--action-primary);
+  box-shadow: var(--fx-button-gloss), var(--fx-focus-ring);
+}
+/* The secondary button has no border, so its 1 px edge is drawn inside: focus never moves the layout. */
+.secondary:focus-visible {
+  box-shadow: inset 0 0 0 1px var(--action-primary), var(--fx-focus-ring);
+}
+.button[aria-disabled="true"] {
+  opacity: 0.4;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.iconButton {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: var(--space-10);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--dur-press) var(--ease-out);
+}
+.iconButton:active {
+  transform: scale(0.94);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-10) 18px;
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-full);
+  background: var(--bg-raised);
+  color: var(--text-primary);
+  font: 600 15px/1.2 var(--font-sans); /* Figma: Body/M at SemiBold, 18 px line */
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--dur-press) var(--ease-out);
+}
+/* 40 tall in Figma; the touch area reaches 44 without changing how it looks. */
+.chip,
+.iconButton {
+  position: relative;
+}
+.chip::after,
+.iconButton::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+}
+.chip::after {
+  inset: -3px; /* measured from inside the 1 px border */
+}
+.chip:active:not(:disabled) {
+  transform: scale(0.97);
+}
+.chip[aria-pressed="true"] {
+  background: var(--action-primary);
+  border-color: var(--action-primary-edge);
+  color: var(--text-on-action);
+  box-shadow: var(--fx-button-gloss);
+}
+.chip:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Segmented control: equal segments; the raised pill slides to the picked one. */
+.segmented {
+  position: relative;
+  display: inline-grid;
+  grid-auto-columns: 1fr;
+  grid-auto-flow: column;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border-radius: 14px;
+  background: var(--bg-surface);
+}
+.thumb {
+  position: absolute;
+  top: var(--space-4);
+  bottom: var(--space-4);
+  left: var(--space-4);
+  width: calc((100% - var(--space-8) - (var(--n) - 1) * var(--space-4)) / var(--n));
+  border-radius: 11px;
+  background: var(--bg-raised);
+  box-shadow: var(--fx-shadow-segment);
+  transform: translateX(calc(var(--i) * (100% + var(--space-4))));
+  transition: transform var(--dur-base) var(--ease-in-out);
+}
+/* A keyboard change moves at once: no motion on keyboard actions. */
+.segmented[data-instant] .thumb {
+  transition: none;
+}
+.segment {
+  position: relative; /* above the thumb */
+  padding: var(--space-10) 28px;
+  border: 0;
+  border-radius: 11px;
+  background: none;
+  color: var(--text-secondary);
+  font: 600 15px/1.2 var(--font-sans);
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  transition: color var(--dur-base) var(--ease-out);
+}
+/* 38 px tall in Figma; the touch area grows into the track's padding. */
+.segment::after {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--space-4)) 0;
+}
+.segment[aria-checked="true"] {
+  color: var(--text-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button:active:not([aria-disabled="true"]),
+  .chip:active:not(:disabled),
+  .iconButton:active {
+    transform: none;
+  }
+  .thumb {
+    transition-duration: 0ms;
+  }
+}

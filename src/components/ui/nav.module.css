@@ -1,0 +1,127 @@
+/* 9.1 Tab bar (phone, iPad) and desktop nav (Figma 151:1442, 151:1629). */
+
+.nav {
+  position: fixed;
+  z-index: 20;
+  bottom: max(24px, env(safe-area-inset-bottom));
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  max-width: calc(100vw - 2 * var(--space-12)); /* Figma: 336 at most, which fits a 360 phone */
+  padding: var(--space-6);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-full);
+  background: var(--bar-fill);
+  -webkit-backdrop-filter: blur(var(--fx-blur-bar));
+  backdrop-filter: blur(var(--fx-blur-bar));
+  box-shadow: var(--fx-shadow-tabbar);
+  transform: translateX(-50%);
+}
+
+.tab {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-14);
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  color: var(--text-secondary);
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--dur-press) var(--ease-out);
+}
+.tab:active {
+  transform: scale(0.95);
+}
+/* Inactive tabs are 50 × 50 in Figma: icon and padding, no border. */
+.tab:not([aria-current]) {
+  border: 0;
+}
+.tab[aria-current] {
+  padding: var(--space-14) 18px var(--space-14) var(--space-14);
+  border-color: var(--action-primary-edge);
+  background: var(--action-primary);
+  box-shadow: var(--fx-button-gloss);
+  color: var(--text-on-action);
+}
+.icon {
+  flex: none;
+}
+.label {
+  font: 600 16px/1.2 var(--font-sans); /* Figma: Urbanist SemiBold 16 */
+  white-space: nowrap;
+}
+/* On the phone bar only the current tab shows its name; the others keep it for screen readers. */
+.tab:not([aria-current]) .label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Count sticker: 16 round, tilted, die-cut white edge, on the heart's top right. */
+.count {
+  position: absolute;
+  top: 7px;
+  left: 27px;
+  display: grid;
+  place-items: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 3px;
+  border-radius: 8px;
+  background: var(--brand-ticket);
+  box-shadow:
+    0 0 0 2px var(--sticker-outline),
+    var(--fx-sticker-count);
+  color: var(--text-on-action);
+  font: 800 10px/1 var(--font-sans);
+  transform: rotate(-8deg);
+}
+
+/* Desktop: the same tabs, every one labelled, in the top bar. */
+@media (min-width: 1024px) {
+  .nav {
+    position: static;
+    width: fit-content;
+    gap: var(--space-2);
+    max-width: none;
+    padding: 5px;
+    box-shadow: var(--fx-shadow-navbar);
+    transform: none;
+  }
+  .tab,
+  .tab[aria-current] {
+    padding: var(--space-10) var(--space-16) var(--space-10) var(--space-14);
+  }
+  .icon {
+    width: 18px;
+    height: 18px;
+  }
+  .label,
+  .tab:not([aria-current]) .label {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+    font: 500 15px/1.2 var(--font-sans); /* Figma: Urbanist Medium 15 */
+  }
+  .tab[aria-current] .label {
+    font-weight: 600;
+  }
+  .count {
+    top: 3px;
+    left: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab:active {
+    transform: none;
+  }
+}

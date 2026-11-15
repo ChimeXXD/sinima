@@ -1,4 +1,5 @@
 import { minutesFromStart } from "@/lib/time/countdown";
+import { formatLateTime } from "@/lib/time/lagos";
 
 // Short lines about a film and a showing, used on cards.
 
@@ -16,4 +17,9 @@ export function shortCountdown(at: string, now: string): string {
   if (minutes === 0) return "now";
   const hours = Math.floor(minutes / 60);
   return hours === 0 ? `in ${minutes} min` : minutes % 60 === 0 ? `in ${hours} h` : `in ${hours} h ${minutes % 60} min`;
+}
+
+/** The film card's stats line (Figma 10.1): "Next 17:40" in the strong style, then "4 cinemas". */
+export function filmNextLine(at: string, cinemas: number): { next: string; where: string } {
+  return { next: `Next ${formatLateTime(at)}`, where: `${cinemas} ${cinemas === 1 ? "cinema" : "cinemas"}` };
 }

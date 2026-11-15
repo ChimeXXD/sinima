@@ -85,7 +85,7 @@ Dates are a target. If a week slips, cut its Should items first; never cut the c
 
 - [ ] Data: a `city` above areas in `cinemas.json` and the schema; Abuja fixtures; validator and tests updated
 - [ ] Routes for two cities (O-16); the saved city on the phone, like the saved area (D-18)
-- [ ] Build the Figma design with motion (D-82), unit by unit: 1 foundation (tokens, fonts, motion tokens) · 2 shared components · 3 Films · 4 Film + showing sheet · 5 Search and city · 6 Cinemas · 7 Area · 8 Cinema · 9 Starting soon · 10 Your cinemas · 11 About, 404, Offline · 12 Where are you watching? · 13 city layer. Each checked at 390, 834 and 1440 against the Figma frames
+- [ ] Build the Figma design with motion (D-82), unit by unit: 1 foundation (tokens, fonts, motion tokens) ✅ · 2 shared components ✅ (D-84) · 3 Films · 4 Film + showing sheet · 5 Search and city · 6 Cinemas · 7 Area · 8 Cinema · 9 Starting soon · 10 Your cinemas · 11 About, 404, Offline · 12 Where are you watching? · 13 city layer. Each checked at 390, 834 and 1440 against the Figma frames
 - [ ] Stickers: ship `docs/design/stickers/drink.png` as `public/stickers/drink.png`; credit Fluent Emoji (MIT) on `/about` (D-74)
 - [ ] Drop the per-showing source line from the built components (D-72); keep the stale-time warnings and the About credit; update `freshness.ts` tests to match
 - [ ] Time: Abuja is on the same clock as Lagos (UTC+1, `Africa/Lagos`); tests cover a showing in each city
