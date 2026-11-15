@@ -1,30 +1,121 @@
 # Handoff: read this first when you pick the project back up
 
-## Now: every screen designed, waiting for Chime's corrections (15 Nov 2026, latest)
+## Now: every screen designed, waiting for Chime's review (15 Nov 2026, latest)
 
-Design screens holds ten flow sections (one row per state, iPhone · iPad · desktop): Where are you watching? `172:519`, Films `175:3480`, Film `185:3558`, Search and city `192:7519`, Cinemas `200:6415`, Area `200:6420`, Cinema `202:7192`, Starting soon `205:8598`, Your cinemas `210:9891`, About, 404 and Offline `210:9896` (D-71). All content comes from the sample data at Fri 13 Nov 17:30 Lagos; D-71 lists the calls made (a to i) for Chime to check. New component: Time chip (`179:2000`, Design System 11.3b). Old iPhone screens with wrong data are on Archive. **Next:** Chime's corrections, then approval (week 1 gate). Gotchas: binding a variable to a paint drops the paint's opacity (use layer opacity for scrims); detached Option rows and Button Secondary instances need their fills re-applied; text with mixed fonts needs `getStyledTextSegments` before editing.
+**What Chime asked:** "design the rest of the screen and organize it… think through each decision… study the site map well." Done and recorded as **D-71**. Chime will review and send corrections; nothing else is planned until then.
 
-## Earlier: designing flow by flow (15 Nov 2026, latest)
+**Where to look:** Figma file https://www.figma.com/design/2WxAK7rxGC6t4Wkd5IQ6p2/Sinima, page **Design screens**. Ten sections, top to bottom. Each has a navy header bar; under it, one row per state with **iPhone 390 · iPad 834 · desktop 1440** side by side. Every screen has the browser mockup on top; iPhone and iPad frames have radius 40, desktop is square. Phone and iPad pop-ups are sheets from the bottom; on desktop they are centred dialogs, or a popover for the area picker.
+
+### The screens
+
+The clock is **Fri 13 Nov 17:30 Lagos** unless the row says otherwise. Every number, time, address and credits answer comes from `data/showtimes.json`, `data/cinemas.json` and `data/sources.json`. Exception: the Abuja sample, see "Not from the data" below.
+
+| Section (Figma id) | Rows | What is on them |
+|---|---|---|
+| Where are you watching? `172:519` | Asking · Found Abuja · Elsewhere → Lagos | Unchanged from D-70; clocks set to 17:30 to match the rest |
+| Films `175:3480` | Default · IMAX chosen · Nothing more today (23:50) · Abuja | 16 films in the next 2 hours; "Later tonight" 4 films. IMAX: Ramayana only, next 18:00 at 2 cinemas, with a note that 13 cinemas don't say their format. Empty: last showing 23:40, tomorrow 30 films from 10:00 |
+| Film `185:3558` | Spider-Man default · Ramayana, Stay or Go not known · Showing sheet / dialog · Started showing (18:05) | Spider-Man: "Stay: scene after the credits · TMDB"; Grand Lekki 18:00 and 20:40, Magnificent 18:00. Ramayana: 16 cinemas grouped by area (Lekki = your area, then Victoria Island and Sangotedo as "next to Lekki", then the rest), "Credits scene: not known yet". Sheet: 18:00 Filmhouse Circle Mall IMAX: Book on Filmhouse's site, Add to calendar (18:00 to 21:21, alert 30 min before), Keep a countdown, Share this showing. Started: no Book; next times nearby (18:15 Oniru, 19:00 Ikota, 22:00 Circle Mall IMAX) |
+| Search and city `192:7519` | City sheet · Typing "Sp" (Lagos) · Both cities "Ramayana" · No match "Avengers" | City sheet: Lagos (21 cinemas) and Abuja (sample). Search: field, scope chips Both cities / Lagos / Abuja, results grouped by city. Desktop and iPad: a panel under the header search bar |
+| Cinemas `200:6415` | Default · Area picker open | 21 cinemas: In Lekki (6), Next to Lekki (VI + Sangotedo, with Silverbird Galleria as "Times not available yet"), Elsewhere (soonest first). Pickers: Area, Day, Format. The area picker has "Use my location (stays on this phone)" and 12 areas with counts |
+| Area `200:6420` | Lekki · Lagos Island, nothing left tonight (19:30) | Lekki: your saved cinema (Filmhouse Lekki IMAX), the other 5 with their next 3 showings, then Victoria Island and Sangotedo with "Show all". Lagos Island: Blue Pictures' last showing began at 19:00; Yaba 19:45, Surulere 19:50 and VI 21:15 next door |
+| Cinema `202:7192` | Default · Saved (toast) · Times a day old (Sat 14 Nov) | Filmhouse Lekki IMAX, address, Save, Book on Filmhouse's site, freshness. Films: Street Fighter 19:00, 21:30 (Stay a little: scene during the credits); Ramayana 19:10 IMAX; Clayface 19:15, 21:30; Agbara Nla "Started earlier today at 14:00 and 16:50". Stale: banner, "Times from yesterday", freshness "…yesterday at 23:05 · check with the cinema" |
+| Starting soon `205:8598` | Lekki · Nothing in 2 hours (22:50) | 10 equal-height cards (18:00 to 19:15), Later tonight rows (14 until 22:45, shows 6 + "Show 8 more"). Empty: one showing left in Lagos (23:40 The Perfect Spec, Filmworld Idimu); tomorrow Lekki starts 10:00 |
+| Your cinemas `210:9891` | 4 saved · None saved | Folders soonest first: Ozone Yaba 17:35, EbonyLife 17:40, Genesis Maryland 18:35, Filmhouse Lekki IMAX 19:00, each with "N tonight" and films actually on there tonight. Empty: logo stickers, how to save, Browse cinemas |
+| About, 404 and Offline `210:9896` | About · 404 · Offline | About: how it works (3 steps), sources table with real status (Lagocine 20 and Filmhouse 7: permission asked 11 Nov; Genesis 3, Silverbird Veezi 2, EbonyLife 1: not used yet), Abuja note, TMDB notice, logos and removal via GitHub. 404: Admit-one sticker, "We can't find that page". Offline: Films with a navy banner "You're offline… saved at 17:05, 25 min ago. Booking needs a connection." |
+
+### Mistakes in earlier screens, now fixed
+
+- **Ramayana's credits:** "Stay: scene after the credits · TMDB" → **"Credits scene: not known yet"**. The data has no TMDB answer for it; Spider-Man (after) and Street Fighter (during) are the only confirmed ones.
+- **Ramayana's cinemas:** 4 → **16 cinemas** (12 still showing it after 17:30). The data lists it under two ids (`ramayana`, `ramayana-rise-of-a-legend`) that the app already merges (D-54 b). This also means **EbonyLife does show it**; the note in the old summary saying it didn't was wrong.
+- **Films:** "21 films still to start today" → "16 films start in the next 2 hours"; "Later today · 8 films" → "Later tonight · 4 films" (the app's `laterName` rule from 17:00); Whalefall (19:30, inside the 2-hour window) moved into Now showing; on iPhone, Spider-Man and Other Mommy cards added.
+- **Tomorrow's films:** 31 → 30, because of the merged Ramayana. **Last showing:** 23:15 → 23:40.
+- **Formats:** "4D" → "MX4D". **Cinema name:** "Filmhouse IMAX Lekki" → "Filmhouse Lekki IMAX". **EbonyLife's area:** Victoria Island, not Lekki.
+- **Cinema folder component:** posters and next times now match each cinema's films that night. Genesis is now "Genesis Deluxe Maryland Mall"; EbonyLife's count is "7 tonight".
+- **Status bar clocks** (9:41 → 17:30, 18:05, 19:30, 22:50, 23:50 to match each state) and the desktop tab titles per page.
+
+### Calls Claude made: check these first
+
+1. **City sheet:** only Lagos and Abuja. "Both cities" is a search scope only, because browsing pages show one city (sitemap §05).
+2. **Started showings:** a showing that has started **drops out of Starting soon** (CLAUDE.md rule 4). Sitemap draft 3 instead lists "started showings with no booking" on Starting soon. Chime to pick. On the Film page and its sheet, started times show struck through with "Started 5 min ago", no Book, and the next times nearby.
+3. **Film page:** the top-right button is **Share**, not a heart. Only cinemas are saved.
+4. **Film and Cinema pages:**
+   - They list times still to come.
+   - Earlier times collapse into one "Started earlier today" line.
+   - A time within the next hour is highlighted blue with "in 30 min".
+5. **Area order on the Film page:** your area first, then the areas next to it, then the rest by next time. iPad and desktop pair single-cinema areas side by side.
+6. **Starting soon chips:** Lekki, Victoria Island, Sangotedo (its neighbours), All Lagos.
+7. **Desktop About:** the Films tab stays highlighted. The desktop nav component has no "nothing selected" variant; add one if wanted.
+8. **Booking-type tags** ("Tickets at the cinema") were left out: a missing booking site in the data doesn't prove there's none.
+9. **Freshness wording:** screens show what live data would say ("From Lagocine, which read Filmhouse's site 2 hours ago"), with the Sample data note on top. The real fixtures date from 11 Nov.
+10. **Address only where the data has one:** Filmhouse Lekki IMAX, EbonyLife, Ozone (E-Centre, Yaba) and Filmhouse Surulere (Leisure Mall) show an address; the rest show none (rule 8).
+
+### Not from the data (flag in review)
+
+- **Abuja is illustrative sample content:** Films · Abuja (6 films, next 18:20 etc.), the Abuja search result (2 cinemas, next 18:20) and the city sheet line. It is labelled "Sample" on screen. Abuja research hasn't started (week 1 items in PLAN).
+- **Invented but plausible:** the Offline banner's times (saved 17:05, 25 min ago) and the Saved toast text.
+
+### Design System changes
+
+- **New: Time chip** `179:2000` (section 11.3b). Variants: Default, Soonest, Started; 44 px tall. Properties: Time, Note, Show note.
+- **Showing card:** the poster area now fills the card width (phone 173, iPad 182, desktop 193).
+- **Cinema folder:** variants corrected (above).
+
+### Other moves
+
+- The old iPhone screens with the wrong data are on the **Archive** page, section "Superseded 15 Nov · iPhone": City sheet, Search both cities, Starting soon, Film, Film sheet, Your cinemas.
+- The empty iPad and Desktop per-device sections were deleted.
+
+### How it was checked
+
+- Numbers were computed with scripts over the data at each state's clock, using the same rules as `src/lib/data/select.ts`: next 2 hours inclusive, a showing drops out at its start time, "Later tonight" from 17:00.
+- Wording was matched to `src/lib/wording/` and `src/lib/time/countdown.ts`.
+- Every flow was screenshotted at all three sizes. Fixed along the way: clipped titles (now one line with an ellipsis), lists that didn't wrap, solid-black scrims and buttons, overlapping stickers, and sections overlapping after rows grew.
+
+**Not checked:**
+- No real phone.
+- Dark mode is not designed.
+- The iPad overlay frames hide the tab bar under the sheet, by design.
+- `docs/features.json` was not touched (design only).
+
+### Gotchas for the next Figma session
+
+- **Paint opacity:** `setBoundVariableForPaint` drops the paint's opacity. Use layer opacity for scrims.
+- **Variable colour:** pass the variable's resolved colour as the base colour, or the fill can render black.
+- **Re-apply fills:** detached Option rows and Button Secondary instances need their fills re-applied from the main component.
+- **Mixed-font text:** load each font from `getStyledTextSegments` before editing.
+- **Wrap layouts:** they need a fixed or filled width on the parent, or they won't wrap.
+- **Atomic scripts:** a failed `use_figma` script changes nothing, so it can be retried.
+
+### Next
+
+1. Chime reviews and sends corrections. Fix them and record each in DECISIONS.
+2. Chime approves the screens: the week 1 gate in PLAN.
+3. Still open:
+   - Chime decides the two-city proposals and O-16 (one address per city).
+   - Abuja research.
+   - O-14 (Nigeria's Doomsday date).
+
+## Earlier: designing flow by flow (15 Nov 2026)
 
 Flow 1 **Where are you watching?** is done at iPhone, iPad and desktop: section `172:519` at the top of Design screens, one row per state (D-70). Every screen has the browser mockup on top (components `173:82` iPhone, `173:104` iPad, `173:140` desktop, in "Mockup · Browser chrome" on the Design System page); iPhone and iPad frames have radius 40. The old per-device sections (iPhone `166:530`, iPad `166:543`, Desktop `166:546`) hold the not-yet-redone flows; each flow moves into its own row-per-screen section as it is designed. Next flow per the sitemap: Films (then Film + sheet, Search and city, Cinemas, Area, Cinema, Starting soon, Your cinemas, About/404/Offline).
 
-## Now: sitemap draft 3 waiting for approval (15 Nov 2026, latest)
+## Earlier: sitemap draft 3 waiting for approval (15 Nov 2026)
 
 `docs/design/structure/Sinima - Sitemap (draft 3).pdf` (source `sitemap-v3.html`, rendered with Playwright; Urbanist and the Sinima tokens). Waiting for Chime's approval; nothing else changes until then (D-69). After approval: design every screen on its page 7 with **one row per screen: iPhone, iPad, desktop side by side, rows going down** (replaces the per-device sections).
 
-## Now: file organised like Odin (15 Nov 2026, latest)
+## Earlier: file organised like Odin (15 Nov 2026)
 
 D-68: pages Cover · Design screens · Design System · Archive, then dividers and the references. Cover thumbnail frame `166:394` is the file thumbnail (the plugin API can't set it; Figma already showed "Restore default thumbnail" for it, and the file tile shows it). Design screens: sections iPhone `166:530`, iPad `166:543`, Desktop `166:546`, each flow under a navy header bar, screens named "Flow - State - Device". Design System: guideline frame `168:60` at x 0, then Doc · 1 Colour … 13 Stickers in a row. Next: iPad and desktop versions of Entry, Search and city, Starting soon, Film (+ dialog) and Your cinemas, placed in their device sections under the same flow headers.
 
-## Now: design system and design screens (15 Nov 2026, latest)
+## Earlier: design system and design screens (15 Nov 2026)
 
 Figma is organised: **Design screens** (was Round 10) and **Design System** first, then dividers: Logo Options | UI8 kits | Previous · PamPam/Posh/Phantom/Sweatpals | Archive. The Design System page holds the tokens (variables in Sinima · Primitives, Tokens, Size, with CSS names), text styles, effect styles, colour styles, and the components with build notes (D-66). Title is **What's on in Lagos** with the city tappable; first visit asks for location as the site opens; Lagos or Abuja is picked, anything else falls back to Lagos (D-65; rule 11 updated). Your cinemas folders show the chain logo sticker (D-67). Screens done: iPhone (Films, Starting soon, Film + sheet, Your cinemas, Entry 1 to 3, Phantom-style), iPad (Films · iPad `164:218`), desktop (Films). **Next:** iPad and desktop for Starting soon, Film and its sheet (desktop: centred dialog), Your cinemas and Entry; a no-poster variant for the Film card component; then Chime approves and the build starts (week 2). Gotcha: the use_figma screenshot often draws image fills inside instances or under background blur as one repeated poster; Figma itself is right (checked in Brave twice).
 
-## Now: scope change (15 Nov 2026), read first
+## Earlier: scope change (15 Nov 2026), read first
 
 **D-62:** Sinima launches for **Lagos and Abuja**, on **X with a motion-graphics explainer video**, on **Tue 15 Dec 2026** (backup Wed 16), 2–3 days before Avengers: Doomsday opens (worldwide 18 Dec; Nigeria to confirm, O-14). `PLAN.md` is restructured into four weeks plus launch; PRD and CLAUDE.md updated. **D-63:** Round 10 (Ghost + Keepsy) is the working design; Ghost and Keepsy are the style reference for all design. Next in the plan (week 1): Chime approves Round 10 (or asks for more), the city picker, Abuja research (cinemas, sources, areas), and the open questions O-14 to O-16.
 
-## Now: logo rework in Figma, with four UI8 brand kits (Sun 15 Nov 2026)
+## Earlier: logo rework in Figma, with four UI8 brand kits (Sun 15 Nov 2026)
 
 Chime is rebuilding every design in Figma first (https://www.figma.com/design/2WxAK7rxGC6t4Wkd5IQ6p2/Sinima), starting with the logo. Nothing in the app changed; the last app commit is still `63654cd`.
 
