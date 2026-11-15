@@ -1,0 +1,117 @@
+/* Cinemas (Figma 200:6415): the groups and the cinema rows, one column on a phone, two from an iPad. */
+
+.notice {
+  display: flex;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  padding-top: var(--space-20);
+  padding-bottom: var(--space-4);
+}
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.heading h2 {
+  color: var(--text-primary);
+  font: var(--type-heading-s);
+}
+.heading p,
+.formatNote {
+  color: var(--text-secondary);
+  font: var(--type-meta);
+}
+.formatNote {
+  padding-top: var(--space-12);
+}
+.rows {
+  display: grid;
+  gap: var(--space-10) var(--space-16);
+  align-items: start;
+}
+@media (min-width: 768px) {
+  .rows {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-14);
+  min-height: 44px;
+  padding: var(--space-12) var(--space-14) var(--space-12) var(--space-12);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-row);
+  background: var(--bg-page);
+  color: var(--text-primary);
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--dur-press) var(--ease-out);
+}
+.row:active {
+  transform: scale(0.99);
+}
+.logo {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 52px;
+}
+.text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.name {
+  font: var(--type-title);
+  overflow-wrap: anywhere;
+}
+.next {
+  color: var(--text-body-strong);
+  font: var(--type-meta);
+}
+.next[data-quiet] {
+  color: var(--text-secondary);
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-6);
+}
+.area {
+  color: var(--text-secondary);
+  font: var(--type-caption);
+}
+.chevron {
+  flex: none;
+  color: var(--text-secondary);
+}
+@media (hover: hover) and (pointer: fine) {
+  .chevron {
+    transition: translate var(--dur-fast) var(--ease-out);
+  }
+  .row:hover .chevron {
+    translate: 2px 0;
+  }
+}
+
+.none {
+  padding-block: var(--space-32);
+  color: var(--text-secondary);
+  font: var(--type-body-l);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .row:active {
+    transform: none;
+  }
+}

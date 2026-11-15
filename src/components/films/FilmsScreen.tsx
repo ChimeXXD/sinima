@@ -26,7 +26,7 @@ import s from "./films.module.css";
 
 const CITY = "Lagos"; // one city until the city layer (unit 13, O-16)
 
-export function FilmsScreen({ data, areas, bg }: { data: ListData; areas: string[]; bg: { light: string; dark: string } }) {
+export function FilmsScreen({ data, bg }: { data: ListData; bg: { light: string; dark: string } }) {
   const clock = useNow();
   const live = clock !== null;
   const now = clock ?? data.at;
@@ -58,7 +58,7 @@ export function FilmsScreen({ data, areas, bg }: { data: ListData; areas: string
           : sectionWords({ key: "day", count: section.films.length, on, live });
 
   return (
-    <AppFrame active="films" search={{ value: query, onChange: setTyped }} bg={bg} areas={areas}>
+    <AppFrame active="films" search={{ value: query, onChange: setTyped }} bg={bg}>
       <FilmsHero city={CITY} live={live && day === 0 && sections.length > 0} />
       <div className={s.controls}>
         <Segmented label="Day" options={names} value={names[day]!} onChange={(name) => setDay(names.indexOf(name) === 1 ? 1 : 0)} testId="films.day" />

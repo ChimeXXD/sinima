@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { createContext, useEffect, useRef, useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { useSavedArea } from "@/lib/browser";
 import { useSaved } from "@/lib/saved";
 import { FOOTER_NOTE } from "@/lib/wording/films";
 import { Icon } from "./Icon";
@@ -50,11 +49,8 @@ export function Lockup() {
  * A screen below the home screens (Figma Film) passes `bar`: on phones and iPads it takes the
  * header's place, a back button, the screen's name and a share button; the desktop navbar stays.
  */
-export function AppFrame({ active, search, city: cityChoice = "lagos", bg, areas, bar, children }: { active: SectionId; search: { value: string; onChange: (text: string) => void; onSubmit?: () => void }; city?: CityChoice; bg: { light: string; dark: string }; areas: string[]; bar?: React.ReactNode; children: React.ReactNode }) {
+export function AppFrame({ active, search, city: cityChoice = "lagos", bg, bar, footer, children }: { active: SectionId; search: { value: string; onChange: (text: string) => void; onSubmit?: () => void }; city?: CityChoice; bg: { light: string; dark: string }; bar?: React.ReactNode; /** The page's own footer lines, in place of the note (Figma Cinemas). */ footer?: React.ReactNode; children: React.ReactNode }) {
   const saved = useSaved().length;
-  // Cinemas goes straight to the saved area's cinemas, if there is one (D-18).
-  const area = useSavedArea();
-  const hrefs = area && areas.includes(area) ? { cinemas: `/area/${area}` } : {};
   const [open, setOpen] = useState(false);
   const [city, setCity] = useState<boolean | null>(null); // null until first opened
   const [loaded, setLoaded] = useState<Parts | null>(null);
@@ -92,13 +88,13 @@ export function AppFrame({ active, search, city: cityChoice = "lagos", bg, areas
           {open && loaded && <loaded.Search query={search.value} onQuery={search.onChange} onSubmit={() => (close(), search.onSubmit?.())} onClose={close} city={cityChoice} />}
         </div>
         <div className={s.nav}>
-          <SectionNav active={active} saved={saved} hrefs={hrefs} />
+          <SectionNav active={active} saved={saved} />
         </div>
         <ThemeToggle bg={bg} className={s.theme} icons={{ sun: <Icon name="sun" size={20} />, moon: <Icon name="moon" size={20} /> }} />
       </header>
       <main className={s.main}>{children}</main>
-      <footer className={s.footer}>
-        <p data-testid="footer.note">{FOOTER_NOTE}</p>
+      <footer className={s.footer} data-own={footer ? "" : undefined}>
+        {footer ?? <p data-testid="footer.note">{FOOTER_NOTE}</p>}
       </footer>
       {city !== null && loaded && <loaded.City open={city} onClose={() => setCity(false)} />}
     </OpenCity>

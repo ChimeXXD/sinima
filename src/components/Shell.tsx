@@ -6,7 +6,7 @@ import { LogoMark } from "@/components/Logo";
 import { Search } from "@/components/Search";
 import { Tabs, type TabId } from "@/components/Tabs";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { areas, loadAll } from "@/lib/data/load";
+import { loadAll } from "@/lib/data/load";
 import { pageColours } from "@/lib/theme/pageColours";
 
 // Every page builds the same film list for search: read and sort it once per build, not once per page.
@@ -23,7 +23,7 @@ export function Shell({ tab, children }: { tab: TabId; children: React.ReactNode
           <LogoMark />
           Sinima
         </Link>
-        <Tabs tab={tab} areas={areas.map((area) => area.slug)} />
+        <Tabs tab={tab} />
         <Search films={filmsForSearch()} />
         <ThemeToggle bg={pageColours()} />
       </header>

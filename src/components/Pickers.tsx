@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useRef } from "react";
-import { rememberArea, type AreaInfo } from "@/components/Filters";
+import { type AreaInfo } from "@/components/Filters";
+import { rememberArea } from "@/lib/area";
 import { Icon } from "@/components/Icons";
 import { onBackdrop } from "@/lib/browser";
 import type { FormatTag } from "@/lib/data/format";

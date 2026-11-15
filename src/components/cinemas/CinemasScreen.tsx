@@ -1,0 +1,135 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { AppFrame } from "@/components/ui/AppFrame";
+import { Notice } from "@/components/ui/Status";
+import { rememberArea } from "@/lib/area";
+import { useSavedArea } from "@/lib/browser";
+import { cinemaSections, type CinemaSection } from "@/lib/data/cinemas";
+import { formatCoverage } from "@/lib/data/films";
+import type { FormatTag } from "@/lib/data/format";
+import type { Area } from "@/lib/data/load";
+import { byFilm, dayDates, formatsOf, showingOn, type Day } from "@/lib/data/programme";
+import { laterName, pageBanner, type ListData } from "@/lib/data/select";
+import { useNow } from "@/lib/time/useNow";
+import { NO_TIMES_NOTE, cinemaLine, cinemasHeading } from "@/lib/wording/cinemas";
+import { dayWords } from "@/lib/wording/day";
+import { formatNote } from "@/lib/wording/films";
+import { CinemaRow } from "./CinemaRow";
+import { CinemasHero } from "./CinemasHero";
+import { Pickers } from "./Pickers";
+import s from "./cinemas.module.css";
+
+// The Cinemas tab (Figma Cinemas 200:6415): every cinema in the city. With an area kept on this
+// phone, its cinemas first, then the areas next to it, then the rest; choosing another area here
+// keeps that one instead (D-91). The page's own HTML has no area and no relative words (rule 3).
+
+const CITY = "Lagos"; // one city until the city layer (unit 13, O-16)
+
+export function CinemasScreen({ data, areas, bg }: { data: ListData; areas: Area[]; bg: { light: string; dark: string } }) {
+  const clock = useNow();
+  const live = clock !== null;
+  const now = clock ?? data.at;
+  const [day, setDay] = useState<Day>(0);
+  const [format, setFormat] = useState<FormatTag | null>(null);
+  const [search, setSearch] = useState("");
+  const router = useRouter();
+  const saved = useSavedArea();
+  // Picking an area keeps it on this phone; until the store answers, the pick shows at once.
+  const [picked, setPicked] = useState<string | null>(null);
+  const home = areas.find((area) => area.slug === (picked ?? saved)) ?? null;
+
+  const dates = dayDates(data.rows, now);
+  const days: [string, string] = [dayWords(0, dates[0], live).name, dayWords(1, dates[1], live).name];
+  const areaOf = (cinema: number) => data.cinemas[cinema]!.area;
+  const sections = cinemaSections({ rows: data.rows, cinemas: data.cinemas.length, areaOf, day, now, live, format, home });
+  const banner = pageBanner(data, clock);
+  const coverage = format ? formatCoverage(data.rows, day, now, live, (cinema) => data.cinemas[cinema]!.chain) : null;
+  const note = coverage ? formatNote(coverage.chains, coverage.silent) : null;
+  const formats = formatsOf(data.rows).map((tag) => ({ tag, cinemas: new Set(showingOn(data.rows, day, now, tag, !live).map((row) => row.cinema)).size }));
+  const unread = sections.some((section) => section.cinemas.some((entry) => !entry.listed));
+  const when = !live ? null : day === 1 ? "tomorrow" : laterName(now) === "Later tonight" ? "tonight" : "today";
+
+  const heading = (section: CinemaSection) =>
+    section.key === "area"
+      ? cinemasHeading({ key: "area", area: home!.name, count: section.cinemas.length })
+      : section.key === "next"
+        ? cinemasHeading({ key: "next", area: home!.name, neighbours: home!.neighbours.filter((slug) => section.cinemas.some((entry) => areaOf(entry.cinema) === slug)).map((slug) => areas.find((area) => area.slug === slug)?.name ?? slug) })
+        : section.key === "rest"
+          ? cinemasHeading({ key: "rest", city: CITY })
+          : cinemasHeading({ key: "all", count: section.cinemas.length, format });
+
+  const footer = (
+    <>
+      {unread && <p data-testid="cinemas.no-times">{NO_TIMES_NOTE}</p>}
+      {/* D-57: the logos only name each cinema, and come off the same day if asked. */}
+      <p data-testid="footer.logos">
+        Cinema logos belong to their owners and only name each cinema. A cinema that wants its logo removed can <a href="https://github.com/ChimeXXD/sinima/issues">ask here</a>; it goes the same day.
+      </p>
+    </>
+  );
+
+  return (
+    <AppFrame active="cinemas" search={{ value: search, onChange: setSearch, onSubmit: () => router.push(`/?q=${encodeURIComponent(search.trim())}`) }} bg={bg} footer={footer}>
+      <CinemasHero city={CITY} count={data.cinemas.length} />
+      <Pickers
+        areas={areas}
+        area={home?.slug ?? null}
+        onArea={(slug) => (rememberArea(slug), setPicked(slug))}
+        days={days}
+        day={day}
+        onDay={setDay}
+        formats={formats}
+        format={format}
+        onFormat={setFormat}
+      />
+      {banner && (
+        <div className={s.notice}>
+          <Notice kind={banner.kind} text={banner.text} />
+        </div>
+      )}
+
+      {sections.map((section) => {
+        const { title, note: line } = heading(section);
+        return (
+          <section key={section.key} className={s.group} aria-labelledby={`cinemas.${section.key}`} data-testid={`group.${section.key}`}>
+            <div className={s.heading}>
+              <h2 id={`cinemas.${section.key}`}>{title}</h2>
+              <p>{line}</p>
+            </div>
+            <div className={s.rows}>
+              {section.cinemas.map((entry) => {
+                const cinema = data.cinemas[entry.cinema]!;
+                const next = entry.rows[0]?.at ?? null;
+                return (
+                  <CinemaRow
+                    key={cinema.id}
+                    href={`/cinema/${cinema.id}`}
+                    name={cinema.name}
+                    chain={cinema.chain}
+                    area={areas.find((area) => area.slug === cinema.area)?.name ?? cinema.area}
+                    line={cinemaLine({ next, films: byFilm(entry.rows).length, listed: entry.listed, when })}
+                    at={next}
+                    formats={formatsOf(entry.rows)}
+                    testId={`cinema.card.${cinema.id}`}
+                  />
+                );
+              })}
+            </div>
+          </section>
+        );
+      })}
+      {format && note && (
+        <p className={s.formatNote} data-testid="format.left-out">
+          {note}
+        </p>
+      )}
+      {sections.length === 0 && (
+        <p className={s.none} data-testid="cinemas.none">
+          {`No cinema is showing a film in ${format} ${dayWords(day, dates[day], live).on}.`}
+        </p>
+      )}
+    </AppFrame>
+  );
+}

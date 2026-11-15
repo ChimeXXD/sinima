@@ -125,6 +125,15 @@
   }
 }
 
+/* A page's own footer lines (Figma Cinemas): 28 above, Meta at every size. */
+.footer[data-own] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding-top: var(--space-28);
+  font: var(--type-meta);
+}
+
 .hidden {
   position: absolute;
   width: 1px;

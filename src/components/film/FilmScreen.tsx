@@ -88,7 +88,7 @@ export function FilmScreen({ data, areas, bg }: { data: ListData; areas: Area[];
   );
 
   return (
-    <AppFrame active="films" search={{ value: typed, onChange: setTyped, onSubmit: () => router.push(`/?q=${encodeURIComponent(typed.trim())}`) }} bg={bg} areas={areas.map((area) => area.slug)} bar={bar}>
+    <AppFrame active="films" search={{ value: typed, onChange: setTyped, onSubmit: () => router.push(`/?q=${encodeURIComponent(typed.trim())}`) }} bg={bg} bar={bar}>
       <div className={s.layout}>
         <div className={s.filmColumn}>
           <Link href="/" className={s.crumb}>

@@ -2,21 +2,11 @@
 
 import Link from "next/link";
 import { Icon } from "@/components/Icons";
-import { AREA_KEY } from "@/lib/area";
+import { rememberArea } from "@/lib/area";
 import type { FormatTag } from "@/lib/data/format";
 import type { Day } from "@/lib/data/programme";
 
 export type AreaInfo = { slug: string; name: string; neighbours: string[]; cinemas: number };
-
-/** Remembers the area on this phone only; null forgets it. */
-export function rememberArea(slug: string | null) {
-  try {
-    if (slug) localStorage.setItem(AREA_KEY, slug);
-    else localStorage.removeItem(AREA_KEY);
-  } catch {
-    // Storage can be switched off: the choice just is not remembered.
-  }
-}
 
 const DEFAULT_AREAS = ["lekki", "victoria-island", "ikeja"];
 

@@ -17,8 +17,8 @@ export type SectionId = (typeof SECTIONS)[number]["id"];
 
 /**
  * `saved` is how many cinemas are kept on Your cinemas: a count sticker on its tab, hidden on
- * that tab itself and when there are none. `hrefs` replaces a tab's link (Cinemas can open the
- * saved area, D-18).
+ * that tab itself and when there are none. `hrefs` replaces a tab's link (the /kit page keeps
+ * its tabs on itself).
  */
 export function SectionNav({ active, saved = 0, hrefs = {} }: { active: SectionId; saved?: number; hrefs?: Partial<Record<SectionId, string>> }) {
   return (

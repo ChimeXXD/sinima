@@ -17,15 +17,16 @@ test("the site opens on Films, and the tabs read Films, Cinemas, Starting soon, 
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Cinemas in Lagos");
 });
 
-test("a saved area takes the Cinemas tab to that area, not the Films home", async ({ page }) => {
+// D-91: the Cinemas tab keeps the saved area on its own page: that area's cinemas come first.
+test("a saved area puts its cinemas first on the Cinemas tab", async ({ page }) => {
   await page.goto("/cinemas");
   await page.getByTestId("pick.area").click();
   await page.getByTestId("sheet.area.ikeja").click();
-  await expect(page).toHaveURL(/\/area\/ikeja$/);
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("What's on in Lagos");
   await page.getByTestId("tab.cinemas").click();
-  await expect(page).toHaveURL(/\/area\/ikeja$/);
+  await expect(page).toHaveURL(/\/cinemas$/);
+  await expect(page.getByTestId("group.area").getByRole("heading", { level: 2 })).toHaveText("In Ikeja");
 });
 
 test("on a phone, the search button opens a search box on the page it is on, and a match opens the film", async ({ page, request }) => {
@@ -45,7 +46,7 @@ test("on a phone, the search button opens a search box on the page it is on, and
 });
 
 test("search says so when no film matches, and Escape closes it", async ({ page }) => {
-  await page.goto("/cinemas");
+  await page.goto("/soon"); // the old search, until build unit 9
   await page.getByTestId("search.open").click();
   await page.getByTestId("search.input").fill("zzz");
   await expect(page.getByTestId("search.none")).toHaveText('No film showing matches "zzz".');

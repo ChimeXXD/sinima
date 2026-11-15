@@ -75,18 +75,17 @@ test("Tomorrow shows the whole of the next day", async ({ page, request }) => {
   await expect(page.locator('[data-testid^="film.card."]')).toHaveCount(films.size);
 });
 
-test("picking an area opens its page and is remembered; All Lagos forgets it", async ({ page }) => {
-  await page.goto("/cinemas");
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Cinemas in Lagos");
+// Choosing an area on the Cinemas tab: tests/e2e/cinemas-screen.spec.ts (Figma, D-91). An area's
+// page keeps the old sheet until build unit 7.
+test("on an area's page, picking an area opens its page and is remembered; All Lagos forgets it", async ({ page }) => {
+  await page.goto("/area/lekki");
   await page.getByTestId("pick.area").click();
-  // The sheet opens over the page with every area on screen and not covered. A click alone would not
-  // show this, because the test scrolls to what it clicks.
   await page.evaluate(() => Promise.all(document.getAnimations().filter((a) => a.effect?.getComputedTiming().iterations !== Infinity).map((a) => a.finished.catch(() => undefined))));
   const hidden = await page.locator('[data-testid^="sheet.area."]').evaluateAll((els) =>
     els.filter((el) => {
       const box = el.getBoundingClientRect();
       const y = box.top + box.height / 2;
-      if (y > window.innerHeight) return false; // further down the page: reached by scrolling
+      if (y > window.innerHeight) return false; // further down the sheet: reached by scrolling
       return box.left < 0 || box.right > window.innerWidth || !el.contains(document.elementFromPoint(box.left + box.width / 2, y));
     }).map((el) => el.getAttribute("data-testid")),
   );
@@ -96,13 +95,11 @@ test("picking an area opens its page and is remembered; All Lagos forgets it", a
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Cinemas near Ikeja");
   expect(await page.evaluate(() => localStorage.getItem("ls.area"))).toBe("ikeja");
 
-  await page.goto("/cinemas");
-  await expect(page).toHaveURL(/\/area\/ikeja$/);
-
   await page.getByTestId("pick.area").click();
   await page.getByTestId("sheet.area.all").click();
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Cinemas in Lagos");
+  await expect(page).toHaveURL(/\/cinemas$/);
   expect(await page.evaluate(() => localStorage.getItem("ls.area"))).toBeNull();
+  await expect(page.getByTestId("group.all")).toBeVisible();
 });
 
 // D-61 (Chime, 13 Nov 2026): hearted cinemas live on their own tab, Your cinemas, not in a block on the Cinemas tab.
@@ -151,21 +148,7 @@ for (const width of [390, 360, 320]) {
   });
 }
 
-test("choosing IMAX leaves only cinemas showing in IMAX, and says what was left out", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
-  const now = await sampleTime(request, "10:00");
-  const rows = today(all, now);
-  const imax = [...new Set(rows.filter((s) => (s.format ?? "").startsWith("IMAX")).map((s) => s.cinemaId))];
-  const silent = new Set(all.cinemas.map((c) => c.id).filter((id) => rows.some((s) => s.cinemaId === id) && !rows.some((s) => s.cinemaId === id && s.format)));
-  expect(imax.length).toBeGreaterThan(0);
-  await freeze(page, now);
-  await page.goto("/cinemas");
-  await page.getByTestId("pick.format").click();
-  await page.getByTestId("format.option.IMAX").click();
-  const shown = await page.locator('[data-testid^="cinema.card."]').evaluateAll((els) => els.map((el) => el.getAttribute("data-testid")!.replace("cinema.card.", "")));
-  expect(shown.sort()).toEqual(imax.sort());
-  await expect(page.getByTestId("format.left-out")).toHaveText(`${silent.size} cinemas don't say the format of their showings, so they are not listed here.`);
-});
+// IMAX on the Cinemas tab: tests/e2e/cinemas-screen.spec.ts.
 
 // CLAUDE.md rule 3: the page's own HTML may be read on a later day than it was built.
 for (const path of ["/area/lekki", "/cinemas", "/", "/soon", "/cinema/genesis-purple-lekki", "/film/ramayana"]) {
@@ -202,7 +185,7 @@ for (const scheme of ["light", "dark"] as const) {
   test(`the More areas menu marks the area under the pointer (${scheme})`, async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.emulateMedia({ colorScheme: scheme });
-    await page.goto("/cinemas");
+    await page.goto("/area/lekki"); // the old board, until build unit 7
     await page.getByTestId("area.more").click();
     const option = page.getByTestId("area.option.surulere");
     const other = page.getByTestId("area.option.yaba");

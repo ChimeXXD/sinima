@@ -2,6 +2,18 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 15 Nov 2026 — build unit 6, Cinemas (D-91)
+
+- **Red:** tests/unit/lib/data/cinemas.test.ts and wording/cinemas.test.ts: `Cannot find package '@/lib/data/cinemas'`; tests/e2e/cinemas-screen.spec.ts "with Lekki kept…": expected "Cinemas in Lagos", received "Cinemas near Lekki" (the old redirect to /area/lekki).
+- **Changed:** `/cinemas` is `components/cinemas/CinemasScreen` in AppFrame: CinemasHero (centred title, four logo stickers placed by their centres, hand-drawn ellipse, "22 of them!"), Pickers (Area · Day · Format; phone row scrolls under a 56 px fade; sheets in Figma's picker style, popover over the picker on desktop that follows it on scroll and stays inside the window), CinemaRow (logo sticker, name, "Next at 18:00 · 3 films tonight", area and format badge, chevron). Logic `lib/data/cinemas.ts` (every cinema, grouped by the kept area, its neighbours, the rest; soonest first, then nothing left, then not readable), words `lib/wording/cinemas.ts`. `Sheet` takes `picker`; `AppFrame` takes `footer`, loses `areas`; the Cinemas tab (new nav and old Tabs) no longer redirects to `/area/<saved>`; `rememberArea` moved to `lib/area.ts`.
+- **Checked:** unit 504 (cinemas data 7, wording 16); e2e cinemas-screen.spec 14 (area groups and order, row words, unread cinemas and note, no-area list, area picked in place and kept, sheet geometry at 390 and 834, desktop popover at the picker and after scrolling, Tomorrow, IMAX with the left-out count, 1/2/2 columns at Figma's widths, 44 px and no sideways scroll at 390/360/320, logo footer); cinemas, cinemas-rows, nav, theme, films specs green (old-board tests now on `/area/lekki`). Screenshots at 390, 834, 1440 (default and area picker), 360, 320 and dark compared with Figma 196:5185, 196:6403, 196:7372, 196:5769, 196:7943.
+- **Tests changed:** removed the `/cinemas` versions of the redirect, IMAX and row tests (now in cinemas-screen.spec); the old sheet's test, logo, pickers, day and fresh-line tests point at `/area/lekki`; nav's saved-area test now expects the area first on `/cinemas` (D-91); the old search test moved to `/soon`.
+- **Reviewed:** proof:verifier PASS 9/9; restored the old area sheet's "All Lagos forgets" test on `/area/lekki` and the IMAX left-out count it flagged. `/code-review medium --fix` fixed the sort's repeated `indexOf`, dead `areaCount`, a leftover re-export and unused test imports; by hand after it: the popover follows its picker on scroll and resize and stays inside the window; "Next to …" names only neighbours with cinemas listed.
+- **Budget:** Cinemas 215.1; Films 215.8 (+0.9) and film pages 216.9 (+1.2) of 217: Turbopack puts this page's picker and row styles in the stylesheet the three pages share (`cssChunking: "strict"` is webpack-only).
+- **Flagged (D-91):** no "Use my location" (no cinema coordinates); no "All of Lagos" in the area sheet (Figma), so a kept area can't be cleared on this tab; no close button on picker sheets; no hearts on rows; format tag "4D" not "MX4D"; two ties at 18:00/19:00 sit the other way from Figma's frame.
+- **Not verified:** on Chime's phone.
+- **Next:** unit 7, Area (`/area/[slug]`, Figma 200:6420); decide D-91 (i) first, and the budget before unit 7 adds more shared CSS.
+
 ## 15 Nov 2026 — build unit 5, Search and city (D-89)
 
 - **Red:** tests/unit/lib/wording/search.test.ts: `Cannot find package '@/lib/wording/search'`; later "after midnight … today's": expected "Today 14:00 · Sky", received "Tomorrow 14:00 · Sky".
