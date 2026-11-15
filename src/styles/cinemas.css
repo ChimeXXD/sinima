@@ -36,20 +36,6 @@
 .vtag.fmt { background: var(--color-accent); color: var(--color-accent-text); font-weight: 700; }
 .vtag.old { background: none; box-shadow: inset 0 0 0 1px var(--color-line); color: var(--color-stale); }
 
-/* Phone filters (D-56, option 1): one row of three pickers, each opens a sheet from the bottom */
-/* Each picker takes the room its words need, so none is cut short down to 320 px. */
-.pickers { display: none; gap: 6px; margin-top: var(--s4); }
-.picker { display: flex; flex: 1 1 auto; align-items: center; justify-content: center; gap: 4px; min-width: 0; min-height: 44px; padding: 0 10px; border: 1px solid var(--color-line); border-radius: var(--r-chip); background: var(--color-surface); color: inherit; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
-.picker span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.picker .ico { width: 14px; height: 14px; flex: 0 0 14px; }
-.picker.on { border-color: var(--color-book); background: var(--color-book); color: var(--color-book-text); }
-dialog.pick { gap: var(--s3); }
-dialog.pick h2 { font-size: 19px; font-weight: 700; }
-.pick-list { display: grid; }
-.pick-list a, .pick-list button { display: flex; align-items: center; gap: var(--s3); min-height: 44px; padding: 0 var(--s3); border: 0; border-radius: 10px; background: none; color: inherit; font: inherit; font-weight: 500; text-align: left; cursor: pointer; }
-.pick-list .on { background: var(--color-soft); font-weight: 700; }
-.pick-list span { margin-left: auto; color: var(--color-text-muted); font-size: 13px; font-weight: 400; }
-
 @media (max-width: 760px) {
   .vgroup { margin-top: var(--s6); }
   .vhead { margin-bottom: var(--s1); }
@@ -59,11 +45,7 @@ dialog.pick h2 { font-size: 19px; font-weight: 700; }
   .vrow:active { background: none; opacity: 0.7; }
   .vlogo { width: 72px; height: 54px; border-radius: 12px; }
   .vname { font-size: 16px; }
-  .pickers { display: flex; }
-  .wide-only { display: none !important; }
 }
-/* The smallest phones: the area picker drops its pin so all three labels fit. */
-@media (max-width: 350px) { .picker .ico:first-child:not(:last-child) { display: none; } }
 @media (prefers-reduced-motion: reduce) { .vrow, .heart { transition: none; } }
 /* The Your cinemas tab (D-61). In the tab bar it is a heart beside its name; on a phone, the heart alone. */
 .tab .heart { width: 18px; height: 18px; margin-right: 6px; stroke: currentColor; }

@@ -1,0 +1,767 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sinima cinemas references</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&display=swap">
+<style>
+/* Layout: a fixed section list on the left, one column of reference cards on the right. On a phone the list becomes a drawer. */
+:root {
+  --bg: #eef0f4; --surface: #ffffff; --ink: #131a2b; --muted: #566078; --line: #d5d9e3;
+  --marquee: #f2b705; --on-marquee: #1d1600; --no: #b3261e; --on-no: #ffffff; --shot: #dfe3ec;
+  --scrim: rgba(10, 14, 24, 0.95); --on-scrim: #f4f6fb; --on-scrim-muted: #b9c1d4;
+  --scrim-field: rgba(255, 255, 255, 0.08); --mark: #f2b705; --on-mark: #1d1600; --mark-fill: rgba(242, 183, 5, 0.2);
+  --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --side: 264px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0d1220; --surface: #171e31; --ink: #eef1f8; --muted: #a3adc4; --line: #2c3650;
+    --marquee: #f5c518; --on-marquee: #1d1600; --no: #f2877f; --on-no: #2a0704; --shot: #232c44;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; }
+h1 { font-family: var(--display); font-weight: 700; font-size: clamp(28px, 5vw, 38px); line-height: 1.1; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--display); font-weight: 700; font-size: 24px; line-height: 1.2; margin: 0; text-wrap: balance; }
+h3 { font-size: 16px; font-weight: 650; margin: 0; }
+p { margin: 0; }
+img { max-width: 100%; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+.side {
+  position: fixed; inset: 0 auto 0 0; width: var(--side); z-index: 20; overflow-y: auto;
+  background: var(--surface); border-right: 1px solid var(--line);
+  padding: 20px 12px 24px; display: flex; flex-direction: column; gap: 16px;
+}
+.side .brand { font-family: var(--display); font-weight: 700; font-size: 18px; line-height: 1.2; padding: 0 8px; }
+.progress { padding: 0 8px; font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 6px; }
+.progress strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+.meter { height: 6px; border-radius: 999px; background: var(--shot); overflow: hidden; }
+.meter i { display: block; height: 100%; width: 0; background: var(--marquee); }
+.side nav { display: flex; flex-direction: column; gap: 2px; }
+.side nav a {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 40px;
+  padding: 0 8px; border-radius: 8px; color: var(--ink); text-decoration: none; font-size: 14px;
+}
+.side nav a span { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.side nav a:hover { background: var(--bg); }
+.side nav a[aria-current="true"] { background: var(--bg); font-weight: 650; }
+.side .actions { display: flex; flex-direction: column; gap: 8px; padding: 0 8px; margin-top: auto; }
+.side .hint { padding: 0 8px; font-size: 12px; color: var(--muted); }
+
+.topbar { display: none; }
+.page { margin-left: var(--side); padding: 32px max(24px, env(safe-area-inset-right, 0px)) 80px 32px; }
+.wrap { max-width: 980px; display: flex; flex-direction: column; gap: 40px; }
+.intro { display: flex; flex-direction: column; gap: 8px; }
+.intro p { color: var(--muted); max-width: 64ch; }
+
+section { display: flex; flex-direction: column; gap: 16px; scroll-margin-top: 24px; }
+.sec-head { display: flex; flex-direction: column; gap: 4px; }
+.sec-head p { color: var(--muted); max-width: 64ch; }
+.ref {
+  display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 20px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px;
+}
+.ref.wide { grid-template-columns: minmax(0, 1fr); }
+.shot {
+  display: block; padding: 0; border: 0; background: var(--shot); border-radius: 8px; overflow: hidden;
+  align-self: start; cursor: zoom-in; width: 100%; position: relative;
+}
+.ref.wide .shot { max-width: 640px; }
+.shot img { display: block; width: 100%; height: auto; }
+.form { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.meta { display: flex; flex-direction: column; gap: 6px; }
+.title-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.tag { font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; }
+.pair { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 4px 12px; margin: 0; }
+.pair dt { font-size: 13px; color: var(--muted); }
+.pair dd { margin: 0; }
+.meta a { color: var(--ink); font-size: 13px; align-self: start; }
+fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+legend { padding: 0; font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  font: inherit; font-size: 14px; min-height: 44px; padding: 0 14px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--line); background: transparent; color: var(--ink);
+}
+.chip[aria-pressed="true"] { background: var(--marquee); border-color: var(--marquee); color: var(--on-marquee); font-weight: 600; }
+.chip.no[aria-pressed="true"] { background: var(--no); border-color: var(--no); color: var(--on-no); }
+label.note { font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
+textarea {
+  font: inherit; font-size: 16px; color: var(--ink); background: var(--bg); border: 1px solid var(--line);
+  border-radius: 8px; padding: 10px 12px; min-height: 76px; resize: vertical; width: 100%;
+}
+button.plain {
+  font: inherit; font-size: 14px; min-height: 44px; padding: 0 14px; border-radius: 8px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+}
+.saved { font-size: 12px; color: var(--muted); min-height: 18px; }
+#copyout { min-height: 120px; font-family: ui-monospace, Menlo, monospace; font-size: 12px; }
+
+/* Colour section */
+table.roles { border-collapse: collapse; width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.roles th, .roles td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; font-size: 14px; }
+.roles th { font-size: 13px; color: var(--muted); font-weight: 500; }
+.roles tr:last-child td { border-bottom: 0; }
+.roles code, .sw code, .checks code { font-family: ui-monospace, Menlo, monospace; font-size: 12px; white-space: nowrap; }
+.scroll { overflow-x: auto; }
+.pal { display: flex; flex-direction: column; gap: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+.modes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.mode { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.mode h4 { margin: 0; font-size: 13px; color: var(--muted); font-weight: 500; }
+.sample { background: var(--p-bg); color: var(--p-text); border-radius: 10px; padding: 14px; border: 1px solid var(--line); }
+.sample .card { background: var(--p-surface); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 6px; }
+.sample .time { font-size: 30px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.sample .soon { font-size: 14px; font-weight: 600; color: var(--p-accent-text); background: var(--p-accent-bg); border-radius: 999px; padding: 2px 8px; }
+.sample .film { font-size: 17px; font-weight: 650; }
+.sample .where, .sample .fresh { color: var(--p-muted); font-size: 13px; }
+.sample .stale { color: var(--p-stale); font-size: 13px; }
+.sample .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
+.sample .book { background: var(--p-book); color: var(--p-book-text); border-radius: 8px; padding: 9px 16px; font-weight: 650; font-size: 14px; }
+.sample .focus { border: 2px solid var(--p-focus); border-radius: 8px; padding: 6px 10px; font-size: 13px; }
+.sws { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; }
+.sw { display: flex; flex-direction: column; gap: 2px; font-size: 12px; }
+.sw i { display: block; height: 36px; border-radius: 6px; border: 1px solid var(--line); }
+.sw span { color: var(--muted); }
+.checks { margin: 0; padding: 0; list-style: none; font-size: 12px; color: var(--muted); display: flex; flex-direction: column; gap: 2px; }
+.checks b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* Marked regions */
+.marks { position: absolute; inset: 0; pointer-events: none; }
+.zmarks { position: absolute; cursor: crosshair; touch-action: none; }
+.mark { position: absolute; border: 2px solid var(--mark); background: var(--mark-fill); border-radius: 4px; pointer-events: none; }
+.mark b { position: absolute; top: -2px; left: -2px; background: var(--mark); color: var(--on-mark); font-size: 11px; line-height: 1; padding: 3px 5px; border-radius: 4px 0 4px 0; }
+
+/* Zoom */
+dialog#zoom {
+  border: 0; padding: 0; margin: 0; width: 100vw; height: 100dvh; max-width: none; max-height: none;
+  background: var(--scrim); color: var(--on-scrim);
+}
+dialog#zoom::backdrop { background: transparent; }
+.z { height: 100%; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; }
+.z-top, .z-bot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; }
+.z-top .count { font-size: 13px; color: var(--on-scrim-muted); font-variant-numeric: tabular-nums; }
+.z-stage { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 8px; padding: 0 8px; min-height: 0; }
+.z-stage figure { margin: 0; height: 100%; min-height: 0; display: flex; align-items: center; justify-content: center; position: relative; }
+.z-stage img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; }
+.zbtn {
+  font: inherit; font-size: 14px; min-height: 44px; min-width: 44px; padding: 0 14px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--on-scrim-muted); background: transparent; color: var(--on-scrim);
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.zbtn:focus-visible { outline: 2px solid var(--on-scrim); }
+kbd { font-family: ui-monospace, Menlo, monospace; font-size: 11px; border: 1px solid var(--on-scrim-muted); border-radius: 4px; padding: 1px 5px; color: var(--on-scrim-muted); }
+.z-cap { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.z-cap strong { font-size: 15px; }
+.z-cap span { font-size: 13px; color: var(--on-scrim-muted); }
+.z-bot a { color: var(--on-scrim); font-size: 13px; white-space: nowrap; }
+.z-bot { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) auto; align-items: start; gap: 16px; }
+.z-note { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.z-note label { font-size: 13px; color: var(--on-scrim-muted); }
+#znote { background: var(--scrim-field); color: var(--on-scrim); border-color: var(--on-scrim-muted); min-height: 56px; }
+#znote::placeholder { color: var(--on-scrim-muted); }
+#znote:focus-visible { outline: 2px solid var(--on-scrim); }
+.z-regions { display: flex; flex-wrap: wrap; gap: 6px; min-height: 44px; }
+.z-regions .zbtn { font-size: 13px; }
+
+@media (max-width: 900px) {
+  .side { transform: translateX(-100%); visibility: hidden; width: min(86vw, 320px); }
+  body.nav-open .side { transform: none; visibility: visible; box-shadow: 0 0 0 100vmax var(--scrim); }
+  .topbar {
+    display: flex; position: sticky; top: 0; z-index: 10; background: var(--bg); border-bottom: 1px solid var(--line);
+    align-items: center; justify-content: space-between; gap: 12px;
+    padding: 8px max(16px, env(safe-area-inset-right, 0px)) 8px max(16px, env(safe-area-inset-left, 0px));
+    font-size: 13px; color: var(--muted);
+  }
+  .topbar strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .page { margin-left: 0; padding: 20px max(16px, env(safe-area-inset-right, 0px)) 64px max(16px, env(safe-area-inset-left, 0px)); }
+  section { scroll-margin-top: 76px; }
+  .ref { grid-template-columns: minmax(0, 1fr); }
+  .ref .shot { max-width: 260px; }
+  .ref.wide .shot { max-width: 100%; }
+  .modes { grid-template-columns: minmax(0, 1fr); }
+  .pair { grid-template-columns: minmax(0, 1fr); }
+  .z-bot { display: flex; flex-direction: column; align-items: stretch; gap: 10px; }
+  .z-cap span { display: none; }
+  .zbtn kbd { display: none; }
+}
+</style>
+</head>
+<body>
+
+<aside class="side" id="side" aria-label="Sections">
+  <div class="brand">Sinima references · round 3: the Cinemas page</div>
+  <div class="progress">
+    <span><strong id="count">0</strong> of <strong id="total">0</strong> answered</span>
+    <div class="meter" aria-hidden="true"><i id="meter"></i></div>
+    <span id="savestate" role="status">Answers are saved in this browser</span>
+  </div>
+  <nav id="nav"></nav>
+  <p class="hint">Click a screenshot to zoom. There you can drag to mark the regions you like and type your note. Esc closes it; the left and right arrow keys move between references.</p>
+  <div class="actions">
+    <button class="plain" id="dlbtn" type="button">Download answers</button>
+    <button class="plain" id="copybtn" type="button">Copy all answers</button>
+  </div>
+</aside>
+
+<div class="topbar">
+  <button class="plain" id="navbtn" type="button" aria-controls="side" aria-expanded="false">Sections</button>
+  <span><strong id="count2">0</strong> of <strong id="total2">0</strong> answered</span>
+</div>
+
+<div class="page">
+  <div class="wrap">
+    <header class="intro">
+      <h1>The Cinemas page: logos, not listings</h1>
+      <p>24 screens from other products for the Cinemas page. You said today's page is overwhelming: the poster strips, the two film rows and “View all films” make each card big and the parts don't read as one. You asked to lead with each cinema's logo so people can spot their cinema at a glance. These show how other apps do that, on a phone and on a desktop. Phone screens are iPhone apps; desktop screens are websites.</p>
+      <p>For each one, tap what you like and say exactly what in the box. Click a screenshot to zoom in, drag over the parts you like to mark them, and type there too. Tap “Not for us” for anything to avoid. Skip the ones you have no view on. Answers save in this browser as you go; press Download answers when you're done.</p>
+      <p>“How we'd use it” is a proposal, not a decision. Say so in the box if you disagree.</p>
+    </header>
+    <textarea id="copyout" hidden readonly aria-label="All answers as text"></textarea>
+    <main id="main" class="wrap"></main>
+  </div>
+</div>
+
+<dialog id="zoom" aria-label="Zoomed reference">
+  <div class="z">
+    <div class="z-top">
+      <span class="count" id="zcount"></span>
+      <button class="zbtn" id="zclose" type="button">Close <kbd>Esc</kbd></button>
+    </div>
+    <div class="z-stage">
+      <button class="zbtn" id="zprev" type="button" aria-label="Previous reference">←</button>
+      <figure id="zfig"><img id="zimg" alt="" draggable="false"><div id="zmarks" class="zmarks"></div></figure>
+      <button class="zbtn" id="znext" type="button" aria-label="Next reference">→</button>
+    </div>
+    <div class="z-bot">
+      <div class="z-cap"><strong id="ztitle"></strong><span id="zhow"></span></div>
+      <div class="z-note">
+        <label for="znote">Drag on the image to mark a region you like, then say what you like about it.</label>
+        <textarea id="znote" rows="2" placeholder="e.g. 1: the big minutes on the right. 2: the grey status line"></textarea>
+        <div class="z-regions" id="zregions"></div>
+      </div>
+      <a id="zlink" href="#" target="_blank" rel="noopener">Open on Mobbin</a>
+    </div>
+  </div>
+</dialog>
+
+<script>
+const LIKES = ["Visual style", "Colour", "Type", "Hierarchy", "Layout", "Density", "Wording", "Interaction"];
+const PAL_LIKES = ["Overall feel", "Background", "Accent", "Book button", "Light mode", "Dark mode"];
+const NO = "Not for us";
+// [id, product, library id, "p" phone | "d" desktop, what it shows, how we'd use it]
+const SECTIONS = [
+ {
+  "id": "cinema",
+  "title": "Cinema apps",
+  "note": "Real cinema screens on Mobbin. Fandango, AMC, Odeon, Vue, Cineworld, BookMyShow and Atom are not in the library, so these three are the closest real ones.",
+  "refs": [
+   [
+    "r3-shopee-cgv-list",
+    "Shopee (CGV cinemas)",
+    "8799501f-906d-4f20-95ca-dc3d81a632b2",
+    "p",
+    "Every CGV cinema in Jakarta as one plain row: the CGV logo on the left, the cinema's name, one grey line (“No Available Showtime Today”), the distance on the right.",
+    "The closest match to what you described: our cinemas page as rows of logo + name + one line (“Victoria Island · next 18:15”). No posters, no film rows; tap the row for the films."
+   ],
+   [
+    "r3-shopee-cgv-cinema",
+    "Shopee (CGV cinema page)",
+    "6df9f1fa-199b-4620-88b5-d6c9ee9de805",
+    "p",
+    "The top of one cinema's page: the CGV logo, the cinema's name and address, a heart. Posters in a strip below, then the times.",
+    "Where the logo goes once you open a cinema: small, next to the name, in the page header. The posters belong on this page, not on the list."
+   ],
+   [
+    "r3-mubi-go",
+    "MUBI GO",
+    "c3de319e-53bb-4f30-80bb-32f59e694284",
+    "p",
+    "One film's cinemas as text blocks: a big name, the address, a small label, then the times on one line. Thin rules between cinemas.",
+    "The proof that a cinema block can be type only: name, area, next times on one line, a rule. For cinemas with no logo this is the fallback."
+   ]
+  ]
+ },
+ {
+  "id": "logos",
+  "title": "Logo-first lists and grids",
+  "note": "How other products let you pick a brand at a glance from its logo, on a phone and on a desktop. This is the “show the logo, not the listing” idea.",
+  "refs": [
+   [
+    "r3-instacart-list",
+    "Instacart",
+    "72f45917-c878-4f37-af16-8831c3540f47",
+    "p",
+    "“All grocery stores”: a square logo on the left, the store's name in bold, one coloured status line, then small tags.",
+    "Our cinema row on a phone: logo square, cinema name, “Next 18:15 · 9 films today”, and tags like “IMAX” or “Book online” under it."
+   ],
+   [
+    "r3-ubereats-web",
+    "Uber Eats",
+    "e2db6072-f666-4ec9-98d2-380462ea0414",
+    "d",
+    "“All stores” on desktop: three cards per row, each a round logo on the left with the name, the time and one tag beside it.",
+    "The desktop cinemas page: three compact cards per row, logo left, name and next time right. Each card is about 100 px tall instead of today's tall poster card."
+   ],
+   [
+    "r3-instacart-web",
+    "Instacart",
+    "40137564-73c7-411f-a3b9-fdde2ce45cbe",
+    "d",
+    "Stores as small logo cards three per row, in groups with a heading and a “Show all” link at the right of each heading.",
+    "Group cinemas by area (“Lekki”, “Victoria Island”), each with its heading, and put “Show all” on the heading line so it belongs to the group."
+   ],
+   [
+    "r3-xero-web",
+    "Xero",
+    "42583c1d-d6b6-4589-8961-930964c85736",
+    "d",
+    "“Select your account”: banks in two columns of rows, a logo tile then the name. Banks without a logo get a grey tile with their initials (CNB, SVB).",
+    "The answer for cinemas we have no logo for (Ozone, Viva, Leisure Mall): a plain tile with initials, the same size as the real logos, so the grid stays even."
+   ],
+   [
+    "r3-plaid",
+    "Plaid (in Betterment)",
+    "f456ce9b-5c03-4612-b5ab-e98e56e4810d",
+    "p",
+    "“Find institution”: a search box, then bank logos only, two per row, in white tiles. No names, no extra lines.",
+    "The purest version: the cinema chain's logo is the whole tile. Good for a “Pick a cinema chain” step; too bare for the main list, which needs the area and next time."
+   ],
+   [
+    "r3-apple-sports-grid",
+    "Apple Sports",
+    "69fe2ab2-8672-4cf4-b3e4-65851a57d301",
+    "p",
+    "Leagues as round logo tiles three per row, the name under each, on a dark page.",
+    "Chains as round marks with the name under, three per row, as a quick filter above the list: tap Filmhouse to see only its seven cinemas."
+   ],
+   [
+    "r3-shopee-brands",
+    "Shopee",
+    "40da045b-3dda-47fa-a42f-c56f6eed953d",
+    "p",
+    "Brands A to Z: small logo tiles four per row, the name under each, a letter heading per group, category chips on top.",
+    "Four small tiles per row fits all 22 Lagos cinemas on about two phone screens. We would group by area, not by letter."
+   ],
+   [
+    "r3-shopback",
+    "ShopBack",
+    "24704281-197a-40ec-9c6e-ca3b7b9534f0",
+    "p",
+    "“All Stores”: big logo tiles two per row, each with the name and one bold line (“Up to 8% Cashback”) under it.",
+    "Two big tiles per row, with the one fact that matters in bold under the name: “Next 18:15”."
+   ]
+  ]
+ },
+ {
+  "id": "unit",
+  "title": "One connected card: name, area, next times, see all",
+  "note": "Your second point: the film rows and “View all films” looked detached from their cinema. These keep everything about one place inside one box.",
+  "refs": [
+   [
+    "r3-tock",
+    "Tock",
+    "b966930a-b776-4e15-a334-3e4b5a163462",
+    "p",
+    "One white card per restaurant: name and area at the top with a small photo, then “Dining Room Reservation” and its times as pills, all inside the same border.",
+    "A cinema card that holds its next times as pills inside the same border as the name, so nothing floats outside it. Swap the photo for the logo."
+   ],
+   [
+    "r3-resy",
+    "Resy",
+    "e4f524c1-e8e3-4e25-bb4c-b736d43c28a1",
+    "p",
+    "Restaurant name, rating, area, then one row of time buttons directly under it, each with a tiny label (“Bar table”).",
+    "The compact version: name, area, then one row of the next start times (“18:15 · 19:30 · 21:00”), each labelled with the film. No film rows."
+   ],
+   [
+    "r3-fresha-web",
+    "Fresha",
+    "65cac467-3c12-41f6-b449-999f61cc6ec2",
+    "d",
+    "Each venue card holds its services with times as chips, and “View 39 matching services” sits inside the card, under the last row.",
+    "Where “View all 9 films” should live: inside the card, under the last time, in the same column, not off to one side. You saw a similar Fresha screen in round 2."
+   ],
+   [
+    "r3-fotmob-today",
+    "FotMob",
+    "81517771-4531-4dc4-a1f5-373ee29dff7d",
+    "p",
+    "Today's matches grouped in rounded boxes, one per league: a small logo and the league name as the box's header, the matches inside.",
+    "The grouping rule: the cinema (logo + name) is the header of its own box and its showings sit inside it, so they read as one thing."
+   ],
+   [
+    "r3-dazn",
+    "DAZN",
+    "221c8a0f-d5e5-4e93-9ced-d879721516b8",
+    "p",
+    "A competition header (logo, name, a chevron) above a card with the match and “See stats” at the card's right edge.",
+    "The whole header row is the link to the cinema page, with a chevron, so “see all” is the cinema's name itself rather than a separate link."
+   ],
+   [
+    "r3-fresha-nearby",
+    "Fresha",
+    "ee15ef44-8a04-4dc1-9521-617ab3ff5830",
+    "p",
+    "“Nearby venues”: short horizontal cards (picture, name, area, rating) under a heading with “See all” on the same line.",
+    "The short card shape: picture or logo left, three lines right, about 90 px tall. Four cinemas fit on one phone screen."
+   ]
+  ]
+ },
+ {
+  "id": "phone",
+  "title": "Phone layouts with logos",
+  "note": "How a phone screen mixes a row of logos with a list, and how one chain with many branches is shown.",
+  "refs": [
+   [
+    "r3-skip",
+    "Skip",
+    "97b53673-773c-4bce-ad35-3e1a0e4febe5",
+    "p",
+    "“Well known brands in your area”: a row of logo tiles you swipe, each with the name and a time under it (“19 mins”).",
+    "A swipe row at the top of the home page: cinema logo, name, next start time. The quickest “which cinema” glance there is."
+   ],
+   [
+    "r3-glovo",
+    "Glovo",
+    "14f22680-ddb7-4493-a85f-841d38a2fdaa",
+    "p",
+    "“Most in demand”: cards with a big rank number, a logo tile, the name and one status line.",
+    "Logo tile + name + one line in a white card, without the rank. Shows how big a logo can be in a row before it crowds the name."
+   ],
+   [
+    "r3-careem",
+    "Careem",
+    "d5369462-6cd3-442d-a497-141b026b2d91",
+    "p",
+    "“Recommended shops” as a strip of logo tiles, then “All shops” as rows with a large logo on the left and the name and status beside it.",
+    "Two levels on one page: your usual cinemas as a logo strip on top, then every cinema as rows below."
+   ],
+   [
+    "r3-deliveroo",
+    "Deliveroo",
+    "56c7633d-8411-45db-be63-9419dcd6524f",
+    "p",
+    "“Big brand stores”: wide cards where the logo fills a square block on the left edge, then the name, rating and one line.",
+    "The logo as a full-height square on the left of the card, cut to the card's rounded corner. A stronger brand look than a small icon."
+   ],
+   [
+    "r3-fotmob-leagues",
+    "FotMob",
+    "ab50917b-10c9-4a3d-96c9-b0a21b75ae60",
+    "p",
+    "Leagues as rows: a small logo, the name, the country under it, and a count on the right (“16 / 16”).",
+    "One row per chain: logo, “Filmhouse”, “7 cinemas in Lagos”, then tap for its branches. Fixes the problem of seven near-identical Filmhouse cards."
+   ],
+   [
+    "r3-grab-outlets",
+    "Grab",
+    "4eca62d2-4ae9-442d-b548-c1d58e2498d1",
+    "p",
+    "“Outlets”: one brand's branches as a sheet of rows, each “Brand - Branch” with a rating and distance.",
+    "What opens when you tap a chain: its branches as rows, “Filmhouse · Lekki IMAX”, “Filmhouse · Oniru”, each with its area and next time."
+   ],
+   [
+    "r3-klarna",
+    "Klarna",
+    "0434674a-999b-44d7-9a48-4049188be5ac",
+    "p",
+    "“Featured stores”: a round logo, the name, and a small grey or green line under it. No borders, no cards.",
+    "The lightest list: no card at all, just logo, name and one line per cinema, with space between. Least “overwhelming” option on the board."
+   ]
+  ]
+ }
+];
+const EXTRA = [];
+
+// The eight colour roles from the UI brief, and three candidate palettes with exact values.
+const ROLES = [
+  ["bg", "Background", "The page behind everything."],
+  ["surface", "Surface", "Rows, sheets and cards that sit on the background."],
+  ["text", "Text", "Start times, film titles and body copy. Times need the strongest contrast."],
+  ["muted", "Muted text", "Cinema name, format and the freshness line."],
+  ["accent", "Accent", "The brand colour: “Starts in 45 min”, the selected area, the Stay or Go chip."],
+  ["book", "Book", "The Book button, the one action colour."],
+  ["stale", "Stale", "Old data. Always paired with words, never colour alone."],
+  ["focus", "Focus ring", "The 2 px outline around whatever the keyboard is on."]
+];
+const PALETTES = [];
+
+const state = {}, els = {}, timers = {};
+const ORDER = [];   // zoomable references, in page order
+const LS = "lsrefs3c:";
+const $ = (t, attrs, ...kids) => { const e = document.createElement(t); for (const k in attrs || {}) { if (k === "text") e.textContent = attrs[k]; else e.setAttribute(k, attrs[k]); } kids.forEach(k => k != null && e.append(k)); return e; };
+const mobbin = mid => "https://mobbin.com/screens/" + mid;
+
+function lum(hex) { const c = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255).map(v => v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4)); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; }
+function ratio(a, b) { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); }
+
+function answered(id) { const s = state[id]; return !!s && (s.likes.length > 0 || s.note.trim() !== "" || s.regions.length > 0); }
+function recount() {
+  let n = 0, total = 0;
+  SECTION_IDS.forEach(([sid, ids]) => {
+    const k = ids.filter(answered).length; n += k; total += ids.length;
+    const unit = sid === "colour" ? " options" : " refs";
+    document.getElementById("navc-" + sid).textContent = k ? k + " of " + ids.length + " answered" : ids.length + unit;
+  });
+  ["count", "count2"].forEach(i => document.getElementById(i).textContent = n);
+  ["total", "total2"].forEach(i => document.getElementById(i).textContent = total);
+  document.getElementById("meter").style.width = (total ? 100 * n / total : 0) + "%";
+}
+function paint(id) {
+  const s = state[id], e = els[id];
+  e.chips.forEach((btn, name) => btn.setAttribute("aria-pressed", s.likes.includes(name) ? "true" : "false"));
+  if (e.note.value !== s.note) e.note.value = s.note;
+}
+// Regions are stored as fractions of the image (0 to 1), so they fit any size the image is drawn at.
+function markEl(r, n) {
+  const m = $("span", { class: "mark" }, $("b", { text: String(n) }));
+  m.style.left = r.x * 100 + "%"; m.style.top = r.y * 100 + "%"; m.style.width = r.w * 100 + "%"; m.style.height = r.h * 100 + "%";
+  return m;
+}
+function drawMarks(id) {
+  const rs = state[id].regions, e = els[id];
+  if (e.cardMarks) e.cardMarks.replaceChildren(...rs.map((r, i) => markEl(r, i + 1)));
+  if (!zoom.open || ORDER[zi].id !== id) return;
+  zmarks.replaceChildren(...rs.map((r, i) => markEl(r, i + 1)));
+  document.getElementById("zregions").replaceChildren(...rs.map((r, i) => {
+    const b = $("button", { type: "button", class: "zbtn", "aria-label": "Remove region " + (i + 1), text: "Region " + (i + 1) + " ✕" });
+    b.addEventListener("click", () => { state[id].regions.splice(i, 1); save(id); recount(); drawMarks(id); });
+    return b;
+  }));
+}
+function regionText(id) {
+  const rs = state[id].regions;
+  if (!rs.length) return "";
+  const pct = n => Math.round(n * 100) + "%";
+  return " | regions: " + rs.map((r, i) => (i + 1) + " [left " + pct(r.x) + ", top " + pct(r.y) + ", width " + pct(r.w) + ", height " + pct(r.h) + "]").join("; ");
+}
+function save(id) {
+  try { localStorage.setItem(LS + id, JSON.stringify(state[id])); els[id].saved.textContent = "Saved in this browser"; }
+  catch (_) { els[id].saved.textContent = "Could not save. Use Copy all answers before closing."; }
+}
+// The tick buttons, text box and saved line shared by references and palettes.
+function answerForm(id, likes, question, placeholder) {
+  state[id] = { likes: [], note: "", regions: [] };
+  try { const raw = localStorage.getItem(LS + id); if (raw) { const v = JSON.parse(raw); state[id] = { likes: Array.isArray(v.likes) ? v.likes : [], note: typeof v.note === "string" ? v.note : "", regions: Array.isArray(v.regions) ? v.regions.filter(r => r && [r.x, r.y, r.w, r.h].every(n => typeof n === "number")) : [] }; } } catch (_) {}
+  const chips = new Map(), chipRow = $("div", { class: "chips" });
+  likes.concat([NO]).forEach(name => {
+    const b = $("button", { type: "button", class: name === NO ? "chip no" : "chip", "aria-pressed": "false", text: name });
+    b.addEventListener("click", () => {
+      const s = state[id];
+      if (s.likes.includes(name)) s.likes = s.likes.filter(x => x !== name);
+      else s.likes = name === NO ? [NO] : s.likes.filter(x => x !== NO).concat([name]);
+      paint(id); recount(); save(id);
+    });
+    chips.set(name, b); chipRow.append(b);
+  });
+  const note = $("textarea", { id: "note-" + id, placeholder });
+  note.addEventListener("input", () => {
+    state[id].note = note.value; recount(); els[id].saved.textContent = "";
+    clearTimeout(timers[id]); timers[id] = setTimeout(() => save(id), 600);
+  });
+  note.addEventListener("blur", () => { clearTimeout(timers[id]); save(id); });
+  const saved = $("div", { class: "saved", role: "status" });
+  els[id] = { chips, note, saved };
+  const frag = document.createDocumentFragment();
+  frag.append($("fieldset", {}, $("legend", { text: question }), chipRow), $("label", { class: "note", for: "note-" + id }, "Exactly what you like (or don't)", note), saved);
+  return frag;
+}
+
+const SECTION_IDS = [];
+function addNav(id, title, n) {
+  document.getElementById("nav").append($("a", { href: "#" + id, "data-sec": id }, title, $("span", { id: "navc-" + id, text: String(n) })));
+}
+function build() {
+  const main = document.getElementById("main");
+  SECTIONS.forEach(sec => {
+    addNav(sec.id, sec.title, sec.refs.length);
+    SECTION_IDS.push([sec.id, sec.refs.map(r => r[0])]);
+    const section = $("section", { id: sec.id }, $("div", { class: "sec-head" }, $("h2", { text: sec.title }), $("p", { text: sec.note })));
+    sec.refs.forEach(([id, app, mid, kind, what, how]) => {
+      const desk = kind === "d";
+      const index = ORDER.push({ id, app, mid, how, section: sec.title, kind }) - 1;
+      const img = $("img", { src: "images/round3/" + id + ".webp", alt: "", loading: "lazy", width: desk ? "1920" : "1179", height: desk ? "1310" : "2676" });
+      const cardMarks = $("span", { class: "marks" });
+      const shot = $("button", { type: "button", class: "shot", "aria-label": "Zoom the " + app + " screenshot" }, img, cardMarks);
+      shot.addEventListener("click", () => openZoom(index, shot));
+      const article = $("article", { class: desk ? "ref wide" : "ref", id: "ref-" + id },
+        shot,
+        $("div", { class: "form" },
+          $("div", { class: "meta" },
+            $("div", { class: "title-row" }, $("h3", { text: app }), $("span", { class: "tag", text: desk ? "Desktop" : "Phone" })),
+            $("dl", { class: "pair" }, $("dt", { text: "What it shows" }), $("dd", { text: what }), $("dt", { text: "How we'd use it" }), $("dd", { text: how })),
+            $("a", { href: mobbin(mid), target: "_blank", rel: "noopener", text: "Open full size on Mobbin" })),
+          answerForm(id, LIKES, "What do you like about it?", "e.g. the big time on the left, the grey line under it")));
+      section.append(article);
+      els[id].cardMarks = cardMarks;
+      paint(id); drawMarks(id);
+    });
+    main.append(section);
+  });
+  
+  recount();
+}
+
+function swatches(m) {
+  const box = $("div", { class: "sws" });
+  [["Background", m.bg], ["Surface", m.surface], ["Text", m.text], ["Muted text", m.muted], ["Accent", m.accent], ["Book", m.book], ["Stale", m.stale], ["Focus ring", m.focus]].forEach(([n, hex]) => {
+    const i = $("i"); i.style.background = hex;
+    box.append($("div", { class: "sw" }, i, $("strong", { text: n }), $("code", { text: hex })));
+  });
+  return box;
+}
+function checks(m) {
+  const rows = [["Time and text on background", m.text, m.bg, 7], ["Text on a row", m.text, m.surface, 7], ["Muted text on background", m.muted, m.bg, 4.5], ["Muted text on a row", m.muted, m.surface, 4.5], ["Label on the accent", m.accentText, m.accent, 4.5], ["Label on Book", m.bookText, m.book, 4.5], ["Stale words on a row", m.stale, m.surface, 4.5], ["Focus ring on background", m.focus, m.bg, 3]];
+  const ul = $("ul", { class: "checks" });
+  rows.forEach(([n, a, b, need]) => { const r = ratio(a, b); ul.append($("li", { "data-ratio": r.toFixed(2), "data-need": need }, n + ": ", $("b", { text: r.toFixed(1) + ":1" }), " (needs " + need + ":1" + (r >= need ? ")" : ", fails)"))); });
+  return ul;
+}
+function sample(m, stale) {
+  const s = $("div", { class: "sample" });
+  const set = { "--p-bg": m.bg, "--p-surface": m.surface, "--p-text": m.text, "--p-muted": m.muted, "--p-accent-bg": m.accent, "--p-accent-text": m.accentText, "--p-book": m.book, "--p-book-text": m.bookText, "--p-stale": m.stale, "--p-focus": m.focus };
+  for (const k in set) s.style.setProperty(k, set[k]);
+  s.append($("div", { class: "card" },
+    $("div", { class: "time" }, "19:30", $("span", { class: "soon", text: "Starts in 45 min" })),
+    $("div", { class: "film", text: "Sinners" }),
+    $("div", { class: "where", text: "Filmhouse Lekki · IMAX" }),
+    stale ? $("div", { class: "stale", text: "Read from Filmhouse's site 9 hours ago. May be out of date." }) : $("div", { class: "fresh", text: "Read from Filmhouse's site 2 hours ago" }),
+    $("div", { class: "row" }, $("span", { class: "focus", text: "Keyboard focus" }), $("span", { class: "book", text: "Book" }))));
+  return s;
+}
+function buildColour(main) {
+  addNav("colour", "Colour palette", PALETTES.length);
+  SECTION_IDS.push(["colour", PALETTES.map(p => p.id)]);
+  const section = $("section", { id: "colour" }, $("div", { class: "sec-head" }, $("h2", { text: "Colour palette" }),
+    $("p", { text: "The app uses eight colour roles, each in a light and a dark version. Below are the roles, then ten candidate palettes with exact values. The example row is made-up sample text, drawn with each palette's real colours." })));
+  const table = $("table", { class: "roles" }, $("thead", {}, $("tr", {}, $("th", { text: "Role" }), $("th", { text: "Token" }), $("th", { text: "What it colours" }))));
+  const tb = $("tbody");
+  ROLES.forEach(([tok, name, use]) => tb.append($("tr", {}, $("td", { text: name }), $("td", {}, $("code", { text: "--" + tok })), $("td", { text: use }))));
+  table.append(tb);
+  section.append($("div", { class: "scroll" }, table));
+  PALETTES.forEach(p => {
+    const modes = $("div", { class: "modes" });
+    [["Light", p.light, false], ["Dark", p.dark, true]].forEach(([label, m, stale]) => modes.append($("div", { class: "mode", "data-mode": p.id + "-" + label.toLowerCase() }, $("h4", { text: label + (stale ? " · showing a stale row" : "") }), sample(m, stale), swatches(m), checks(m))));
+    section.append($("article", { class: "pal", id: "ref-" + p.id }, $("div", { class: "meta" }, $("h3", { text: p.name }), $("p", { text: p.note })), modes,
+      answerForm(p.id, PAL_LIKES, "What do you like about it?", "e.g. the amber against navy, but the light mode feels too yellow")));
+    paint(p.id);
+  });
+  main.append(section);
+}
+
+// Zoom
+const zoom = document.getElementById("zoom"), zfig = document.getElementById("zfig"), zimg = document.getElementById("zimg");
+const zmarks = document.getElementById("zmarks"), znote = document.getElementById("znote");
+let zi = 0, zfrom = null, draft = null;
+// Keep the marking layer exactly over the image, whatever size it is drawn at.
+function layoutMarks() {
+  const f = zfig.getBoundingClientRect(), r = zimg.getBoundingClientRect();
+  zmarks.style.left = (r.left - f.left) + "px"; zmarks.style.top = (r.top - f.top) + "px";
+  zmarks.style.width = r.width + "px"; zmarks.style.height = r.height + "px";
+}
+zimg.addEventListener("load", layoutMarks);
+new ResizeObserver(layoutMarks).observe(zfig);
+const clamp01 = n => Math.min(1, Math.max(0, n));
+function draftBox(e) {
+  const b = zmarks.getBoundingClientRect();
+  const x1 = clamp01((e.clientX - b.left) / b.width), y1 = clamp01((e.clientY - b.top) / b.height);
+  return { x: Math.min(draft.x0, x1), y: Math.min(draft.y0, y1), w: Math.abs(x1 - draft.x0), h: Math.abs(y1 - draft.y0) };
+}
+zmarks.addEventListener("pointerdown", e => {
+  if (e.button) return;
+  const b = zmarks.getBoundingClientRect();
+  draft = { x0: clamp01((e.clientX - b.left) / b.width), y0: clamp01((e.clientY - b.top) / b.height), el: $("span", { class: "mark" }) };
+  zmarks.append(draft.el); zmarks.setPointerCapture(e.pointerId); e.preventDefault();
+});
+zmarks.addEventListener("pointermove", e => {
+  if (!draft) return;
+  const r = draftBox(e), st = draft.el.style;
+  st.left = r.x * 100 + "%"; st.top = r.y * 100 + "%"; st.width = r.w * 100 + "%"; st.height = r.h * 100 + "%";
+});
+function endDraft(e, keep) {
+  if (!draft) return;
+  const r = draftBox(e), id = ORDER[zi].id;
+  draft = null;
+  // A plain click or a tiny drag is not a region.
+  if (keep && r.w >= 0.02 && r.h >= 0.02) { const q = n => Math.round(n * 1000) / 1000; state[id].regions.push({ x: q(r.x), y: q(r.y), w: q(r.w), h: q(r.h) }); save(id); recount(); }
+  drawMarks(id);
+}
+zmarks.addEventListener("pointerup", e => endDraft(e, true));
+zmarks.addEventListener("pointercancel", e => endDraft(e, false));
+znote.addEventListener("input", () => {
+  const id = ORDER[zi].id;
+  state[id].note = znote.value; els[id].note.value = znote.value; recount();
+  clearTimeout(timers[id]); timers[id] = setTimeout(() => save(id), 600);
+});
+function showZoom() {
+  const r = ORDER[zi];
+  zmarks.replaceChildren();
+  zimg.src = "images/round3/" + r.id + ".webp"; zimg.alt = r.app + " screenshot";
+  znote.value = state[r.id].note;
+  document.getElementById("zcount").textContent = (zi + 1) + " of " + ORDER.length + " · " + r.section;
+  document.getElementById("ztitle").textContent = r.app + (r.kind === "d" ? " · Desktop" : " · Phone");
+  document.getElementById("zhow").textContent = "How we'd use it: " + r.how;
+  document.getElementById("zlink").href = mobbin(r.mid);
+  drawMarks(r.id); layoutMarks();
+}
+function openZoom(i, from) { zi = i; zfrom = from; zoom.showModal(); showZoom(); document.getElementById("zclose").focus(); }
+function flushNote() { const id = ORDER[zi].id; clearTimeout(timers[id]); save(id); }
+function step(d) { flushNote(); zi = (zi + d + ORDER.length) % ORDER.length; showZoom(); }
+document.getElementById("zclose").addEventListener("click", () => zoom.close());
+document.getElementById("zprev").addEventListener("click", () => step(-1));
+document.getElementById("znext").addEventListener("click", () => step(1));
+zoom.addEventListener("keydown", e => { if (e.target.tagName === "TEXTAREA") return; if (e.key === "ArrowRight") { e.preventDefault(); step(1); } else if (e.key === "ArrowLeft") { e.preventDefault(); step(-1); } });
+zoom.addEventListener("click", e => { if (e.target === zoom || e.target.classList.contains("z-stage") || e.target.tagName === "FIGURE") zoom.close(); });
+zoom.addEventListener("close", () => {
+  flushNote();
+  const card = document.getElementById("ref-" + ORDER[zi].id);
+  const back = card ? card.querySelector(".shot") : zfrom;
+  if (card) card.scrollIntoView({ block: "nearest" });
+  if (back) back.focus({ preventScroll: true });
+});
+
+// Sidebar
+const navbtn = document.getElementById("navbtn");
+function setNav(open) { document.body.classList.toggle("nav-open", open); navbtn.setAttribute("aria-expanded", open ? "true" : "false"); }
+navbtn.addEventListener("click", () => setNav(!document.body.classList.contains("nav-open")));
+document.getElementById("nav").addEventListener("click", e => { if (e.target.closest("a")) setNav(false); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !zoom.open) setNav(false); });
+document.addEventListener("click", e => { if (document.body.classList.contains("nav-open") && !e.target.closest("#side") && !e.target.closest("#navbtn")) setNav(false); });
+
+function allAnswersText() {
+  const lines = [];
+  ORDER.forEach(r => { if (answered(r.id)) lines.push(r.id + " | " + r.app + " | " + r.section + " | " + (state[r.id].likes.join(", ") || "-") + " | " + state[r.id].note.replace(/\s+/g, " ").trim() + regionText(r.id)); });
+  PALETTES.forEach(p => { if (answered(p.id)) lines.push(p.id + " | " + p.name + " | Colour palette | " + (state[p.id].likes.join(", ") || "-") + " | " + state[p.id].note.replace(/\s+/g, " ").trim()); });
+  return lines.join("\n") || "No answers yet.";
+}
+document.getElementById("copybtn").addEventListener("click", () => {
+  const text = allAnswersText(), out = document.getElementById("copyout"), btn = document.getElementById("copybtn");
+  const fallback = () => { setNav(false); out.value = text; out.hidden = false; out.focus(); out.select(); btn.textContent = "Select the text at the top"; };
+  try { navigator.clipboard.writeText(text).then(() => { btn.textContent = "Copied"; setTimeout(() => { btn.textContent = "Copy all answers"; }, 2000); }, fallback); } catch (_) { fallback(); }
+});
+document.getElementById("dlbtn").addEventListener("click", () => {
+  const out = {};
+  ORDER.forEach(r => { if (answered(r.id)) out[r.id] = { app: r.app, section: r.section, likes: state[r.id].likes, note: state[r.id].note, regions: state[r.id].regions }; });
+  PALETTES.forEach(p => { if (answered(p.id)) out[p.id] = { app: p.name, section: "Colour palette", likes: state[p.id].likes, note: state[p.id].note }; });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(out, null, 2)], { type: "application/json" }));
+  a.download = "sinima-cinemas-references-answers.json";
+  document.body.append(a); a.click(); a.remove();
+});
+
+build();
+
+// Mark the section in view in the sidebar.
+const links = new Map([...document.querySelectorAll("#nav a")].map(a => [a.dataset.sec, a]));
+const io = new IntersectionObserver(entries => {
+  entries.forEach(en => { if (en.isIntersecting) { links.forEach(a => a.removeAttribute("aria-current")); links.get(en.target.id).setAttribute("aria-current", "true"); } });
+}, { rootMargin: "-20% 0px -70% 0px" });
+document.querySelectorAll("main section").forEach(s => io.observe(s));
+</script>
+</body>
+</html>

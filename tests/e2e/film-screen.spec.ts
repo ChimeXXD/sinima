@@ -8,6 +8,9 @@ import { dataFile, freeze, lagosClock, sampleTime } from "./helpers";
 const keepArea = (page: Page, slug: string) => page.addInitScript((area) => localStorage.setItem("ls.area", area), slug);
 const ids = (page: Page, prefix: string) => page.locator(`[data-testid^="${prefix}"]`).evaluateAll((els) => els.map((el) => el.getAttribute("data-testid")!));
 
+/** "Monday 16 November": the sample data's second day, the day the tests' clock is on. */
+const sampleDay = async (request: Parameters<typeof dataFile>[0]) => new Intl.DateTimeFormat("en-GB", { timeZone: "Africa/Lagos", weekday: "long", day: "numeric", month: "long" }).format(await sampleTime(request, "12:00")).replace(",", "");
+
 async function startOf(request: Parameters<typeof dataFile>[0], cinema: string, hhmm: string): Promise<string> {
   const all = await dataFile(request, "all");
   const day = (await sampleTime(request, "12:00")).toISOString().slice(0, 10);
@@ -22,7 +25,7 @@ test("your area first, then the areas next to it, then the rest soonest first (F
   await expect(page.getByTestId("film.facts")).toHaveText("3 h 21 min·IMAX·MX4D·at 10 cinemas in Lagos today");
   await expect(page.getByTestId("credits.chip")).toHaveText("Credits scene: not known yet");
   await expect(page.getByTestId("film.note")).toHaveText("in IMAX!");
-  await expect(page.getByText("Monday 16 November · your area first")).toBeVisible();
+  await expect(page.getByText(`${await sampleDay(request)} · your area first`)).toBeVisible();
 
   expect(await ids(page, "area.")).toEqual(["area.lekki", "area.victoria-island", "area.maryland", "area.festac", "area.surulere"]);
   await expect(page.getByTestId("area.lekki").getByRole("heading")).toHaveText("Lekkiyour area");
@@ -45,7 +48,7 @@ test("your area first, then the areas next to it, then the rest soonest first (F
 test("with no area kept, every area is in order of its soonest time, with no tags", async ({ page, request }) => {
   await freeze(page, await sampleTime(request, "17:30"));
   await page.goto("/film/ramayana");
-  await expect(page.getByText("Monday 16 November · soonest first")).toBeVisible();
+  await expect(page.getByText(`${await sampleDay(request)} · soonest first`)).toBeVisible();
   expect(await ids(page, "area.")).toEqual(["area.lekki", "area.victoria-island", "area.maryland", "area.festac", "area.surulere"]);
   await expect(page.getByTestId("area.victoria-island").getByRole("heading")).toHaveText("Victoria Island");
 });

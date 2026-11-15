@@ -268,12 +268,12 @@
       "priority": "must",
       "title": "Home: cinemas near you, soonest first (D-49)",
       "criteria": [
-        "/ lists every cinema and /area/[slug] lists that area's cinemas first, then the areas next to it, then the rest",
+        "/ lists every cinema and /area/[slug] lists that area's cinemas first, then the areas next to it, then the rest (since D-92 an area's page is Figma's: kept cinemas, the area's others, then neighbour cards; tests/e2e/area-screen.spec.ts)",
         "each card shows the next films and times, soonest first",
         "the page's own HTML holds the cinemas and absolute times",
         "a returning visitor on / lands on the saved area"
       ],
-      "verify": "npm run test:e2e -- cinemas",
+      "verify": "npm run test:e2e -- area-screen cinemas",
       "passes": true,
       "evidence": "12 Nov 2026, after the redesign (D-49, D-54): `npm run test:e2e -- cinemas` 11 pass. With the clock at 18:00 Lagos on the sample data's second day, /area/lekki lists Lekki's cinemas in the order of their next showing (checked against the data file), each with its next time and 'in N min'; 'Next to Lekki' follows. A showing leaves a card the minute it starts; Tomorrow shows the whole next day; an area is remembered and / redirects to it; the HTML holds cinemas, absolute times and the sample banner with no relative words; nothing scrolls sideways at 390, 360 or 320 px and every control is at least 44 px tall."
     },
@@ -309,7 +309,7 @@
       "priority": "must",
       "title": "The areas next to yours follow your own (D-22, D-49)",
       "criteria": [
-        "an area's home lists the neighbouring areas' cinemas under 'Next to <area>'",
+        "an area's home lists the neighbouring areas' cinemas under 'Next to <area>' (since D-92 as one card per neighbouring area, linking to its page)",
         "no distances or travel times"
       ],
       "verify": "npm run test:e2e -- cinemas",
@@ -340,11 +340,11 @@
       "criteria": [
         "each cinema is one row: chain logo centred on its tile, name, next time and film count, tags; no poster strips",
         "where the times came from is said once, under the first list heading",
-        "on a phone the filters are one row of three pickers, whole at 390/360/320 px; each opens a sheet (on the Cinemas tab superseded by D-91: Figma's row scrolls under a fade; still true on area pages until unit 7)",
+        "on a phone the filters are one row of three pickers, whole at 390/360/320 px; each opens a sheet (on the Cinemas tab superseded by D-91: Figma's row scrolls under a fade; area pages have no pickers since D-92)",
         "the footer says the logos belong to their owners and how to have one removed",
         "Leisure Mall's cinema is listed once, as Filmhouse Surulere"
       ],
-      "verify": "npm run test:e2e -- cinemas-rows",
+      "verify": "npm run test:e2e -- cinemas-screen",
       "passes": true,
       "evidence": "12 Nov 2026: `npx playwright test tests/e2e/cinemas-rows.spec.ts tests/e2e/cinemas.spec.ts tests/e2e/nav.spec.ts` 34 pass; `npx vitest run tests/unit/logos.test.ts tests/unit/registry.test.ts` pass. Screenshots at 390 and 360 px and 1440 px, light and dark, match mockup/cinemas.html (Option 1)."
     },

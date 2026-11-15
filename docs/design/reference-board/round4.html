@@ -1,0 +1,1433 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sinima round 4 references</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&display=swap">
+<style>
+/* Layout: a fixed section list on the left, one column of reference cards on the right. On a phone the list becomes a drawer. */
+:root {
+  --bg: #eef0f4; --surface: #ffffff; --ink: #131a2b; --muted: #566078; --line: #d5d9e3;
+  --marquee: #f2b705; --on-marquee: #1d1600; --no: #b3261e; --on-no: #ffffff; --shot: #dfe3ec;
+  --scrim: rgba(10, 14, 24, 0.95); --on-scrim: #f4f6fb; --on-scrim-muted: #b9c1d4;
+  --scrim-field: rgba(255, 255, 255, 0.08); --mark: #f2b705; --on-mark: #1d1600; --mark-fill: rgba(242, 183, 5, 0.2);
+  --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --side: 264px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0d1220; --surface: #171e31; --ink: #eef1f8; --muted: #a3adc4; --line: #2c3650;
+    --marquee: #f5c518; --on-marquee: #1d1600; --no: #f2877f; --on-no: #2a0704; --shot: #232c44;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; }
+h1 { font-family: var(--display); font-weight: 700; font-size: clamp(28px, 5vw, 38px); line-height: 1.1; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--display); font-weight: 700; font-size: 24px; line-height: 1.2; margin: 0; text-wrap: balance; }
+h3 { font-size: 16px; font-weight: 650; margin: 0; }
+p { margin: 0; }
+img { max-width: 100%; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+.side {
+  position: fixed; inset: 0 auto 0 0; width: var(--side); z-index: 20; overflow-y: auto;
+  background: var(--surface); border-right: 1px solid var(--line);
+  padding: 20px 12px 24px; display: flex; flex-direction: column; gap: 16px;
+}
+.side .brand { font-family: var(--display); font-weight: 700; font-size: 18px; line-height: 1.2; padding: 0 8px; }
+.progress { padding: 0 8px; font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 6px; }
+.progress strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+.meter { height: 6px; border-radius: 999px; background: var(--shot); overflow: hidden; }
+.meter i { display: block; height: 100%; width: 0; background: var(--marquee); }
+.side nav { display: flex; flex-direction: column; gap: 2px; }
+.side nav a {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 40px;
+  padding: 0 8px; border-radius: 8px; color: var(--ink); text-decoration: none; font-size: 14px;
+}
+.side nav a span { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.side nav a:hover { background: var(--bg); }
+.side nav a[aria-current="true"] { background: var(--bg); font-weight: 650; }
+.side .actions { display: flex; flex-direction: column; gap: 8px; padding: 0 8px; margin-top: auto; }
+.side .hint { padding: 0 8px; font-size: 12px; color: var(--muted); }
+
+.topbar { display: none; }
+.page { margin-left: var(--side); padding: 32px max(24px, env(safe-area-inset-right, 0px)) 80px 32px; }
+.wrap { max-width: 980px; display: flex; flex-direction: column; gap: 40px; }
+.intro { display: flex; flex-direction: column; gap: 8px; }
+.intro p { color: var(--muted); max-width: 64ch; }
+
+section { display: flex; flex-direction: column; gap: 16px; scroll-margin-top: 24px; }
+.sec-head { display: flex; flex-direction: column; gap: 4px; }
+.sec-head p { color: var(--muted); max-width: 64ch; }
+.ref {
+  display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 20px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px;
+}
+.ref.wide { grid-template-columns: minmax(0, 1fr); }
+.shot {
+  display: block; padding: 0; border: 0; background: var(--shot); border-radius: 8px; overflow: hidden;
+  align-self: start; cursor: zoom-in; width: 100%; position: relative;
+}
+.ref.wide .shot { max-width: 640px; }
+.shot img { display: block; width: 100%; height: auto; }
+.form { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.meta { display: flex; flex-direction: column; gap: 6px; }
+.title-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.tag { font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; }
+.pair { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 4px 12px; margin: 0; }
+.pair dt { font-size: 13px; color: var(--muted); }
+.pair dd { margin: 0; }
+.meta a { color: var(--ink); font-size: 13px; align-self: start; }
+fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+legend { padding: 0; font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  font: inherit; font-size: 14px; min-height: 44px; padding: 0 14px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--line); background: transparent; color: var(--ink);
+}
+.chip[aria-pressed="true"] { background: var(--marquee); border-color: var(--marquee); color: var(--on-marquee); font-weight: 600; }
+.chip.no[aria-pressed="true"] { background: var(--no); border-color: var(--no); color: var(--on-no); }
+label.note { font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
+textarea {
+  font: inherit; font-size: 16px; color: var(--ink); background: var(--bg); border: 1px solid var(--line);
+  border-radius: 8px; padding: 10px 12px; min-height: 76px; resize: vertical; width: 100%;
+}
+button.plain {
+  font: inherit; font-size: 14px; min-height: 44px; padding: 0 14px; border-radius: 8px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+}
+.saved { font-size: 12px; color: var(--muted); min-height: 18px; }
+#copyout { min-height: 120px; font-family: ui-monospace, Menlo, monospace; font-size: 12px; }
+
+/* Colour section */
+table.roles { border-collapse: collapse; width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.roles th, .roles td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; font-size: 14px; }
+.roles th { font-size: 13px; color: var(--muted); font-weight: 500; }
+.roles tr:last-child td { border-bottom: 0; }
+.roles code, .sw code, .checks code { font-family: ui-monospace, Menlo, monospace; font-size: 12px; white-space: nowrap; }
+.scroll { overflow-x: auto; }
+.pal { display: flex; flex-direction: column; gap: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+.modes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.mode { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.mode h4 { margin: 0; font-size: 13px; color: var(--muted); font-weight: 500; }
+.sample { background: var(--p-bg); color: var(--p-text); border-radius: 10px; padding: 14px; border: 1px solid var(--line); }
+.sample .card { background: var(--p-surface); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 6px; }
+.sample .time { font-size: 30px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.sample .soon { font-size: 14px; font-weight: 600; color: var(--p-accent-text); background: var(--p-accent-bg); border-radius: 999px; padding: 2px 8px; }
+.sample .film { font-size: 17px; font-weight: 650; }
+.sample .where, .sample .fresh { color: var(--p-muted); font-size: 13px; }
+.sample .stale { color: var(--p-stale); font-size: 13px; }
+.sample .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
+.sample .book { background: var(--p-book); color: var(--p-book-text); border-radius: 8px; padding: 9px 16px; font-weight: 650; font-size: 14px; }
+.sample .focus { border: 2px solid var(--p-focus); border-radius: 8px; padding: 6px 10px; font-size: 13px; }
+.sws { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; }
+.sw { display: flex; flex-direction: column; gap: 2px; font-size: 12px; }
+.sw i { display: block; height: 36px; border-radius: 6px; border: 1px solid var(--line); }
+.sw span { color: var(--muted); }
+.checks { margin: 0; padding: 0; list-style: none; font-size: 12px; color: var(--muted); display: flex; flex-direction: column; gap: 2px; }
+.checks b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* Marked regions */
+.marks { position: absolute; inset: 0; pointer-events: none; }
+.zmarks { position: absolute; cursor: crosshair; touch-action: none; }
+.mark { position: absolute; border: 2px solid var(--mark); background: var(--mark-fill); border-radius: 4px; pointer-events: none; }
+.mark b { position: absolute; top: -2px; left: -2px; background: var(--mark); color: var(--on-mark); font-size: 11px; line-height: 1; padding: 3px 5px; border-radius: 4px 0 4px 0; }
+
+/* Zoom */
+dialog#zoom {
+  border: 0; padding: 0; margin: 0; width: 100vw; height: 100dvh; max-width: none; max-height: none;
+  background: var(--scrim); color: var(--on-scrim);
+}
+dialog#zoom::backdrop { background: transparent; }
+.z { height: 100%; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; }
+.z-top, .z-bot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; }
+.z-top .count { font-size: 13px; color: var(--on-scrim-muted); font-variant-numeric: tabular-nums; }
+.z-stage { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 8px; padding: 0 8px; min-height: 0; }
+.z-stage figure { margin: 0; height: 100%; min-height: 0; display: flex; align-items: center; justify-content: center; position: relative; }
+.z-stage img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; }
+.zbtn {
+  font: inherit; font-size: 14px; min-height: 44px; min-width: 44px; padding: 0 14px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--on-scrim-muted); background: transparent; color: var(--on-scrim);
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.zbtn:focus-visible { outline: 2px solid var(--on-scrim); }
+kbd { font-family: ui-monospace, Menlo, monospace; font-size: 11px; border: 1px solid var(--on-scrim-muted); border-radius: 4px; padding: 1px 5px; color: var(--on-scrim-muted); }
+.z-cap { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.z-cap strong { font-size: 15px; }
+.z-cap span { font-size: 13px; color: var(--on-scrim-muted); }
+.z-bot a { color: var(--on-scrim); font-size: 13px; white-space: nowrap; }
+.z-bot { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) auto; align-items: start; gap: 16px; }
+.z-note { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.z-note label { font-size: 13px; color: var(--on-scrim-muted); }
+#znote { background: var(--scrim-field); color: var(--on-scrim); border-color: var(--on-scrim-muted); min-height: 56px; }
+#znote::placeholder { color: var(--on-scrim-muted); }
+#znote:focus-visible { outline: 2px solid var(--on-scrim); }
+.z-regions { display: flex; flex-wrap: wrap; gap: 6px; min-height: 44px; }
+.z-regions .zbtn { font-size: 13px; }
+
+@media (max-width: 900px) {
+  .side { transform: translateX(-100%); visibility: hidden; width: min(86vw, 320px); }
+  body.nav-open .side { transform: none; visibility: visible; box-shadow: 0 0 0 100vmax var(--scrim); }
+  .topbar {
+    display: flex; position: sticky; top: 0; z-index: 10; background: var(--bg); border-bottom: 1px solid var(--line);
+    align-items: center; justify-content: space-between; gap: 12px;
+    padding: 8px max(16px, env(safe-area-inset-right, 0px)) 8px max(16px, env(safe-area-inset-left, 0px));
+    font-size: 13px; color: var(--muted);
+  }
+  .topbar strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .page { margin-left: 0; padding: 20px max(16px, env(safe-area-inset-right, 0px)) 64px max(16px, env(safe-area-inset-left, 0px)); }
+  section { scroll-margin-top: 76px; }
+  .ref { grid-template-columns: minmax(0, 1fr); }
+  .ref .shot { max-width: 260px; }
+  .ref.wide .shot { max-width: 100%; }
+  .modes { grid-template-columns: minmax(0, 1fr); }
+  .pair { grid-template-columns: minmax(0, 1fr); }
+  .z-bot { display: flex; flex-direction: column; align-items: stretch; gap: 10px; }
+  .z-cap span { display: none; }
+  .zbtn kbd { display: none; }
+}
+</style>
+</head>
+<body>
+
+<aside class="side" id="side" aria-label="Sections">
+  <div class="brand">Sinima references · round 4: Cinemas, Starting soon, colour</div>
+  <div class="progress">
+    <span><strong id="count">0</strong> of <strong id="total">0</strong> answered</span>
+    <div class="meter" aria-hidden="true"><i id="meter"></i></div>
+    <span id="savestate" role="status">Answers are saved in this browser</span>
+  </div>
+  <nav id="nav"></nav>
+  <p class="hint">Click a screenshot to zoom. There you can drag to mark the regions you like and type your note. Esc closes it; the left and right arrow keys move between references.</p>
+  <div class="actions">
+    <button class="plain" id="dlbtn" type="button">Download answers</button>
+    <button class="plain" id="copybtn" type="button">Copy all answers</button>
+  </div>
+</aside>
+
+<div class="topbar">
+  <button class="plain" id="navbtn" type="button" aria-controls="side" aria-expanded="false">Sections</button>
+  <span><strong id="count2">0</strong> of <strong id="total2">0</strong> answered</span>
+</div>
+
+<div class="page">
+  <div class="wrap">
+    <header class="intro">
+      <h1>Round 4: Cinemas, Starting soon and new colours</h1>
+      <p>89 screens from Mobbin for what you raised on 13 Nov: your hearted cinemas should be their own group, Starting soon needs a “starting within” filter (30 min, 1 hour, 2 hours…), and you're not sure about the greens. Phone screens are iPhone apps; desktop screens are websites. At the end are four new palettes next to today's, each in light and dark with its contrast checked.</p>
+      <p>For each one, tap what you like and say exactly what in the box. Click a screenshot to zoom in, drag over the parts you like to mark them, and type there too. Tap “Not for us” for anything to avoid. Skip the ones you have no view on. Answers save in this browser as you go; press Copy all answers when you're done and paste them to me.</p>
+      <p>“How we'd use it” is a proposal, not a decision. Say so in the box if you disagree. From your picks I'll make three full mockups of the two screens to choose from.</p>
+    </header>
+    <textarea id="copyout" hidden readonly aria-label="All answers as text"></textarea>
+    <main id="main" class="wrap"></main>
+  </div>
+</div>
+
+<dialog id="zoom" aria-label="Zoomed reference">
+  <div class="z">
+    <div class="z-top">
+      <span class="count" id="zcount"></span>
+      <button class="zbtn" id="zclose" type="button">Close <kbd>Esc</kbd></button>
+    </div>
+    <div class="z-stage">
+      <button class="zbtn" id="zprev" type="button" aria-label="Previous reference">←</button>
+      <figure id="zfig"><img id="zimg" alt="" draggable="false"><div id="zmarks" class="zmarks"></div></figure>
+      <button class="zbtn" id="znext" type="button" aria-label="Next reference">→</button>
+    </div>
+    <div class="z-bot">
+      <div class="z-cap"><strong id="ztitle"></strong><span id="zhow"></span></div>
+      <div class="z-note">
+        <label for="znote">Drag on the image to mark a region you like, then say what you like about it.</label>
+        <textarea id="znote" rows="2" placeholder="e.g. 1: the big minutes on the right. 2: the grey status line"></textarea>
+        <div class="z-regions" id="zregions"></div>
+      </div>
+      <a id="zlink" href="#" target="_blank" rel="noopener">Open on Mobbin</a>
+    </div>
+  </div>
+</dialog>
+
+<script>
+const LIKES = ["Visual style", "Colour", "Type", "Hierarchy", "Layout", "Density", "Wording", "Interaction"];
+const PAL_LIKES = ["Overall feel", "Background", "Accent", "Book button", "Light mode", "Dark mode"];
+const NO = "Not for us";
+// [id, product, library id, "p" phone | "d" desktop, what it shows, how we'd use it]
+const SECTIONS = [
+ {
+  "id": "yours",
+  "title": "Your cinemas: a group of their own",
+  "note": "Today the hearted cinemas sit in a block that looks the same as “All cinemas” below it, so the group doesn't read as yours. These show how other apps make saved places feel like their own thing.",
+  "refs": [
+   [
+    "r4-imdb-theaters",
+    "IMDb (Showtimes)",
+    "59f0c48d-a24e-42ee-8054-4163f7ac7050",
+    "p",
+    "Under “Theaters”, two labelled groups side by side: “Favorites” (an empty tile with a +) and “Near you” (cinema names as tiles). The film list starts below.",
+    "Your cinemas as a short row of tiles at the top of the page, with an “add” tile when you have none. The full list of cinemas stays below, untouched."
+   ],
+   [
+    "r4-rakuten-favs",
+    "Rakuten",
+    "624045bd-9904-4ed1-b252-5192f997f506",
+    "p",
+    "“Your Favorites” with “View All Stores” on the right, logo rows with a filled heart; then “Stores you might love” with empty hearts, in the same row style.",
+    "The closest to our page: the same logo rows, but your cinemas get their own heading and a filled heart, and the rest get a different heading. Cheap to build."
+   ],
+   [
+    "r4-apple-saved",
+    "Apple Store",
+    "2fa59bcf-c633-41e5-a3ae-e9fe60f97451",
+    "p",
+    "“Your saved store” as one big rounded card with a photo, name and hours, above a plain “Nearby Stores” list.",
+    "Your cinemas as bigger cards than the rest, so they look kept, with the next three times on each card. Works best with one to three saved cinemas."
+   ],
+   [
+    "r4-starbucks-tabs",
+    "Starbucks",
+    "3fa274e6-fc89-4334-8712-1c5de82a5c4a",
+    "p",
+    "Three tabs over the store list: Nearby, Previous, Favorites. One list at a time.",
+    "A “Your cinemas” tab next to “All” on the Cinemas page: one tap swaps the list. Clean, but your cinemas are hidden until you tap."
+   ],
+   [
+    "r4-tabby-favs",
+    "Tabby",
+    "f5f9f1ee-9adc-4db1-ab02-1b0e66a4b54c",
+    "p",
+    "A “Favourites” page: one logo row per store, a pink filled heart on the right, Stores and Products as a switch at the top.",
+    "How a hearted row should look: the filled heart in the accent colour, so it's obvious at a glance which rows are yours."
+   ],
+   [
+    "r4-peacock-brands",
+    "Peacock",
+    "c86f6bb0-5395-4ea0-80be-0f25a4962ede",
+    "p",
+    "“Featured Brands” as a row of round logos with names under them, scrolling sideways.",
+    "Your cinemas as a strip of round logos at the top of every tab, one tap to that cinema. Takes very little height on a phone."
+   ],
+   [
+    "r4-imdb-theaters-favorites",
+    "IMDb",
+    "f741fff9-2dd1-42d7-8d79-7bc94a7b60ad",
+    "p",
+    "A “Theaters” list under “Showtimes near Los Angeles” is split into a “FAVORITES” block and a “NEAR YOU” block. Each block has its own small grey header band. The one favourite has a filled yellow heart and the cinemas below have outline hearts.",
+    "Split the Cinemas tab the same way, with a “Your cinemas” band holding filled hearts and an “All cinemas” band below it. Give the two bands different header styles so the user's own group reads as theirs, not as more of the same list."
+   ],
+   [
+    "r4-livenation-pick-venues",
+    "Live Nation",
+    "5f980ce3-e71f-44b9-8c41-8dc24c1ca63e",
+    "p",
+    "A screen titled “Tell Us Your Favorite Venues” has a search field “Find your favorite venues”, a heart counter pill showing “1” and a “POPULAR VENUES” list with a heart on each row. The chosen venue's row is highlighted and has a red filled heart. A “Finish & Continue” button sits at the bottom.",
+    "When “Your cinemas” is empty, offer a short pick step: hearts on the 20 cinemas, a count of how many you have picked, and a highlighted row for each one. Lekki and Victoria Island cinemas could sit at the top as the popular picks."
+   ],
+   [
+    "r4-applesports-my-teams",
+    "Apple Sports",
+    "ca47e978-21c7-4144-9a16-a10d5dae51e4",
+    "p",
+    "On the “Today” scores tab, a “My Teams” group with a star icon sits above the “Premier League” and “Formula 1” groups. Favourite teams also carry a small star next to their crest inside the match rows.",
+    "Put a “Your cinemas” group with a heart glyph in its header above the area groups, and add a small heart next to a hearted cinema's name wherever it shows up later in lists."
+   ],
+   [
+    "r4-thescore-favorites-top",
+    "theScore",
+    "d087370b-baac-45f1-8edf-27817fd44e89",
+    "p",
+    "The “Scores” screen for “TODAY” opens with a “Favorites” section showing the user's match (Real Madrid against Arsenal) before the “PGA” and “ATP” sections, which each have a “Go to” link.",
+    "Start the Cinemas tab with the hearted cinemas and their next showing, for example “Next at 16:00”, then list the rest by area with a “See all in Lekki” link."
+   ],
+   [
+    "r4-fixtured-team-strip",
+    "Fixtured",
+    "d1a52420-563f-4a13-8b8e-581111e74c10",
+    "p",
+    "A row of round team-logo buttons runs across the top (Barcelona, Yankees, Warriors, Knicks), led by a black “+” button. Empty grey circles stand in for unused slots. The fixtures timeline sits below.",
+    "Show hearted cinemas as a strip of round logo tiles at the top of the Cinemas tab, with a “+” tile to add one and empty slots that hint more can be added."
+   ],
+   [
+    "r4-fresha-favourites-carousel",
+    "Fresha",
+    "f2e349ea-6d25-440d-8413-f3e927a7ddcf",
+    "p",
+    "The home screen has a “Favourites” carousel of large venue cards with red filled hearts and a “See all” link. A “Recommended” carousel with the same card style comes after it. (Here for its structure only.)",
+    "Make “Your cinemas” a sideways row of bigger cards, each with a name, its area and “Next at 16:00”, placed above the full cinema list. Keep the full list as compact rows so the two groups look different."
+   ],
+   [
+    "r4-monday-favorites-panel",
+    "monday.com",
+    "2f4faafb-b0b3-4676-ad33-16acb79e6336",
+    "p",
+    "A strong blue panel titled “My favorites” holds a swipeable card carousel with page dots and an arrow button. A white “Recently visited” card with plain rows sits below. (Here for its structure only.)",
+    "Give “Your cinemas” its own tinted panel from the new colours so it clearly stands apart from the plain “All cinemas” list below it."
+   ],
+   [
+    "r4-applemaps-places-add",
+    "Apple Maps",
+    "12157e3f-ceb2-4a6e-b620-bf8bf28d710e",
+    "p",
+    "A “Places” row of round buttons (“Work”, “Home”, and a “+” labelled “Add”) sits above a “Recents” list and a “Your Guides” section.",
+    "Show up to four hearted cinemas as round shortcuts with an “Add” circle at the end, so adding a cinema is one tap from the top of the tab."
+   ],
+   [
+    "r4-talabat-favorites-invite",
+    "talabat",
+    "34d35773-036a-4f15-8db1-514140088393",
+    "p",
+    "The page has the heading “2 favorite restaurants in your area”. A tinted “Add to favorites” card says “Save your favorite places and enjoy customized recommendations, just for you.” and shows a sample card. The user's two saved restaurants are listed below. (Here for its structure only.)",
+    "Use a count heading such as “2 of your cinemas in Lekki”, plus a soft card that explains what hearting a cinema does (it puts its showings first)."
+   ],
+   [
+    "r4-shopback-watchlist",
+    "ShopBack",
+    "631320b4-bb65-4df8-913f-70e0d88647f8",
+    "p",
+    "A “Watchlist” screen has filter chips “All”, “Boosted Cashback” and “Quests”, a “Recently visited stores” row with one logo tile, and saved stores shown as logo cards with red hearts. (Here for its structure only.)",
+    "Pair hearted cinemas with a small “Recently viewed” row of logo tiles, so a cinema you looked at but did not heart is still easy to reach."
+   ],
+   [
+    "r4-deezer-favourite-artists",
+    "Deezer",
+    "df856fc7-5f62-4d30-a50d-073aced171aa",
+    "p",
+    "The home screen opens with the heading “Your favourite artists” over a row of large round photos with names, then a “Made for you” section. (Here for its structure only.)",
+    "Word the heading as “Your cinemas” and show big round logo tiles, so the group feels personal rather than like another list section."
+   ],
+   [
+    "r4-doordash-saved-empty",
+    "DoorDash",
+    "3fcbab73-0ba8-4cd2-8cb2-ad0cfc976517",
+    "d",
+    "The “Saved Stores” page, with nothing saved, shows a heart-with-plus picture, “You don't have any saved stores”, two lines with icons (“Saving stores lets you quickly access them whenever you want” and “We'll also use the stores you save to personalize your experience”) and a “Browse Stores” button.",
+    "Use an empty state for “Your cinemas” with a heart picture and two plain reasons, for example “Tap the heart on a cinema to keep it here” and “Its showings come first in Starting soon”."
+   ],
+   [
+    "r4-meetup-your-groups",
+    "Meetup",
+    "c835d1f1-6568-451c-9a20-e78bfb2c1769",
+    "d",
+    "On desktop, a left column holds a “Going / Saved” card and a “Your groups 0” card (“Looking for your people?” with an “Explore groups” button). The main column has “For you” and a “From your groups” section whose empty state reads “Your groups are quiet for now”. (Here for its structure only.)",
+    "On desktop, put “Your cinemas” in a side column next to the full list, with a count and its own empty message such as “No showings at your cinemas in the next 2 hours”."
+   ],
+   [
+    "r4-miro-pinned-empty",
+    "Miro",
+    "0905181d-c354-49a4-a7e1-d9e305e97dfd",
+    "d",
+    "In the sidebar, a “Pinned Spaces” group has a dashed box with a ghost row and a pin icon, and the text “Quickly access your most important Spaces by pinning them.”, above the normal “Spaces” list. (Here for its structure only.)",
+    "When nothing is hearted, show a dashed placeholder row inside the “Your cinemas” group with a ghost heart, so the group still holds its place above “All cinemas”."
+   ],
+   [
+    "r4-perplexity-pinned-group",
+    "Perplexity",
+    "59cdcbd1-d347-4805-90d7-c235aa944ef7",
+    "d",
+    "A “Spaces” list starts with a tinted “Pinned” header band over three pinned rows. An open row menu offers “Manage Memory”, “Unpin Space” and “Delete Space”. (Here for its structure only.)",
+    "Give the “Your cinemas” header a tinted band that the full list does not have, and offer “Remove from your cinemas” in a row menu as well as the heart."
+   ],
+   [
+    "r4-evernote-pinned-notes",
+    "Evernote",
+    "6c853004-6bef-4b80-a67f-c68a8e313d3b",
+    "d",
+    "A workspace page has a “Pinned notes” panel with checkboxes (“Select notes to highlight in this space”) and “Cancel / Done”, next to a “What's new” card row, above an “All items” table. (Here for its structure only.)",
+    "On desktop, offer an “Edit your cinemas” mode with a tick per cinema and Done, so picking several cinemas at once is quicker than tapping hearts one by one."
+   ],
+   [
+    "r4-turo-favorites-empty",
+    "Turo",
+    "af052f0c-e46d-4e6a-beb1-816468d4cd75",
+    "d",
+    "A page titled “Alex's favorites” shows a car picture with heart headlights, “Get started with Favorites”, “Tap the heart icon to save your favorite vehicles to a list” and a “Find new favorites” button. (Here for its structure only.)",
+    "Write the empty “Your cinemas” message as a direct instruction that names the heart, such as “Tap the heart on any cinema to keep it here”, with a button that scrolls to the full list."
+   ]
+  ]
+ },
+ {
+  "id": "within",
+  "title": "Starting within: a time filter",
+  "note": "You asked for a filter on Starting soon: within 30 minutes, an hour, two hours and so on. These show how other apps let you pick a time window in one tap.",
+  "refs": [
+   [
+    "r4-shazam-dates",
+    "Shazam (concerts)",
+    "2f2d03de-f91d-407b-820e-ea30e28debf9",
+    "p",
+    "A sheet of rounded chips: All Upcoming, Today, Tomorrow, This Weekend, Custom Range. The chosen one is filled blue.",
+    "The same chips for time: 30 min · 1 hour · 2 hours · 4 hours · Any time today, in one row on the page rather than in a sheet."
+   ],
+   [
+    "r4-swiggy-plan",
+    "Swiggy (events)",
+    "0b93ce3b-227b-428b-8956-d9dc5b59d202",
+    "p",
+    "“When is the plan?” with four big playful tiles: Today's vibe, Weekend mood, This week's drops, Next weekend tea.",
+    "A bolder take: the time choices as big tiles at the top (“In 30 min”, “Within the hour”, “Tonight”), with personality in the words."
+   ],
+   [
+    "r4-woolworths-time",
+    "Woolworths",
+    "081d6835-1358-4b9e-a9c7-d8abf6179023",
+    "p",
+    "Days as boxes, then a Morning / Afternoon / Evening switch with icons, and a grey line saying “Times starting 12pm – 6pm”.",
+    "A switch for the window, plus a plain line that says exactly what the filter means: “Starting between 18:00 and 20:00”."
+   ],
+   [
+    "r4-spotify-events-web",
+    "Spotify (Live Events, desktop)",
+    "73e2621a-3697-429f-bee9-7102a310e99b",
+    "d",
+    "A huge title, then a row of filter pills: location, Select dates, This weekend, Next weekend, All genres. A dated list below.",
+    "On a computer, the time pills sit in the same row as the area and format filters, so all filters live in one line."
+   ],
+   [
+    "r4-applemusic-dates-web",
+    "Apple Music (Concerts, desktop)",
+    "b896bf23-466c-42f0-9298-dbbb6756bd10",
+    "d",
+    "A “Dates” popover with quick chips (Today, Tomorrow, This Weekend…) above a calendar, and one “Show Concerts” button.",
+    "The quick chips without the calendar: we only show today and tomorrow, so a calendar would be noise."
+   ],
+   [
+    "r4-meetup-day-segments",
+    "Meetup",
+    "4a052d00-a5c0-4131-8ec7-9515629b4d86",
+    "p",
+    "Under the search bar sits a row of text options, “Upcoming”, “Today”, “Tomorrow” and “Weekend”. The selected one, “Today”, is a filled purple pill.",
+    "Use one row of time options under the Starting soon heading, “30 min · 1 hour · 2 hours · 4 hours · Today”, with the selected window as a filled pill."
+   ],
+   [
+    "r4-dice-tonight-tiles",
+    "DICE",
+    "9d729ef2-1a58-4416-aeda-9b75429dd691",
+    "p",
+    "Below “Good morning, Jane” is a row of square icon tiles labelled “Tonight”, “This week”, “New shows” and “Most viewed”.",
+    "Try icon tiles for the time windows, for example a clock for “Within 1 hour” and a moon for “Later tonight”, as a friendlier way in than plain chips."
+   ],
+   [
+    "r4-strava-date-chips",
+    "Strava",
+    "0e81977d-ba7c-4d0b-a28e-c200dd471432",
+    "p",
+    "A filter screen has a “Date” row of outline chips, “Today”, “7 Days”, “30 Days” and “Custom”, above “Location” chips with “Near Me” selected in orange, and “Reset” and “Apply” buttons.",
+    "Put time chips and area chips (Lekki, Victoria Island, Ikeja) in one filter group so “within 1 hour near me” is two taps."
+   ],
+   [
+    "r4-viator-duration-buckets",
+    "Viator",
+    "6452ea9c-166d-45e2-ae65-3bcfc80f0308",
+    "p",
+    "A “Duration” sheet lists checkbox rows, “Up to 1 hour”, “1 to 4 hours”, “4 hours to 1 day”, “1 to 3 days” and “3+ days”, with “Clear all” and a “Show 200 results” button.",
+    "Word the windows as plain ranges such as “Starts within 1 hour”, and show the live count on the button, for example “Show 12 showings”."
+   ],
+   [
+    "r4-transit-leave-now",
+    "Transit",
+    "34d914ba-92cb-4d31-80fc-3c989681fec5",
+    "p",
+    "A “Leave now” chip sits above a time ruler (7:30 AM to 8:15 AM) and a trip that says “Go in 5 min”. The open sheet switches between “LEAVE AT” and “ARRIVE BY” over a day-and-time wheel with a “Find trips” button. (Here for its structure only.)",
+    "Make “Now” the default chip and open a small sheet only if someone wants a later start, so “Starts in 12 min” stays the main view."
+   ],
+   [
+    "r4-gojek-schedule-chips",
+    "Gojek",
+    "06bde2b6-dbaf-4076-935a-41dc13328c17",
+    "p",
+    "A “Schedule your ride” sheet has chips “Today”, “Tomorrow” and “Select date”, an “Estimated pickup time” box showing a 10-minute window, and a wheel of time ranges such as “11:10-11:20”. (Here for its structure only.)",
+    "Echo the chosen window in words above the list, for example “Showing films that start between 18:40 and 19:40”."
+   ],
+   [
+    "r4-bestbuy-window-buttons",
+    "Best Buy",
+    "f9c896d6-01b9-4d51-b117-8c16391418cb",
+    "p",
+    "A “Schedule Delivery” sheet under “Choose your delivery window” shows date tiles (“Tomorrow March 15”, “Sunday March 16”) and outline time buttons “12 p.m. - 2 p.m.”, “2 p.m. - 4 p.m.” and “4 p.m. - 6 p.m.”. (Here for its structure only.)",
+    "Use large two-per-row buttons for the windows so each one is an easy 44 px tap on a phone."
+   ],
+   [
+    "r4-panera-asap-later",
+    "Panera Bread",
+    "406dd02f-0ac3-4daa-baee-5b33a651104d",
+    "p",
+    "Two option cards: “ASAP” (greyed out, “Currently unavailable”) and “Later” (“Order up to 2 weeks in advance”, ticked). A day and time-slot wheel opens below. (Here for its structure only.)",
+    "When no showing starts within 30 min, grey that option out and explain why, for example “Nothing starts in the next 30 min”, instead of showing an empty list."
+   ],
+   [
+    "r4-preply-time-tiles",
+    "Preply",
+    "fe8e0b7e-5535-43b4-888d-019980ee3b9b",
+    "p",
+    "A “Times available” filter groups icon tiles under “Day time” (“9 AM – 12 PM”, “12 – 3 PM”, “3 – 6 PM”), “Evening and night” and “Morning”. Several tiles can be selected, and the button reads “View 53 tutors”. (Here for its structure only.)",
+    "For “Any time today”, offer tiles such as afternoon, evening and late night in 24-hour Lagos time (12:00–17:00, 17:00–21:00, 21:00+), with a sun or moon icon and the showing count on the button."
+   ],
+   [
+    "r4-airtasker-time-of-day",
+    "Airtasker",
+    "d4d71805-6a74-462d-aeab-17e9f785457c",
+    "p",
+    "A “Choose a time” step has “On Thu, 23 May”, “Before date” and “I'm flexible” buttons, plus four tiles: “Morning / Before 10am”, “Midday / 10am - 2pm”, “Afternoon / 2pm - 6pm” and “Evening / After 6pm”, with Morning filled. (Here for its structure only.)",
+    "Give each time tile a word and a small subline with the real hours, for example “Tonight · after 18:00”, so the meaning is never a guess."
+   ],
+   [
+    "r4-plex-time-stepper",
+    "Plex",
+    "59eff719-e0f6-49b7-aa12-d129ac927f81",
+    "p",
+    "The Live TV guide has tabs “Guide”, “What's On” and “Favorite Channels”, a “Today” dropdown next to “19:00” with back and forward arrows, and programme cells that read “2m left” and “45m left” beside a yellow now-line. (Here for its structure only.)",
+    "Add a simple stepper that moves the start time forward an hour at a time (“From 19:00”, then “From 20:00”) for people planning later, next to the quick chips."
+   ],
+   [
+    "r4-lex-when-sheet",
+    "Lex",
+    "aa8affde-c8af-49fb-a0e6-78bf2b41028c",
+    "p",
+    "Tapping the “Events / All” chip opens an “Events” sheet with a radio list: “All”, “Today”, “Tomorrow”, “This weekend”, “This week”, “Next weekend” and “This month”. “All” is ticked and a “Done” link sits at the top right. (Here for its structure only.)",
+    "On small phones, collapse the windows into one chip that reads the current choice, such as “Within 2 hours”, and open a short radio list when tapped."
+   ],
+   [
+    "r4-sweatpals-day-chips",
+    "Sweatpals",
+    "06572b00-05f4-4153-bac9-c31d3b8cd038",
+    "d",
+    "Under the search bar runs a row of chips, “Today”, “Tomorrow” (selected, with a ✕), “Wed 8”, “Thu 9”, “Fri 10”, “Sat 11”, “Sun 12”, “Choose Date” and “Filters”. A two-month calendar popover is open. (Here for its structure only.)",
+    "Show the selected window chip with a small ✕ to clear it back to the default, so it is obvious a filter is on."
+   ],
+   [
+    "r4-eventbrite-date-radios",
+    "Eventbrite",
+    "bc4e8635-b81f-4f7a-baf1-1fd7e5458923",
+    "d",
+    "A left “Filters” column on the results page has a “Date” group of radio options, “Today”, “Tomorrow”, “This weekend” and “Pick a date...”, below “Category” and above “Price”. (Here for its structure only.)",
+    "On desktop, put the “Starts within” options as a radio group in a side column next to the showings list, together with the area filter."
+   ],
+   [
+    "r4-klook-hours-chips",
+    "Klook",
+    "936b0461-2749-48d1-bfc2-61a1a9d806b3",
+    "d",
+    "A “Filters” modal has “Participation date(s)” chips (“Today”, “Tomorrow”, “More dates”) above a calendar, then duration chips “0-3 hours”, “3-5 hours”, “5-7 hours”, “Full day” and “2 or more days”, and a “See 5472 results” button. (Here for its structure only.)",
+    "Copy the short hour-range chip labels for the windows (“30 min”, “1 hour”, “2 hours”, “4 hours”, “Today”), and put the live count on the button, for example “See 9 showings”."
+   ],
+   [
+    "r4-navan-time-slider",
+    "Navan",
+    "bca5c6fb-f7f7-4af9-a34b-366883845059",
+    "d",
+    "A “Time” dropdown shows a “Depart” range slider (“9:18 AM - Midnight”) over a bar chart of how many flights leave at each hour, with zones labelled “Early Morning”, “Morning”, “Afternoon” and “Evening”, and a “Reset” link. (Here for its structure only.)",
+    "On desktop, a small bar chart of showings per hour above the time filter would show when tonight is busiest at a glance, for example a peak around 19:00."
+   ],
+   [
+    "r4-airbnb-duration-steps",
+    "Airbnb",
+    "86141057-04d8-4bd1-a77b-1a75bfcce342",
+    "d",
+    "A “Duration” popover has a slider with fixed steps labelled “30m”, “45m”, “1h”, “1.5h”, “2h”, “3h” and “4h+”, with “Clear” and a “Show 120 results” button. (Here for its structure only.)",
+    "Use a stepped slider that snaps to 30 min, 1 hour, 2 hours, 4 hours and “Today” as an alternative to chips, with the button showing how many showings match."
+   ]
+  ]
+ },
+ {
+  "id": "soon",
+  "title": "Starting soon: now and next",
+  "note": "The Starting soon tab is a wall of posters today. These are schedules where time leads: what's on now, what's next, at a glance.",
+  "refs": [
+   [
+    "r4-dazn-nownext",
+    "DAZN (TV guide)",
+    "c4d13f7a-54e2-41db-a51d-19efb3066ada",
+    "p",
+    "Channel logos down the left, “Now” and “Next” columns, the current show highlighted with a red progress bar and “01.42.13 left”.",
+    "A row per cinema with its next two showings side by side, the soonest one highlighted. Reads like a departures board."
+   ],
+   [
+    "r4-fotmob-schedule",
+    "FotMob (TV schedules)",
+    "c5314a85-3b9d-4fe4-8569-f946f126a78a",
+    "p",
+    "Day tabs on top, then a time column on the left (19:30) with “Live” under it in green, the match and channels on the right.",
+    "Time first: a big start time on the left of every row, then film and cinema. “Starts in 12 min” sits under the time, like FotMob's “Live”."
+   ],
+   [
+    "r4-paramount-schedule",
+    "Paramount+ (schedule)",
+    "e873b62c-4980-4382-bcd9-2ad959d05485",
+    "p",
+    "A plain list: time on the left (10:00 AM), show title in bold, one or two lines of grey text under it. “LIVE” for the one on now.",
+    "The calmest version: no posters at all, only times, titles and one grey line. Very fast on mobile data."
+   ],
+   [
+    "r4-open-web",
+    "Open (desktop)",
+    "088f53f4-e899-4f09-92b4-5153e4f54d76",
+    "d",
+    "Black page, a big dated heading, then each session as a wide card: a photo on the left, title and time in large type on the right, “Book →” in a corner.",
+    "A cinematic desktop layout: one wide card per showing, the poster on the left and the time in large type."
+   ],
+   [
+    "r4-apple-sessions-web",
+    "Apple (Today at Apple, desktop)",
+    "efb24f4c-8f64-43ce-a22e-f466b96ec847",
+    "d",
+    "A row of day circles, a one-line filter summary (“All Formats, All Topics… Anytime”), then a plain list with thin rules and a “Details” button.",
+    "The filter summary line: one sentence that says what you're seeing (“Lekki · within 2 hours · any format”), so nothing is hidden behind chips."
+   ],
+   [
+    "r4-gmaps-departures",
+    "Google Maps",
+    "817f224d-319c-4a04-9302-d4e82611dc0b",
+    "p",
+    "A station page lists departures one per row: line badge, destination, “On time · 7:52 AM” or “Scheduled · 8:09 AM” under it, and a big countdown on the right (“3 min”, “19 min”, “52 min”) that turns into a clock time (“8:54 AM”) once it is further out. A delayed row shows “Delayed 3 min” with the old time struck through. (Here for its structure only.)",
+    "Make the Starting soon row text only: film title and cinema on the left, a large “12 min” on the right. Show minutes for showings in the next hour and the clock time after that, with no poster."
+   ],
+   [
+    "r4-transit-countdown",
+    "Transit",
+    "9407b816-0c6f-42a7-9e87-15b6995ee71e",
+    "p",
+    "Each bus line is a full-width coloured band (orange, blue, red) with a huge route number, the destination, and a big countdown on the right (“37 minutes”, “7 minutes”, “56 minutes”). A “Show inactive lines” button sits at the bottom. (Here for its structure only.)",
+    "Try very large countdown numbers on Starting soon so the next showing can be read at arm's length, and put showings that have already started behind a “Show started” toggle."
+   ],
+   [
+    "r4-applemaps-upcoming",
+    "Apple Maps",
+    "25c43d7c-5508-41b9-9757-083ad450e40f",
+    "p",
+    "A bus sheet has an “Upcoming Departures” row of pill chips (“8 min”, “46 min”, “50 min”) with the first one highlighted in white, then a vertical stop timeline with times on the right. (Here for its structure only.)",
+    "On a film page, show the next few showings at a cinema as a row of countdown chips (“8 min”, “46 min”), with the soonest one highlighted and each chip leading to the Book button."
+   ],
+   [
+    "r4-plex-guide",
+    "Plex",
+    "425965b8-bd24-48c3-a756-2077d46bf50e",
+    "p",
+    "A dark Live TV guide with a “Today” picker and the time “23:30”, a vertical orange now-line across the grid, and each channel row showing what is on with “18m left” or “13m left” under the title.",
+    "Use a thin now-line or a “Now” marker between showings that have started and those still to come, and phrase it from the viewer's side: “Starts in 12 min” before, “Started 5 min ago” after."
+   ],
+   [
+    "r4-bloomberg-schedule",
+    "Bloomberg",
+    "dfc817c4-3298-4b49-affe-cf1deee21786",
+    "p",
+    "A black schedule list with the time in a fixed left column (“7:00 PM”, “7:15 PM”, “7:30 PM”) and the guest name and source on the right; a small red “LIVE” tag sits above the list and a new hour (“10:00 PM”) opens with a bold heading. (Here for its structure only.)",
+    "A plain time column on the left with the film and cinema beside it is the simplest way to make time lead on Starting soon; open each new hour with a small heading like “21:00”."
+   ],
+   [
+    "r4-open-ios-studio",
+    "Open",
+    "1e339d42-4e73-4aab-b876-429c65c0a3d7",
+    "p",
+    "A black class schedule with a day strip at the top (S M T W T F S, the 28th underlined), a “Today, Aug 28” heading, then rows with a monospaced time on the left (“12:30 PM”, “05:00 PM”), a small square photo, a coloured category label (“MOVE”, “BREATHE”), the class name and “60 min - Katie M.”. (Here for its structure only.)",
+    "Lead each showing row with the start time in a fixed-width face, then a small poster, the film title and “2h 10m · Filmhouse Lekki”. The day strip fits the date picker on the Starting soon tab."
+   ],
+   [
+    "r4-fixtured-day",
+    "Fixtured",
+    "53fdfbb8-1166-4afa-8895-50cfcb0a5afd",
+    "p",
+    "An NBA schedule on a light peach page with “Next / Past / Standings / Teams” tabs. Days sit in a narrow left column (“THU 19”), and games are bright orange cards that stack by start time (“6:00 AM”, “7:00 AM”, “8:30 AM”), with cards side by side when they overlap. (Here for its structure only.)",
+    "Group showings that start at the same time into one block headed by the time, with the films inside, so a busy 19:00 slot reads as one moment instead of a long scroll."
+   ],
+   [
+    "r4-imdb-showtimes",
+    "IMDb",
+    "7c37a114-9db0-4823-b9cc-25739bde0ab6",
+    "p",
+    "A light film showtimes page: poster and title at the top, “Showtimes near Los Angeles”, a row of day cards (“TODAY Jan 28”, “THU Jan 29” selected in blue), then each cinema with its address, “5 miles away”, a heart, and small time buttons (“11:20am”, “12:30pm”, “3:20pm”) under “Standard”.",
+    "A close model for our film page: day cards at the top, one block per cinema with a save heart, and plain time buttons that each lead to the cinema's own booking page."
+   ],
+   [
+    "r4-stubhub-daterows",
+    "StubHub",
+    "05be6148-64f7-419c-b959-64da04549517",
+    "p",
+    "Search results for “Wicked” as rows with a date block on the left (“MAY 03 Sat 7:30 PM Next weekend”) split by a thin line from the show, venue and city on the right; some rows add “Selling fast” in pink.",
+    "Put a fixed time block on the left of every showing row (“19:30” over “Starts in 40 min”) with film and cinema on the right; the plain words “Next weekend” show how to say relative time without a badge."
+   ],
+   [
+    "r4-stake-sessions",
+    "Stake",
+    "5f23153d-f6e5-4dac-9873-8b7570e9bf95",
+    "p",
+    "An “ASX sessions” sheet shows a vertical timeline of market phases; the current one is a green highlighted card “Open · Tue 10am - 4pm (5:24:45 remains)” and the later ones (“Closing auction”, “Post close”, “Closed”) sit below in grey. (Here for its structure only.)",
+    "Show the evening as a short timeline at one cinema: the showing on now greyed with “Started 12 min ago”, the next one highlighted with “Starts in 18 min”, and later ones plain below it."
+   ],
+   [
+    "r4-f1-timetable",
+    "Formula 1",
+    "80268acb-28ec-441e-a501-251aa3d52125",
+    "p",
+    "A “TIMETABLES” page on a warm off-white background with a big uppercase title, then a white table headed “FRIDAY 3 OCTOBER” and “Local time”, each row giving series, session and a time range (“14:00 - 14:45”). (Here for its structure only.)",
+    "A timetable view for one cinema: a plain table of film, screen and “19:30 - 21:45”, with a clear “Lagos time” label so visitors from elsewhere are not confused."
+   ],
+   [
+    "r4-mubigo-showtimes",
+    "MUBI GO",
+    "73b701ea-9de5-4202-b767-48b5f931ced0",
+    "p",
+    "A full yellow showtimes page for one film: a day strip at the top (“MON Jun 23” to “THU Jun 26”), then each cinema in big uppercase (“CURZON CAMDEN”) with its address, the note “SCREENING TIMES ARE IN GMT+1”, and outlined time boxes (“1:10 PM”, “5:40 PM”).",
+    "Shows that a showtime list for one film can be all type and time boxes with no posters. The yellow page with dark text is also a strong option for a light mode."
+   ],
+   [
+    "r4-luma-timeline",
+    "Luma",
+    "7dbb0d17-e56b-4ed2-8e02-74caafbde1bc",
+    "d",
+    "A city events page with a dotted timeline down the left labelled “Today Tuesday”, “Tomorrow Wednesday”, “Nov 14 Thursday”; each event card starts with the time in grey (“6:30 PM”), then title, host, place and a small square image on the right, and one card has a red “Sold Out” tag.",
+    "A good desktop layout for Starting soon: a left rail with “Tonight” and “Tomorrow”, and cards that open with the start time, then film, cinema and a small poster on the right."
+   ],
+   [
+    "r4-teams-in21min",
+    "Microsoft Teams",
+    "6f151520-4dd2-4441-8f17-9fba80771591",
+    "d",
+    "A community events list grouped by date (“June 4, 2025 | Today”, “June 5, 2025 | Tomorrow”), with an orange line under Today. Each row has the time in bold (“9:00 am”) above the length (“1h 30m”), a thumbnail, the title with a small “In 21 min” pill next to it, and “Edit” and “Join” buttons. (Here for its structure only.)",
+    "Put a small “Starts in 21 min” pill right next to the film title on the soonest showings only, and keep the absolute time large on the left; the Book button sits where “Join” is."
+   ],
+   [
+    "r4-x-live-upcoming",
+    "X",
+    "c01d3d84-80d9-457d-8142-3dc3cac027c8",
+    "d",
+    "An NBA schedule with a day strip (“Thu Feb 26” selected), then a “Live” section of games with the score and red quarter clock (“Q1 4:00”) and a “Watch” button, followed by an “Upcoming” section with tip-off times on the right (“8:00 AM”, “10:00 AM”). (Here for its structure only.)",
+    "Split Starting soon into two plain headed groups, “Starting now” and “Later tonight”, with the time right-aligned on each row, instead of one long poster list."
+   ],
+   [
+    "r4-sweatpals-schedule",
+    "Sweatpals",
+    "05e9f0a6-db81-4efa-aa67-1ae733110c67",
+    "d",
+    "A schedule page with a soft pink top, a row of round date buttons (5 to 11, the 11th selected), a “July 11, 2026” heading, and a row with “7:15am” and “1 h 30 min” on the left, the event and address in the middle, and “Free” with a black “Book” button on the right. (Here for its structure only.)",
+    "A clean desktop row for a showing: time and length on the left, film and cinema in the middle, price or “Price not listed” and the Book button on the right."
+   ],
+   [
+    "r4-expedia-timefilter",
+    "Expedia",
+    "a9845ed7-214f-4c0b-b2a3-484bfabdde51",
+    "d",
+    "Flight results with a left filter panel “Departure time in Los Angeles” made of icon tiles (“Morning (5:00am - 11:59am)”, “Afternoon (12:00pm - 5:59pm)”, “Evening (6:00pm - 11:59pm)”), and a list where each card leads with “10:25pm - 11:52pm”. (Here for its structure only.)",
+    "Use part-of-day tiles as the Starting soon time filter (“Next 2 hours”, “This evening”, “Late”), each with its exact hours in small type so the filter is never vague."
+   ]
+  ]
+ },
+ {
+  "id": "feel",
+  "title": "Look and colour",
+  "note": "You're not sure about the greens. These are film and night-out apps with a strong look, for how colour and darkness can carry a cinema mood. The palettes below turn this into exact colours.",
+  "refs": [
+   [
+    "r4-letterboxd",
+    "Letterboxd",
+    "88615eac-92ba-48fc-8e53-65f9171e7c6e",
+    "p",
+    "A dark slate page, posters in rows, small grey headings, and the three brand dots (orange, green, blue) used only for tiny accents.",
+    "A dark-first look where the posters bring the colour and the interface stays quiet, with one accent used sparingly."
+   ],
+   [
+    "r4-hbomax",
+    "HBO Max",
+    "0d954ab9-750f-40a1-8565-e39255131339",
+    "p",
+    "Pure black, “Live & Upcoming” cards with a pink “Live” tag and a date tag (“Sat 11:30 pm”), a giant outlined “TOP 10”.",
+    "Black with one hot accent for “Starts in” tags. The outlined big type is a strong idea for the page headings."
+   ],
+   [
+    "r4-hypelist",
+    "Hypelist",
+    "e6b4a5c0-bb5b-48bd-bac2-e24002e2f913",
+    "p",
+    "Dark page, white pill filters (For You, TV & Movies, Places), poster rows with small bookmark icons.",
+    "White pills on black for the tabs and filters: very clear which one is on."
+   ],
+   [
+    "r4-imdb-home",
+    "IMDb",
+    "34d52105-1621-4aed-b54a-c647ab097fb7",
+    "p",
+    "White page, a yellow bar before each heading, posters with a + corner, “Add your favorite theaters” as a row.",
+    "A light look with one bright marquee colour (yellow) used for headings and the selected chip."
+   ],
+   [
+    "r4-shopee-cgv",
+    "Shopee (CGV cinema)",
+    "4b07f19f-b1db-4dc1-98e3-117b9645f77a",
+    "p",
+    "White page, orange-red for the heart, the day tabs and the Buy buttons. Logo, address and distance at the top.",
+    "A light look where one warm red does every action: heart, selected day, Book."
+   ],
+   [
+    "r4-burgerking",
+    "Burger King",
+    "3462aca1-2ccc-482f-9c55-e20f2fb51630",
+    "p",
+    "Warm cream page, deep brown text, a red header and a brown selected tab: a whole palette from one warm family. (A food app: here for its colour only.)",
+    "A warm, film-poster palette instead of cool greens: cream, deep brown and red, like a cinema foyer."
+   ],
+   [
+    "r4-mubigo-marquee",
+    "MUBI GO",
+    "5977add8-8777-4ff8-8bf7-cfae0f87e90e",
+    "p",
+    "A “FILM OF THE WEEK” page: a warm night photo with “THE LAST JOURNEY” in thin white capitals, a yellow-outlined “TRAILER” pill, then a bright marigold yellow day strip and showtime card on a near-black brown background.",
+    "A black-and-yellow marquee palette for dark mode: near-black page, one marigold yellow for the selected day, the Book button and “Starts in 12 min”, and thin uppercase film titles."
+   ],
+   [
+    "r4-dice-poster",
+    "DICE",
+    "67dc504d-6ce9-48c1-a578-99ec2d7d7348",
+    "p",
+    "A pure black home with a big festival poster in lemon yellow and red, white bold event title, dates in yellow (“Sep 20 - Sep 22”), and a “New Shows Thursday” row below.",
+    "Black page, white text and a single yellow used only for dates and times. Let posters bring the other colours, and keep the interface itself to black, white and yellow."
+   ],
+   [
+    "r4-eventbrite-cream",
+    "Eventbrite",
+    "1b8b0ba1-08a1-4b4c-bed9-1d6797004c93",
+    "p",
+    "A warm off-white feed with a cream search pill, large posters in pink and purple, bold black titles, grey “Sat, 12 Apr · 9pm · Monarch” lines and a short orange underline under the “Discover” tab.",
+    "A warm light mode: cream page instead of white, black type, and one orange for the active tab and the Book button."
+   ],
+   [
+    "r4-applemusic-red",
+    "Apple Music",
+    "f6a588cb-03fa-4454-9e0b-1d94828bb91e",
+    "p",
+    "A white “Concerts” page with bold black heading and three solid red pill filters (“Los Angeles, CA”, “Oct 15”, “K-Pop”), a photo card with a white date tile (“Oct 15”), and red used for the active tab.",
+    "A light mode with one bright red: area, date and time filters as solid red pills, everything else black on white. Cinema red without going dark."
+   ],
+   [
+    "r4-posh-editorial",
+    "Posh",
+    "5c20ce16-eee3-499b-be2d-3184297f8934",
+    "p",
+    "A black page opening with a large white headline “Find your world in New York”, small outlined “Date” and “Price” pills, then lowercase section names (“for you”, “party”) with tall colourful party posters.",
+    "Open the home page with a big plain sentence like “What's on in Lekki tonight” in white on black, and use lowercase section names for a relaxed night-out tone."
+   ],
+   [
+    "r4-googletv-burgundy",
+    "Google TV",
+    "63762f4f-54d2-42bd-b072-4443a09f091d",
+    "p",
+    "A deep crimson-to-burgundy hero (red lips and flame artwork) fading into black, white title “The Beauty”, a white “Watch on Hulu” pill, then poster rows on black.",
+    "A deep burgundy-to-black wash at the top of the film page for dark mode; it reads like cinema curtains and suits a red Book button. (Here for its colour only.)"
+   ],
+   [
+    "r4-peacock-greengold",
+    "Peacock",
+    "76e47640-d959-4a57-93c8-32d4efb68332",
+    "p",
+    "A pick-your-shows page on a deep bottle-green background fading to black, with posters framed in thin gold borders, gold tick marks and a gold “DONE” pill.",
+    "If green stays, this deep bottle green with gold for selected items feels far more like an old picture house than the current teal; gold would mark a saved cinema."
+   ],
+   [
+    "r4-tidal-red",
+    "TIDAL",
+    "b3ade33e-2f93-489c-b554-b3fc00a4823f",
+    "d",
+    "A black music site with a bold red “Spotlight” banner holding a photo of an artist in a white shirt, white pill tabs (“For you”, “Staff Picks”), and album rows on black.",
+    "A dark mode with one saturated red block per page, for example tonight's highlighted showing, with everything else in black and white."
+   ],
+   [
+    "r4-deezer-fest",
+    "Deezer",
+    "d66461b9-4a7a-4f51-b63f-218c9fb119f4",
+    "d",
+    "A white festival page with a tall condensed black headline “WE THE FEST 2024”, venue and date lines with small icons, a violet “Get tickets” button, and a warm peach-to-terracotta photo fading in from the right.",
+    "Condensed black headlines for film titles in light mode, a warm terracotta wash behind the poster, and a single strong button colour for Book."
+   ],
+   [
+    "r4-lovable-eventtype",
+    "Lovable",
+    "b3e33ec9-f10c-4f59-a758-b7468b66fc4a",
+    "d",
+    "An event template: “Discover events near you” set in boxes with thin black outlines, one word (“events”) in a hot pink rounded box, a pink circular “BROWSE” sticker, and small black-bordered date labels (“OCTOBER 23, 2025 · 5:00 PM - 10:00 PM”) on photos. (Here for its colour only.)",
+    "A playful poster style for light mode: black outlines, one hot pink accent, and showtimes set like ticket labels on top of posters."
+   ],
+   [
+    "r4-partiful-plum",
+    "Partiful",
+    "10a6e21a-63a1-4e2d-a5ab-1658d5815ab4",
+    "d",
+    "A very dark plum-black home with a large white headline “Plan events in seconds”, a deep purple “Login” button, a pink-and-violet phone image, and white buttons with a magenta underglow.",
+    "A deep plum-black base for dark mode instead of neutral black, with one pink-violet accent for “Starts in 12 min” and the Book button."
+   ],
+   [
+    "r4-neon-intheaters",
+    "NEON",
+    "9b6b38bc-b538-4512-b89e-0525007db79f",
+    "d",
+    "A white page headed “IN THEATERS” in huge black condensed capitals with a thin arrow, then a full-width film still with “NO OTHER CHOICE” in giant white condensed capitals over the photo.",
+    "Poster-like type for section titles (“TONIGHT”, “IN CINEMAS”) on a plain white page, and film titles set big over a still on the film page."
+   ],
+   [
+    "r4-a24-ticket",
+    "A24",
+    "c5dcdb53-983a-46ea-8d01-142a6100474b",
+    "d",
+    "A black page with huge light grey “THE APP”, small white text, and a cream paper ticket with “Talk To Me” in red, a red date (“APR 18 2023”), a red venue line and a QR code, next to a phone showing a film.",
+    "Show the reminder or calendar card as a cream ticket stub with red film title, date and cinema; cream and red on black would carry the whole palette."
+   ],
+   [
+    "r4-siena-brown",
+    "Siena Film Foundation",
+    "185fa91e-c1ac-4326-be22-f86c67c018db",
+    "d",
+    "A dark film page with rounded frames in warm brown and oxblood, a wide-set cream title “MY PROJECT X”, small spaced capitals, star ratings with short quotes, and a cream ticket-shaped menu in the corner.",
+    "A warm brown-black dark mode with cream text instead of pure white, and small spaced capitals for labels like the cinema name and “Stay or Go”."
+   ],
+   [
+    "r4-eventbrite-web-cream",
+    "Eventbrite",
+    "9257f097-b062-488a-8339-a3d76f9b6734",
+    "d",
+    "A pale peach-cream section titled “Looking for a live event?” in deep navy-plum, with small line icons, a white event card (“Trap Yoga Brooklyn”, date, venue) and a burnt orange “Tickets” button.",
+    "A light mode built from cream, deep navy for text and burnt orange for the Book button; warm and calm, and far from the current teal."
+   ],
+   [
+    "r4-dice-web-glow",
+    "DICE",
+    "2dad9e2e-2eed-4c31-92e3-7355f39fd663",
+    "d",
+    "A black event page with a soft amber glow behind the title “1WAY x OVMBR: European Sendoff”, the date in yellow (“Sun, Jul 6, 2:00 PM GMT+1”), a dark grey price box “From £15.95” with a white “JOIN WAIT LIST” pill.",
+    "For the film page in dark mode: a faint amber glow behind the title, showtimes in yellow, and the Book button as a white pill inside a dark grey box."
+   ]
+  ]
+ }
+];
+const EXTRA = [];
+
+// The eight colour roles from the UI brief, and three candidate palettes with exact values.
+const ROLES = [
+  ["bg", "Background", "The page behind everything."],
+  ["surface", "Surface", "Rows, sheets and cards that sit on the background."],
+  ["text", "Text", "Start times, film titles and body copy. Times need the strongest contrast."],
+  ["muted", "Muted text", "Cinema name, format and the freshness line."],
+  ["accent", "Accent", "The brand colour: “Starts in 45 min”, the selected area, the Stay or Go chip."],
+  ["book", "Book", "The Book button, the one action colour."],
+  ["stale", "Stale", "Old data. Always paired with words, never colour alone."],
+  ["focus", "Focus ring", "The 2 px outline around whatever the keyboard is on."]
+];
+const PALETTES = [
+ {
+  "id": "pal-lagoon",
+  "name": "Today: Lagoon (for comparison)",
+  "note": "What the site uses now (D-53), so you can compare the new ones against it.",
+  "light": {
+   "bg": "#eef6f4",
+   "surface": "#d9ebe7",
+   "text": "#0c3b47",
+   "muted": "#42606a",
+   "accent": "#0b6e69",
+   "accentText": "#eef6f4",
+   "book": "#0b6e69",
+   "bookText": "#eef6f4",
+   "stale": "#8a4b00",
+   "focus": "#0b57d0"
+  },
+  "dark": {
+   "bg": "#0a0a0a",
+   "surface": "#1a1a1a",
+   "text": "#d9ebe7",
+   "muted": "#ababab",
+   "accent": "#5fd4c8",
+   "accentText": "#062028",
+   "book": "#5fd4c8",
+   "bookText": "#062028",
+   "stale": "#f2c14e",
+   "focus": "#9cc2ff"
+  }
+ },
+ {
+  "id": "pal-foyer",
+  "name": "Foyer: cream, brown and cinema red",
+  "note": "Warm like a cinema lobby: cream page, deep brown text, one red for every action (Book, the selected chip, your hearts).",
+  "light": {
+   "bg": "#f6efe4",
+   "surface": "#fffaf2",
+   "text": "#22150f",
+   "muted": "#6a594b",
+   "accent": "#b42318",
+   "accentText": "#ffffff",
+   "book": "#b42318",
+   "bookText": "#ffffff",
+   "stale": "#8a4b00",
+   "focus": "#0b57d0"
+  },
+  "dark": {
+   "bg": "#120c0a",
+   "surface": "#1e1512",
+   "text": "#f6ece0",
+   "muted": "#bba996",
+   "accent": "#ff7a66",
+   "accentText": "#2a0703",
+   "book": "#ff7a66",
+   "bookText": "#2a0703",
+   "stale": "#f2c14e",
+   "focus": "#9cc2ff"
+  }
+ },
+ {
+  "id": "pal-marquee",
+  "name": "Marquee: black, white and bulb yellow",
+  "note": "Near-black text on off-white, with marquee-bulb yellow for the one thing that matters (Book, \u201cStarts in\u201d). Dark mode is the hero.",
+  "light": {
+   "bg": "#f4f3ef",
+   "surface": "#ffffff",
+   "text": "#111111",
+   "muted": "#5a5a57",
+   "accent": "#111111",
+   "accentText": "#ffd23f",
+   "book": "#111111",
+   "bookText": "#ffd23f",
+   "stale": "#9a3d00",
+   "focus": "#0b57d0"
+  },
+  "dark": {
+   "bg": "#0b0b0b",
+   "surface": "#171717",
+   "text": "#f3f2ee",
+   "muted": "#a9a8a3",
+   "accent": "#ffd23f",
+   "accentText": "#111111",
+   "book": "#ffd23f",
+   "bookText": "#111111",
+   "stale": "#ff9e80",
+   "focus": "#9cc2ff"
+  }
+ },
+ {
+  "id": "pal-velvet",
+  "name": "Velvet: plum seats",
+  "note": "The colour of cinema seats: a deep plum accent on soft lilac-grey, and a rich plum-black in the dark.",
+  "light": {
+   "bg": "#f5f1f6",
+   "surface": "#ffffff",
+   "text": "#24112b",
+   "muted": "#64526a",
+   "accent": "#6b1f78",
+   "accentText": "#ffffff",
+   "book": "#6b1f78",
+   "bookText": "#ffffff",
+   "stale": "#8a4b00",
+   "focus": "#0b57d0"
+  },
+  "dark": {
+   "bg": "#110a14",
+   "surface": "#1d1321",
+   "text": "#f2e9f4",
+   "muted": "#b9a7be",
+   "accent": "#e0aee9",
+   "accentText": "#2a0f31",
+   "book": "#e0aee9",
+   "bookText": "#2a0f31",
+   "stale": "#f2c14e",
+   "focus": "#9cc2ff"
+  }
+ },
+ {
+  "id": "pal-dusk",
+  "name": "Lagos dusk: navy and sunset orange",
+  "note": "Evening over the lagoon: a deep navy text and dark mode, with a sunset orange for \u201cStarts in\u201d and Book.",
+  "light": {
+   "bg": "#f3f1ec",
+   "surface": "#ffffff",
+   "text": "#13203b",
+   "muted": "#55607a",
+   "accent": "#c2410c",
+   "accentText": "#ffffff",
+   "book": "#13203b",
+   "bookText": "#ffffff",
+   "stale": "#8a4b00",
+   "focus": "#0b57d0"
+  },
+  "dark": {
+   "bg": "#0a1020",
+   "surface": "#151d31",
+   "text": "#eef1f8",
+   "muted": "#a3adc4",
+   "accent": "#ff8a4c",
+   "accentText": "#2a0d00",
+   "book": "#ff8a4c",
+   "bookText": "#2a0d00",
+   "stale": "#f2c14e",
+   "focus": "#9cc2ff"
+  }
+ }
+];
+
+const state = {}, els = {}, timers = {};
+const ORDER = [];   // zoomable references, in page order
+const LS = "lsrefs4:";
+const $ = (t, attrs, ...kids) => { const e = document.createElement(t); for (const k in attrs || {}) { if (k === "text") e.textContent = attrs[k]; else e.setAttribute(k, attrs[k]); } kids.forEach(k => k != null && e.append(k)); return e; };
+const mobbin = mid => "https://mobbin.com/screens/" + mid;
+
+function lum(hex) { const c = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255).map(v => v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4)); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; }
+function ratio(a, b) { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); }
+
+function answered(id) { const s = state[id]; return !!s && (s.likes.length > 0 || s.note.trim() !== "" || s.regions.length > 0); }
+function recount() {
+  let n = 0, total = 0;
+  SECTION_IDS.forEach(([sid, ids]) => {
+    const k = ids.filter(answered).length; n += k; total += ids.length;
+    const unit = sid === "colour" ? " options" : " refs";
+    document.getElementById("navc-" + sid).textContent = k ? k + " of " + ids.length + " answered" : ids.length + unit;
+  });
+  ["count", "count2"].forEach(i => document.getElementById(i).textContent = n);
+  ["total", "total2"].forEach(i => document.getElementById(i).textContent = total);
+  document.getElementById("meter").style.width = (total ? 100 * n / total : 0) + "%";
+}
+function paint(id) {
+  const s = state[id], e = els[id];
+  e.chips.forEach((btn, name) => btn.setAttribute("aria-pressed", s.likes.includes(name) ? "true" : "false"));
+  if (e.note.value !== s.note) e.note.value = s.note;
+}
+// Regions are stored as fractions of the image (0 to 1), so they fit any size the image is drawn at.
+function markEl(r, n) {
+  const m = $("span", { class: "mark" }, $("b", { text: String(n) }));
+  m.style.left = r.x * 100 + "%"; m.style.top = r.y * 100 + "%"; m.style.width = r.w * 100 + "%"; m.style.height = r.h * 100 + "%";
+  return m;
+}
+function drawMarks(id) {
+  const rs = state[id].regions, e = els[id];
+  if (e.cardMarks) e.cardMarks.replaceChildren(...rs.map((r, i) => markEl(r, i + 1)));
+  if (!zoom.open || ORDER[zi].id !== id) return;
+  zmarks.replaceChildren(...rs.map((r, i) => markEl(r, i + 1)));
+  document.getElementById("zregions").replaceChildren(...rs.map((r, i) => {
+    const b = $("button", { type: "button", class: "zbtn", "aria-label": "Remove region " + (i + 1), text: "Region " + (i + 1) + " ✕" });
+    b.addEventListener("click", () => { state[id].regions.splice(i, 1); save(id); recount(); drawMarks(id); });
+    return b;
+  }));
+}
+function regionText(id) {
+  const rs = state[id].regions;
+  if (!rs.length) return "";
+  const pct = n => Math.round(n * 100) + "%";
+  return " | regions: " + rs.map((r, i) => (i + 1) + " [left " + pct(r.x) + ", top " + pct(r.y) + ", width " + pct(r.w) + ", height " + pct(r.h) + "]").join("; ");
+}
+function save(id) {
+  try { localStorage.setItem(LS + id, JSON.stringify(state[id])); els[id].saved.textContent = "Saved in this browser"; }
+  catch (_) { els[id].saved.textContent = "Could not save. Use Copy all answers before closing."; }
+}
+// The tick buttons, text box and saved line shared by references and palettes.
+function answerForm(id, likes, question, placeholder) {
+  state[id] = { likes: [], note: "", regions: [] };
+  try { const raw = localStorage.getItem(LS + id); if (raw) { const v = JSON.parse(raw); state[id] = { likes: Array.isArray(v.likes) ? v.likes : [], note: typeof v.note === "string" ? v.note : "", regions: Array.isArray(v.regions) ? v.regions.filter(r => r && [r.x, r.y, r.w, r.h].every(n => typeof n === "number")) : [] }; } } catch (_) {}
+  const chips = new Map(), chipRow = $("div", { class: "chips" });
+  likes.concat([NO]).forEach(name => {
+    const b = $("button", { type: "button", class: name === NO ? "chip no" : "chip", "aria-pressed": "false", text: name });
+    b.addEventListener("click", () => {
+      const s = state[id];
+      if (s.likes.includes(name)) s.likes = s.likes.filter(x => x !== name);
+      else s.likes = name === NO ? [NO] : s.likes.filter(x => x !== NO).concat([name]);
+      paint(id); recount(); save(id);
+    });
+    chips.set(name, b); chipRow.append(b);
+  });
+  const note = $("textarea", { id: "note-" + id, placeholder });
+  note.addEventListener("input", () => {
+    state[id].note = note.value; recount(); els[id].saved.textContent = "";
+    clearTimeout(timers[id]); timers[id] = setTimeout(() => save(id), 600);
+  });
+  note.addEventListener("blur", () => { clearTimeout(timers[id]); save(id); });
+  const saved = $("div", { class: "saved", role: "status" });
+  els[id] = { chips, note, saved };
+  const frag = document.createDocumentFragment();
+  frag.append($("fieldset", {}, $("legend", { text: question }), chipRow), $("label", { class: "note", for: "note-" + id }, "Exactly what you like (or don't)", note), saved);
+  return frag;
+}
+
+const SECTION_IDS = [];
+function addNav(id, title, n) {
+  document.getElementById("nav").append($("a", { href: "#" + id, "data-sec": id }, title, $("span", { id: "navc-" + id, text: String(n) })));
+}
+function build() {
+  const main = document.getElementById("main");
+  SECTIONS.forEach(sec => {
+    addNav(sec.id, sec.title, sec.refs.length);
+    SECTION_IDS.push([sec.id, sec.refs.map(r => r[0])]);
+    const section = $("section", { id: sec.id }, $("div", { class: "sec-head" }, $("h2", { text: sec.title }), $("p", { text: sec.note })));
+    sec.refs.forEach(([id, app, mid, kind, what, how]) => {
+      const desk = kind === "d";
+      const index = ORDER.push({ id, app, mid, how, section: sec.title, kind }) - 1;
+      const img = $("img", { src: "images/round4/" + id + ".webp", alt: "", loading: "lazy", width: desk ? "1920" : "1179", height: desk ? "1310" : "2676" });
+      const cardMarks = $("span", { class: "marks" });
+      const shot = $("button", { type: "button", class: "shot", "aria-label": "Zoom the " + app + " screenshot" }, img, cardMarks);
+      shot.addEventListener("click", () => openZoom(index, shot));
+      const article = $("article", { class: desk ? "ref wide" : "ref", id: "ref-" + id },
+        shot,
+        $("div", { class: "form" },
+          $("div", { class: "meta" },
+            $("div", { class: "title-row" }, $("h3", { text: app }), $("span", { class: "tag", text: desk ? "Desktop" : "Phone" })),
+            $("dl", { class: "pair" }, $("dt", { text: "What it shows" }), $("dd", { text: what }), $("dt", { text: "How we'd use it" }), $("dd", { text: how })),
+            $("a", { href: mobbin(mid), target: "_blank", rel: "noopener", text: "Open full size on Mobbin" })),
+          answerForm(id, LIKES, "What do you like about it?", "e.g. the big time on the left, the grey line under it")));
+      section.append(article);
+      els[id].cardMarks = cardMarks;
+      paint(id); drawMarks(id);
+    });
+    main.append(section);
+  });
+  buildColour(main);
+  recount();
+}
+
+function swatches(m) {
+  const box = $("div", { class: "sws" });
+  [["Background", m.bg], ["Surface", m.surface], ["Text", m.text], ["Muted text", m.muted], ["Accent", m.accent], ["Book", m.book], ["Stale", m.stale], ["Focus ring", m.focus]].forEach(([n, hex]) => {
+    const i = $("i"); i.style.background = hex;
+    box.append($("div", { class: "sw" }, i, $("strong", { text: n }), $("code", { text: hex })));
+  });
+  return box;
+}
+function checks(m) {
+  const rows = [["Time and text on background", m.text, m.bg, 7], ["Text on a row", m.text, m.surface, 7], ["Muted text on background", m.muted, m.bg, 4.5], ["Muted text on a row", m.muted, m.surface, 4.5], ["Label on the accent", m.accentText, m.accent, 4.5], ["Label on Book", m.bookText, m.book, 4.5], ["Stale words on a row", m.stale, m.surface, 4.5], ["Focus ring on background", m.focus, m.bg, 3]];
+  const ul = $("ul", { class: "checks" });
+  rows.forEach(([n, a, b, need]) => { const r = ratio(a, b); ul.append($("li", { "data-ratio": r.toFixed(2), "data-need": need }, n + ": ", $("b", { text: r.toFixed(1) + ":1" }), " (needs " + need + ":1" + (r >= need ? ")" : ", fails)"))); });
+  return ul;
+}
+function sample(m, stale) {
+  const s = $("div", { class: "sample" });
+  const set = { "--p-bg": m.bg, "--p-surface": m.surface, "--p-text": m.text, "--p-muted": m.muted, "--p-accent-bg": m.accent, "--p-accent-text": m.accentText, "--p-book": m.book, "--p-book-text": m.bookText, "--p-stale": m.stale, "--p-focus": m.focus };
+  for (const k in set) s.style.setProperty(k, set[k]);
+  s.append($("div", { class: "card" },
+    $("div", { class: "time" }, "19:30", $("span", { class: "soon", text: "Starts in 45 min" })),
+    $("div", { class: "film", text: "Sinners" }),
+    $("div", { class: "where", text: "Filmhouse Lekki · IMAX" }),
+    stale ? $("div", { class: "stale", text: "Read from Filmhouse's site 9 hours ago. May be out of date." }) : $("div", { class: "fresh", text: "Read from Filmhouse's site 2 hours ago" }),
+    $("div", { class: "row" }, $("span", { class: "focus", text: "Keyboard focus" }), $("span", { class: "book", text: "Book" }))));
+  return s;
+}
+function buildColour(main) {
+  addNav("colour", "Colour palette", PALETTES.length);
+  SECTION_IDS.push(["colour", PALETTES.map(p => p.id)]);
+  const section = $("section", { id: "colour" }, $("div", { class: "sec-head" }, $("h2", { text: "Colour palette" }),
+    $("p", { text: "The app uses eight colour roles, each in a light and a dark version. Below are the roles, then five palettes (today's and four new ones) with exact values. The example row is made-up sample text, drawn with each palette's real colours." })));
+  const table = $("table", { class: "roles" }, $("thead", {}, $("tr", {}, $("th", { text: "Role" }), $("th", { text: "Token" }), $("th", { text: "What it colours" }))));
+  const tb = $("tbody");
+  ROLES.forEach(([tok, name, use]) => tb.append($("tr", {}, $("td", { text: name }), $("td", {}, $("code", { text: "--" + tok })), $("td", { text: use }))));
+  table.append(tb);
+  section.append($("div", { class: "scroll" }, table));
+  PALETTES.forEach(p => {
+    const modes = $("div", { class: "modes" });
+    [["Light", p.light, false], ["Dark", p.dark, true]].forEach(([label, m, stale]) => modes.append($("div", { class: "mode", "data-mode": p.id + "-" + label.toLowerCase() }, $("h4", { text: label + (stale ? " · showing a stale row" : "") }), sample(m, stale), swatches(m), checks(m))));
+    section.append($("article", { class: "pal", id: "ref-" + p.id }, $("div", { class: "meta" }, $("h3", { text: p.name }), $("p", { text: p.note })), modes,
+      answerForm(p.id, PAL_LIKES, "What do you like about it?", "e.g. the amber against navy, but the light mode feels too yellow")));
+    paint(p.id);
+  });
+  main.append(section);
+}
+
+// Zoom
+const zoom = document.getElementById("zoom"), zfig = document.getElementById("zfig"), zimg = document.getElementById("zimg");
+const zmarks = document.getElementById("zmarks"), znote = document.getElementById("znote");
+let zi = 0, zfrom = null, draft = null;
+// Keep the marking layer exactly over the image, whatever size it is drawn at.
+function layoutMarks() {
+  const f = zfig.getBoundingClientRect(), r = zimg.getBoundingClientRect();
+  zmarks.style.left = (r.left - f.left) + "px"; zmarks.style.top = (r.top - f.top) + "px";
+  zmarks.style.width = r.width + "px"; zmarks.style.height = r.height + "px";
+}
+zimg.addEventListener("load", layoutMarks);
+new ResizeObserver(layoutMarks).observe(zfig);
+const clamp01 = n => Math.min(1, Math.max(0, n));
+function draftBox(e) {
+  const b = zmarks.getBoundingClientRect();
+  const x1 = clamp01((e.clientX - b.left) / b.width), y1 = clamp01((e.clientY - b.top) / b.height);
+  return { x: Math.min(draft.x0, x1), y: Math.min(draft.y0, y1), w: Math.abs(x1 - draft.x0), h: Math.abs(y1 - draft.y0) };
+}
+zmarks.addEventListener("pointerdown", e => {
+  if (e.button) return;
+  const b = zmarks.getBoundingClientRect();
+  draft = { x0: clamp01((e.clientX - b.left) / b.width), y0: clamp01((e.clientY - b.top) / b.height), el: $("span", { class: "mark" }) };
+  zmarks.append(draft.el); zmarks.setPointerCapture(e.pointerId); e.preventDefault();
+});
+zmarks.addEventListener("pointermove", e => {
+  if (!draft) return;
+  const r = draftBox(e), st = draft.el.style;
+  st.left = r.x * 100 + "%"; st.top = r.y * 100 + "%"; st.width = r.w * 100 + "%"; st.height = r.h * 100 + "%";
+});
+function endDraft(e, keep) {
+  if (!draft) return;
+  const r = draftBox(e), id = ORDER[zi].id;
+  draft = null;
+  // A plain click or a tiny drag is not a region.
+  if (keep && r.w >= 0.02 && r.h >= 0.02) { const q = n => Math.round(n * 1000) / 1000; state[id].regions.push({ x: q(r.x), y: q(r.y), w: q(r.w), h: q(r.h) }); save(id); recount(); }
+  drawMarks(id);
+}
+zmarks.addEventListener("pointerup", e => endDraft(e, true));
+zmarks.addEventListener("pointercancel", e => endDraft(e, false));
+znote.addEventListener("input", () => {
+  const id = ORDER[zi].id;
+  state[id].note = znote.value; els[id].note.value = znote.value; recount();
+  clearTimeout(timers[id]); timers[id] = setTimeout(() => save(id), 600);
+});
+function showZoom() {
+  const r = ORDER[zi];
+  zmarks.replaceChildren();
+  zimg.src = "images/round4/" + r.id + ".webp"; zimg.alt = r.app + " screenshot";
+  znote.value = state[r.id].note;
+  document.getElementById("zcount").textContent = (zi + 1) + " of " + ORDER.length + " · " + r.section;
+  document.getElementById("ztitle").textContent = r.app + (r.kind === "d" ? " · Desktop" : " · Phone");
+  document.getElementById("zhow").textContent = "How we'd use it: " + r.how;
+  document.getElementById("zlink").href = mobbin(r.mid);
+  drawMarks(r.id); layoutMarks();
+}
+function openZoom(i, from) { zi = i; zfrom = from; zoom.showModal(); showZoom(); document.getElementById("zclose").focus(); }
+function flushNote() { const id = ORDER[zi].id; clearTimeout(timers[id]); save(id); }
+function step(d) { flushNote(); zi = (zi + d + ORDER.length) % ORDER.length; showZoom(); }
+document.getElementById("zclose").addEventListener("click", () => zoom.close());
+document.getElementById("zprev").addEventListener("click", () => step(-1));
+document.getElementById("znext").addEventListener("click", () => step(1));
+zoom.addEventListener("keydown", e => { if (e.target.tagName === "TEXTAREA") return; if (e.key === "ArrowRight") { e.preventDefault(); step(1); } else if (e.key === "ArrowLeft") { e.preventDefault(); step(-1); } });
+zoom.addEventListener("click", e => { if (e.target === zoom || e.target.classList.contains("z-stage") || e.target.tagName === "FIGURE") zoom.close(); });
+zoom.addEventListener("close", () => {
+  flushNote();
+  const card = document.getElementById("ref-" + ORDER[zi].id);
+  const back = card ? card.querySelector(".shot") : zfrom;
+  if (card) card.scrollIntoView({ block: "nearest" });
+  if (back) back.focus({ preventScroll: true });
+});
+
+// Sidebar
+const navbtn = document.getElementById("navbtn");
+function setNav(open) { document.body.classList.toggle("nav-open", open); navbtn.setAttribute("aria-expanded", open ? "true" : "false"); }
+navbtn.addEventListener("click", () => setNav(!document.body.classList.contains("nav-open")));
+document.getElementById("nav").addEventListener("click", e => { if (e.target.closest("a")) setNav(false); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !zoom.open) setNav(false); });
+document.addEventListener("click", e => { if (document.body.classList.contains("nav-open") && !e.target.closest("#side") && !e.target.closest("#navbtn")) setNav(false); });
+
+function allAnswersText() {
+  const lines = [];
+  ORDER.forEach(r => { if (answered(r.id)) lines.push(r.id + " | " + r.app + " | " + r.section + " | " + (state[r.id].likes.join(", ") || "-") + " | " + state[r.id].note.replace(/\s+/g, " ").trim() + regionText(r.id)); });
+  PALETTES.forEach(p => { if (answered(p.id)) lines.push(p.id + " | " + p.name + " | Colour palette | " + (state[p.id].likes.join(", ") || "-") + " | " + state[p.id].note.replace(/\s+/g, " ").trim()); });
+  return lines.join("\n") || "No answers yet.";
+}
+document.getElementById("copybtn").addEventListener("click", () => {
+  const text = allAnswersText(), out = document.getElementById("copyout"), btn = document.getElementById("copybtn");
+  const fallback = () => { setNav(false); out.value = text; out.hidden = false; out.focus(); out.select(); btn.textContent = "Select the text at the top"; };
+  try { navigator.clipboard.writeText(text).then(() => { btn.textContent = "Copied"; setTimeout(() => { btn.textContent = "Copy all answers"; }, 2000); }, fallback); } catch (_) { fallback(); }
+});
+document.getElementById("dlbtn").addEventListener("click", () => {
+  const out = {};
+  ORDER.forEach(r => { if (answered(r.id)) out[r.id] = { app: r.app, section: r.section, likes: state[r.id].likes, note: state[r.id].note, regions: state[r.id].regions }; });
+  PALETTES.forEach(p => { if (answered(p.id)) out[p.id] = { app: p.name, section: "Colour palette", likes: state[p.id].likes, note: state[p.id].note }; });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(out, null, 2)], { type: "application/json" }));
+  a.download = "sinima-cinemas-references-answers.json";
+  document.body.append(a); a.click(); a.remove();
+});
+
+build();
+
+// Mark the section in view in the sidebar.
+const links = new Map([...document.querySelectorAll("#nav a")].map(a => [a.dataset.sec, a]));
+const io = new IntersectionObserver(entries => {
+  entries.forEach(en => { if (en.isIntersecting) { links.forEach(a => a.removeAttribute("aria-current")); links.get(en.target.id).setAttribute("aria-current", "true"); } });
+}, { rootMargin: "-20% 0px -70% 0px" });
+document.querySelectorAll("main section").forEach(s => io.observe(s));
+</script>
+</body>
+</html>

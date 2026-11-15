@@ -35,7 +35,6 @@ h1, h2, h3, p { margin: 0; }
 summary.chip { list-style: none; cursor: pointer; }
 summary.chip::-webkit-details-marker { display: none; }
 .fresh.stale { color: var(--color-stale); }
-.day { background: none; border-width: 0 0 3px; min-height: 44px; }
 .slot { width: 100%; background: var(--color-surface); text-align: left; }
 .t { cursor: pointer; }
 .t.more { cursor: default; }
@@ -60,9 +59,6 @@ summary.chip::-webkit-details-marker { display: none; }
 .chips .sep { width: 1px; height: 24px; margin: 0 var(--s2); background: var(--color-line); }
 .chips-row { display: contents; }
 .filters { display: flex; align-items: center; justify-content: space-between; gap: var(--s4); margin-top: var(--s5); }
-.days { display: inline-flex; gap: var(--s6); }
-.day { padding: 10px 0; border-bottom: 3px solid transparent; font-weight: 600; color: var(--color-text-muted); }
-.day.on { border-color: var(--color-text); color: var(--color-text); }
 .label { margin: var(--s8) 0 var(--s3); display: flex; align-items: baseline; gap: var(--s2); }
 .label h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
 .label span { color: var(--color-text-muted); font-size: 14px; }

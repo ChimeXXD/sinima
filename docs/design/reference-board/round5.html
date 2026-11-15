@@ -1,0 +1,3550 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sinima round 5 references</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&display=swap">
+<style>
+/* Layout: a fixed section list on the left, one column of reference cards on the right. On a phone the list becomes a drawer. */
+:root {
+  --bg: #eef0f4; --surface: #ffffff; --ink: #131a2b; --muted: #566078; --line: #d5d9e3;
+  --marquee: #f2b705; --on-marquee: #1d1600; --no: #b3261e; --on-no: #ffffff; --shot: #dfe3ec;
+  --scrim: rgba(10, 14, 24, 0.95); --stage: #0a0e18; --on-scrim: #f4f6fb; --on-scrim-muted: #b9c1d4;
+  --scrim-field: rgba(255, 255, 255, 0.08); --mark: #f2b705; --on-mark: #1d1600; --mark-fill: rgba(242, 183, 5, 0.2);
+  --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --side: 264px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0d1220; --surface: #171e31; --ink: #eef1f8; --muted: #a3adc4; --line: #2c3650;
+    --marquee: #f5c518; --on-marquee: #1d1600; --no: #f2877f; --on-no: #2a0704; --shot: #232c44;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; }
+h1 { font-family: var(--display); font-weight: 700; font-size: clamp(28px, 5vw, 38px); line-height: 1.1; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--display); font-weight: 700; font-size: 24px; line-height: 1.2; margin: 0; text-wrap: balance; }
+h3 { font-size: 16px; font-weight: 650; margin: 0; }
+p { margin: 0; }
+img { max-width: 100%; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+.side {
+  position: fixed; inset: 0 auto 0 0; width: var(--side); z-index: 20; overflow-y: auto;
+  background: var(--surface); border-right: 1px solid var(--line);
+  padding: 20px 12px 24px; display: flex; flex-direction: column; gap: 16px;
+}
+.side .brand { font-family: var(--display); font-weight: 700; font-size: 18px; line-height: 1.2; padding: 0 8px; }
+.progress { padding: 0 8px; font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 6px; }
+.progress strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+.meter { height: 6px; border-radius: 999px; background: var(--shot); overflow: hidden; }
+.meter i { display: block; height: 100%; width: 0; background: var(--marquee); }
+.side nav { display: flex; flex-direction: column; gap: 2px; }
+.side nav a {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 40px;
+  padding: 0 8px; border-radius: 8px; color: var(--ink); text-decoration: none; font-size: 14px;
+}
+.side nav a span { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.side nav a:hover { background: var(--bg); }
+.side nav a[aria-current="true"] { background: var(--bg); font-weight: 650; }
+.side .actions { display: flex; flex-direction: column; gap: 8px; padding: 0 8px; margin-top: auto; }
+.side .hint { padding: 0 8px; font-size: 12px; color: var(--muted); }
+
+.topbar { display: none; }
+.page { margin-left: var(--side); padding: 32px max(24px, env(safe-area-inset-right, 0px)) 80px 32px; }
+.wrap { max-width: 980px; display: flex; flex-direction: column; gap: 40px; }
+.intro { display: flex; flex-direction: column; gap: 8px; }
+.intro p { color: var(--muted); max-width: 64ch; }
+
+section { display: flex; flex-direction: column; gap: 16px; scroll-margin-top: 24px; }
+.sec-head { display: flex; flex-direction: column; gap: 4px; }
+.sec-head p { color: var(--muted); max-width: 64ch; }
+.ref {
+  display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 20px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px;
+}
+.ref.wide { grid-template-columns: minmax(0, 1fr); }
+.shot {
+  display: block; padding: 0; border: 0; background: var(--shot); border-radius: 8px; overflow: hidden;
+  align-self: start; cursor: zoom-in; width: 100%; position: relative;
+}
+.ref.wide .shot { max-width: 640px; }
+.shot img { display: block; width: 100%; height: auto; }
+.form { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.meta { display: flex; flex-direction: column; gap: 6px; }
+.title-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.tag { font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; }
+.pair { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 4px 12px; margin: 0; }
+.pair dt { font-size: 13px; color: var(--muted); }
+.pair dd { margin: 0; }
+.meta a { color: var(--ink); font-size: 13px; align-self: start; }
+fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+legend { padding: 0; font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  font: inherit; font-size: 14px; min-height: 44px; padding: 0 14px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--line); background: transparent; color: var(--ink);
+}
+.chip[aria-pressed="true"] { background: var(--marquee); border-color: var(--marquee); color: var(--on-marquee); font-weight: 600; }
+.chip.no[aria-pressed="true"] { background: var(--no); border-color: var(--no); color: var(--on-no); }
+label.note { font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
+textarea {
+  font: inherit; font-size: 16px; color: var(--ink); background: var(--bg); border: 1px solid var(--line);
+  border-radius: 8px; padding: 10px 12px; min-height: 76px; resize: vertical; width: 100%;
+}
+button.plain {
+  font: inherit; font-size: 14px; min-height: 44px; padding: 0 14px; border-radius: 8px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+}
+.saved { font-size: 12px; color: var(--muted); min-height: 18px; }
+#copyout { min-height: 120px; font-family: ui-monospace, Menlo, monospace; font-size: 12px; }
+
+/* Colour section */
+table.roles { border-collapse: collapse; width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.roles th, .roles td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; font-size: 14px; }
+.roles th { font-size: 13px; color: var(--muted); font-weight: 500; }
+.roles tr:last-child td { border-bottom: 0; }
+.roles code, .sw code, .checks code { font-family: ui-monospace, Menlo, monospace; font-size: 12px; white-space: nowrap; }
+.scroll { overflow-x: auto; }
+.pal { display: flex; flex-direction: column; gap: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+.modes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.mode { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.mode h4 { margin: 0; font-size: 13px; color: var(--muted); font-weight: 500; }
+.sample { background: var(--p-bg); color: var(--p-text); border-radius: 10px; padding: 14px; border: 1px solid var(--line); }
+.sample .card { background: var(--p-surface); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 6px; }
+.sample .time { font-size: 30px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.sample .soon { font-size: 14px; font-weight: 600; color: var(--p-accent-text); background: var(--p-accent-bg); border-radius: 999px; padding: 2px 8px; }
+.sample .film { font-size: 17px; font-weight: 650; }
+.sample .where, .sample .fresh { color: var(--p-muted); font-size: 13px; }
+.sample .stale { color: var(--p-stale); font-size: 13px; }
+.sample .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
+.sample .book { background: var(--p-book); color: var(--p-book-text); border-radius: 8px; padding: 9px 16px; font-weight: 650; font-size: 14px; }
+.sample .focus { border: 2px solid var(--p-focus); border-radius: 8px; padding: 6px 10px; font-size: 13px; }
+.sws { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; }
+.sw { display: flex; flex-direction: column; gap: 2px; font-size: 12px; }
+.sw i { display: block; height: 36px; border-radius: 6px; border: 1px solid var(--line); }
+.sw span { color: var(--muted); }
+.checks { margin: 0; padding: 0; list-style: none; font-size: 12px; color: var(--muted); display: flex; flex-direction: column; gap: 2px; }
+.checks b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* Marked regions */
+.marks { position: absolute; inset: 0; pointer-events: none; }
+.zmarks { position: absolute; cursor: crosshair; touch-action: none; }
+.mark { position: absolute; border: 2px solid var(--mark); background: var(--mark-fill); border-radius: 4px; pointer-events: none; }
+.mark b { position: absolute; top: -2px; left: -2px; background: var(--mark); color: var(--on-mark); font-size: 11px; line-height: 1; padding: 3px 5px; border-radius: 4px 0 4px 0; }
+
+/* Zoom: the screenshot on a dark stage, and beside it a panel with the whole answer form,
+   so nothing has to be closed to answer. On a phone the panel sits under the screenshot. */
+dialog#zoom {
+  border: 0; padding: 0; margin: 0; width: 100vw; height: 100dvh; max-width: none; max-height: none;
+  background: var(--stage); color: var(--ink);
+}
+dialog#zoom::backdrop { background: transparent; }
+.z { height: 100%; display: grid; grid-template-columns: minmax(0, 1fr) minmax(360px, 440px); }
+.z-stage { min-height: 0; padding: 24px; display: flex; }
+.z-stage figure { margin: 0; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; position: relative; }
+.z-stage img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; }
+.z-panel {
+  background: var(--surface); border-left: 1px solid var(--line); overflow-y: auto; overscroll-behavior: contain;
+  padding: 0 20px 24px; display: flex; flex-direction: column; gap: 18px; min-height: 0;
+}
+.z-nav {
+  position: sticky; top: 0; z-index: 1; background: var(--surface); border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; gap: 8px; padding: 12px 0;
+}
+.z-nav .count { flex: 1; text-align: center; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.zbtn {
+  font: inherit; font-size: 14px; min-height: 44px; min-width: 44px; padding: 0 12px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--line); background: transparent; color: var(--ink);
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+}
+.zbtn:hover { background: var(--bg); }
+kbd { font-family: ui-monospace, Menlo, monospace; font-size: 11px; border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; color: var(--muted); }
+.z-head { display: flex; flex-direction: column; gap: 4px; }
+.z-sec { font-size: 13px; color: var(--muted); }
+.z-pair { grid-template-columns: minmax(0, 1fr); }
+.z-pair dd + dt { margin-top: 8px; }
+#znote { min-height: 120px; }
+.z-marks { display: flex; flex-direction: column; gap: 8px; }
+.z-help { font-size: 13px; color: var(--muted); }
+.z-regions { display: flex; flex-wrap: wrap; gap: 6px; }
+.z-regions:empty { display: none; }
+.z-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: auto; }
+.z-foot .saved { min-height: 0; }
+.z-foot a { color: var(--ink); font-size: 13px; white-space: nowrap; }
+
+@media (max-width: 900px) {
+  .side { transform: translateX(-100%); visibility: hidden; width: min(86vw, 320px); }
+  body.nav-open .side { transform: none; visibility: visible; box-shadow: 0 0 0 100vmax var(--scrim); }
+  .topbar {
+    display: flex; position: sticky; top: 0; z-index: 10; background: var(--bg); border-bottom: 1px solid var(--line);
+    align-items: center; justify-content: space-between; gap: 12px;
+    padding: 8px max(16px, env(safe-area-inset-right, 0px)) 8px max(16px, env(safe-area-inset-left, 0px));
+    font-size: 13px; color: var(--muted);
+  }
+  .topbar strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .page { margin-left: 0; padding: 20px max(16px, env(safe-area-inset-right, 0px)) 64px max(16px, env(safe-area-inset-left, 0px)); }
+  section { scroll-margin-top: 76px; }
+  .ref { grid-template-columns: minmax(0, 1fr); }
+  .ref .shot { max-width: 260px; }
+  .ref.wide .shot { max-width: 100%; }
+  .modes { grid-template-columns: minmax(0, 1fr); }
+  .pair { grid-template-columns: minmax(0, 1fr); }
+  .z { display: block; overflow-y: auto; }
+  .z-stage { height: 58dvh; padding: 12px; }
+  .z-panel { border-left: 0; overflow: visible; padding: 0 16px 32px; }
+  .zbtn kbd { display: none; }
+}
+.hexes { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+.hexes span { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; }
+.hexes i { width: 28px; height: 28px; border-radius: 8px; border: 1px solid var(--line); }
+.hexes small { color: var(--muted); font-size: 12px; }
+</style>
+</head>
+<body>
+
+<aside class="side" id="side" aria-label="Sections">
+  <div class="brand">Sinima references · round 5: design style and colour</div>
+  <div class="progress">
+    <span><strong id="count">0</strong> of <strong id="total">0</strong> answered</span>
+    <div class="meter" aria-hidden="true"><i id="meter"></i></div>
+    <span id="savestate" role="status">Answers are saved in this browser</span>
+  </div>
+  <nav id="nav"></nav>
+  <p class="hint">Click a screenshot to open it large, with the full answer form beside it. Drag on the screenshot to mark parts. Esc closes; the arrow keys move between references.</p>
+  <div class="actions">
+    <button class="plain" id="dlbtn" type="button">Download answers</button>
+    <button class="plain" id="copybtn" type="button">Copy all answers</button>
+  </div>
+</aside>
+
+<div class="topbar">
+  <button class="plain" id="navbtn" type="button" aria-controls="side" aria-expanded="false">Sections</button>
+  <span><strong id="count2">0</strong> of <strong id="total2">0</strong> answered</span>
+</div>
+
+<div class="page">
+  <div class="wrap">
+    <header class="intro">
+      <h1>Round 5: a design style and colours with character</h1>
+      <p>You said the site works but has no character and doesn't look modern. Its structure stays as the wireframe. This round is only about the look: 153 screens for design style in six families, then 88 for colour in five families. They come from all kinds of apps, on purpose; none needs to be about cinema. Phone screens are iPhone apps; desktop ones are websites.</p>
+      <p>For each one, tap what you like and say exactly what in the box. Click a screenshot to zoom, drag over the parts you like, and type there too. Tap “Not for us” for anything to avoid; that helps as much as a like. Skip the ones you have no view on. Answers save in this browser; press Copy all answers when you're done and paste them to me.</p>
+      <p>The colour cards show a few colours picked from each screen by eye, so treat the values as approximate.</p>
+    </header>
+    <textarea id="copyout" hidden readonly aria-label="All answers as text"></textarea>
+    <main id="main" class="wrap"></main>
+  </div>
+</div>
+
+<dialog id="zoom" aria-labelledby="ztitle">
+  <div class="z">
+    <div class="z-stage">
+      <figure id="zfig"><img id="zimg" alt="" draggable="false"><div id="zmarks" class="zmarks"></div></figure>
+    </div>
+    <div class="z-panel">
+      <div class="z-nav">
+        <button class="zbtn" id="zprev" type="button" aria-label="Previous reference">←</button>
+        <span class="count" id="zcount"></span>
+        <button class="zbtn" id="znext" type="button" aria-label="Next reference">→</button>
+        <button class="zbtn" id="zclose" type="button">Close <kbd>Esc</kbd></button>
+      </div>
+      <div class="z-head">
+        <span class="z-sec" id="zsec"></span>
+        <div class="title-row"><h3 id="ztitle"></h3><span class="tag" id="ztag"></span></div>
+      </div>
+      <dl class="pair z-pair"><dt>What it shows</dt><dd id="zwhat"></dd><dt>What we'd take</dt><dd id="zhow"></dd></dl>
+      <div id="zhex"></div>
+      <fieldset><legend>What do you like about it?</legend><div class="chips" id="zchips"></div></fieldset>
+      <label class="note" for="znote">Exactly what you like (or don't)
+        <textarea id="znote" rows="5" placeholder="e.g. 1: the big condensed titles. 2: the coloured strip under each poster"></textarea></label>
+      <div class="z-marks">
+        <p class="z-help">Drag on the screenshot to mark a part you mean. Each mark gets a number you can use in your note.</p>
+        <div class="z-regions" id="zregions"></div>
+      </div>
+      <div class="z-foot"><span class="saved" id="zsaved" role="status"></span><a id="zlink" href="#" target="_blank" rel="noopener">Open on Mobbin</a></div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+const LIKES = ["Visual style", "Colour", "Type", "Hierarchy", "Layout", "Density", "Wording", "Interaction"];
+const PAL_LIKES = ["Overall feel", "Background", "Accent", "Book button", "Light mode", "Dark mode"];
+const NO = "Not for us";
+// [id, product, library id, "p" phone | "d" desktop, what it shows, how we'd use it]
+const SECTIONS = [
+ {
+  "id": "bold",
+  "title": "Style: big type, poster-like",
+  "note": "Type is the picture: oversized or condensed headlines, strong blocks of colour, confident layouts.",
+  "refs": [
+   [
+    "r5-bold-posh-flyer-home",
+    "Posh",
+    "3c487535-75f7-41e7-a5ec-591b150126c3",
+    "p",
+    "Black screen with a big white line 'Find your world in Los Angeles' and loud party flyers in yellow, orange and purple as the only colour.",
+    "Let the film posters carry all the colour on a near-black page, under one big plain-spoken headline that names the area.",
+    {}
+   ],
+   [
+    "r5-bold-posh-pink-ticket",
+    "Posh",
+    "0067c07e-afdb-4673-80f5-90a1a5cd28dd",
+    "p",
+    "The whole screen is hot pink, with a strip of repeating 'YOU'RE GOING' text across the top and black centred type over the event flyer.",
+    "A one-colour full screen for a moment that matters, such as a reminder being set, with a repeating text strip across the top.",
+    {}
+   ],
+   [
+    "r5-bold-nike-finish-strong",
+    "Nike",
+    "e5386aaa-080f-45be-9c72-de17e2c33a8f",
+    "p",
+    "A tall orange-red block with large white brush-script lettering and a tight condensed 'UP TO 45% OFF' line, with a small white pill button.",
+    "Pair one expressive display face with a tight condensed one on a flat colour block for the top film of the hour.",
+    {}
+   ],
+   [
+    "r5-bold-spotify-wrapped-top-songs",
+    "Spotify",
+    "ecd17243-4b41-488a-b824-1647b3467b29",
+    "p",
+    "Dark grey background with a cut-paper collage in white, black stripes and lilac, and a very wide heavy typeface for 'Your Top Songs 2025'.",
+    "Wide heavy lettering and striped cut-out shapes as a header treatment for 'Starting soon', in two colours only.",
+    {}
+   ],
+   [
+    "r5-bold-formula1-moments-news",
+    "Formula 1",
+    "73911638-cf7d-4503-84d5-2863bfa959f7",
+    "p",
+    "Off-white page with very wide black capitals for section titles ('MOMENTS', 'TOP NEWS'), red accents and small red tags on photo cards.",
+    "Section titles in a wide heavy face that look like signage, with small solid tags for things like 'Starts in 12 min'.",
+    {}
+   ],
+   [
+    "r5-bold-nike-run-club-orange-numbers",
+    "Nike Run Club",
+    "0f6d4dea-2e39-419f-a0df-6e48da4be7f0",
+    "p",
+    "Solid orange screen with huge black numbers turned on their side and a black round button.",
+    "A countdown shown as giant numbers on one flat colour, big enough to read at arm's length.",
+    {}
+   ],
+   [
+    "r5-bold-peloton-black-headline",
+    "Peloton Strength+",
+    "25df4718-921e-4998-93d6-1b2dd1de2fdd",
+    "p",
+    "Pure black screen with a three-line white headline in a heavy rounded sans and a thin yellow ring counter.",
+    "Film title set very large in white on black with a single thin coloured ring for the countdown.",
+    {}
+   ],
+   [
+    "r5-bold-strava-giant-times",
+    "Strava",
+    "f8747488-3929-468c-a75f-cb9cd86fe90c",
+    "p",
+    "White screen where the numbers are the design: enormous black condensed digits with small grey labels, and one orange button.",
+    "Make the start time the largest thing in each row, in heavy condensed digits, with the Book button as the only colour.",
+    {}
+   ],
+   [
+    "r5-bold-swiggy-scenes-tiles",
+    "Swiggy",
+    "b44ed4c4-5b89-41c3-912d-7f803065397b",
+    "p",
+    "Dark screen with a tall condensed white headline, then a grid of small tiles in yellow, purple, pink and green with condensed labels and cut-out objects.",
+    "Area chips or genres as small bright tiles with condensed labels instead of grey pills.",
+    {}
+   ],
+   [
+    "r5-bold-swiggy-event-poster",
+    "Swiggy",
+    "1245c037-a32b-4b0e-bebf-1ffc4d9b454d",
+    "p",
+    "Black page with a navy illustrated poster, a condensed uppercase event title in white, and an orange 'Book tickets' button in a pinned bar.",
+    "Film page layout: poster, condensed uppercase title, date line, and a pinned bar with price and one orange Book button.",
+    {}
+   ],
+   [
+    "r5-bold-dice-event-poster",
+    "DICE",
+    "ae074cf0-3b1d-4718-bfa2-67d4c929c10b",
+    "p",
+    "Black page with a green and blue poster, white title, a yellow date line and a yellow pill 'BUY NOW' button beside a large price.",
+    "Black page, time in one bright accent colour, and a single yellow pill for Book. Hearts sit on the poster corner.",
+    {}
+   ],
+   [
+    "r5-bold-eventbrite-tickets-secured",
+    "Eventbrite",
+    "ee34d411-a341-446a-93e6-3cc55acf2d0f",
+    "p",
+    "A soft gradient from pale lime through orange to pink with two words in heavy black wide capitals in the middle.",
+    "A confident two-word confirmation screen, for example after adding a showing to the calendar.",
+    {}
+   ],
+   [
+    "r5-bold-deezer-quiz-blocks",
+    "Deezer",
+    "ee18f684-9043-4199-a4ea-47af5bdf7665",
+    "p",
+    "Flat blocks of purple, pink, yellow and mint with tight condensed black titles and small tilted question-mark tiles.",
+    "Colour-blocked cards for groups such as 'Tonight' or 'Late shows', each with its own flat colour and a condensed title.",
+    {}
+   ],
+   [
+    "r5-bold-cash-app-net-number",
+    "Cash App",
+    "2d543e0f-4c65-44d5-8828-a35df58ba902",
+    "p",
+    "Black screen, one very large white figure as the headline, bright green bars, and small monospaced labels.",
+    "One huge white line for the key fact ('Starts in 12 min') on black, with a single neon accent and small monospaced details.",
+    {}
+   ],
+   [
+    "r5-bold-infatuation-hit-list",
+    "The Infatuation",
+    "665107c3-5c29-42f9-a10e-efdc768405d7",
+    "p",
+    "White list with heavy condensed black names, yellow score circles overlapping the photos, underlined uppercase tags and a pink heart.",
+    "Cinema or film rows with condensed bold names, a round coloured badge on the poster for the countdown, and uppercase area tags.",
+    {}
+   ],
+   [
+    "r5-bold-patch-blue-headline",
+    "Patch",
+    "40cfa79f-c1db-4e7c-aa91-b542618a8469",
+    "d",
+    "Electric blue page filled by a white condensed uppercase headline, with a white card holding a line-drawn character.",
+    "A full-width condensed headline on one strong colour for the desktop home, with the content in a white card below.",
+    {
+     "section": true
+    }
+   ],
+   [
+    "r5-bold-figma-yellow-block",
+    "Figma",
+    "5f84e90e-f4ae-48e5-bdb0-9b0b9b303f03",
+    "d",
+    "A flat yellow block with large black sentence-case type and nothing else.",
+    "A plain flat colour block with one large calm sentence, for the About page or an empty state.",
+    {
+     "section": true
+    }
+   ],
+   [
+    "r5-bold-collins-pink-date",
+    "COLLINS",
+    "19947e9a-b3d8-4950-bf66-9b52f1c39800",
+    "d",
+    "A hot pink panel with a name, date and city set huge in coral red condensed type, tone on tone.",
+    "Tone-on-tone type: title, time and area set very large in a darker shade of the card's own colour.",
+    {
+     "section": true
+    }
+   ],
+   [
+    "r5-bold-eventbrite-speaker-names",
+    "Eventbrite",
+    "9547a0e0-ba3d-42e4-9cbf-615686487d78",
+    "d",
+    "White grid of round portraits with names in tall condensed orange capitals beside each one.",
+    "Cinema logo rows with the name in tall condensed coloured capitals next to a round logo.",
+    {
+     "section": true
+    }
+   ],
+   [
+    "r5-bold-tidal-name-list",
+    "TIDAL",
+    "8df13bca-40a7-4190-881b-f701f04a8566",
+    "d",
+    "Black page with a list of names in very large type, grey until active then white, with a small image appearing beside the active one.",
+    "Film list as big type only: titles in large grey text that turn white on hover or focus, with the poster appearing beside it.",
+    {
+     "section": true
+    }
+   ],
+   [
+    "r5-bold-maze-disco-conf",
+    "Maze",
+    "0ce6ce2b-5afa-48db-ae4a-71b9fda0b959",
+    "d",
+    "Black page with a purple strip of scrolling date text, a chunky pixel-style logo, and white outlined boxes for sections.",
+    "A coloured strip of running text for the day and date, and plain outlined boxes on black for sections.",
+    {
+     "section": true
+    }
+   ],
+   [
+    "r5-bold-savee-uppercase-welcome",
+    "Savee",
+    "9c5be5fa-9669-445e-bee9-dede668d9f26",
+    "d",
+    "Black page with a stacked white uppercase headline in a light grotesque, and a few small colour tiles scattered around it.",
+    "A stacked uppercase headline with tight line spacing as the desktop hero, with posters as small scattered tiles.",
+    {}
+   ],
+   [
+    "r5-bold-ditto-highlight-headline",
+    "Ditto",
+    "f73337c9-7d23-459c-94e8-dd294d03aaf3",
+    "d",
+    "White page with a pixel-style logo, a lilac top strip, and a large black headline where one word sits on a solid green highlight.",
+    "Highlight one word of a headline with a solid colour block, for example the area name or 'soon'.",
+    {}
+   ],
+   [
+    "r5-bold-fal-cyan-pixels",
+    "fal",
+    "71f2e177-729a-42c8-ae22-3fb068cf6646",
+    "d",
+    "Pale cyan page with big black tight type, and pixel shapes and thick strokes in green, yellow and purple around it.",
+    "A light coloured background instead of white or black, with chunky pixel shapes as decoration behind a heavy headline.",
+    {}
+   ],
+   [
+    "r5-bold-oatly-stories-condensed",
+    "Oatly",
+    "7e67e852-fa32-42b4-901b-f520b219ee89",
+    "d",
+    "White page with photos, very heavy condensed black headlines and small monospaced body text and dates.",
+    "Heavy condensed film titles with monospaced times and freshness lines underneath: two typefaces doing two clear jobs.",
+    {
+     "section": true
+    }
+   ],
+   [
+    "r5-bold-oatly-things-we-do",
+    "Oatly",
+    "5c01860d-90fa-40b0-9720-ae0fac9ca0cd",
+    "d",
+    "A hand-drawn outlined 3D page title, monospaced underlined tabs, one big photo and a condensed black headline.",
+    "Monospaced underlined tabs, and a hand-drawn title for the page name to give the site a voice.",
+    {
+     "section": true
+    }
+   ]
+  ]
+ },
+ {
+  "id": "playful",
+  "title": "Style: playful and characterful",
+  "note": "Illustration, mascots, stickers, quirky shapes and bouncy forms. Personality first.",
+  "refs": [
+   [
+    "r5-playful-alan-blue-bear",
+    "Alan",
+    "79e06348-ea2e-4666-85c2-5e1cc92a9f44",
+    "p",
+    "Peach and white screen with a soft 3D blue bear that shows up in different poses on each card, and a rounded arc at the top.",
+    "A small mascot that changes pose by state: waiting, running late, credits scene or not.",
+    {}
+   ],
+   [
+    "r5-playful-brainly-purple-mascot",
+    "Brainly",
+    "07e5079c-e9f0-4996-8365-06b9d39e93a6",
+    "p",
+    "Light grey screen with a purple blob mascot and white rounded cards, each with a small glossy 3D object in the corner.",
+    "White rounded cards with one small object per card, such as popcorn, ticket or clock, instead of plain icons.",
+    {}
+   ],
+   [
+    "r5-playful-bitepal-raccoon",
+    "BitePal",
+    "00f41a2b-baf5-4fd9-affb-6b04770c856a",
+    "p",
+    "A cartoon raccoon in a green scene with pumpkins, red hearts for status, and white rounded cards with a black round plus button.",
+    "A character scene as the header with the list in rounded cards below, and hearts drawn as chunky shapes.",
+    {}
+   ],
+   [
+    "r5-playful-timespent-stamps",
+    "timespent",
+    "0e631ddd-e195-4170-8474-77eba731ba2e",
+    "p",
+    "Off-white screen with thin outlined cards, round stamp-style text circles, and fox and bear stickers on teal and tan tiles.",
+    "Stamp-style round badges with text running around the edge for 'Starts in 12 min', and outlined cards with a soft offset.",
+    {}
+   ],
+   [
+    "r5-playful-kit-sticker-collage",
+    "Kit",
+    "b2ecbbe7-fc42-44bd-927c-4cac7e8d2ed5",
+    "p",
+    "White screen with a tilted collage of stickers and cards in lilac, green and yellow, a slanted heavy '$0.00', and a yellow pill button.",
+    "Tilted, overlapping poster stickers as a hero, a slanted heavy number for the countdown, and a yellow pill Book button.",
+    {}
+   ],
+   [
+    "r5-playful-foodpanda-pink-panda",
+    "foodpanda",
+    "17dffbbd-30d5-443d-a910-fc378500f192",
+    "p",
+    "Deep purple header with a pink 3D panda, glossy 3D category icons, and hot pink offer cards.",
+    "A two-colour brand pairing (purple and hot pink) with a mascot peeking in from the header edge.",
+    {}
+   ],
+   [
+    "r5-playful-mimo-offset-buttons",
+    "Mimo",
+    "54b61209-26b8-4d28-ac60-9f888e099b6e",
+    "p",
+    "Lilac header with a small robot, and white cards and buttons with a purple outline and a solid offset edge so they look pressable.",
+    "Buttons and showing cards with an outline and a solid offset edge, so Book looks like a real key to press.",
+    {}
+   ],
+   [
+    "r5-playful-id-drawn-initials",
+    "ID",
+    "52eb9fe0-8ddc-4066-b06a-4332a8bfa13f",
+    "p",
+    "Warm grey screen with hand-drawn initials in sketched circles, a photo cut-out collage in the middle, and a blue pill with scribbled lettering.",
+    "Hand-drawn circles and scribbled lettering for small labels, such as area initials or the heart.",
+    {}
+   ],
+   [
+    "r5-playful-bears-gratitude-drawn",
+    "Bears Gratitude",
+    "7ae2c7ca-ccf4-4e9f-a97f-a86590e0f974",
+    "p",
+    "Tan and soft pink screen with thick-outlined hand-drawn bears, a purple mat, and rounded pink cards with pink headings.",
+    "A warm tan and pink palette with thick-outline drawings, for empty states like 'Nothing starting soon'.",
+    {}
+   ],
+   [
+    "r5-playful-spotify-kids-pastel-cards",
+    "Spotify Kids",
+    "2e80aaab-70b8-4856-bad5-e1d0abee5e5b",
+    "p",
+    "Purple page with wide pastel cards in pink, lilac, blue and green, each with a rounded title and a cartoon character on the right.",
+    "Wide pastel cards with a big rounded title on the left and a picture on the right, for areas or cinemas.",
+    {}
+   ],
+   [
+    "r5-playful-glovo-yellow-bubbles",
+    "Glovo",
+    "1dbb990b-4170-45a9-81ba-fcc17bf6dcd5",
+    "p",
+    "Sunny yellow top half with white wobbly bubbles holding outlined illustrations and label pills, ending in a wavy edge.",
+    "Area picker as wobbly white bubbles on a flat yellow field, with a wavy edge where the list begins.",
+    {}
+   ],
+   [
+    "r5-playful-grilld-hand-lettering",
+    "Grill'd",
+    "d77e8dd1-33d8-49c6-87e2-164c6d7bf9a9",
+    "p",
+    "Cream page with a line-drawn running burger, a dark green status card with segmented progress, red brush lettering and a red script 'Rewards' button.",
+    "A segmented progress bar for time until the film starts, plus brush lettering and a small doodle for personality.",
+    {}
+   ],
+   [
+    "r5-playful-wonder-cream-illustrations",
+    "Wonder",
+    "8441b9b2-e7eb-45fa-8195-1033787be657",
+    "p",
+    "Cream page with flat storybook illustrations, dark green type, peach and pale green bands, and spaced capitals with a diamond divider.",
+    "Cream, peach and deep green with flat illustrations: a softer playful look that still reads as grown-up.",
+    {}
+   ],
+   [
+    "r5-playful-partiful-ube-universe",
+    "Partiful",
+    "a7a8d3e2-946e-4d70-97e2-5ee5822f05e3",
+    "p",
+    "Peach to lilac gradient page with a thin serif title in capitals, a purple cartoon poster, and a black pill 'Get tickets' bar with a round star button.",
+    "The page takes its background colour from the poster, with a pinned black pill for Book and a round save button beside it.",
+    {}
+   ],
+   [
+    "r5-playful-new-yorker-drawn-sections",
+    "The New Yorker",
+    "8582919c-5a14-4418-bfa7-fb459c09d79d",
+    "p",
+    "A grid of pastel tiles in blue, peach, pink and yellow, each with a black ink drawing and a small serif label.",
+    "Area or cinema tiles with small ink drawings on pastel squares, which would give each place its own picture.",
+    {}
+   ],
+   [
+    "r5-playful-abode-red-frame",
+    "Abode",
+    "ae423d30-5073-4f3b-8c83-981d4215774e",
+    "p",
+    "A red frame around a white sheet of small cards: a pixel-style score, a blue cartoon tile, a countdown tile, and red-accent text.",
+    "A bright frame around the page, and small mixed tiles that each show one fact, such as a timer tile.",
+    {}
+   ],
+   [
+    "r5-playful-headspace-sun",
+    "Headspace",
+    "1f442b7d-ed5e-42f1-a0f3-5010604f47d8",
+    "d",
+    "Yellow page with a smiling orange sun rising from white clouds and a large blue pill button with white rounded type.",
+    "A big round friendly button and one simple smiling shape, for the empty or all-done state.",
+    {
+     "section": true
+    }
+   ],
+   [
+    "r5-playful-aboard-flower-faces",
+    "Aboard",
+    "e5bf6533-69da-4b32-84a4-a2fcccb645aa",
+    "d",
+    "White page with a soft pastel rainbow arc and two smiling blob faces in pink and orange above a rounded black headline.",
+    "Small blob faces as status characters, for example one happy and one sleepy for 'Stay' and 'Go'.",
+    {
+     "section": true
+    }
+   ],
+   [
+    "r5-playful-pampam-object-stickers",
+    "PamPam",
+    "d3a56f6d-f5bb-4d27-9278-c10c0388d8bc",
+    "d",
+    "White page with a serif headline in the centre and photo cut-out objects (pancakes, shoes, pumpkins, cupcakes) scattered like stickers.",
+    "Cut-out objects scattered around a headline on desktop: popcorn, tickets, seats, drinks.",
+    {
+     "section": true
+    }
+   ],
+   [
+    "r5-playful-koto-toaster",
+    "Koto",
+    "dd3211bb-5bfb-4b0e-810e-5d53afec0244",
+    "d",
+    "Mint background with a chrome toaster, orange retro script and block lettering, yellow stars, and an orange strip of script text along the bottom.",
+    "Retro cinema-style lettering in orange on mint, with a strip of running script text at the bottom.",
+    {
+     "section": true
+    }
+   ],
+   [
+    "r5-playful-daylight-clouds",
+    "Daylight",
+    "9a5b5995-e629-4ebc-add7-6644f2c68650",
+    "d",
+    "Cream page with a serif headline, a huge pale grey wordmark, and small outlined clouds and a sun in lilac and orange floating about.",
+    "Small floating drawn shapes that match the time of day: sun for matinees, moon for late shows.",
+    {
+     "section": true
+    }
+   ],
+   [
+    "r5-playful-figjam-sticky-notes",
+    "Figma",
+    "be8ad189-9a1a-44d7-99ef-4b755cb70230",
+    "d",
+    "Purple panel with a bold white rounded headline, yellow sticky notes, a speech-burst sticker and hand-drawn arrows.",
+    "Sticky-note and speech-burst stickers for notes like 'Stay after the credits', with hand-drawn arrows.",
+    {
+     "section": true
+    }
+   ],
+   [
+    "r5-playful-town-bear",
+    "Town",
+    "bbcbaabb-fcaf-45f2-acd4-13c24ffd23ed",
+    "d",
+    "White page with a slab-serif headline split around a hand-drawn brown bear, with tiny app icons scattered around.",
+    "A drawn character standing in the middle of the headline, splitting the words around it.",
+    {
+     "section": true
+    }
+   ],
+   [
+    "r5-playful-yellowbird-pepper-doodles",
+    "Yellowbird",
+    "52ad00dc-133b-4d95-8b9a-c3c7bde88887",
+    "d",
+    "Bright yellow page with a heavy black slab headline and thick black line doodles of bushes, clouds and a little pepper face.",
+    "Yellow and black only, with thick marker doodles along the bottom edge of the page.",
+    {
+     "section": true
+    }
+   ],
+   [
+    "r5-playful-hilos-pastel-tiles",
+    "hilos",
+    "43095437-a79a-4912-93a0-6c86686c66c8",
+    "d",
+    "White desktop app with a line-drawn character in the corner, a serif greeting, and four pastel tiles in pink, blue, coral and yellow.",
+    "A serif greeting line with a small drawn character, and pastel count tiles such as 'Starting soon: 6'.",
+    {}
+   ],
+   [
+    "r5-playful-givingli-card-shop",
+    "Givingli",
+    "40a48805-3065-440f-b7e3-de2b930d9858",
+    "d",
+    "Desktop app with a serif heading, illustrated cut-out stickers around the search box, outlined pill filters, and a row of colourful greeting cards.",
+    "Poster rows on desktop under a serif heading, with outlined pill filters and a few stickers around the top.",
+    {}
+   ]
+  ]
+ },
+ {
+  "id": "editorial",
+  "title": "Style: editorial, like a magazine",
+  "note": "Expressive display type, whitespace, art-directed images, a publication feel.",
+  "refs": [
+   [
+    "r5-editorial-zara-polaroid",
+    "ZARA",
+    "81d54090-319f-4a6a-8d8e-9f27555ef5d1",
+    "p",
+    "White screen with italic serif tabs, one tilted Polaroid-style photo, tiny grey serif captions, and a lot of empty space.",
+    "Italic serif tabs, and one poster shown large and slightly tilted with a tiny caption.",
+    {}
+   ],
+   [
+    "r5-editorial-co-star-long-read",
+    "Co-Star",
+    "6291b4fd-7f79-461c-9a2a-c6184ebdaf44",
+    "p",
+    "Black and white only: a serif headline, a grainy photo, tiny monospaced capitals for labels, and a solid black box button.",
+    "Monospaced small capitals for labels and times, serif for titles, and a black box for Book.",
+    {}
+   ],
+   [
+    "r5-editorial-new-yorker-discover",
+    "The New Yorker",
+    "f766b3a2-8084-4af8-9023-20bd0692acf0",
+    "p",
+    "White page with centred section names in the magazine's display capitals, italic serif subheads, serif story titles and small blue links.",
+    "Centred section titles in a display face with thin rules, like a contents page.",
+    {}
+   ],
+   [
+    "r5-editorial-atlantic-recommended",
+    "The Atlantic",
+    "be940c2e-c92e-4d51-bdc2-f4743a713254",
+    "p",
+    "White reading page with a condensed serif capitals heading, small square thumbnails, serif titles and monospaced capitals bylines.",
+    "A list row with a small thumbnail, a serif title, and a monospaced capitals line under it for cinema and time.",
+    {}
+   ],
+   [
+    "r5-editorial-uniqlo-lifewear",
+    "UNIQLO",
+    "4391e9be-678d-414b-a5e2-41d82a2b2c8b",
+    "p",
+    "White page with a small centred title, short text, and one tall photo of pink and blue houses.",
+    "One tall image per screen with short quiet text above it, so the poster does the talking.",
+    {}
+   ],
+   [
+    "r5-editorial-alma-journal",
+    "Alma",
+    "d52997f0-7c55-4c8b-878d-5349964c9bf7",
+    "p",
+    "Cream background with soft white cards, bold serif headings in dark brown, and small pink and orange tag chips.",
+    "Cream paper background, serif film titles in dark brown, and small soft tags for area and format.",
+    {}
+   ],
+   [
+    "r5-editorial-artsy-editorial",
+    "Artsy",
+    "e0292067-b65d-477a-9110-c5a35afa1234",
+    "p",
+    "White page with large photos, small plain captions, and a thin outlined 'News' box with the date at the top right.",
+    "A thin outlined box with a title on the left and the date on the right, for 'Today' and 'Tomorrow' groups.",
+    {}
+   ],
+   [
+    "r5-editorial-moonly-article",
+    "Moonly",
+    "c5a84f7f-5c5e-484e-a3d7-7e73abd25b47",
+    "p",
+    "White page with a large serif title, small spaced capitals for category and reading time, and a rounded illustration in green and coral.",
+    "A large serif title with a small capitals line for runtime and rating, above a rounded image.",
+    {}
+   ],
+   [
+    "r5-editorial-places-saved-list",
+    "Places",
+    "050c2717-d351-4a49-8db9-d631cb34d043",
+    "p",
+    "Warm grey page with a serif city heading, monospaced search text, outlined filter pills with orange icons, and thumbnail rows with bookmark icons.",
+    "Close to Sinima's own list: a serif area heading, outlined filter chips, thumbnail rows, and a save icon on the right.",
+    {}
+   ],
+   [
+    "r5-editorial-insight-timer-event",
+    "Insight Timer",
+    "ccd6c9a0-abf9-4866-beb0-50a4c2e66a67",
+    "p",
+    "White page with a rounded portrait that has a small date tab on its bottom edge, a centred serif title, and a wide black button.",
+    "A small date or time tab on the poster's edge, a centred serif title, and one wide black Book button.",
+    {}
+   ],
+   [
+    "r5-editorial-tolan-journal",
+    "Tolan",
+    "2ba3c2f7-b444-4218-82ac-619701090aa5",
+    "p",
+    "A warm orange illustrated header over a cream page of serif body text with a small spaced capitals date line.",
+    "Warm cream paper and serif text for the long parts, such as About or the credits note.",
+    {}
+   ],
+   [
+    "r5-editorial-zara-serif-categories",
+    "ZARA",
+    "1a889d4d-b96d-4f5a-a3f7-9f359617acc1",
+    "d",
+    "White page where a big italic serif list of words runs across the screen, black for the active word and grey for the rest, over a model photo.",
+    "Area or film names as one long line of big italic serif words, with the chosen one in black and the rest grey.",
+    {}
+   ],
+   [
+    "r5-editorial-julienne-recipe",
+    "Julienne",
+    "55efafcc-c31a-40fc-941b-20db82a4ea56",
+    "d",
+    "White page with a centred photo and a centred serif headline in two lines, with a dark red button in the header.",
+    "A centred serif title under a centred image for the film page on desktop, with a dark red accent.",
+    {}
+   ],
+   [
+    "r5-editorial-mymind-cards",
+    "mymind",
+    "04dbfd40-77e1-4ddb-adc4-e8a5b2173451",
+    "d",
+    "Pale grey-blue page with a hand-script label and three poster-like cards in mixed sizes, one of them a blue and yellow 'Lagos' print.",
+    "Posters shown as loose cards of different sizes on a soft tinted background, with a hand-script label.",
+    {}
+   ],
+   [
+    "r5-editorial-telescope-photo-grid",
+    "Telescope",
+    "c7b0bd1c-5731-4d90-9e59-c1c5d94d53b2",
+    "d",
+    "White page with a grid of tall warm interior photos in different heights, and very small captions underneath.",
+    "A poster wall with uneven heights and tiny captions, with nothing else competing.",
+    {}
+   ],
+   [
+    "r5-editorial-curater-art-feed",
+    "Curater",
+    "d440a9d9-e5c2-4562-ab90-b380fabfedee",
+    "d",
+    "White page with artworks in a loose masonry grid, a slim icon rail on the left, and small grey text under each piece.",
+    "A slim icon rail on desktop with the posters laid out like a gallery wall.",
+    {}
+   ],
+   [
+    "r5-editorial-runway-rna-sessions",
+    "Runway",
+    "a139d1ae-1780-4161-958b-2e15832c59f2",
+    "d",
+    "Cream page with cut-out images (leaves, a statue, a butterfly, a saucer) arranged loosely around a large serif title.",
+    "Cut-out images arranged around a serif title on cream, for a featured film or the About page.",
+    {
+     "section": true
+    }
+   ],
+   [
+    "r5-editorial-a24-title-list",
+    "A24",
+    "55768f3c-4e26-47b9-a940-952c405ecac9",
+    "d",
+    "A full-width film still with a list of film titles set large in white over it, each with a tiny year.",
+    "A film list set as large type over a still, with the year or the next start time as a tiny raised number.",
+    {
+     "section": true
+    }
+   ],
+   [
+    "r5-editorial-kobu-three-stories",
+    "KOBU",
+    "f5959421-5ded-4adb-98db-49143db77839",
+    "d",
+    "Three tall warm photos in a row, each with a tiny spaced capitals label to the left of a serif-like headline with a small arrow.",
+    "A small capitals label hanging to the left of each title, for example the area name before the cinema.",
+    {
+     "section": true
+    }
+   ],
+   [
+    "r5-editorial-new-yorker-web-hero",
+    "The New Yorker",
+    "03ca30cc-a924-4eb8-baa8-977472e22098",
+    "d",
+    "A deep red to black gradient with an eagle illustration on the right and a centred headline in thin display capitals on the left.",
+    "One art-directed feature at the top on a rich dark colour, with the title in thin display capitals.",
+    {
+     "section": true
+    }
+   ],
+   [
+    "r5-editorial-ssense-headline",
+    "SSENSE",
+    "4de98a06-dbff-4e54-83c6-a301c519bba0",
+    "d",
+    "White band with a large light uppercase sans headline, a large serif sentence under it, and a small outlined button.",
+    "A sans capitals title followed by a serif sentence at nearly the same size: a clear two-voice headline.",
+    {
+     "section": true
+    }
+   ],
+   [
+    "r5-editorial-faire-forecast",
+    "Faire",
+    "9e425155-32e3-4302-b2b3-b2781d4ec576",
+    "d",
+    "White page with a centred serif title, an outlined tag pill, a tiny spaced date line, and a rich still-life photo with art deco lettering.",
+    "A centred serif title with one outlined tag and a tiny date line, above a full poster.",
+    {
+     "section": true
+    }
+   ],
+   [
+    "r5-editorial-mouthwash-split",
+    "MOUTHWASH Studio",
+    "18b9940f-7494-4680-9013-07b8fbe47943",
+    "d",
+    "Pale grey page split in two: a tight bold sans title and small text on the left, a large warm interior photo on the right.",
+    "A two-column desktop film page with the title and facts on the left and a big image on the right.",
+    {
+     "section": true
+    }
+   ],
+   [
+    "r5-editorial-studio-freight-index",
+    "Studio Freight",
+    "45d8e2ba-244c-4d39-bafb-93e433cb700c",
+    "d",
+    "White page with thin rules, images on the left of each item, and serif titles with monospaced dates aligned at the top.",
+    "Rows divided by thin rules, with a serif title and a monospaced time at the top and the note at the bottom.",
+    {
+     "section": true
+    }
+   ],
+   [
+    "r5-editorial-faculty-department-book",
+    "Faculty Department",
+    "49d02cdf-290a-43b6-a216-0c173a6b391d",
+    "d",
+    "A photo of an open book on a wooden table filling the page, with small white text in the top left corner.",
+    "A photographed physical object as the hero, such as a ticket stub or a printed listing.",
+    {
+     "section": true
+    }
+   ],
+   [
+    "r5-editorial-sketch-mono-headline",
+    "Sketch",
+    "91681eed-a40b-497f-a975-c5716817977c",
+    "d",
+    "Pale green page with a large monospaced headline where the first word sits on a green highlight, a small tag and date above it.",
+    "A monospaced headline with one highlighted word, and a small tag and date line above the title.",
+    {
+     "section": true
+    }
+   ]
+  ]
+ },
+ {
+  "id": "soft",
+  "title": "Style: soft, rounded and tactile",
+  "note": "Depth, glass and blur, big radii, surfaces that look touchable.",
+  "refs": [
+   [
+    "r5-soft-tide-glass-over-sea",
+    "TIDE",
+    "ed413bc9-2772-4650-b2fd-81a3e89bd964",
+    "p",
+    "A full-screen photo of a calm grey-pink sea at dusk with see-through frosted glass buttons and a glass tab bar floating on top. Thin white type, almost no solid surfaces.",
+    "A soft photo or blurred poster as the page background, with glass area chips and a glass tab bar sitting over it.",
+    {}
+   ],
+   [
+    "r5-soft-monzo-warm-glass",
+    "Monzo",
+    "af8c8652-b2d3-453c-9ced-b0e0b9d82124",
+    "p",
+    "Peach-to-cream gradient background with white rounded cards, a floating frosted menu, small teal pill buttons and a dark navy promo card with a 3D illustration.",
+    "Warm peach wash behind white showing cards, with the Book button as a small tinted pill and one dark feature card for the next film starting.",
+    {}
+   ],
+   [
+    "r5-soft-craft-lilac-glass",
+    "Craft",
+    "cb8b5327-af07-4ac5-b67a-bd4b4db6381d",
+    "p",
+    "Pale lilac-grey background, frosted white cards that overlap each other, round glass icon buttons and a floating pill toolbar. Soft blue accent.",
+    "Overlapping translucent cards to show depth, for example the film sheet sliding over the list, with round glass buttons for heart and share.",
+    {}
+   ],
+   [
+    "r5-soft-anything-gradient-tiles",
+    "Anything",
+    "d5e1cf9b-2eed-479b-821d-09e5960b5437",
+    "p",
+    "White page with a list of rounded square tiles filled with pink, violet and blue blurred gradients, plain black titles beside them and a small floating pill tab bar.",
+    "A soft gradient tile as the stand-in when a film has no poster, and the very small centred floating tab bar.",
+    {}
+   ],
+   [
+    "r5-soft-future-frosted-cards",
+    "Future Pro",
+    "59cde478-2c5b-4097-9f83-4813dc5bd538",
+    "p",
+    "Cool grey-lilac background with large frosted cards that have blurred photos inside them, big light-weight headings and a row of round icon chips.",
+    "Blurred poster art inside a frosted card as the hero for the next showing, with round icon chips for areas.",
+    {}
+   ],
+   [
+    "r5-soft-alan-pastel-cards",
+    "Alan",
+    "1d8e8577-abc5-4234-8d8e-ebdfd43eae92",
+    "p",
+    "Cream-to-white background, cards in periwinkle blue, deep green and pale peach with big corner radii, photo cards with a white Start button, small 3D icons on pastel tiles.",
+    "Each cinema or area gets its own pastel card colour, with a white pill Book button sitting on the coloured card.",
+    {}
+   ],
+   [
+    "r5-soft-elevenreader-pill-tabs",
+    "ElevenReader",
+    "fad3d752-f390-4243-b499-c0feda657081",
+    "p",
+    "White page with black and white pill tabs (For you, Following, Recents), a teal collection card stacked with book covers, small cover rows in outlined cards and a pink glass tab bar.",
+    "Black and white pill tabs for Starting soon, Later and Your cinemas, and film posters fanned inside a coloured card.",
+    {}
+   ],
+   [
+    "r5-soft-replika-3d-tiles",
+    "Replika",
+    "cfccaee3-3d8a-44f0-961a-6c078d3ebc87",
+    "p",
+    "Mauve-grey blurred background with translucent glass tiles, each with a glossy 3D object (books, speaker, dice) poking out of the corner. White type.",
+    "Translucent tiles over a tinted blur for areas or cinemas, each with one small object or logo tucked in the corner.",
+    {}
+   ],
+   [
+    "r5-soft-journal-purple-stats",
+    "Journal",
+    "7cfc6e1a-f787-48e9-9cdc-58d08fe05ed2",
+    "p",
+    "Light grey page with stat cards in plum, periwinkle, coral and navy, huge white numerals and soft abstract shapes inside the cards.",
+    "Huge numerals on a coloured card for the countdown, for example a big 12 with min under it, in a plum or periwinkle card.",
+    {}
+   ],
+   [
+    "r5-soft-wabi-orb-cards",
+    "Wabi",
+    "a507c3c2-f0f6-45e7-80a7-1dd230840e65",
+    "p",
+    "Off-white page, white cards with very soft shadows, each holding a round glossy 3D orb image, small blue titles, and a floating tab bar with a separate round black plus button.",
+    "Round glossy thumbnails in soft white cards for cinemas, and a floating tab bar with one separate round action button.",
+    {}
+   ],
+   [
+    "r5-soft-jomo-sky-sheet",
+    "Jomo",
+    "a37f33cc-8a1d-45ef-a658-62757bced857",
+    "p",
+    "Bright blue sky with white clouds as the whole background, a big white rounded card, a glossy blue pill button and a white floating tab bar. Bubble logo lettering.",
+    "A sky photo that changes with the time of day behind the list, and one glossy pill button for Book.",
+    {}
+   ],
+   [
+    "r5-soft-vocabulary-illustrated-tiles",
+    "Vocabulary",
+    "5024ca71-0e40-48bd-8fa2-5edbbd10e4e3",
+    "p",
+    "Warm beige background, cream tiles with thick dark outlines and a raised bottom edge, hand-drawn isometric illustrations in teal and salmon, serif headings.",
+    "Tiles with a dark outline and a thicker bottom edge so they look pressable, good for area tiles or the Book button.",
+    {}
+   ],
+   [
+    "r5-soft-wolt-3d-categories",
+    "Wolt Delivery",
+    "b63a3528-4e3f-44de-9240-7f3e594e5557",
+    "p",
+    "White page, grey rounded pill chips for categories, and a grid of pale blue rounded squares each holding a bright 3D object.",
+    "A grid of pale tinted squares with a cinema logo or object in each for the Cinemas page, and the plain grey pill chips for areas.",
+    {}
+   ],
+   [
+    "r5-soft-tiimo-serif-day",
+    "Tiimo",
+    "8ac4c7ed-88ce-4579-9eeb-ddfbee4ea458",
+    "p",
+    "White page with a large serif day name, a row of round date chips with the chosen one in black, soft lilac section pills and rounded task rows with small coloured icons.",
+    "A big serif day heading (Thursday) with round date chips under it, and showings grouped under soft pills such as Morning, Afternoon, Tonight.",
+    {}
+   ],
+   [
+    "r5-soft-rodeo-cream-chunky",
+    "Rodeo",
+    "6436591b-9f2b-4183-8b20-198ac96c45c6",
+    "p",
+    "Cream background, very wide chunky black headings, outlined pill filters, a white rounded event card with a green status pill, and a black round button beside a cream search bar.",
+    "Cream page with chunky wide film titles, outlined pill filters, and a small green pill that says Starts in 12 min.",
+    {}
+   ],
+   [
+    "r5-soft-fixtured-colour-blocks",
+    "Fixtured",
+    "f989d93b-afe0-48dc-8970-4a9872136117",
+    "p",
+    "A timeline of rounded colour blocks in royal blue and orange, each tinted to its team, with times at the top of each block, date markers down the left and round team crests along the top.",
+    "Showings as colour blocks tinted from each poster, time at the top of the block, with a row of round cinema logos to filter.",
+    {}
+   ],
+   [
+    "r5-soft-hilos-pastel-dashboard",
+    "hilos",
+    "1c593edf-86c0-4da3-9b6d-f5a50637e1ab",
+    "d",
+    "Desktop dashboard on off-white with a serif greeting, a hand-drawn pencil character, four stat tiles in pink, blue, peach and yellow, and soft white panels below.",
+    "For desktop, a serif greeting with four pastel tiles across the top, for example Starting soon, Tonight, Near you, Your cinemas.",
+    {}
+   ],
+   [
+    "r5-soft-copilot-cream-cards",
+    "Microsoft Copilot",
+    "f7284a2d-f387-4c88-9b37-3a1ea0d29fc0",
+    "d",
+    "Warm cream page with big rounded photo cards of different sizes, soft shadows, a sky-blue weather tile and a floating rounded input bar.",
+    "Cream desktop layout with mixed-size rounded poster cards, one larger for the film starting soonest.",
+    {}
+   ],
+   [
+    "r5-soft-phantom-glass-3d",
+    "Phantom",
+    "91969ef1-256c-4be7-88cf-1fddaee95b62",
+    "d",
+    "Lavender page with three tall cards in purple and violet gradients, each holding glossy glass 3D objects such as a heart, a coin and a holographic card.",
+    "Tall gradient cards with one glossy object each for the About page or empty states, and the lavender page colour.",
+    {
+     "section": true
+    }
+   ],
+   [
+    "r5-soft-sweatpals-poster-cards",
+    "Sweatpals",
+    "7cb7d00f-904c-44ae-b531-76d186bd84ed",
+    "d",
+    "White page with a row of small date pills, tall rounded event poster cards with a small tag in the corner, and bright red and blue colour tiles below.",
+    "Tall rounded poster cards with a tag in the corner for the start time, and a row of day pills across the top on desktop.",
+    {}
+   ],
+   [
+    "r5-soft-aboard-yellow-bento",
+    "Aboard",
+    "34808057-4b0c-4d72-8fd8-84490d3fc448",
+    "d",
+    "Butter-yellow rounded panels in two shades, brown type, a white event card with a small map inside, smiley Polaroid illustrations and small white pill buttons.",
+    "One warm colour in two shades for all panels, with a white mini card inside showing the cinema and start time.",
+    {
+     "section": true
+    }
+   ],
+   [
+    "r5-soft-loom-pastel-collections",
+    "Loom",
+    "aa8e044f-73e2-43ee-9432-b7003de06fdc",
+    "d",
+    "Pale lilac rounded cards, each with a patterned colour panel (indigo rings, magenta waves, green grid, orange dashes) and a white circle with a line icon in the middle.",
+    "A different simple pattern and colour for each area or cinema card, with the logo in a white circle on top.",
+    {
+     "section": true
+    }
+   ],
+   [
+    "r5-soft-pi-cream-serif",
+    "Pi",
+    "5fe42293-5a9c-48ab-874a-b1407f685ddd",
+    "d",
+    "Cream background, dark green serif type, rounded image cards with the title set over the photo, and a soft cream input bar.",
+    "Cream and dark green with serif titles laid over poster cards.",
+    {}
+   ],
+   [
+    "r5-soft-julienne-cookbook-cards",
+    "Julienne",
+    "c5c37f34-b6fc-47dd-82ea-e58223bcd341",
+    "d",
+    "Off-white page, serif headings, pale grey rounded cards each showing a book cover with a small maroon Buy button, and a row of outlined pill filters with one filled in terracotta.",
+    "Poster centred in a pale card with a small dark maroon Book button in the corner, and pill filters with the chosen area filled in one warm colour.",
+    {}
+   ],
+   [
+    "r5-soft-sweetgreen-flip-cards",
+    "sweetgreen",
+    "c3a9aa67-90f8-46a3-a809-c88f96762bdc",
+    "d",
+    "Pale cream page, sand-coloured rounded cards, textured painted vegetable illustrations, thin serif headings, small uppercase nav and round outlined Flip buttons.",
+    "Sand cards on cream with a round outlined button in the corner, which could flip a film card to show its showtimes.",
+    {
+     "section": true
+    }
+   ]
+  ]
+ },
+ {
+  "id": "dark",
+  "title": "Style: dark and cinematic",
+  "note": "Dark-first with atmosphere: glow from the artwork, rich blacks, one vivid accent.",
+  "refs": [
+   [
+    "r5-dark-howwefeel-particle-figure",
+    "How We Feel",
+    "912fd02f-bbe5-43a2-a916-a33aa55c99d4",
+    "p",
+    "Near-black screen with a figure made of tiny grey dots, a serif italic headline in white and green, a blurred colour blob and dark glass pill buttons.",
+    "Serif italic for the film title with one word in the accent colour, on rich black with dark glass pills for actions.",
+    {}
+   ],
+   [
+    "r5-dark-opal-gem-pedestal",
+    "Opal",
+    "4ce4460a-018b-4678-ae44-e51e63508b53",
+    "p",
+    "Black scene of dark rock with one iridescent gem lit in the centre, small white type and a long pale gold glass button.",
+    "One lit object on black, the poster, with everything else dim, and a single pale glowing Book button.",
+    {}
+   ],
+   [
+    "r5-dark-opal-glass-rules",
+    "Opal",
+    "a255c56f-2d49-4ce5-86d4-58e929052ab4",
+    "p",
+    "Black background with smoky dark glass cards that have a faint light edge, small grey time pills (31m left, Starts in 108h), white titles and a mint green round plus button.",
+    "Smoky glass cards with a small pill that says Starts in 12 min, and one mint accent for the main action.",
+    {}
+   ],
+   [
+    "r5-dark-calmsleep-glow-art",
+    "Calm Sleep",
+    "50780867-e296-43ca-b114-548714aa8159",
+    "p",
+    "Very dark navy screen with a rounded artwork card that has a blue glow around its edge, centred white text and a blue slide-to-play pill.",
+    "A poster card with a glow that takes its colour from the poster, centred on dark navy.",
+    {}
+   ],
+   [
+    "r5-dark-stardust-moon",
+    "Stardust",
+    "71ca5abb-fca1-48b4-aae8-aed8a9061c1f",
+    "p",
+    "Deep purple starry background, a large pale yellow moon, hand-lettered heading, a row of small coloured day dots along the top and small monospace labels.",
+    "Deep purple instead of black for a night-out feel, with a strip of day dots along the top to change date.",
+    {}
+   ],
+   [
+    "r5-dark-nbweather-chroma",
+    "(Not Boring) Weather",
+    "8f1e156f-bb37-4b72-9a6d-f64bc8c005ee",
+    "p",
+    "Pure black with a huge rainbow-chrome 3D number, tiny condensed uppercase type and an outlined pill button.",
+    "The countdown as one huge shiny numeral on black, with tiny condensed capitals for the details.",
+    {}
+   ],
+   [
+    "r5-dark-posh-poster-rail",
+    "Posh",
+    "2ef9521b-0b7e-4a89-8e20-cecf58618e19",
+    "p",
+    "Pure black with a big thin white heading (Find your world in New York), outlined pill filters and tall loud event posters that carry all the colour. Small lowercase section labels.",
+    "Black page where the posters are the only colour, a big thin heading with the area in it, and outlined pills for date and price.",
+    {}
+   ],
+   [
+    "r5-dark-dice-poster-card",
+    "DICE",
+    "3f91d4d3-0935-49f2-8aab-f2ffb1fab2b4",
+    "p",
+    "Black screen with a row of dark icon tiles (Tonight, This week), then a large poster card with the title over a dark fade, the date in yellow and a small boxed price tag with a heart.",
+    "Quick tiles for Tonight and This week, and a large poster card with the title laid over it and the start time in one bright yellow.",
+    {}
+   ],
+   [
+    "r5-dark-dice-ticket-stubs",
+    "DICE",
+    "c201c1c4-1b75-45a6-ae34-02092eccd163",
+    "p",
+    "Black screen with full-width poster cards shaped like ticket stubs, with notches cut in the top and bottom edge, white type over the art and a small outlined tag.",
+    "Showing cards shaped like cinema tickets, with a notch and the time on the stub.",
+    {}
+   ],
+   [
+    "r5-dark-partiful-blur-haze",
+    "Partiful",
+    "b8a9bb23-a064-4e32-aca1-9e531e4cf414",
+    "p",
+    "Dark screen with a purple-grey haze bleeding down from the top, grey glass cards, round glass buttons and bold white section headings.",
+    "A haze of colour from the top poster bleeding into the header, with grey glass cards below.",
+    {}
+   ],
+   [
+    "r5-dark-spotify-live-events",
+    "Spotify",
+    "73a631b5-aa7d-4a73-ad82-849f74ae7177",
+    "p",
+    "Dark grey list with a purple gradient header, bold white section titles, rows with a square photo and a date stamped on it, and square cards with small date badges.",
+    "A date or time badge stamped on the poster thumbnail, and a coloured gradient header that changes per page.",
+    {}
+   ],
+   [
+    "r5-dark-swiggy-scenes-type",
+    "Swiggy",
+    "980934e5-df4c-4ae6-8899-9a5b488a24d8",
+    "p",
+    "Dark purple-black screen with tall condensed white capitals for the heading and menu, poster cards with a pink price strip along the bottom and grey date blocks.",
+    "Tall condensed capitals for headings and the area menu, and a coloured strip along the bottom of each poster for the next start time.",
+    {}
+   ],
+   [
+    "r5-dark-fixtured-blue-night",
+    "Fixtured",
+    "0826f20f-07de-40fc-a3e5-04f25cfa1998",
+    "p",
+    "Deep royal blue and black with a glowing line pattern, tall condensed white type for the match, white pill chips and a dark glass tab bar.",
+    "A hero with the film title in tall condensed type over a deep blue glow, with white pill chips for areas.",
+    {}
+   ],
+   [
+    "r5-dark-luma-discover",
+    "Luma",
+    "f8896c4c-e3e2-40e4-bb4f-4b02852abe31",
+    "p",
+    "Black screen with white and grey type, event rows with small square thumbnails, outlined category chips with coloured icons and photo city cards.",
+    "Plain black list rows with a small poster, title and time, and outlined chips with a small coloured icon for each area.",
+    {}
+   ],
+   [
+    "r5-dark-locals-fullbleed-city",
+    "Locals",
+    "e29feddf-bba3-4404-8013-b6a4d31fc2cd",
+    "p",
+    "A full-screen moody teal city photo with the title centred low, a row of round avatars, a grey glass strip and small glass buttons along the bottom.",
+    "The film page as one full-screen still with the title low down and glass buttons for heart, share and Book.",
+    {}
+   ],
+   [
+    "r5-dark-neuecast-quiet-cards",
+    "Neuecast",
+    "c8721d84-540b-4a90-a3ea-cf18d3e318ef",
+    "p",
+    "Charcoal screen with slightly lighter rounded cards, white headings with a grey count beside them (Trending 10), grey sub-lines and a pill tab bar with a small uppercase label.",
+    "Section headings with a grey count beside them, such as Starting soon 8, on quiet charcoal cards.",
+    {}
+   ],
+   [
+    "r5-dark-deezer-explore",
+    "Deezer",
+    "4a0dd62f-4514-4c2d-a642-fda0da156443",
+    "p",
+    "Black screen with a heavy condensed white heading, tiles with lilac and mint scalloped shapes, large square covers and a bright red rounded player bar.",
+    "A heavy condensed heading, pastel shapes on black for area tiles, and one red bar pinned at the bottom for the next showing.",
+    {}
+   ],
+   [
+    "r5-dark-disney-tron-hero",
+    "Disney+",
+    "a293f37f-86c9-48e7-8b1f-ad115948c119",
+    "d",
+    "Dark navy desktop page with a wide red glowing hero banner, a small centred pill switch at the top and a row of rounded thumbnails below.",
+    "On desktop, a wide hero for the film starting soonest, with a small pill switch above it for Starting soon and Later.",
+    {}
+   ],
+   [
+    "r5-dark-prime-hero",
+    "Prime Video",
+    "9c611920-7aca-45fa-b43d-a51504db5fa0",
+    "d",
+    "Black desktop page where a film still fills the top and fades into black on the left, with white text over the fade and a row of small posters below.",
+    "A full-width still that fades to black on one side so the title, time and Book button sit on the dark part.",
+    {}
+   ],
+   [
+    "r5-dark-suno-gradient-genres",
+    "Suno",
+    "c830da62-868f-4410-9b8e-79a94b1a1c56",
+    "d",
+    "Near-black desktop page with a left sidebar, a row of blurred gradient tiles in pink, orange, green and yellow, and rounded square covers below.",
+    "Blurred gradient tiles for areas on a near-black page, each area with its own colour.",
+    {}
+   ],
+   [
+    "r5-dark-posh-web-poster-wall",
+    "Posh",
+    "db37c5cb-534d-4fc1-973b-e2daffb3d0ab",
+    "d",
+    "Black desktop page with a small centred filter pill at the top (Trending, This Week, in New York City) and a tight wall of large event posters with white titles under them.",
+    "A wall of posters on black with one sentence-style filter at the top: Starting soon, Tonight, in Lekki.",
+    {}
+   ],
+   [
+    "r5-dark-ytmusic-artist-wash",
+    "YouTube Music",
+    "93c51c94-19b6-4140-9778-0dfc091fef57",
+    "d",
+    "Black desktop page with a warm brown-gold photo washing down behind the heading, white pill buttons and a plain track table under it.",
+    "A poster washed across the top of the film page with the showtimes as a plain table below.",
+    {}
+   ],
+   [
+    "r5-dark-higgsfield-pink-banner",
+    "Higgsfield",
+    "084ea6ae-141e-4913-856a-0f812a28f00e",
+    "d",
+    "Black page with one hot pink banner, wide film stills with loud poster lettering and white section labels.",
+    "One hot accent colour used only for the top banner and the Book button, with wide stills instead of tall posters.",
+    {}
+   ],
+   [
+    "r5-dark-threads-pixel-3d",
+    "Threads",
+    "88bf981a-9759-44bb-9c0e-e03cc6ecf2cd",
+    "d",
+    "Deep navy-black section with a blue glow at the top edge, three dark cards with a thin border and small pixel-style 3D objects.",
+    "Dark cards with a thin border and a glow along the top of the page, and small 3D objects for empty states.",
+    {
+     "section": true
+    }
+   ],
+   [
+    "r5-dark-flora-glow-tiles",
+    "FLORA",
+    "27fbff58-42db-49e5-84c9-0a9ff1bcca07",
+    "d",
+    "Black section with a grey bordered panel and three small tiles filled with blurred teal, orange and purple light.",
+    "Small tiles lit from inside by blurred colour, for area or cinema tiles on black.",
+    {
+     "section": true
+    }
+   ]
+  ]
+ },
+ {
+  "id": "minimal",
+  "title": "Style: sharp minimal with one strong idea",
+  "note": "Near-mono, grid-led or brutalist, thin rules, technical type, and a clear signature.",
+  "refs": [
+   [
+    "r5-minimal-costar-ruled-table",
+    "Co-Star",
+    "176a7391-6e9c-41e8-8b53-951df13f71b5",
+    "p",
+    "White page, a serif sentence at the top, then a two-column table with hairlines, tiny spaced capitals on the left with grey halftone planet icons, and small plain text on the right.",
+    "Showtimes as a ruled two-column table: cinema in small capitals on the left, times on the right, one serif line above.",
+    {}
+   ],
+   [
+    "r5-minimal-commons-bold-caps",
+    "Commons",
+    "cf577a21-2a0c-45fa-b0cf-465eb51e5922",
+    "p",
+    "White page with heavy black capitals, serif body text, solid and dotted black rules between rows, olive green circles and one deep blue for the active tab.",
+    "Heavy capitals for film titles with serif small text, solid rule under headings, dotted rules between showings, one olive accent.",
+    {}
+   ],
+   [
+    "r5-minimal-bloomberg-bulletin",
+    "Bloomberg",
+    "338902ad-c35a-4dd2-b75b-c6c9b8462021",
+    "p",
+    "White page with very heavy tight black headings, solid black rules between stories, a small Updated 5:42 PM label with a purple dot and uppercase tab labels.",
+    "Heavy black headings with full-width rules, and a small Updated time label in the header for freshness.",
+    {}
+   ],
+   [
+    "r5-minimal-nyt-serif-list",
+    "The New York Times",
+    "e79318d6-21b3-4100-89ea-66eb54b788dd",
+    "p",
+    "White page, bold serif headlines, grey serif summaries, tiny spaced uppercase meta lines and hairlines between items. Text tabs with an underline.",
+    "Serif film titles with a tiny uppercase line under each (cinema, area, time) and underlined text tabs.",
+    {}
+   ],
+   [
+    "r5-minimal-origin-mono-labels",
+    "Origin",
+    "5596d892-ccc6-40ad-b4aa-ce0c63b934a6",
+    "p",
+    "Off-white page with small spaced monospace labels, a large thin number, outlined pill range chips, a black round plus button and one sage green banner. Tab labels in monospace capitals.",
+    "Monospace capitals for labels and tab names, outlined pills for areas, and one sage accent for the notice banner.",
+    {}
+   ],
+   [
+    "r5-minimal-public-markets-table",
+    "Public",
+    "06882872-f422-4ea2-8a82-1c8790c4da4f",
+    "p",
+    "White page with a big bold heading, text tabs with an underline, square-cornered grey filter boxes, and a table with a hairline header and values in blue.",
+    "Square-cornered filters and a plain table with a header row (Cinema, Starts, In), with one blue for the time column.",
+    {}
+   ],
+   [
+    "r5-minimal-cleo-maroon-ink",
+    "Cleo AI",
+    "d9568d80-c846-401f-b9e5-339522977a68",
+    "p",
+    "Warm off-white with every bit of type and every bar in one dark maroon, a maroon pill for the active tab, and round outlined icon buttons along the bottom.",
+    "One ink colour for everything, dark maroon on off-white, with the active tab as a filled pill.",
+    {}
+   ],
+   [
+    "r5-minimal-zara-tiny-caps",
+    "ZARA",
+    "5bc55820-baaf-4392-9308-32dd9f53ec62",
+    "p",
+    "White page with tiny thin uppercase text, a single hairline search field, square photos with no rounding, tiny colour squares and a text-only bottom bar.",
+    "Posters with square corners and tiny uppercase captions, and a bottom bar made of words instead of icons.",
+    {}
+   ],
+   [
+    "r5-minimal-ssense-index",
+    "SSENSE",
+    "819e1402-ed03-45a0-9f5c-ee80a85581d6",
+    "p",
+    "White page with tiny uppercase labels, numbered sections (040, 700), product cut-outs with no cards or borders and lots of white space.",
+    "Numbered sections and tiny capitals, with posters placed straight on white with no card behind them.",
+    {}
+   ],
+   [
+    "r5-minimal-grailed-boxed-filters",
+    "Grailed",
+    "6906e6d1-4cd9-421d-ba02-d4fff5e9f370",
+    "p",
+    "White page with square outlined filter boxes in capitals, black Sold tags on the photos, small bold names and underlined links.",
+    "Square outlined filter boxes, and a black tag on the poster that says Started when a showing has begun.",
+    {}
+   ],
+   [
+    "r5-minimal-oneyear-dot-grid",
+    "one year",
+    "8ce281b6-ebee-4eb0-a5e4-78c0a10d9644",
+    "p",
+    "Pale grey page with a grid of small blue dots, monospace labels in electric blue boxes and tiny line drawings in the same blue.",
+    "One electric blue with monospace type, and a dot grid that could show the day's showings as dots across the hours.",
+    {}
+   ],
+   [
+    "r5-minimal-pushr-wide-type",
+    "pushr",
+    "d84f81d4-75fe-41b6-a86d-f41e0d87e7b8",
+    "p",
+    "Off-white page with very wide lowercase type, a glitchy wordmark, light grey cards and one black card with a big number.",
+    "Wide lowercase headings (starting soon), with the next showing in the one black card.",
+    {}
+   ],
+   [
+    "r5-minimal-nrc-orange-numbers",
+    "Nike Run Club",
+    "5b44a929-c8a5-4e88-9950-88bfd6978476",
+    "p",
+    "A solid orange screen with huge heavy black numbers turned sideways and a small black control strip.",
+    "One flat loud colour with a giant black number for the countdown screen, Starts in 12.",
+    {}
+   ],
+   [
+    "r5-minimal-tonal-white-on-grey",
+    "Tonal",
+    "74e51c99-0993-4408-9ef7-fcd0a2ebd96c",
+    "p",
+    "Light grey page with flat white panels, bold numbers with tiny spaced capitals under them, a spaced-out wordmark, mint green figures and a black bottom bar.",
+    "Flat white panels with bold times and tiny capitals under them, and a solid black tab bar.",
+    {}
+   ],
+   [
+    "r5-minimal-finimize-mono-labels",
+    "Finimize",
+    "39402e3b-1cd0-4f4c-9280-f441dbebaa1e",
+    "p",
+    "White page with small blue monospace category labels, bold headlines, grey monospace date lines, small rounded thumbnails on the right and hairlines.",
+    "A blue monospace label above each film (the area), a bold title, a monospace time line, and the poster small on the right.",
+    {}
+   ],
+   [
+    "r5-minimal-f1-timetable",
+    "Formula 1",
+    "6217a256-d748-4487-b62d-5d2248650ae4",
+    "p",
+    "A plain white timetable on off-white: a small grey day heading, then rows in three columns (series, session, time range) separated by hairlines.",
+    "A straight three-column timetable for a cinema page: film, screen or format, start time.",
+    {}
+   ],
+   [
+    "r5-minimal-midday-hatched-grid",
+    "Midday",
+    "ffc0ae51-5c75-42e7-803e-4d4d3416e068",
+    "d",
+    "White desktop page made of thin grey grid lines, small grey numbers, diagonal hatching in the empty cells and a plain bordered table below. No colour at all.",
+    "Thin grid lines with hatching for times that have passed, and a plain bordered table for showtimes on desktop.",
+    {}
+   ],
+   [
+    "r5-minimal-cofounder-outline-type",
+    "Cofounder",
+    "0e760bcc-2b2a-4069-989a-7009b65b802c",
+    "d",
+    "Pale grey page with large outlined 3D wireframe lettering on the left and thin bordered option rows on the right.",
+    "Outlined display lettering for the Sinima name or for empty states, with thin bordered rows.",
+    {}
+   ],
+   [
+    "r5-minimal-spade-corner-ticks",
+    "Spade",
+    "e29da92d-89da-48de-a7d2-a58ec93155ec",
+    "d",
+    "White section with cards drawn by thin lines with small tick marks at the corners, tiny monospace labels with small green icons and faint contour lines.",
+    "Cards marked only by corner ticks, with a tiny monospace label on top (area, source, freshness).",
+    {
+     "section": true
+    }
+   ],
+   [
+    "r5-minimal-telescope-lime-accent",
+    "Telescope",
+    "94ac232d-1c16-478b-a8b0-ea594984b4ba",
+    "d",
+    "White page with a centred headline in a quirky geometric typeface, small monospace capitals for nav, square-cornered buttons, one lime green button and a photo grid with small blue bookmark tags.",
+    "A distinctive typeface for film titles, monospace capitals for nav, and one lime button for Book.",
+    {}
+   ],
+   [
+    "r5-minimal-recordclub-plain-grid",
+    "Record Club",
+    "a993ecb8-e6f2-4744-9d74-abbe81c2bafd",
+    "d",
+    "White page with a tiny wordmark, a wide bold centred heading, four thin outlined boxes with small icons and a row of square covers with small ratings.",
+    "A row of thin outlined boxes for the main choices, then square-cornered posters with one small line of text.",
+    {}
+   ],
+   [
+    "r5-minimal-dabbit-ruled-columns",
+    "Dabbit",
+    "4ace9c5f-a06e-4ed0-a923-77238af3e539",
+    "d",
+    "Off-white section split into four columns by thin rules, small headings each with a tiny orange dot, and grey small text.",
+    "Columns divided by thin rules on desktop, one per area, with a tiny orange dot marking what is starting soon.",
+    {
+     "section": true
+    }
+   ],
+   [
+    "r5-minimal-quartz-ticker",
+    "Quartz",
+    "bf726193-cb00-4584-97f9-473165ed24ea",
+    "d",
+    "White page with a spaced capital wordmark, a dark ticker strip of figures across the top, and a very large tight headline beside one photo.",
+    "A thin ticker strip across the top listing the next few start times, and one very large film title beside its poster.",
+    {}
+   ],
+   [
+    "r5-minimal-cosmos-image-wall",
+    "Cosmos",
+    "9cfe5f61-8e58-49a8-ab66-d54019bb04a1",
+    "d",
+    "White page with almost no interface, just a small round search field and a wall of images with square corners and even gaps.",
+    "Let the posters be the whole page on desktop, with one small search or area field at the top.",
+    {}
+   ],
+   [
+    "r5-minimal-mailchimp-ink-drawings",
+    "Mailchimp",
+    "f5eecb33-0cf9-4b10-a1e0-481b32419a1c",
+    "d",
+    "White section with a serif heading, black hand-drawn ink illustrations, small text and one yellow button in the nav.",
+    "Black ink drawings for empty states and the About page, a serif heading, and yellow kept only for the Book button.",
+    {
+     "section": true
+    }
+   ]
+  ]
+ },
+ {
+  "id": "warm",
+  "title": "Colour: warm",
+  "note": "Reds, corals, oranges, pinks, terracotta and cream.",
+  "refs": [
+   [
+    "r5-warm-foodpanda-pink-header",
+    "foodpanda",
+    "6e232092-f02b-4f88-9fc0-ed8027f438dc",
+    "p",
+    "A hot magenta-pink header band holds the location and search; below is white with pale pink price tags and pink selected tab icons.",
+    "A pink band behind the area name and search, white film rows, pink Book button and hearts. In dark, keep the pink band and turn rows near-black.",
+    {
+     "hex": [
+      "#FFFFFF",
+      "#1B1B1F",
+      "#E21B70",
+      "#FCE4EE"
+     ]
+    }
+   ],
+   [
+    "r5-warm-swiggy-orange-header",
+    "Swiggy",
+    "a2c4d443-aa0b-448b-883b-486409b44ece",
+    "p",
+    "A deep burnt-orange top with brown tab cards and a bright orange search frame, then a white body with orange and green small labels.",
+    "An orange top section for Starting soon over a white list; orange chips selected, white chips idle. Dark mode would swap the white body for warm brown-black.",
+    {
+     "hex": [
+      "#FFFFFF",
+      "#7A2E0E",
+      "#FC5A03",
+      "#1A1A1A"
+     ]
+    }
+   ],
+   [
+    "r5-warm-substack-dark-orange",
+    "Substack",
+    "3c897930-ef1f-4b07-afa8-82fb1c33726e",
+    "p",
+    "Near-black feed with dark grey cards, white text and one orange colour for the Share button, subscribe link and round add button.",
+    "A dark Sinima: black page, charcoal film rows, orange Book buttons and orange Starts in 12 min text.",
+    {
+     "hex": [
+      "#0F0F0F",
+      "#FFFFFF",
+      "#FF6719",
+      "#2A2A2A"
+     ]
+    }
+   ],
+   [
+    "r5-warm-alma-cream-maroon",
+    "Alma",
+    "8c59dd2c-d9d8-4d29-ade9-53861dbc3529",
+    "p",
+    "Warm off-white page with white rounded cards, dark maroon serif headings and pale salmon tag pills with orange icons.",
+    "Cream page, white film cards, maroon film titles and pale salmon chips for the area and Stay or Go. Dark mode would be deep maroon-brown with cream text.",
+    {
+     "hex": [
+      "#F6F2EC",
+      "#3B1416",
+      "#FBE3DC",
+      "#E8603C"
+     ]
+    }
+   ],
+   [
+    "r5-warm-pof-peach-coral-chips",
+    "Plenty of Fish",
+    "e9a4d267-9523-451e-ad0f-7af6efd2c98f",
+    "p",
+    "Soft peach page with outlined pill chips; the selected chip fills coral with a black outline, and the main button is solid black.",
+    "Peach background, outlined area chips with coral for the selected one, black Book button. Light only as shown.",
+    {
+     "hex": [
+      "#FDEDE6",
+      "#1A1A1A",
+      "#F79A80",
+      "#FFFFFF"
+     ]
+    }
+   ],
+   [
+    "r5-warm-5-minute-journal-cream-gold",
+    "5 Minute Journal",
+    "ca354fbc-af88-4b61-886b-f2e65388eaeb",
+    "p",
+    "Cream page with white cards, a peach-to-cream gradient promo card, golden yellow buttons and ticks, and a dark photo card for contrast.",
+    "Cream page and white film cards with a warm golden accent for the selected chip and countdown; a dark card for the next film starting. Golden on cream, not on black.",
+    {
+     "hex": [
+      "#FAF6EF",
+      "#2B2620",
+      "#F2B63C",
+      "#F6DCC8"
+     ]
+    }
+   ],
+   [
+    "r5-warm-lifesum-pink-beige",
+    "Lifesum",
+    "fd5f767b-20dc-4511-9e81-366a63230f8e",
+    "p",
+    "A raspberry-pink header and tab underline over a warm beige-grey page with black serif text and a pale grey toggle.",
+    "Raspberry header with area tabs, beige page for the film list, raspberry underline on the selected tab.",
+    {
+     "hex": [
+      "#EEEAE3",
+      "#1A1A1A",
+      "#C94F86",
+      "#FFFFFF"
+     ]
+    }
+   ],
+   [
+    "r5-warm-bff-coral-on-white",
+    "BFF",
+    "06085edd-0bca-499c-9490-b2fb0f5eda05",
+    "p",
+    "Clean white page; a coral-red Invite button and round add button carry the colour, with a black selected tab chip and grey idle chips.",
+    "White list of cinemas, black selected chip, coral Book button and hearts. Simple and bright on a phone.",
+    {
+     "hex": [
+      "#FFFFFF",
+      "#111111",
+      "#F25C5C",
+      "#F2F2F2"
+     ]
+    }
+   ],
+   [
+    "r5-warm-flo-pink-chips",
+    "Flo",
+    "97cb0b96-17e6-4645-a601-2daed5195397",
+    "p",
+    "White list with a pink blur at the top, a solid pink selected chip, grey idle chips and soft grey heart buttons on each row.",
+    "White film list, pink selected area chip, heart on each cinema row turning pink when saved.",
+    {
+     "hex": [
+      "#FFFFFF",
+      "#1A1A1A",
+      "#F0567E",
+      "#EFEFF1"
+     ]
+    }
+   ],
+   [
+    "r5-warm-cleo-cream-oxblood",
+    "Cleo AI",
+    "628a69b6-0842-482e-be0c-51c11601e104",
+    "p",
+    "Warm cream page, oxblood brown big headings, a filled oxblood selected pill and white rounded list cards.",
+    "Cream page, oxblood film titles and selected chip, white showing rows. Dark mode would invert to oxblood-black with cream text.",
+    {
+     "hex": [
+      "#F7F3EE",
+      "#4A1B14",
+      "#FFFFFF",
+      "#E9E2DA"
+     ]
+    }
+   ],
+   [
+    "r5-warm-monzo-hot-coral",
+    "Monzo",
+    "97bba5b9-6e10-4e5c-b6fd-9d29b54831f2",
+    "p",
+    "A coral-to-peach gradient top behind white cards, one solid coral card with white text, and a white activity list.",
+    "A coral glow at the top of Starting soon, white film rows, one coral card for the next film. Very warm and friendly.",
+    {
+     "hex": [
+      "#FFF5F0",
+      "#1C1C1C",
+      "#E8574A",
+      "#F7A27A"
+     ]
+    }
+   ],
+   [
+    "r5-warm-posh-dark-orange-magenta-tickets",
+    "Posh",
+    "bf541ed2-fa09-4400-a343-6f0eff9e8f2c",
+    "p",
+    "Black page with ticket-shaped cards; each ticket top is tinted from its poster, one burnt orange and one deep magenta, over dark grey stubs.",
+    "Dark mode film rows as tickets, each tinted from the film poster's main colour (orange, wine red) with a dark stub for the showtime.",
+    {
+     "hex": [
+      "#000000",
+      "#FFFFFF",
+      "#A85514",
+      "#8E1645",
+      "#1C1C1E"
+     ]
+    }
+   ],
+   [
+    "r5-warm-claude-cream-terracotta",
+    "Claude",
+    "95121b41-7641-4e13-9c06-9ed59e301a1e",
+    "d",
+    "Cream sidebar and page, white cards with hairlines, and terracotta orange filled buttons.",
+    "Cream page, white film cards, terracotta Book button and selected chip. On desktop, a cream side panel for areas.",
+    {
+     "hex": [
+      "#F5F3EC",
+      "#2A2A28",
+      "#D97757",
+      "#FFFFFF"
+     ]
+    }
+   ],
+   [
+    "r5-warm-mistral-orange-canvas",
+    "Mistral AI",
+    "77c962d0-ff81-44b8-b3c1-e5b023b4b240",
+    "d",
+    "A bright pixel-textured orange canvas behind a white sheet of cards; one card is solid orange, with a dark top bar.",
+    "On desktop, an orange edge around a white content sheet; the next showing as a solid orange card, the rest white.",
+    {
+     "hex": [
+      "#FA520F",
+      "#FFFFFF",
+      "#1E1E1E",
+      "#F4F4F4"
+     ]
+    }
+   ],
+   [
+    "r5-warm-substack-web-orange",
+    "Substack",
+    "4bf687f1-37ea-4584-98fb-8fca277b37a1",
+    "d",
+    "White dashboard with light grey sidebar; orange Create button, orange tab underline and a peach-filled orange line chart.",
+    "White page, one orange for the Book button, the selected area tab underline and the countdown.",
+    {
+     "hex": [
+      "#FFFFFF",
+      "#1A1A1A",
+      "#FF6719",
+      "#FDE3D3"
+     ]
+    }
+   ],
+   [
+    "r5-warm-re-full-orange-red",
+    "re_",
+    "944962e1-24f2-41ff-b1fb-bc6996da60ff",
+    "d",
+    "The whole page is a flat red-orange with white type and a white pill Order button.",
+    "An all red-orange header or about page with white text; the white pill as the Book button.",
+    {
+     "hex": [
+      "#F54E26",
+      "#FFFFFF",
+      "#C7381A"
+     ],
+     "section": true
+    }
+   ],
+   [
+    "r5-warm-daylight-dark-amber",
+    "Daylight",
+    "5c01eed3-1484-4bcd-8ca6-1354a9b1c9c1",
+    "d",
+    "Near-black hero lit by amber-orange light, a big orange wordmark and orange buttons.",
+    "Dark mode of warm cinema light: black page, amber orange Book button and Starts in text, warm glow behind the next film.",
+    {
+     "hex": [
+      "#0E0B08",
+      "#FF8A00",
+      "#F2E6D8",
+      "#3A1F0C"
+     ],
+     "section": true
+    }
+   ],
+   [
+    "r5-warm-patreon-peach-band",
+    "Patreon",
+    "885aa28d-57f2-4aad-8fc7-ea16fbef49ee",
+    "d",
+    "A salmon-peach band with white text and a coral-red pill button, between light grey and white sections.",
+    "A peach band for the hero or empty state, coral Book buttons, white film list below.",
+    {
+     "hex": [
+      "#F0A07F",
+      "#FFFFFF",
+      "#E8505B",
+      "#F4F4F2"
+     ],
+     "section": true
+    }
+   ],
+   [
+    "r5-warm-monarch-orange-panel",
+    "Monarch",
+    "3fda27b0-cffe-4744-af00-cc456ee116e8",
+    "d",
+    "A rounded bright orange panel with cream serif text and a white pill button, on a light grey page with white cards.",
+    "Rounded orange panel for Starting soon, cream serif headline, white pill buttons.",
+    {
+     "hex": [
+      "#FF6A2C",
+      "#FFF4EA",
+      "#F5F5F5",
+      "#1A1A1A"
+     ],
+     "section": true
+    }
+   ],
+   [
+    "r5-warm-mymind-orange-red-cards",
+    "mymind",
+    "a0daf8cf-7fbd-4688-b066-cf4110f33f83",
+    "d",
+    "Light grey page with large cards: one solid orange-red, one photo collage in orange-red and cream, and an orange-red Sign up pill.",
+    "Pale grey page, one orange-red card for the featured film, orange-red Book pill.",
+    {
+     "hex": [
+      "#EEEFF2",
+      "#1A1A1A",
+      "#FF4F1A",
+      "#FFFFFF"
+     ],
+     "section": true
+    }
+   ]
+  ]
+ },
+ {
+  "id": "cool",
+  "title": "Colour: cool",
+  "note": "Blues, indigos, violets and purples.",
+  "refs": [
+   [
+    "r5-cool-calm-blue-indigo-gradient",
+    "Calm",
+    "ce58ac78-aefc-41bf-b58f-6e7934e1df5b",
+    "p",
+    "A deep blue to indigo gradient page with translucent blue cards, white text and outlined pill buttons.",
+    "Dark mode as a night-sky blue: film rows as translucent blue cards, white times, outlined chips.",
+    {
+     "hex": [
+      "#1F3A78",
+      "#FFFFFF",
+      "#3A3F9E",
+      "#2A4C8F"
+     ]
+    }
+   ],
+   [
+    "r5-cool-fixtured-navy-fixtures",
+    "Fixtured",
+    "fb82aeac-7fa1-40c5-976a-daa9f5a56be3",
+    "p",
+    "A navy hero with blue line art, then a white list with black selected chip, grey cards for live games and an orange card for one.",
+    "Navy hero for the next big film, white list below, black selected chip; live showings in grey, one standout in orange.",
+    {
+     "hex": [
+      "#0E1C5C",
+      "#FFFFFF",
+      "#111111",
+      "#F1A060"
+     ]
+    }
+   ],
+   [
+    "r5-cool-moonlitt-indigo-cards",
+    "Moonlitt",
+    "ef48fbdb-8314-425b-a8d6-5c874b6b14d1",
+    "p",
+    "Soft indigo page with slightly lighter indigo cards, white text and pale lavender dividers.",
+    "An all-indigo dark mode: indigo page, lighter indigo film rows, white times. Calm and night-like.",
+    {
+     "hex": [
+      "#3A3E92",
+      "#FFFFFF",
+      "#4B50A6",
+      "#A9ACE0"
+     ]
+    }
+   ],
+   [
+    "r5-cool-jomo-sky-blue",
+    "Jomo",
+    "7bb03b7d-f7f8-4671-b5a9-aa8fcb79b6f9",
+    "p",
+    "Sky-blue photo background with white type, a white chart card and a blue gradient main button.",
+    "Light mode with a sky-blue top behind the area name, white film cards and a blue Book button.",
+    {
+     "hex": [
+      "#6FA5F0",
+      "#FFFFFF",
+      "#3B78E0",
+      "#1A1A1A"
+     ]
+    }
+   ],
+   [
+    "r5-cool-me-plus-dark-violet-card",
+    "Me+",
+    "8a2c30f4-b168-464d-bf59-a5c69ef8af51",
+    "p",
+    "Charcoal page with dark grey cards; the selected card is a solid violet with white text and a small yellow tag.",
+    "Dark mode: charcoal film rows, the selected or next showing filled violet.",
+    {
+     "hex": [
+      "#141416",
+      "#FFFFFF",
+      "#7B4FF0",
+      "#24242A"
+     ]
+    }
+   ],
+   [
+    "r5-cool-phantom-dark-lavender",
+    "Phantom",
+    "fce762f8-5072-41b8-9a33-a7cb543d0fdd",
+    "p",
+    "Black page with dark grey rows, a pale lavender selected pill and a lavender round add button.",
+    "Black page, grey film rows, lavender selected chip and hearts.",
+    {
+     "hex": [
+      "#000000",
+      "#FFFFFF",
+      "#AB9FF2",
+      "#1C1C1E"
+     ]
+    }
+   ],
+   [
+    "r5-cool-fabric-charcoal-lilac",
+    "Fabric",
+    "72a71b1d-06d1-4bab-a52f-d420e60e511b",
+    "p",
+    "Charcoal page with dark grey cards, small grey tags, a lilac add button and one solid lilac card.",
+    "Dark mode with charcoal cards and one lilac card for Your cinemas; lilac add and heart.",
+    {
+     "hex": [
+      "#2A2A2A",
+      "#FFFFFF",
+      "#A77BE0",
+      "#3A3A3A"
+     ]
+    }
+   ],
+   [
+    "r5-cool-asana-lavender-home",
+    "Asana",
+    "5bef03d3-11e0-4925-bae1-52529effba86",
+    "d",
+    "A black sidebar next to a lavender-purple top band; white cards with pink, teal and grey project tiles.",
+    "Desktop: dark side panel for areas, lavender band behind the page title, white film cards.",
+    {
+     "hex": [
+      "#9C8AE8",
+      "#1E1F21",
+      "#FFFFFF",
+      "#F9D7E1"
+     ]
+    }
+   ],
+   [
+    "r5-cool-mixpanel-dark-violet",
+    "Mixpanel",
+    "1a7d8d86-f0e8-456a-a60c-65c6eb13a252",
+    "d",
+    "Near-black dashboard with violet bars and buttons and a coral second colour.",
+    "Dark desktop: black page, violet selected chip and Book button, coral for Started or warnings.",
+    {
+     "hex": [
+      "#111015",
+      "#FFFFFF",
+      "#7856FF",
+      "#FF7557"
+     ]
+    }
+   ],
+   [
+    "r5-cool-tana-lavender-wash",
+    "Tana",
+    "4297e674-95c8-4646-afe9-96cc77cd4635",
+    "d",
+    "The whole page is a soft lavender wash with paler translucent cards and dark grey text.",
+    "A soft light mode: lavender page, translucent white film rows, grey-violet text.",
+    {
+     "hex": [
+      "#C9C3E8",
+      "#2A2838",
+      "#E2DEF5",
+      "#FFFFFF"
+     ]
+    }
+   ],
+   [
+    "r5-cool-docusign-deep-indigo",
+    "Docusign",
+    "99d20ff4-2f18-414a-a622-cb2e8f93ec7c",
+    "d",
+    "A deep indigo band with white numbers, then a white page with an electric violet Start and View buttons.",
+    "Indigo header with a count of showings starting soon, white list, violet Book buttons.",
+    {
+     "hex": [
+      "#26065D",
+      "#FFFFFF",
+      "#4C00FF",
+      "#F4F4F4"
+     ]
+    }
+   ],
+   [
+    "r5-cool-sentry-purple-buttons",
+    "Sentry",
+    "17685b3c-8d4c-449c-ab05-7c1cfc67a87e",
+    "d",
+    "White page with a pale lilac side menu and solid purple buttons; cards hold dark purple and pink charts.",
+    "White film list with purple Book buttons, lilac highlight on the selected area in the side menu.",
+    {
+     "hex": [
+      "#FFFFFF",
+      "#2B2233",
+      "#6C5FC7",
+      "#EEEBFA"
+     ]
+    }
+   ],
+   [
+    "r5-cool-joby-blue-cream-type",
+    "Joby Aviation",
+    "3c0bc1bd-a443-42e8-8435-4a538d6009d0",
+    "d",
+    "A full bright cobalt blue with large cream type.",
+    "Cobalt hero with cream film titles; cream on blue for the about page or the next showing.",
+    {
+     "hex": [
+      "#0866E0",
+      "#F3EEDC",
+      "#0550B8"
+     ],
+     "section": true
+    }
+   ],
+   [
+    "r5-cool-deezer-purple-black",
+    "Deezer",
+    "fd1d487d-5660-463b-a223-8701f7f8d4e4",
+    "d",
+    "Off-white page with a big electric purple card, black logo, condensed black headlines and a purple pill button.",
+    "Off-white page, purple featured film card with black type, purple Book pill.",
+    {
+     "hex": [
+      "#F5F5F5",
+      "#000000",
+      "#A238FF",
+      "#FFFFFF"
+     ],
+     "section": true
+    }
+   ],
+   [
+    "r5-cool-shopify-editions-violet",
+    "Shopify Editions",
+    "82b3e7d8-f568-45a0-bed6-6da9b11f4634",
+    "d",
+    "A near-black purple top with white condensed type, then a violet glow panel holding a white app screen.",
+    "Dark purple header, violet glow behind the next showing card, white rows inside.",
+    {
+     "hex": [
+      "#140B26",
+      "#FFFFFF",
+      "#7A4FE0",
+      "#B49CF5"
+     ],
+     "section": true
+    }
+   ]
+  ]
+ },
+ {
+  "id": "bright",
+  "title": "Colour: bright and multi-colour",
+  "note": "Several strong colours together, colour-blocked cards, neon on dark, pastels with a punch.",
+  "refs": [
+   [
+    "r5-bright-careem-green-pastel-cards",
+    "Careem",
+    "d5e0c132-bb11-44fd-9441-25b06cab32b7",
+    "p",
+    "White page with mint green, peach and pale blue cards, bold dark green type, and a lime-green promo band.",
+    "Area or genre cards each in a different pastel with dark green text; bright green for the selected chip.",
+    {
+     "hex": [
+      "#FFFFFF",
+      "#0B3B2E",
+      "#20D47A",
+      "#FBD9C2",
+      "#D5ECF7"
+     ]
+    }
+   ],
+   [
+    "r5-bright-lapse-dark-neon-gradient",
+    "Lapse",
+    "bdab0f68-4b1c-4eea-b0bd-5234b2a55148",
+    "p",
+    "Black page with cards outlined in glowing gradients of orange, pink and teal.",
+    "Dark mode where the next showing has a glowing gradient edge; everything else stays black.",
+    {
+     "hex": [
+      "#000000",
+      "#FFFFFF",
+      "#FF6A00",
+      "#FF2E9A",
+      "#22D3C5"
+     ]
+    }
+   ],
+   [
+    "r5-bright-partiful-dark-purple-glow",
+    "Partiful",
+    "faec448a-7391-4852-8bcf-cc6ef4001517",
+    "p",
+    "Black page with a purple-pink haze at the top, dark grey pill chips and colourful image cards.",
+    "Dark mode with a purple-pink haze at the top of Starting soon, grey chips, film posters bring the colour.",
+    {
+     "hex": [
+      "#0A0A0A",
+      "#FFFFFF",
+      "#7B3FE4",
+      "#F06CB0"
+     ]
+    }
+   ],
+   [
+    "r5-bright-abode-blocked-widgets",
+    "Abode",
+    "dfe47f0a-1358-4fad-8d44-43e63a06bc97",
+    "p",
+    "A white page of square cards in different flat colours: orange-yellow, cobalt blue, pale blue, with a red base bar.",
+    "Colour-blocked tiles for areas or cinemas, each its own colour.",
+    {
+     "hex": [
+      "#FFFFFF",
+      "#FFAE00",
+      "#0F4BC8",
+      "#EAF1FB",
+      "#F04A3A"
+     ]
+    }
+   ],
+   [
+    "r5-bright-me-plus-pastel-rows",
+    "Me+",
+    "8603b75c-65f6-43d7-ae36-8d5a0cb44f90",
+    "p",
+    "White page with list rows filled in pastel blue, lime green and pink, and a purple round add button.",
+    "Film rows tinted by state or genre in soft pastels; purple Book button.",
+    {
+     "hex": [
+      "#FFFFFF",
+      "#C6DBFB",
+      "#C9F0A0",
+      "#F9D2EF",
+      "#7B4FF0"
+     ]
+    }
+   ],
+   [
+    "r5-bright-stardust-night-neon-streaks",
+    "Stardust",
+    "451af6fe-3514-46f1-bcd2-565637cf986d",
+    "p",
+    "Dark navy-purple page with glass cards and neon streaks in pink, orange, green and violet.",
+    "A night dark mode with glass rows and one neon streak per cinema colour.",
+    {
+     "hex": [
+      "#1A1033",
+      "#FFFFFF",
+      "#FF4FA0",
+      "#FFB547",
+      "#7C5CFF"
+     ]
+    }
+   ],
+   [
+    "r5-bright-bless-dark-colour-shapes",
+    "bless.",
+    "ffdbc3ab-00cc-426b-9083-1b23567c43c5",
+    "p",
+    "Black page with a dark card holding big flat shapes in brick red, periwinkle, green and mauve.",
+    "Dark mode where each status gets its own flat colour shape: soon, later tonight, started.",
+    {
+     "hex": [
+      "#000000",
+      "#C45A55",
+      "#5A5FD6",
+      "#0F7F5A",
+      "#B0588E"
+     ]
+    }
+   ],
+   [
+    "r5-bright-paired-lilac-peach-cards",
+    "Paired",
+    "309da80b-e582-4b54-a327-4487e480e1c0",
+    "p",
+    "White page with stacked cards in lilac, peach and sage, dark navy type and a purple button.",
+    "Film cards in lilac, peach and sage with navy text; purple Book.",
+    {
+     "hex": [
+      "#FFFFFF",
+      "#1E1B4B",
+      "#D9C9F5",
+      "#F9D3C2",
+      "#8B3FE0"
+     ]
+    }
+   ],
+   [
+    "r5-bright-ahead-magenta-coral",
+    "Ahead",
+    "d9882278-4c07-4e0b-9f6f-4e3992730edb",
+    "p",
+    "White page with a magenta-to-pink gradient card and coral and magenta category cards.",
+    "A magenta gradient for the featured film; coral and magenta cards for areas.",
+    {
+     "hex": [
+      "#FFFFFF",
+      "#1A1A1A",
+      "#E0389A",
+      "#F86A6A"
+     ]
+    }
+   ],
+   [
+    "r5-bright-buddy-pink-icon-tiles",
+    "Buddy",
+    "416998c7-9be2-4177-9038-1c464938c3a2",
+    "p",
+    "A pink gradient header with white text over a light grey page of white cards, each with a coloured icon tile in blue, teal, purple or coral.",
+    "Pink header, white cinema cards each with a small coloured tile for the cinema chain.",
+    {
+     "hex": [
+      "#F5F5F7",
+      "#F2557F",
+      "#5B9DF5",
+      "#3FD4D4",
+      "#A04FF0"
+     ]
+    }
+   ],
+   [
+    "r5-bright-happier-gradient-tiles",
+    "Ten Percent Happier",
+    "0f848873-6dc5-4309-9bfe-0c5e6769d72f",
+    "p",
+    "Cream page with square tiles filled with soft multi-colour gradients: blue, teal, orange, pink and purple.",
+    "Cream page with area tiles in mixed gradients, each area its own blend.",
+    {
+     "hex": [
+      "#FFFBF0",
+      "#1A1A1A",
+      "#4A6BE0",
+      "#F6A13C",
+      "#E86A8A"
+     ]
+    }
+   ],
+   [
+    "r5-bright-rivian-black-colour-tiles",
+    "Rivian",
+    "a299be57-dd7b-4bda-b598-d94fe14034ad",
+    "p",
+    "Black page with rounded tiles in blue-to-peach gradient, bright green, golden yellow and white.",
+    "Dark mode with a few big coloured tiles at the top for shortcuts, then a black list.",
+    {
+     "hex": [
+      "#000000",
+      "#5A8BE0",
+      "#3FC765",
+      "#FFB300",
+      "#FFFFFF"
+     ]
+    }
+   ],
+   [
+    "r5-bright-headway-cream-purple-maroon",
+    "Headway",
+    "01c6cfd6-60d7-467c-bf24-c1532e21af08",
+    "p",
+    "Cream page with a peach card, a dark maroon card and a violet card, white text on the dark ones.",
+    "Cream page, film cards in peach, maroon and violet, a bit like book covers.",
+    {
+     "hex": [
+      "#FFF8F0",
+      "#3B0A1E",
+      "#7A3CF0",
+      "#FCE1D2"
+     ]
+    }
+   ],
+   [
+    "r5-bright-aboard-pastel-cards",
+    "Aboard",
+    "9af799e1-dcbe-4b74-8079-b4b37d8a8aec",
+    "d",
+    "White page with a peach patterned hero, a pink card, a lilac card and a sky-blue meeting block.",
+    "Desktop grid where each kind of card has its own pastel: peach hero, pink, lilac, sky.",
+    {
+     "hex": [
+      "#FFFFFF",
+      "#FDEBD0",
+      "#FADDEA",
+      "#E6E8FC",
+      "#9ED4FA"
+     ]
+    }
+   ],
+   [
+    "r5-bright-mural-pink-yellow",
+    "Mural",
+    "edb14076-5e1f-48d8-ba26-5e5e43f9a9b0",
+    "d",
+    "A full orchid pink band with a big butter-yellow button card and black text.",
+    "Pink band with a big yellow Book card; playful pink and yellow pair.",
+    {
+     "hex": [
+      "#E989F6",
+      "#F6DD6A",
+      "#111111"
+     ],
+     "section": true
+    }
+   ],
+   [
+    "r5-bright-canva-guideline-tiles",
+    "Canva",
+    "4250f8b9-9b90-46b0-b6de-1bef4ff89017",
+    "d",
+    "A grid of tall tiles in violet, magenta, teal, aqua, deep blue, maroon, green and yellow, each with white or black text.",
+    "Area tiles each in its own saturated colour, white text.",
+    {
+     "hex": [
+      "#FFFFFF",
+      "#7B2FF2",
+      "#D24DE0",
+      "#3CC4C4",
+      "#F6D84A"
+     ],
+     "section": true
+    }
+   ],
+   [
+    "r5-bright-duolingo-five-colour-cards",
+    "Duolingo",
+    "33cc8b7b-2c36-41fe-8cdd-cbc272c8d737",
+    "d",
+    "White page with five rounded cards in lime green, sky blue, lilac, golden orange and salmon, white rounded type.",
+    "Area or cinema cards in five friendly colours with white titles.",
+    {
+     "hex": [
+      "#FFFFFF",
+      "#78C83C",
+      "#4FA8F0",
+      "#C17BF0",
+      "#F2B53C"
+     ],
+     "section": true
+    }
+   ],
+   [
+    "r5-bright-openphone-pastel-hard-shadow",
+    "OpenPhone",
+    "368e9368-e7ad-44c1-88fb-ed73b0d3cd04",
+    "d",
+    "White page with pastel cards in butter, pink, peach, mint, aqua and lilac, each with a black outline and hard black shadow.",
+    "Pastel film cards with black outlines and hard shadows; playful but tidy.",
+    {
+     "hex": [
+      "#FFFFFF",
+      "#FDF6C8",
+      "#F5DAF7",
+      "#D6F5DC",
+      "#111111"
+     ],
+     "section": true
+    }
+   ],
+   [
+    "r5-bright-tines-purple-orange-grid",
+    "Tines",
+    "10fb9778-5f50-41cc-8260-b919a2f11b88",
+    "d",
+    "A violet page with a card grid in pale lilac, burnt orange, cream, deep navy-purple and mint.",
+    "Violet page, film cards in a set of five colours.",
+    {
+     "hex": [
+      "#7E6CE0",
+      "#F1EEFC",
+      "#D9601F",
+      "#2B2450",
+      "#E4F5E4"
+     ],
+     "section": true
+    }
+   ],
+   [
+    "r5-bright-framer-dark-gradient-cards",
+    "Framer",
+    "3bff67c0-a4b7-49bf-9a6c-efd3b6dec507",
+    "d",
+    "Dark grey page with bright gradient cards in blue, purple and orange-gold, and one pale white card.",
+    "Dark mode desktop with gradient cards for featured films.",
+    {
+     "hex": [
+      "#1E1E1E",
+      "#3B8BF0",
+      "#7A4FF0",
+      "#F2A23C",
+      "#F4F4F8"
+     ],
+     "section": true
+    }
+   ]
+  ]
+ },
+ {
+  "id": "earth",
+  "title": "Colour: greens and earth",
+  "note": "Forest and bottle green, olive, lime, sand, brown and ochre.",
+  "refs": [
+   [
+    "r5-earth-wonder-cream-forest",
+    "Wonder",
+    "28dcfe98-32e4-4944-b003-db4f80d1648c",
+    "p",
+    "Warm cream page and white cards, forest green icons and selected tab, a black and white pill toggle.",
+    "Cream page, white film rows, forest green selected chip and Book.",
+    {
+     "hex": [
+      "#F7F1E6",
+      "#1C1C1C",
+      "#1F4D2E",
+      "#FFFFFF"
+     ]
+    }
+   ],
+   [
+    "r5-earth-rodeo-cream-black-green",
+    "Rodeo",
+    "7bced7f3-4aa5-41a5-bbb7-3f950c024a95",
+    "p",
+    "Cream page with white cards, chunky black type, a mid-green Doing it pill and a black Did it pill.",
+    "Cream page, bold black film titles, green pill for Starts soon, black pill for Started.",
+    {
+     "hex": [
+      "#F1ECE0",
+      "#111111",
+      "#4CAF5A",
+      "#FFFFFF"
+     ]
+    }
+   ],
+   [
+    "r5-earth-sesame-sand",
+    "Sesame",
+    "8450ffeb-c0db-43f4-85b8-c77b979cacc3",
+    "p",
+    "Sand beige page, outlined rounded rows, a pale cream selected row and taupe outline buttons.",
+    "All sand: beige page, outlined film rows, cream selected chip, dark brown text.",
+    {
+     "hex": [
+      "#E9E0D2",
+      "#3A332B",
+      "#F8F2E6",
+      "#B8A890"
+     ]
+    }
+   ],
+   [
+    "r5-earth-komoot-cream-olive-orange",
+    "komoot",
+    "29221b29-6cc9-4133-976d-fa786d8986fd",
+    "p",
+    "Off-white cream page, olive green selected tab, an orange New button.",
+    "Cream page, olive selected area, orange Book.",
+    {
+     "hex": [
+      "#F4F2EC",
+      "#1A1A1A",
+      "#5B6E24",
+      "#E8743B"
+     ]
+    }
+   ],
+   [
+    "r5-earth-wise-dark-lime",
+    "Wise",
+    "61dd18d5-8a7c-4a8b-b6e6-1563042a2ccc",
+    "p",
+    "Very dark green-black page, bright lime pills, a lime selected tab, and butter-yellow cards.",
+    "Dark mode in green-black with lime Book and selected chip.",
+    {
+     "hex": [
+      "#163300",
+      "#9FE870",
+      "#FFEB69",
+      "#FFFFFF"
+     ]
+    }
+   ],
+   [
+    "r5-earth-lex-leaf-green-feed",
+    "Lex",
+    "7dceeeb1-073e-4ecf-ab2f-864cd750ea06",
+    "p",
+    "A bright leaf-green header and add button over a pale grey page of white cards with bold black type.",
+    "Leaf-green header with the area name, white film cards, green add or heart.",
+    {
+     "hex": [
+      "#F2F2F2",
+      "#111111",
+      "#3DC75A",
+      "#FFFFFF"
+     ]
+    }
+   ],
+   [
+    "r5-earth-pi-cream-deep-green",
+    "Pi",
+    "1e6b6342-62f1-406c-bb52-56d3491773ae",
+    "p",
+    "Cream page with white cards, deep green serif titles and painted pictures with green, orange and gold.",
+    "Cream page, deep green serif film titles, white cards.",
+    {
+     "hex": [
+      "#FBF5EC",
+      "#1F4A35",
+      "#FFFFFF",
+      "#C6772A"
+     ]
+    }
+   ],
+   [
+    "r5-earth-chime-dark-green-chips",
+    "Chime",
+    "ea8f757d-60a4-41af-a29a-923f5f450154",
+    "p",
+    "White page, a dark bottle green selected chip and price pins, grey Activate buttons.",
+    "White list, dark green selected chip and badges, grey secondary buttons.",
+    {
+     "hex": [
+      "#FFFFFF",
+      "#0E3F2B",
+      "#1EC677",
+      "#EFEFEF"
+     ]
+    }
+   ],
+   [
+    "r5-earth-subway-cream-green-list",
+    "Subway",
+    "571cade1-3c6f-4ec3-ae83-223285161434",
+    "p",
+    "Cream sheet with dark green text, small green round icon buttons and a pale green bottom button.",
+    "Cream sheet for a film's times, dark green text, pale green Book bar.",
+    {
+     "hex": [
+      "#FDF5E6",
+      "#0E4A2C",
+      "#8CC79A",
+      "#FFFFFF"
+     ]
+    }
+   ],
+   [
+    "r5-earth-bitepal-green-page",
+    "BitePal",
+    "f01519d1-74f7-425f-b693-a26b5033f2a4",
+    "p",
+    "A mid-green page with white rounded panels, golden yellow badges and a black add button.",
+    "Green page with white film panels, golden badges for Stay.",
+    {
+     "hex": [
+      "#5FAE59",
+      "#FFFFFF",
+      "#F4C430",
+      "#1A1A1A"
+     ]
+    }
+   ],
+   [
+    "r5-earth-deepstash-butter-brown",
+    "Deepstash",
+    "b69faa2d-ceee-4453-ac9b-13fcc026288f",
+    "p",
+    "Butter-yellow page with white rows, green tick circles, and a dark chocolate-brown button.",
+    "Butter page, white rows, chocolate Book button, green for Stay.",
+    {
+     "hex": [
+      "#FDEFC4",
+      "#2A0E0A",
+      "#2BB24C",
+      "#FFFFFF"
+     ]
+    }
+   ],
+   [
+    "r5-earth-lovable-cream-sage",
+    "Lovable",
+    "e2679a2f-7145-4c71-b91b-aec759b3fa59",
+    "d",
+    "Cream page with dark serif text, a sage green word and sage green pill buttons.",
+    "Desktop cream page, serif film titles, sage Book button.",
+    {
+     "hex": [
+      "#F7F4EE",
+      "#1A1A1A",
+      "#3F6B53",
+      "#FFFFFF"
+     ]
+    }
+   ],
+   [
+    "r5-earth-craft-dark-green-glow",
+    "Craft Agency",
+    "cbde3ed5-2c73-47ee-91a4-6b33cb7efa0e",
+    "d",
+    "A deep forest-black green with cream serif text and a green and lilac glow.",
+    "Dark mode in forest green, cream titles, a soft green glow behind the next film.",
+    {
+     "hex": [
+      "#16241B",
+      "#EDE8DA",
+      "#3DDC6A",
+      "#B9A6E8"
+     ],
+     "section": true
+    }
+   ],
+   [
+    "r5-earth-hungry-tiger-brown-ochre",
+    "Eat Hungry Tiger",
+    "0a65ae4c-404c-4d2d-bc70-bef248345510",
+    "d",
+    "A rust-brown textured page with huge ochre-yellow headline and ochre pill buttons.",
+    "A brown dark mode with ochre film titles and ochre Book pills.",
+    {
+     "hex": [
+      "#8A3D16",
+      "#F2B63A",
+      "#2A1508"
+     ],
+     "section": true
+    }
+   ],
+   [
+    "r5-earth-graza-lime-olive-cream",
+    "Graza",
+    "674d9fc9-7e05-45fe-ac3c-c8f6d793c78f",
+    "d",
+    "A bright lime band with dark olive serif text, framed by a pink-cream top bar.",
+    "Lime band for the hero, olive text, cream page.",
+    {
+     "hex": [
+      "#C5E13A",
+      "#2E3A12",
+      "#F3E5D8",
+      "#1A1A1A"
+     ],
+     "section": true
+    }
+   ],
+   [
+    "r5-earth-dropbox-bottle-green-butter",
+    "Dropbox",
+    "67b1bdcf-63f5-41c3-89e9-b54619820bce",
+    "d",
+    "A bottle green band with butter-yellow headline and drawing, then white with bottle green headings.",
+    "Bottle green header with butter-yellow area name, white list with green titles.",
+    {
+     "hex": [
+      "#1F5240",
+      "#F6E9B2",
+      "#FFFFFF"
+     ],
+     "section": true
+    }
+   ],
+   [
+    "r5-earth-fiverr-deep-green-ivory",
+    "Fiverr",
+    "53ce2014-9996-45f4-ad4e-b17e07595cf4",
+    "d",
+    "A deep green hero with white text and a light green button, then an ivory section with big green numbers.",
+    "Deep green top, ivory page, big green numbers for times.",
+    {
+     "hex": [
+      "#0D3B1E",
+      "#FFFFFF",
+      "#5FC57A",
+      "#F6F7EC"
+     ],
+     "section": true
+    }
+   ],
+   [
+    "r5-earth-clockwise-mint-emerald",
+    "Clockwise",
+    "ff439432-5975-41e1-a742-02370e3ad477",
+    "d",
+    "White page with mint green blocks and big emerald green type, emerald button.",
+    "Mint blocks for time slots, emerald text and Book.",
+    {
+     "hex": [
+      "#FFFFFF",
+      "#D3F8DF",
+      "#0E8A5A",
+      "#1A1A1A"
+     ],
+     "section": true
+    }
+   ],
+   [
+    "r5-earth-mindmarket-leaf-green",
+    "MindMarket",
+    "a3bbde0f-b285-40e2-b819-6ed626190280",
+    "d",
+    "A full fresh leaf green page with near-black type and white pill buttons with a green arrow.",
+    "Leaf green section with black type and white Book pills.",
+    {
+     "hex": [
+      "#7ED35A",
+      "#222222",
+      "#FFFFFF"
+     ],
+     "section": true
+    }
+   ]
+  ]
+ },
+ {
+  "id": "mono",
+  "title": "Colour: near-mono with one accent",
+  "note": "Black, white or grey where a single colour does all the work.",
+  "refs": [
+   [
+    "r5-mono-outsiders-black-sky-blue",
+    "The Outsiders",
+    "d81a7928-5359-4d12-b4e9-120918c6bec1",
+    "p",
+    "Black page with grey glass cards; one card and the chart lines are sky blue.",
+    "Black page, grey film rows, sky blue for the next showing and countdown.",
+    {
+     "hex": [
+      "#05080C",
+      "#FFFFFF",
+      "#5EC2F7",
+      "#2A2E33"
+     ]
+    }
+   ],
+   [
+    "r5-mono-opal-black-mint",
+    "Opal",
+    "82640f74-6eda-4d4a-a8b9-77c7a695c1e9",
+    "p",
+    "Black page with a dark green-tinted glass card and mint-teal for good values and progress bars.",
+    "Black page, mint for Starts in and progress to start, grey for the rest.",
+    {
+     "hex": [
+      "#050806",
+      "#FFFFFF",
+      "#2FD3A8",
+      "#1D2620"
+     ]
+    }
+   ],
+   [
+    "r5-mono-tonal-black-green",
+    "Tonal",
+    "1aeeb897-cb51-490b-9091-fc7c0bbee48d",
+    "p",
+    "Black page with dark grey tag chips and one bright green (with red as warning).",
+    "Black page, grey chips, green for Starts soon, red for Started.",
+    {
+     "hex": [
+      "#000000",
+      "#FFFFFF",
+      "#2BD46A",
+      "#E5383B",
+      "#2A2A2A"
+     ]
+    }
+   ],
+   [
+    "r5-mono-once-black-sky-blue",
+    "Once",
+    "68440c02-6d53-4c91-ae91-a074a8bd6bef",
+    "p",
+    "Charcoal page with a white New pill and one pale sky blue Create button.",
+    "Charcoal page, white pills, a single pale blue Book button.",
+    {
+     "hex": [
+      "#141414",
+      "#FFFFFF",
+      "#8CC8F5",
+      "#2A2A2A"
+     ]
+    }
+   ],
+   [
+    "r5-mono-apple-fitness-black-lime",
+    "Apple Fitness",
+    "5ceeb6ad-9389-457f-a470-ca2ca696235a",
+    "p",
+    "Black page with dark grey cards and lime-green text links and buttons.",
+    "Black page, grey rows, lime for Book links and selected tab.",
+    {
+     "hex": [
+      "#000000",
+      "#FFFFFF",
+      "#B6F23C",
+      "#1C1C1E"
+     ]
+    }
+   ],
+   [
+    "r5-mono-linktree-black-magenta",
+    "Linktree",
+    "faec2731-e274-4702-81b1-a7995dc6f564",
+    "p",
+    "Black page with charcoal cards and magenta progress bars as the one colour.",
+    "Black page, magenta for the time-left bar on each showing.",
+    {
+     "hex": [
+      "#111111",
+      "#FFFFFF",
+      "#D61EE0",
+      "#2A2A2A"
+     ]
+    }
+   ],
+   [
+    "r5-mono-future-white-green",
+    "Future Pro",
+    "e8973bdb-59de-4269-8edf-167892981eaa",
+    "p",
+    "Light grey page with white cards, black text and lime-green day circles as the only colour.",
+    "Light page, white rows, green circle on today's showing.",
+    {
+     "hex": [
+      "#F2F2F2",
+      "#111111",
+      "#6CCB3C",
+      "#FFFFFF"
+     ]
+    }
+   ],
+   [
+    "r5-mono-mercury-white-indigo",
+    "Mercury",
+    "ddcbfcf1-b1c2-49c3-89e4-f68d768a7bf3",
+    "p",
+    "White page, black text and a deep indigo round add button and selected tab.",
+    "White page, indigo Book button and selected tab only.",
+    {
+     "hex": [
+      "#FFFFFF",
+      "#111111",
+      "#3D44B8",
+      "#F2F2F4"
+     ]
+    }
+   ],
+   [
+    "r5-mono-todoist-white-red",
+    "Todoist",
+    "ff08723d-19d9-49dd-b38b-4e6a0a1749fe",
+    "p",
+    "White page, black text, grey pill tab bar, and one tomato red round add button and selected icon.",
+    "White page with a single tomato red for Book and selected tab.",
+    {
+     "hex": [
+      "#FFFFFF",
+      "#111111",
+      "#E44332",
+      "#F0F0F0"
+     ]
+    }
+   ],
+   [
+    "r5-mono-cherrypick-blush-berry",
+    "Cherrypick",
+    "ffa91c83-4a46-45ea-81fe-d4756c039347",
+    "p",
+    "Very pale blush-white page with grey lines, and a deep berry pink filled main button and back arrow.",
+    "Near-white page, berry Book button.",
+    {
+     "hex": [
+      "#F8F3F5",
+      "#1A1A1A",
+      "#B0185E",
+      "#E2E2E2"
+     ]
+    }
+   ],
+   [
+    "r5-mono-hermes-white-ultramarine",
+    "Hermes Agent",
+    "eee0f00d-1395-4060-9502-1f719fdd1341",
+    "d",
+    "White page where everything else, from images to big serif type and borders, is ultramarine blue.",
+    "White page, ultramarine for everything that matters: titles, times, Book.",
+    {
+     "hex": [
+      "#FFFFFF",
+      "#1A1AF0",
+      "#E8E8FF"
+     ],
+     "section": true
+    }
+   ],
+   [
+    "r5-mono-trawelt-black-green-ticket",
+    "Trawelt",
+    "07e71cd4-4d6a-4ffc-b583-6e9484302cd6",
+    "d",
+    "Black page with white text and a pair of soft green ticket cards with black type.",
+    "Black page, green ticket shape for the next showing.",
+    {
+     "hex": [
+      "#000000",
+      "#FFFFFF",
+      "#5BB55B"
+     ],
+     "section": true
+    }
+   ],
+   [
+    "r5-mono-digg-white-blue-chip",
+    "Digg",
+    "64f280fb-2399-48c1-9e90-3bbad5221c19",
+    "d",
+    "White page with grey pill tabs, a blue selected tab and a black New post button.",
+    "White page, blue selected chip, black Book.",
+    {
+     "hex": [
+      "#FFFFFF",
+      "#111111",
+      "#1F6FE0",
+      "#EFEFF2"
+     ]
+    }
+   ],
+   [
+    "r5-mono-vapi-black-teal",
+    "Vapi",
+    "11ed1ae3-41e1-44bd-9da8-6e359915a67b",
+    "d",
+    "Near-black dashboard with grey lines and a teal-green New button and status dot.",
+    "Black desktop, teal Book button and live dot.",
+    {
+     "hex": [
+      "#0E0E10",
+      "#E8E8E8",
+      "#2DB38A",
+      "#26262A"
+     ]
+    }
+   ]
+  ]
+ }
+];
+const EXTRA = [];
+
+// The eight colour roles from the UI brief, and three candidate palettes with exact values.
+const ROLES = [
+  ["bg", "Background", "The page behind everything."],
+  ["surface", "Surface", "Rows, sheets and cards that sit on the background."],
+  ["text", "Text", "Start times, film titles and body copy. Times need the strongest contrast."],
+  ["muted", "Muted text", "Cinema name, format and the freshness line."],
+  ["accent", "Accent", "The brand colour: “Starts in 45 min”, the selected area, the Stay or Go chip."],
+  ["book", "Book", "The Book button, the one action colour."],
+  ["stale", "Stale", "Old data. Always paired with words, never colour alone."],
+  ["focus", "Focus ring", "The 2 px outline around whatever the keyboard is on."]
+];
+const PALETTES = []
+
+const state = {}, els = {}, timers = {};
+const ORDER = [];   // zoomable references, in page order
+const LS = "lsrefs5:";
+const $ = (t, attrs, ...kids) => { const e = document.createElement(t); for (const k in attrs || {}) { if (k === "text") e.textContent = attrs[k]; else e.setAttribute(k, attrs[k]); } kids.forEach(k => k != null && e.append(k)); return e; };
+const mobbin = mid => "https://mobbin.com/screens/" + mid;
+
+function lum(hex) { const c = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255).map(v => v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4)); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; }
+function ratio(a, b) { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); }
+
+function answered(id) { const s = state[id]; return !!s && (s.likes.length > 0 || s.note.trim() !== "" || s.regions.length > 0); }
+function recount() {
+  let n = 0, total = 0;
+  SECTION_IDS.forEach(([sid, ids]) => {
+    const k = ids.filter(answered).length; n += k; total += ids.length;
+    const unit = sid === "colour" ? " options" : " refs";
+    document.getElementById("navc-" + sid).textContent = k ? k + " of " + ids.length + " answered" : ids.length + unit;
+  });
+  ["count", "count2"].forEach(i => document.getElementById(i).textContent = n);
+  ["total", "total2"].forEach(i => document.getElementById(i).textContent = total);
+  document.getElementById("meter").style.width = (total ? 100 * n / total : 0) + "%";
+}
+function toggleLike(id, name) {
+  const s = state[id];
+  if (s.likes.includes(name)) s.likes = s.likes.filter(x => x !== name);
+  else s.likes = name === NO ? [NO] : s.likes.filter(x => x !== NO).concat([name]);
+  paint(id); recount(); save(id);
+}
+function paint(id) {
+  if (zoom.open && ORDER[zi].id === id) zchips.forEach((btn, name) => btn.setAttribute("aria-pressed", state[id].likes.includes(name) ? "true" : "false"));
+  const s = state[id], e = els[id];
+  e.chips.forEach((btn, name) => btn.setAttribute("aria-pressed", s.likes.includes(name) ? "true" : "false"));
+  if (e.note.value !== s.note) e.note.value = s.note;
+}
+// Regions are stored as fractions of the image (0 to 1), so they fit any size the image is drawn at.
+function markEl(r, n) {
+  const m = $("span", { class: "mark" }, $("b", { text: String(n) }));
+  m.style.left = r.x * 100 + "%"; m.style.top = r.y * 100 + "%"; m.style.width = r.w * 100 + "%"; m.style.height = r.h * 100 + "%";
+  return m;
+}
+function drawMarks(id) {
+  const rs = state[id].regions, e = els[id];
+  if (e.cardMarks) e.cardMarks.replaceChildren(...rs.map((r, i) => markEl(r, i + 1)));
+  if (!zoom.open || ORDER[zi].id !== id) return;
+  zmarks.replaceChildren(...rs.map((r, i) => markEl(r, i + 1)));
+  document.getElementById("zregions").replaceChildren(...rs.map((r, i) => {
+    const b = $("button", { type: "button", class: "zbtn", "aria-label": "Remove region " + (i + 1), text: "Region " + (i + 1) + " ✕" });
+    b.addEventListener("click", () => { state[id].regions.splice(i, 1); save(id); recount(); drawMarks(id); });
+    return b;
+  }));
+}
+function regionText(id) {
+  const rs = state[id].regions;
+  if (!rs.length) return "";
+  const pct = n => Math.round(n * 100) + "%";
+  return " | regions: " + rs.map((r, i) => (i + 1) + " [left " + pct(r.x) + ", top " + pct(r.y) + ", width " + pct(r.w) + ", height " + pct(r.h) + "]").join("; ");
+}
+function save(id) {
+  if (zoom.open && ORDER[zi].id === id) zsaved.textContent = "Saved in this browser";
+  try { localStorage.setItem(LS + id, JSON.stringify(state[id])); els[id].saved.textContent = "Saved in this browser"; }
+  catch (_) { els[id].saved.textContent = "Could not save. Use Copy all answers before closing."; }
+}
+// The tick buttons, text box and saved line shared by references and palettes.
+function answerForm(id, likes, question, placeholder) {
+  state[id] = { likes: [], note: "", regions: [] };
+  try { const raw = localStorage.getItem(LS + id); if (raw) { const v = JSON.parse(raw); state[id] = { likes: Array.isArray(v.likes) ? v.likes : [], note: typeof v.note === "string" ? v.note : "", regions: Array.isArray(v.regions) ? v.regions.filter(r => r && [r.x, r.y, r.w, r.h].every(n => typeof n === "number")) : [] }; } } catch (_) {}
+  const chips = new Map(), chipRow = $("div", { class: "chips" });
+  likes.concat([NO]).forEach(name => {
+    const b = $("button", { type: "button", class: name === NO ? "chip no" : "chip", "aria-pressed": "false", text: name });
+    b.addEventListener("click", () => toggleLike(id, name));
+    chips.set(name, b); chipRow.append(b);
+  });
+  const note = $("textarea", { id: "note-" + id, placeholder });
+  note.addEventListener("input", () => {
+    state[id].note = note.value; recount(); els[id].saved.textContent = "";
+    clearTimeout(timers[id]); timers[id] = setTimeout(() => save(id), 600);
+  });
+  note.addEventListener("blur", () => { clearTimeout(timers[id]); save(id); });
+  const saved = $("div", { class: "saved", role: "status" });
+  els[id] = { chips, note, saved };
+  const frag = document.createDocumentFragment();
+  frag.append($("fieldset", {}, $("legend", { text: question }), chipRow), $("label", { class: "note", for: "note-" + id }, "Exactly what you like (or don't)", note), saved);
+  return frag;
+}
+
+const SECTION_IDS = [];
+function addNav(id, title, n) {
+  document.getElementById("nav").append($("a", { href: "#" + id, "data-sec": id }, title, $("span", { id: "navc-" + id, text: String(n) })));
+}
+function build() {
+  const main = document.getElementById("main");
+  SECTIONS.forEach(sec => {
+    addNav(sec.id, sec.title, sec.refs.length);
+    SECTION_IDS.push([sec.id, sec.refs.map(r => r[0])]);
+    const section = $("section", { id: sec.id }, $("div", { class: "sec-head" }, $("h2", { text: sec.title }), $("p", { text: sec.note })));
+    sec.refs.forEach(([id, app, mid, kind, what, how, extra]) => {
+      const desk = kind === "d";
+      const index = ORDER.push({ id, app, mid, how, what, hex: (extra && extra.hex) || [], noLink: !!(extra && extra.section), section: sec.title, kind }) - 1;
+      const img = $("img", desk ? { src: "images/round5/" + id + ".webp", alt: "", loading: "lazy" } : { src: "images/round5/" + id + ".webp", alt: "", loading: "lazy", width: "1179", height: "2676" });
+      const hexes = (extra && extra.hex) || [];
+      const sw = hexes.length ? $("div", { class: "hexes" }, ...hexes.map((h) => { const i = $("i"); i.style.background = h; return $("span", {}, i, $("code", { text: h })); }), $("small", { text: "approximate, by eye" })) : null;
+      const cardMarks = $("span", { class: "marks" });
+      const shot = $("button", { type: "button", class: "shot", "aria-label": "Zoom the " + app + " screenshot" }, img, cardMarks);
+      shot.addEventListener("click", () => openZoom(index, shot));
+      const article = $("article", { class: desk ? "ref wide" : "ref", id: "ref-" + id },
+        shot,
+        $("div", { class: "form" },
+          $("div", { class: "meta" },
+            $("div", { class: "title-row" }, $("h3", { text: app }), $("span", { class: "tag", text: desk ? "Desktop" : "Phone" })),
+            $("dl", { class: "pair" }, $("dt", { text: "What it shows" }), $("dd", { text: what }), $("dt", { text: "What we'd take" }), $("dd", { text: how })),
+            sw,
+            extra && extra.section ? null : $("a", { href: mobbin(mid), target: "_blank", rel: "noopener", text: "Open full size on Mobbin" })),
+          answerForm(id, LIKES, "What do you like about it?", "e.g. the big time on the left, the grey line under it")));
+      section.append(article);
+      els[id].cardMarks = cardMarks;
+      paint(id); drawMarks(id);
+    });
+    main.append(section);
+  });
+  recount();
+}
+
+function swatches(m) {
+  const box = $("div", { class: "sws" });
+  [["Background", m.bg], ["Surface", m.surface], ["Text", m.text], ["Muted text", m.muted], ["Accent", m.accent], ["Book", m.book], ["Stale", m.stale], ["Focus ring", m.focus]].forEach(([n, hex]) => {
+    const i = $("i"); i.style.background = hex;
+    box.append($("div", { class: "sw" }, i, $("strong", { text: n }), $("code", { text: hex })));
+  });
+  return box;
+}
+function checks(m) {
+  const rows = [["Time and text on background", m.text, m.bg, 7], ["Text on a row", m.text, m.surface, 7], ["Muted text on background", m.muted, m.bg, 4.5], ["Muted text on a row", m.muted, m.surface, 4.5], ["Label on the accent", m.accentText, m.accent, 4.5], ["Label on Book", m.bookText, m.book, 4.5], ["Stale words on a row", m.stale, m.surface, 4.5], ["Focus ring on background", m.focus, m.bg, 3]];
+  const ul = $("ul", { class: "checks" });
+  rows.forEach(([n, a, b, need]) => { const r = ratio(a, b); ul.append($("li", { "data-ratio": r.toFixed(2), "data-need": need }, n + ": ", $("b", { text: r.toFixed(1) + ":1" }), " (needs " + need + ":1" + (r >= need ? ")" : ", fails)"))); });
+  return ul;
+}
+function sample(m, stale) {
+  const s = $("div", { class: "sample" });
+  const set = { "--p-bg": m.bg, "--p-surface": m.surface, "--p-text": m.text, "--p-muted": m.muted, "--p-accent-bg": m.accent, "--p-accent-text": m.accentText, "--p-book": m.book, "--p-book-text": m.bookText, "--p-stale": m.stale, "--p-focus": m.focus };
+  for (const k in set) s.style.setProperty(k, set[k]);
+  s.append($("div", { class: "card" },
+    $("div", { class: "time" }, "19:30", $("span", { class: "soon", text: "Starts in 45 min" })),
+    $("div", { class: "film", text: "Sinners" }),
+    $("div", { class: "where", text: "Filmhouse Lekki · IMAX" }),
+    stale ? $("div", { class: "stale", text: "Read from Filmhouse's site 9 hours ago. May be out of date." }) : $("div", { class: "fresh", text: "Read from Filmhouse's site 2 hours ago" }),
+    $("div", { class: "row" }, $("span", { class: "focus", text: "Keyboard focus" }), $("span", { class: "book", text: "Book" }))));
+  return s;
+}
+function buildColour(main) {
+  addNav("colour", "Colour palette", PALETTES.length);
+  SECTION_IDS.push(["colour", PALETTES.map(p => p.id)]);
+  const section = $("section", { id: "colour" }, $("div", { class: "sec-head" }, $("h2", { text: "Colour palette" }),
+    $("p", { text: "The app uses eight colour roles, each in a light and a dark version. Below are the roles, then five palettes (today's and four new ones) with exact values. The example row is made-up sample text, drawn with each palette's real colours." })));
+  const table = $("table", { class: "roles" }, $("thead", {}, $("tr", {}, $("th", { text: "Role" }), $("th", { text: "Token" }), $("th", { text: "What it colours" }))));
+  const tb = $("tbody");
+  ROLES.forEach(([tok, name, use]) => tb.append($("tr", {}, $("td", { text: name }), $("td", {}, $("code", { text: "--" + tok })), $("td", { text: use }))));
+  table.append(tb);
+  section.append($("div", { class: "scroll" }, table));
+  PALETTES.forEach(p => {
+    const modes = $("div", { class: "modes" });
+    [["Light", p.light, false], ["Dark", p.dark, true]].forEach(([label, m, stale]) => modes.append($("div", { class: "mode", "data-mode": p.id + "-" + label.toLowerCase() }, $("h4", { text: label + (stale ? " · showing a stale row" : "") }), sample(m, stale), swatches(m), checks(m))));
+    section.append($("article", { class: "pal", id: "ref-" + p.id }, $("div", { class: "meta" }, $("h3", { text: p.name }), $("p", { text: p.note })), modes,
+      answerForm(p.id, PAL_LIKES, "What do you like about it?", "e.g. the amber against navy, but the light mode feels too yellow")));
+    paint(p.id);
+  });
+  main.append(section);
+}
+
+// Zoom
+const zoom = document.getElementById("zoom"), zfig = document.getElementById("zfig"), zimg = document.getElementById("zimg");
+const zmarks = document.getElementById("zmarks"), znote = document.getElementById("znote");
+let zi = 0, zfrom = null, draft = null;
+const zsaved = document.getElementById("zsaved"), zchips = new Map();
+LIKES.concat([NO]).forEach(name => {
+  const b = $("button", { type: "button", class: name === NO ? "chip no" : "chip", "aria-pressed": "false", text: name });
+  b.addEventListener("click", () => toggleLike(ORDER[zi].id, name));
+  zchips.set(name, b); document.getElementById("zchips").append(b);
+});
+// Keep the marking layer exactly over the image, whatever size it is drawn at.
+function layoutMarks() {
+  const f = zfig.getBoundingClientRect(), r = zimg.getBoundingClientRect();
+  zmarks.style.left = (r.left - f.left) + "px"; zmarks.style.top = (r.top - f.top) + "px";
+  zmarks.style.width = r.width + "px"; zmarks.style.height = r.height + "px";
+}
+zimg.addEventListener("load", layoutMarks);
+new ResizeObserver(layoutMarks).observe(zfig);
+const clamp01 = n => Math.min(1, Math.max(0, n));
+function draftBox(e) {
+  const b = zmarks.getBoundingClientRect();
+  const x1 = clamp01((e.clientX - b.left) / b.width), y1 = clamp01((e.clientY - b.top) / b.height);
+  return { x: Math.min(draft.x0, x1), y: Math.min(draft.y0, y1), w: Math.abs(x1 - draft.x0), h: Math.abs(y1 - draft.y0) };
+}
+zmarks.addEventListener("pointerdown", e => {
+  if (e.button) return;
+  const b = zmarks.getBoundingClientRect();
+  draft = { x0: clamp01((e.clientX - b.left) / b.width), y0: clamp01((e.clientY - b.top) / b.height), el: $("span", { class: "mark" }) };
+  zmarks.append(draft.el); zmarks.setPointerCapture(e.pointerId); e.preventDefault();
+});
+zmarks.addEventListener("pointermove", e => {
+  if (!draft) return;
+  const r = draftBox(e), st = draft.el.style;
+  st.left = r.x * 100 + "%"; st.top = r.y * 100 + "%"; st.width = r.w * 100 + "%"; st.height = r.h * 100 + "%";
+});
+function endDraft(e, keep) {
+  if (!draft) return;
+  const r = draftBox(e), id = ORDER[zi].id;
+  draft = null;
+  // A plain click or a tiny drag is not a region.
+  if (keep && r.w >= 0.02 && r.h >= 0.02) { const q = n => Math.round(n * 1000) / 1000; state[id].regions.push({ x: q(r.x), y: q(r.y), w: q(r.w), h: q(r.h) }); save(id); recount(); }
+  drawMarks(id);
+}
+zmarks.addEventListener("pointerup", e => endDraft(e, true));
+zmarks.addEventListener("pointercancel", e => endDraft(e, false));
+znote.addEventListener("input", () => {
+  const id = ORDER[zi].id;
+  state[id].note = znote.value; els[id].note.value = znote.value; recount();
+  clearTimeout(timers[id]); timers[id] = setTimeout(() => save(id), 600);
+});
+function showZoom() {
+  const r = ORDER[zi];
+  zmarks.replaceChildren();
+  zimg.src = "images/round5/" + r.id + ".webp"; zimg.alt = r.app + " screenshot";
+  znote.value = state[r.id].note; zsaved.textContent = "";
+  document.getElementById("zcount").textContent = (zi + 1) + " of " + ORDER.length;
+  document.getElementById("zsec").textContent = r.section;
+  document.getElementById("ztitle").textContent = r.app;
+  document.getElementById("ztag").textContent = r.kind === "d" ? "Desktop" : "Phone";
+  document.getElementById("zwhat").textContent = r.what;
+  document.getElementById("zhow").textContent = r.how;
+  document.getElementById("zhex").replaceChildren(...(r.hex.length ? [$("div", { class: "hexes" }, ...r.hex.map(h => { const i = $("i"); i.style.background = h; return $("span", {}, i, $("code", { text: h })); }), $("small", { text: "approximate, by eye" }))] : []));
+  const link = document.getElementById("zlink"); link.hidden = r.noLink; link.href = mobbin(r.mid);
+  zchips.forEach((btn, name) => btn.setAttribute("aria-pressed", state[r.id].likes.includes(name) ? "true" : "false"));
+  document.querySelector(".z-panel").scrollTop = 0;
+  drawMarks(r.id); layoutMarks();
+}
+function openZoom(i, from) { zi = i; zfrom = from; zoom.showModal(); showZoom(); document.getElementById("zclose").focus(); }
+znote.addEventListener("blur", flushNote);
+function flushNote() { const id = ORDER[zi].id; clearTimeout(timers[id]); save(id); }
+function step(d) { flushNote(); zi = (zi + d + ORDER.length) % ORDER.length; showZoom(); }
+document.getElementById("zclose").addEventListener("click", () => zoom.close());
+document.getElementById("zprev").addEventListener("click", () => step(-1));
+document.getElementById("znext").addEventListener("click", () => step(1));
+zoom.addEventListener("keydown", e => { if (e.target.tagName === "TEXTAREA") return; if (e.key === "ArrowRight") { e.preventDefault(); step(1); } else if (e.key === "ArrowLeft") { e.preventDefault(); step(-1); } });
+zoom.addEventListener("click", e => { if (e.target === zoom || e.target.classList.contains("z-stage") || e.target.tagName === "FIGURE") zoom.close(); });
+zoom.addEventListener("close", () => {
+  flushNote();
+  const card = document.getElementById("ref-" + ORDER[zi].id);
+  const back = card ? card.querySelector(".shot") : zfrom;
+  if (card) card.scrollIntoView({ block: "nearest" });
+  if (back) back.focus({ preventScroll: true });
+});
+
+// Sidebar
+const navbtn = document.getElementById("navbtn");
+function setNav(open) { document.body.classList.toggle("nav-open", open); navbtn.setAttribute("aria-expanded", open ? "true" : "false"); }
+navbtn.addEventListener("click", () => setNav(!document.body.classList.contains("nav-open")));
+document.getElementById("nav").addEventListener("click", e => { if (e.target.closest("a")) setNav(false); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !zoom.open) setNav(false); });
+document.addEventListener("click", e => { if (document.body.classList.contains("nav-open") && !e.target.closest("#side") && !e.target.closest("#navbtn")) setNav(false); });
+
+function allAnswersText() {
+  const lines = [];
+  ORDER.forEach(r => { if (answered(r.id)) lines.push(r.id + " | " + r.app + " | " + r.section + " | " + (state[r.id].likes.join(", ") || "-") + " | " + state[r.id].note.replace(/\s+/g, " ").trim() + regionText(r.id)); });
+  PALETTES.forEach(p => { if (answered(p.id)) lines.push(p.id + " | " + p.name + " | Colour palette | " + (state[p.id].likes.join(", ") || "-") + " | " + state[p.id].note.replace(/\s+/g, " ").trim()); });
+  return lines.join("\n") || "No answers yet.";
+}
+document.getElementById("copybtn").addEventListener("click", () => {
+  const text = allAnswersText(), out = document.getElementById("copyout"), btn = document.getElementById("copybtn");
+  const fallback = () => { setNav(false); out.value = text; out.hidden = false; out.focus(); out.select(); btn.textContent = "Select the text at the top"; };
+  try { navigator.clipboard.writeText(text).then(() => { btn.textContent = "Copied"; setTimeout(() => { btn.textContent = "Copy all answers"; }, 2000); }, fallback); } catch (_) { fallback(); }
+});
+document.getElementById("dlbtn").addEventListener("click", () => {
+  const out = {};
+  ORDER.forEach(r => { if (answered(r.id)) out[r.id] = { app: r.app, section: r.section, likes: state[r.id].likes, note: state[r.id].note, regions: state[r.id].regions }; });
+  PALETTES.forEach(p => { if (answered(p.id)) out[p.id] = { app: p.name, section: "Colour palette", likes: state[p.id].likes, note: state[p.id].note }; });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(out, null, 2)], { type: "application/json" }));
+  a.download = "sinima-cinemas-references-answers.json";
+  document.body.append(a); a.click(); a.remove();
+});
+
+build();
+
+// Mark the section in view in the sidebar.
+const links = new Map([...document.querySelectorAll("#nav a")].map(a => [a.dataset.sec, a]));
+const io = new IntersectionObserver(entries => {
+  entries.forEach(en => { if (en.isIntersecting) { links.forEach(a => a.removeAttribute("aria-current")); links.get(en.target.id).setAttribute("aria-current", "true"); } });
+}, { rootMargin: "-20% 0px -70% 0px" });
+document.querySelectorAll("main section").forEach(s => io.observe(s));
+</script>
+</body>
+</html>

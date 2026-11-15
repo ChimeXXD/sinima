@@ -73,7 +73,7 @@
   width: 133px;
   height: 53px;
   overflow: visible;
-  rotate: -3deg;
+  rotate: 3deg; /* Figma -3, which turns clockwise */
   pointer-events: none;
 }
 /* Figma's stroke is 2.5, inside the shape. */

@@ -1,0 +1,255 @@
+/* Area (Figma 200:6420): cinema cards one to a row on a phone, two on an iPad, three on a computer;
+   the neighbouring areas one, two and two. */
+
+.round {
+  display: inline-grid;
+  place-items: center;
+  /* Figma's 40 circle inside a 44 touch area: the transparent edge is not painted. */
+  width: 44px;
+  height: 44px;
+  margin: -2px;
+  border: 2px solid transparent;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface) padding-box;
+  color: var(--text-primary);
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--dur-press) var(--ease-out);
+}
+.round:active {
+  transform: scale(0.94);
+}
+.barTitle {
+  color: var(--text-primary);
+  font: var(--type-title);
+}
+.crumb {
+  display: none;
+}
+@media (min-width: 1200px) {
+  .crumb {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    gap: 6px;
+    padding-top: var(--space-20);
+    color: var(--text-secondary);
+    font: var(--type-body-m);
+  }
+}
+
+.notice {
+  display: flex;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  padding-top: 22px;
+  padding-bottom: var(--space-4);
+}
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.heading h2 {
+  color: var(--text-primary);
+  font: var(--type-heading-s);
+}
+.heading p {
+  color: var(--text-secondary);
+  font: var(--type-meta);
+}
+.cards,
+.nextCards {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr); /* a long film name never widens the column */
+  gap: var(--space-16);
+  align-items: start;
+}
+@media (min-width: 768px) {
+  .cards,
+  .nextCards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1200px) {
+  .cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Cinema card: page white with a hairline, 24 round, 16 in, 12 between its parts. */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  padding: var(--space-16);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-card);
+  background: var(--bg-page);
+}
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  min-height: 41px;
+}
+.logo {
+  display: flex;
+  flex: none;
+  padding-left: var(--space-4); /* Figma: 4 in, for the tilt */
+}
+.text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.name {
+  color: var(--text-primary);
+  font: var(--type-title);
+}
+.line {
+  color: var(--text-secondary);
+  font: var(--type-meta);
+}
+/* Figma's 38 circle inside a 44 touch area. */
+.heart {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin: -3px;
+  border: 3px solid transparent;
+  border-radius: var(--radius-full);
+  background: var(--bg-accent-soft) padding-box;
+  color: var(--text-accent);
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--dur-press) var(--ease-out);
+}
+.heart svg {
+  fill: currentColor;
+}
+.heart:active {
+  transform: scale(0.94);
+}
+.showings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.showing {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+/* Figma's 120 cell; a chip with a format and a countdown is wider, and pushes its film along. */
+.cell {
+  display: flex;
+  flex: none;
+  min-width: 120px;
+}
+.film {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-primary);
+  font: var(--type-body-m);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.none {
+  color: var(--text-secondary);
+  font: var(--type-body-m);
+}
+/* "All times" and "Show all": Label/Strong in the accent; the link's touch area reaches 44. */
+.more {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  align-self: flex-start;
+  gap: var(--space-4);
+  color: var(--text-accent);
+  font: var(--type-label-strong);
+}
+.card > .more {
+  margin-block: -13.5px;
+  padding-block: 13.5px;
+}
+.hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* A neighbouring area: surface grey, 24 round, 16 in; logos, words, then Show all. */
+.nextCard {
+  display: flex;
+  align-items: center;
+  gap: var(--space-14);
+  min-height: 44px;
+  padding: var(--space-16);
+  border-radius: var(--radius-card);
+  background: var(--bg-surface);
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--dur-press) var(--ease-out);
+}
+.nextCard:active {
+  transform: scale(0.99);
+}
+.nextCard .more {
+  align-self: center;
+}
+.logos {
+  display: flex;
+  flex: none;
+  align-items: flex-start;
+  padding-left: var(--space-4);
+}
+.stacked {
+  display: flex;
+}
+.stacked + .stacked {
+  margin-left: -18px;
+}
+.stacked:nth-child(2) {
+  margin-top: 5px; /* Figma: the middle one sits lower */
+}
+.nextLine {
+  color: var(--text-body-strong);
+  font: var(--type-meta);
+}
+
+/* Nothing more tonight: the ticket, then the words, centred. */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-10);
+  padding: var(--space-28) 0 var(--space-8);
+  text-align: center;
+}
+.emptyTicket {
+  rotate: 8deg;
+  margin-bottom: var(--space-10); /* Figma: the title 21 below the ticket */
+}
+.empty h2 {
+  max-width: 420px;
+  color: var(--text-primary);
+  font: var(--type-heading-s);
+}
+.empty p {
+  max-width: 440px;
+  color: var(--text-secondary);
+  font: var(--type-body-m);
+}

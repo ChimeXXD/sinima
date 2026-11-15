@@ -1,31 +1,7 @@
 import { expect, test } from "@playwright/test";
-import { cinemasBySoonest, dataFile, freeze, lagosClock, sampleTime, today } from "./helpers";
+import { dataFile, freeze, lagosClock, sampleTime, today } from "./helpers";
 
-// The Cinemas tab: cinemas near you, soonest first (D-49; no longer the home page since D-55).
-test("an area's home lists its cinemas soonest first, each with its next times", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
-  const now = await sampleTime(request, "18:00");
-  const rows = today(all, now);
-  const lekki = new Set(all.cinemas.filter((c) => c.area === "lekki").map((c) => c.id));
-  const expected = cinemasBySoonest(rows).filter((id) => lekki.has(id));
-  expect(expected.length).toBeGreaterThan(3);
-  await freeze(page, now);
-  await page.goto("/area/lekki");
-
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Cinemas near Lekki");
-  const cards = page.getByTestId("group.area").locator('[data-testid^="cinema.card."]');
-  expect(await cards.evaluateAll((els) => els.map((el) => el.getAttribute("data-testid")!.replace("cinema.card.", "")))).toEqual(expected);
-
-  const first = expected[0]!;
-  const firstRow = rows.find((s) => s.cinemaId === first)!;
-  const card = page.getByTestId(`cinema.card.${first}`);
-  await expect(card.getByTestId("cinema.name")).toHaveText(all.cinemas.find((c) => c.id === first)!.name);
-  // Since D-56 a row gives the next time in words; the times themselves are on the cinema's page.
-  await expect(card.getByTestId("cinema.next")).toHaveText(new RegExp(`^Next at ${lagosClock(firstRow.startsAt)} · `));
-  // Next door comes after, and is named.
-  await expect(page.getByTestId("group.next").getByRole("heading", { level: 2 })).toHaveText("Next to Lekki");
-  expect(await page.getByTestId("group.next").locator('[data-testid^="cinema.card."]').count()).toBeGreaterThan(0);
-});
+// A cinema's page, Your cinemas, and the rules every page keeps (rule 3, 44 px, no sideways scroll).
 
 test("tapping a time opens that showing; sample data cannot be booked", async ({ page, request }) => {
   const all = await dataFile(request, "all");
@@ -75,39 +51,15 @@ test("Tomorrow shows the whole of the next day", async ({ page, request }) => {
   await expect(page.locator('[data-testid^="film.card."]')).toHaveCount(films.size);
 });
 
-// Choosing an area on the Cinemas tab: tests/e2e/cinemas-screen.spec.ts (Figma, D-91). An area's
-// page keeps the old sheet until build unit 7.
-test("on an area's page, picking an area opens its page and is remembered; All Lagos forgets it", async ({ page }) => {
-  await page.goto("/area/lekki");
-  await page.getByTestId("pick.area").click();
-  await page.evaluate(() => Promise.all(document.getAnimations().filter((a) => a.effect?.getComputedTiming().iterations !== Infinity).map((a) => a.finished.catch(() => undefined))));
-  const hidden = await page.locator('[data-testid^="sheet.area."]').evaluateAll((els) =>
-    els.filter((el) => {
-      const box = el.getBoundingClientRect();
-      const y = box.top + box.height / 2;
-      if (y > window.innerHeight) return false; // further down the sheet: reached by scrolling
-      return box.left < 0 || box.right > window.innerWidth || !el.contains(document.elementFromPoint(box.left + box.width / 2, y));
-    }).map((el) => el.getAttribute("data-testid")),
-  );
-  expect(hidden).toEqual([]);
-  await page.getByTestId("sheet.area.ikeja").click();
-  await expect(page).toHaveURL(/\/area\/ikeja$/);
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Cinemas near Ikeja");
-  expect(await page.evaluate(() => localStorage.getItem("ls.area"))).toBe("ikeja");
-
-  await page.getByTestId("pick.area").click();
-  await page.getByTestId("sheet.area.all").click();
-  await expect(page).toHaveURL(/\/cinemas$/);
-  expect(await page.evaluate(() => localStorage.getItem("ls.area"))).toBeNull();
-  await expect(page.getByTestId("group.all")).toBeVisible();
-});
+// Picking an area: the Cinemas tab's sheet, tests/e2e/cinemas-screen.spec.ts. An area's own page
+// (Figma Area, build unit 7): tests/e2e/area-screen.spec.ts.
 
 // D-61 (Chime, 13 Nov 2026): hearted cinemas live on their own tab, Your cinemas, not in a block on the Cinemas tab.
 test("the heart keeps a cinema on the Your cinemas tab, on this phone", async ({ page, request }) => {
   await freeze(page, await sampleTime(request, "18:00"));
-  await page.goto("/area/lekki");
-  await page.getByTestId("cinema.card.grand-lekki").getByTestId("cinema.save").click();
-  await expect(page.getByTestId("saved")).toHaveCount(0); // no block on the Cinemas tab any more
+  await page.goto("/cinema/grand-lekki"); // kept from its own page since build unit 7 (Figma Area has no heart on every card)
+  await page.getByTestId("cinema.save").click();
+  await expect(page.getByTestId("cinema.save")).toHaveAttribute("aria-pressed", "true");
   await page.getByTestId("tab.yours").click();
   await expect(page).toHaveURL(/\/yours$/);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Your cinemas");
@@ -171,27 +123,12 @@ for (const width of [390, 360, 320]) {
     await freeze(page, await sampleTime(request, "18:00"));
     await page.goto("/area/lekki");
     await expect(page.locator('[data-testid^="cinema.card."]').first()).toBeVisible();
-    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+    // clientWidth, not innerWidth: a phone's layout viewport grows to fit content that is too wide.
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
     const short = await page.locator("main button, main a.chip, main a.btn, header a").evaluateAll((els) =>
       els.filter((el) => { const h = el.getBoundingClientRect().height; return h > 0 && h < 43.5; // half a pixel of rounding
       }).map((el) => el.outerHTML.slice(0, 90)),
     );
     expect(short).toEqual([]);
-  });
-}
-
-// Chime, 13 Nov 2026: the "More areas" menu shows which area the pointer is on, in both themes.
-for (const scheme of ["light", "dark"] as const) {
-  test(`the More areas menu marks the area under the pointer (${scheme})`, async ({ page }) => {
-    await page.setViewportSize({ width: 1440, height: 900 });
-    await page.emulateMedia({ colorScheme: scheme });
-    await page.goto("/area/lekki"); // the old board, until build unit 7
-    await page.getByTestId("area.more").click();
-    const option = page.getByTestId("area.option.surulere");
-    const other = page.getByTestId("area.option.yaba");
-    const idle = await other.evaluate((el) => getComputedStyle(el).backgroundColor);
-    await option.hover();
-    await expect(option).not.toHaveCSS("background-color", idle);
-    await expect(other).toHaveCSS("background-color", idle);
   });
 }

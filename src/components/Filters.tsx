@@ -3,8 +3,6 @@
 import Link from "next/link";
 import { Icon } from "@/components/Icons";
 import { rememberArea } from "@/lib/area";
-import type { FormatTag } from "@/lib/data/format";
-import type { Day } from "@/lib/data/programme";
 
 export type AreaInfo = { slug: string; name: string; neighbours: string[]; cinemas: number };
 
@@ -63,35 +61,6 @@ export function AreaChips({ areas, current, onPick }: { areas: AreaInfo[]; curre
           ))}
         </div>
       </details>
-    </div>
-  );
-}
-
-export function FormatChips({ tags, value, onChange }: { tags: FormatTag[]; value: FormatTag | null; onChange: (tag: FormatTag | null) => void }) {
-  if (tags.length === 0) return null;
-  return (
-    <div className="chips" role="group" aria-label="Format">
-      <button type="button" className={value === null ? "chip on" : "chip"} aria-pressed={value === null} data-testid="format.chip.any" onClick={() => onChange(null)}>
-        Any format
-      </button>
-      {tags.map((tag) => (
-        <button key={tag} type="button" className={value === tag ? "chip on" : "chip"} aria-pressed={value === tag} data-testid={`format.chip.${tag}`} onClick={() => onChange(tag)}>
-          {tag}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-/** `names` are what the two days are called: Today and Tomorrow, or their dates before the time is known. */
-export function DayTabs({ day, names, onChange }: { day: Day; names: [string, string]; onChange: (day: Day) => void }) {
-  return (
-    <div className="days" role="group" aria-label="Day">
-      {(["Today", "Tomorrow"] as const).map((label, index) => (
-        <button key={label} type="button" className={day === index ? "day on" : "day"} aria-pressed={day === index} data-testid={`day.${label.toLowerCase()}`} onClick={() => onChange(index as Day)}>
-          {names[index]}
-        </button>
-      ))}
     </div>
   );
 }

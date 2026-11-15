@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CinemaBoard } from "@/components/CinemaBoard";
 import { Icon } from "@/components/Icons";
+import { KeepButton } from "@/components/KeepButton";
 import { Shell } from "@/components/Shell";
 import { areaBySlug, areas, loadAll } from "@/lib/data/load";
 import { toListData } from "@/lib/data/select";
@@ -29,7 +30,7 @@ export default async function CinemaPage({ params }: Props) {
     <Shell tab="cinemas">
       <Link className="crumb" href={`/area/${area.slug}`}>
         <Icon name="back" />
-        Cinemas near {area.name}
+        Cinemas in {area.name}
       </Link>
       <div className="hero">
         <div>
@@ -41,6 +42,7 @@ export default async function CinemaPage({ params }: Props) {
           </h1>
           <p className="sub">{cinema.address ?? `${area.name}, Lagos`}</p>
           <div className="actions">
+            <KeepButton id={cinema.id} name={cinema.name} />
             {cinema.address && (
               <a className="btn" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${cinema.name}, ${cinema.address}`)}`} target="_blank" rel="noopener">
                 <Icon name="map" />

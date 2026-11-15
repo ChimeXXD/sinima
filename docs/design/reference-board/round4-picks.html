@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Round 4 picks</title>
+<style>
+/* Styled in the palette this page recommends (Marquee), so the page itself is a preview of it. */
+:root {
+  color-scheme: light;
+  --bg: #f4f3ef; --surface: #ffffff; --text: #111111; --muted: #5a5a57; --line: #dddcd6;
+  --mark: #111111; --on-mark: #ffd23f; --shot: #e9e8e2;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #0b0b0b; --surface: #171717; --text: #f3f2ee; --muted: #a9a8a3; --line: #2a2a2a;
+    --mark: #ffd23f; --on-mark: #111111; --shot: #222222;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+main { max-width: 1080px; margin: 0 auto; padding: 40px 16px 96px; }
+h1 { font-size: clamp(30px, 6vw, 48px); line-height: 1.05; letter-spacing: -0.02em; margin: 0 0 12px; text-wrap: balance; }
+h2 { font-size: 26px; line-height: 1.15; letter-spacing: -0.01em; margin: 0; }
+h3 { font-size: 17px; margin: 0; }
+p { margin: 0; }
+.lede { font-size: 18px; color: var(--muted); max-width: 720px; }
+.label { display: inline-block; padding: 2px 10px; border-radius: 999px; background: var(--mark); color: var(--on-mark); font-size: 13px; font-weight: 700; }
+.summary { margin: 28px 0 0; padding: 20px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); display: grid; gap: 10px; }
+.summary ol { margin: 0; padding-left: 22px; display: grid; gap: 6px; }
+section { margin-top: 64px; display: grid; gap: 20px; }
+.head { display: grid; gap: 6px; max-width: 760px; }
+.head p { color: var(--muted); }
+/* Three picks per section, one row on a computer, one column on a phone. */
+.picks { display: grid; gap: 16px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.pick { display: grid; grid-template-rows: auto 1fr; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); overflow: hidden; }
+.pick.wide .shot { align-content: center; min-height: 100%; }
+.shot { background: var(--shot); display: grid; place-items: center; padding: 16px; }
+.shot img { display: block; width: 100%; height: auto; border-radius: 10px; }
+.pick:not(.wide) .shot img { max-width: 240px; }
+.body { padding: 16px; display: grid; gap: 8px; align-content: start; }
+.body .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.tag { font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; }
+.body ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.body a { color: var(--text); font-size: 14px; }
+.runner { color: var(--muted); font-size: 15px; }
+/* The palette preview: one Starting soon row drawn in Marquee, light and dark. */
+.modes { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.mode { border-radius: 18px; padding: 20px; display: grid; gap: 12px; border: 1px solid var(--line); }
+.mode.light { --m-bg: #f4f3ef; --m-surface: #ffffff; --m-text: #111111; --m-muted: #5a5a57; --m-book: #111111; --m-book-text: #ffd23f; --m-line: #dddcd6; }
+.mode.dark { --m-bg: #0b0b0b; --m-surface: #171717; --m-text: #f3f2ee; --m-muted: #a9a8a3; --m-book: #ffd23f; --m-book-text: #111111; --m-line: #2a2a2a; }
+.mode { background: var(--m-bg); color: var(--m-text); }
+.mode h4 { margin: 0; font-size: 13px; color: var(--m-muted); font-weight: 600; }
+.chiprow { display: flex; gap: 6px; flex-wrap: wrap; }
+.chiprow span { min-height: 36px; display: inline-flex; align-items: center; padding: 0 14px; border-radius: 999px; border: 1px solid var(--m-line); font-size: 14px; font-weight: 600; }
+.chiprow span.on { background: var(--m-book); color: var(--m-book-text); border-color: var(--m-book); }
+.echo { font-size: 13px; color: var(--m-muted); }
+.dep { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; align-items: center; padding: 14px 16px; border-radius: 14px; background: var(--m-surface); border: 1px solid var(--m-line); }
+.dep .film { font-weight: 700; font-size: 17px; }
+.dep .where { color: var(--m-muted); font-size: 14px; }
+.dep .mins { grid-row: 1 / 3; grid-column: 2; text-align: right; font-size: 30px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.dep .mins small { display: block; font-size: 12px; font-weight: 600; color: var(--m-muted); margin-top: 4px; }
+.dep .book { grid-column: 1 / 3; justify-self: start; margin-top: 6px; min-height: 40px; display: inline-flex; align-items: center; padding: 0 18px; border-radius: 999px; background: var(--m-book); color: var(--m-book-text); font-weight: 700; font-size: 14px; }
+.band { display: grid; gap: 6px; padding: 14px 16px; border-radius: 14px; background: var(--m-surface); border: 1px solid var(--m-line); }
+.band b { font-size: 15px; }
+.band span { font-size: 14px; color: var(--m-muted); }
+.next { margin-top: 64px; padding: 20px; border-radius: 18px; background: var(--surface); border: 1px solid var(--line); display: grid; gap: 8px; }
+@media (max-width: 760px) { .picks { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+<main>
+  <span class="label">My pick</span>
+  <h1>Departures board under a marquee</h1>
+  <p class="lede">From the 89 references, these 12 fit together as one direction. Time leads everywhere, your cinemas get a band of their own, and the colours move from lagoon greens to black, off-white and marquee-bulb yellow. Under each section is a runner-up in case you'd rather go another way.</p>
+
+  <div class="summary">
+    <h3>What the two screens would become</h3>
+    <ol>
+      <li><b>Cinemas:</b> a “Your cinemas” band at the top with filled hearts, in a different style from “All cinemas” below it. With no hearts yet, one friendly line that says what the heart does.</li>
+      <li><b>Starting soon:</b> no poster wall. Each showing is a text row like a departure board: film and cinema on the left, a big “12 min” on the right, the Book button under it. Started showings drop below a thin “now” line.</li>
+      <li><b>Time filter:</b> one row: 30 min · 1 hour · 2 hours · 4 hours · Today, with a line under it in plain words: “Starting between 18:40 and 20:40”.</li>
+      <li><b>Colour:</b> the Marquee palette. Dark mode is the hero; posters bring the other colours.</li>
+    </ol>
+  </div>
+
+  <section>
+    <div class="head"><h2>Your cinemas</h2><p>The problem: your hearted cinemas looked like more of the same list. These three fix that with a distinct band, a mark that follows you, and a good empty state.</p></div>
+    <div class="picks" id="yours"></div>
+    <p class="runner">Runner-up: Rakuten, the same logo rows under a “Your Favorites” heading. Cheaper, but less distinct.</p>
+  </section>
+
+  <section>
+    <div class="head"><h2>Starting within</h2><p>The filter you asked for. One row of choices, a line that says what the filter means, and an honest answer when a window is empty.</p></div>
+    <div class="picks" id="within"></div>
+    <p class="runner">Runner-up: Klook's short hour-range chips with the count on the button (“See 9 showings”).</p>
+  </section>
+
+  <section>
+    <div class="head"><h2>Starting soon</h2><p>Time first, posters gone. Read the next showing at arm's length, and see clearly what has already started.</p></div>
+    <div class="picks" id="soon"></div>
+    <p class="runner">Runner-up: FotMob, with the time in a column on the left instead of a countdown on the right.</p>
+  </section>
+
+  <section>
+    <div class="head"><h2>Look and colour</h2><p>Black, white and one bulb yellow, like a cinema marquee at night. Far from the greens, with big poster-style type for headings.</p></div>
+    <div class="picks" id="feel"></div>
+    <p class="runner">Runner-up: Foyer (cream, brown and cinema red), as on A24's cream ticket. Warmer and lighter; I'd mock it up as the second option if you want two to compare.</p>
+  </section>
+
+  <section>
+    <div class="head"><h2>The Marquee palette on a real row</h2><p>A Starting soon screen drawn in the palette, light and dark. Every pair passes its contrast check (text 17:1, labels on the yellow 13:1).</p></div>
+    <div class="modes">
+      <div class="mode light">
+        <h4>Light</h4>
+        <div class="chiprow"><span>30 min</span><span>1 hour</span><span class="on">2 hours</span><span>4 hours</span><span>Today</span></div>
+        <p class="echo">Starting between 18:40 and 20:40 in Lekki</p>
+        <div class="band"><b>Your cinemas</b><span>Filmhouse Ikota · next at 19:10</span></div>
+        <div class="dep"><span class="film">Sinners</span><span class="where">Filmhouse Lekki · IMAX · 19:30</span><span class="mins">12 min<small>Starts at 19:30</small></span><span class="book">Book at Filmhouse</span></div>
+      </div>
+      <div class="mode dark">
+        <h4>Dark</h4>
+        <div class="chiprow"><span>30 min</span><span>1 hour</span><span class="on">2 hours</span><span>4 hours</span><span>Today</span></div>
+        <p class="echo">Starting between 18:40 and 20:40 in Lekki</p>
+        <div class="band"><b>Your cinemas</b><span>Filmhouse Ikota · next at 19:10</span></div>
+        <div class="dep"><span class="film">Sinners</span><span class="where">Filmhouse Lekki · IMAX · 19:30</span><span class="mins">12 min<small>Starts at 19:30</small></span><span class="book">Book at Filmhouse</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="next">
+    <h3>What happens next</h3>
+    <p>If this direction is right, I'll mock up Cinemas and Starting soon in it, on a phone and a computer, light and dark. If you'd like two to compare, I'll also make the Foyer version. Nothing goes into the app until you say build.</p>
+  </div>
+</main>
+<script>
+const PICKS = {
+  yours: [
+    ["r4-imdb-theaters-favorites", "IMDb", "f741fff9-2dd1-42d7-8d79-7bc94a7b60ad", "p", ["A “Your cinemas” band above “All cinemas”, each with its own header style", "Filled hearts in your band, outline hearts below"]],
+    ["r4-applesports-my-teams", "Apple Sports", "ca47e978-21c7-4144-9a16-a10d5dae51e4", "p", ["Your group always comes first, on every tab", "A small heart beside a hearted cinema wherever it appears, so Starting soon shows yours too"]],
+    ["r4-doordash-saved-empty", "DoorDash", "3fcbab73-0ba8-4cd2-8cb2-ad0cfc976517", "d", ["The empty state: a heart picture and two plain lines", "“Tap the heart on a cinema to keep it here” and “Its showings come first”"]]
+  ],
+  within: [
+    ["r4-meetup-day-segments", "Meetup", "4a052d00-a5c0-4131-8ec7-9515629b4d86", "p", ["One row of choices under the heading, the chosen one as a filled pill", "30 min · 1 hour · 2 hours · 4 hours · Today"]],
+    ["r4-woolworths-time", "Woolworths", "081d6835-1358-4b9e-a9c7-d8abf6179023", "p", ["The grey line under the switch that says exactly what it means", "“Starting between 18:40 and 20:40”"]],
+    ["r4-panera-asap-later", "Panera Bread", "406dd02f-0ac3-4daa-baee-5b33a651104d", "p", ["A window with nothing in it is greyed, with the reason", "“Nothing starts in the next 30 min”, never an empty list"]]
+  ],
+  soon: [
+    ["r4-gmaps-departures", "Google Maps", "817f224d-319c-4a04-9302-d4e82611dc0b", "p", ["Text rows with a big countdown on the right: “3 min”, “19 min”", "Minutes within the hour, the clock time after that"]],
+    ["r4-plex-guide", "Plex", "425965b8-bd24-48c3-a756-2077d46bf50e", "p", ["A thin “now” line between what has started and what is still to come", "“Started 5 min ago” rows sit below it, without a Book button"]],
+    ["r4-luma-timeline", "Luma", "7dbb0d17-e56b-4ed2-8e02-74caafbde1bc", "d", ["On a computer, a quiet rail down the left: “Next 2 hours”, “Later tonight”", "Each row opens with the time, a small poster on the right"]]
+  ],
+  feel: [
+    ["r4-mubigo-marquee", "MUBI GO", "5977add8-8777-4ff8-8bf7-cfae0f87e90e", "p", ["Near-black with one marigold yellow for the day, times and Book", "Thin capitals for the film name"]],
+    ["r4-dice-poster", "DICE", "67dc504d-6ce9-48c1-a578-99ec2d7d7348", "p", ["The interface stays black, white and yellow", "The posters bring every other colour"]],
+    ["r4-neon-intheaters", "NEON", "9b6b38bc-b538-4512-b89e-0525007db79f", "d", ["Huge condensed headings like a film poster: “STARTING SOON”, “YOUR CINEMAS”", "We already have the Anton font for this"]]
+  ]
+};
+const $ = (t, a, ...k) => { const e = document.createElement(t); for (const n in a || {}) n === "text" ? (e.textContent = a[n]) : e.setAttribute(n, a[n]); k.forEach((c) => c != null && e.append(c)); return e; };
+for (const [sec, list] of Object.entries(PICKS)) {
+  const box = document.getElementById(sec);
+  list.forEach(([key, app, mid, kind, take]) => {
+    const wide = kind === "d";
+    box.append($("article", { class: wide ? "pick wide" : "pick" },
+      $("div", { class: "shot" }, $("img", { src: "images/round4/" + key + ".webp", alt: app + " screenshot", loading: "lazy" })),
+      $("div", { class: "body" },
+        $("div", { class: "row" }, $("h3", { text: app }), $("span", { class: "tag", text: wide ? "Desktop" : "Phone" })),
+        $("p", { text: "What I'd take:" }),
+        $("ul", {}, ...take.map((t) => $("li", { text: t }))),
+        $("a", { href: "https://mobbin.com/screens/" + mid, target: "_blank", rel: "noopener", text: "Open on Mobbin" }))));
+  });
+}
+</script>
+</body>
+</html>
