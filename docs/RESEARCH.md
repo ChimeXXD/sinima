@@ -77,7 +77,7 @@ Found through search, a directory (connectciti.com) and another listings site (c
 | The Jays Cinemas | Kuje ("Union Home Estate Road Kuchiyako, Kuje", its own site) | thejayscinemas.com (WordPress); no times shown | Not yet: "Times not available yet" |
 | Banex Cinema | Wuse 2 (unverified) | No website found; cinephiles.ng shows 0 upcoming | Unknown; may be closed. Left out until confirmed |
 
-Not listed: private-hire cinemas (Deja Vu, Wuse 2; Showroom, Jahi) have no public showtimes. No Filmhouse, EbonyLife or Viva cinema was found in Abuja (inference from search, not exhaustive). So Abuja needs no Lagocine at all.
+Not listed: private-hire cinemas (Deja Vu, Wuse 2; Showroom, Jahi) have no public showtimes. No Filmhouse in Abuja (verified): Filmhouse's own showtimes page lists 10 locations on 15 Nov, the 7 in Lagos (Lekki IMAX, Circle Mall, Ikota, Landmark, Oniru, Palms Lekki, Surulere) plus Akure, Benin and Ilorin. No EbonyLife or Viva cinema was found in Abuja (search only, not exhaustive). So Abuja needs no Lagocine at all.
 
 Addresses for Silverbird SEC (1161 Memorial Drive, by Musa Yar'Adua Centre) and Genesis Ceddi Plaza (264 Tafawa Balewa Way) come from directories; confirm on each cinema's page before they go into `data/cinemas.json`.
 
