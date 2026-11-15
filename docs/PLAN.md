@@ -68,6 +68,7 @@ Dates are a target. If a week slips, cut its Should items first; never cut the c
 - [x] Cinemas title centred with logo stickers left and right, "21 of them!" below, three sizes (D-73)
 - [x] Drink sticker replaces Admit one in every Films title and on Where are you watching? (D-74)
 - [x] 404 picture: the torn ticket, at three sizes; Admit one deleted (D-75)
+- [ ] Figma: "21 of them!" and "21 cinemas" become 22 now that Nova Cinemas Sangotedo is listed (D-81)
 - [ ] Chime approves the phone, iPad and desktop screens
 
 **Abuja research**

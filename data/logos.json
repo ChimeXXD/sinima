@@ -60,6 +60,11 @@
       "file": "magnificent.png",
       "tile": "light",
       "source": "https://www.magnificentcinemas.com/images/mag_logo.jpg"
+    },
+    "Nova": {
+      "file": "nova.png",
+      "tile": "dark",
+      "source": "https://reach-cinema-storage.nyc3.digitaloceanspaces.com/nova-logo.pngff0cc026-195a-44a4-990f-96448ba82542"
     }
   }
 }

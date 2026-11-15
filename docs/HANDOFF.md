@@ -6,7 +6,8 @@
 - **15 Nov findings** (all in `data/sources.json`): every independent has a public page (Reach for Ozone and Sky, Veezi for Filmworld, own sites for Viva, Grand, THC, Magnificent, Blue Pictures); `data/cinemas.json` fixed. Cleared: Genesis, Silverbird (Veezi). Headless browser worked on Reach (19 times); Filmhouse got "Access Denied 403 · CINEsync". Lagocine now sells tickets.
 - **D-78:** terms read and the browser route tested: all 14 non-Filmhouse Lagos cinemas cleared. Each leaves Lagocine's list when its reader is built.
 - **Done after that:** Filmhouse, FilmOne and CINEsync drafts in `docs/OUTREACH.md` §4 (voice score 100/100; the pre-flight's 4 job-application rules don't apply). Abuja audited (D-79): Silverbird SEC and Jabi (Veezi), Genesis Ceddi Plaza, Nova Lugbe (headless browser) readable; The Jays no times; Banex unconfirmed. Doomsday opens in Nigeria Fri 18 Dec (D-80, O-14 closed).
-- **Next:** Chime sends §4 and confirms the Abuja areas; then week 2 (city layer, build the approved screens), with the readers in week 3. Probe script: scratchpad `probe.cjs` (Playwright, named UA, images blocked); memory sat at 83 to 85%, so one page at a time.
+- **D-81:** popularity checked. Abuja's top cinema is Silverbird Jabi Lake Mall, then Genesis Ceddi Plaza; all box-office cinemas are covered. Nova Cinemas Sangotedo (Lagos) was missing and is added (22 cinemas; logo added); Viva Lekki shows no times and stays out. Viva, Nova, Ozone and Sky share the Reach platform (`?cinemaId=`).
+- **Next:** Chime sends §4 and confirms the Abuja areas; update "21" to "22" in Figma; then week 2 (city layer, build the approved screens), with the readers in week 3. Probe script: scratchpad `probe.cjs` (Playwright, named UA, images blocked); memory sat at 83 to 85%, so one page at a time.
 
 ## Earlier: review round 4 done (15 Nov 2026)
 

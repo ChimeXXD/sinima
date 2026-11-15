@@ -2,6 +2,12 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 15 Nov 2026 — popular cinemas, Nova Lagos added (D-81)
+
+- Abuja popularity from 2025 box office (FilmOne yearbook via ATQ; Nairametrics): Silverbird Jabi Lake Mall first, Genesis Ceddi Plaza second; all five box-office cinemas covered.
+- Read each Reach-platform site's own cinema list in a headless browser: found Nova Lagos (live, 24 times) and Viva Lekki (no times). Added Nova Cinemas Sangotedo, its cleared source and logo (176×101, 21 KB). Logo, registry and refresh tests: 60 passed.
+- Not done: Figma counts still say 21.
+
 ## 15 Nov 2026 — outreach drafts, Abuja audit, Doomsday date (D-79, D-80)
 
 - `docs/OUTREACH.md` §4: Filmhouse, FilmOne, CINEsync drafts (voice score 100/100, voice check clean; follow-up sign-off fixed to Chimezie).

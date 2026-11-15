@@ -298,7 +298,7 @@
         "ozone-yaba",
         "sky-sangotedo"
       ],
-      "notes": "15 Nov 2026 (D-77): cleared. Headless browser under our bot name: Ozone 19 times, Sky 20 times, with films, halls and Book Now links. 15 Nov 2026: script-built page (Next.js). A headless browser under our bot name showed 19 times with films and halls (\"11:00 AM Hall 1 Book Now\"). Ozone and Sky share the platform, so one reader covers both. Found through Lagocine's cinema pages. Terms not read yet."
+      "notes": "15 Nov 2026: Viva and Nova run on the same platform (api.reachcinema.io, Fusion Intelligence): any showtimes page opens a cinema with ?cinemaId=<id>, so one reader covers Ozone, Sky, Viva and Nova. The \"Terms of Service\" links on these sites point back to the home page. 15 Nov 2026 (D-77): cleared. Headless browser under our bot name: Ozone 19 times, Sky 20 times, with films, halls and Book Now links. 15 Nov 2026: script-built page (Next.js). A headless browser under our bot name showed 19 times with films and halls (\"11:00 AM Hall 1 Book Now\"). Ozone and Sky share the platform, so one reader covers both. Found through Lagocine's cinema pages. Terms not read yet."
     },
     {
       "id": "filmworld",
@@ -434,7 +434,7 @@
       "cinemaIds": [
         "viva-ikeja"
       ],
-      "notes": "15 Nov 2026 (D-77): cleared. Headless browser under our bot name showed the times with Book Now links. 15 Nov 2026: script-built (Next.js), no times in the HTML. Try the headless-browser route (D-77). Terms not read yet."
+      "notes": "15 Nov 2026: Viva's own list also has Viva Lekki (The Palms, cinemaId viv-6ac91519), but it showed no showtimes, so it is left out (Filmhouse Palms Lekki runs in that mall). Viva Ikeja is viv-27fd41dc. 15 Nov 2026 (D-77): cleared. Headless browser under our bot name showed the times with Book Now links. 15 Nov 2026: script-built (Next.js), no times in the HTML. Try the headless-browser route (D-77). Terms not read yet."
     },
     {
       "id": "thc",
@@ -503,6 +503,40 @@
         "magnificent-ikorodu-road"
       ],
       "notes": "15 Nov 2026 (D-77): cleared. Headless browser under our bot name showed the times with Book Now links. 15 Nov 2026: 4 KB page, no times in the HTML; likely script-built. Try the headless-browser route (D-77). Terms not read yet."
+    },
+    {
+      "id": "nova",
+      "name": "Nova Cinemas' site",
+      "owner": "Nova Cinemas (Novare malls)",
+      "homepage": "https://novacinemang.com/",
+      "listingUrlPattern": "https://novacinemang.com/showtimes?cinemaId=<id> (Lagos nov-d419ab98, Abuja nov-f76e616e)",
+      "method": "public-page",
+      "status": "cleared",
+      "robots": {
+        "checkedAt": "2026-11-15",
+        "allowsListing": true,
+        "quote": "No robots.txt (404)"
+      },
+      "terms": {
+        "url": null,
+        "checkedAt": "2026-11-15",
+        "allowsAutomated": null,
+        "quote": "The footer's \"Terms of Service\" and \"Privacy Policies\" links point back to the home page; no terms text exists."
+      },
+      "permission": {
+        "askedAt": null,
+        "repliedAt": null,
+        "summary": null
+      },
+      "rateLimit": {
+        "minSecondsBetweenRequests": 5,
+        "maxRunsPerDay": 3
+      },
+      "daysAhead": null,
+      "cinemaIds": [
+        "nova-lagos"
+      ],
+      "notes": "15 Nov 2026 (D-77, D-81): cleared. Script-built (Reach Cinema platform, like Ozone, Sky and Viva); a headless browser under our bot name showed 24 times for Nova Lagos and 23 for Nova Abuja. Nova Abuja joins with the city layer (D-79)."
     }
   ]
 }

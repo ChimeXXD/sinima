@@ -83,6 +83,22 @@ Addresses for Silverbird SEC (1161 Memorial Drive, by Musa Yar'Adua Centre) and 
 
 Areas and neighbours, drafted for Chime to confirm (as O-10 was for Lagos): Central Business District ↔ Jabi, Central Business District ↔ Lugbe (Airport Road), Lugbe ↔ Kuje.
 
+## Which cinemas are popular (15 Nov 2026)
+
+**Abuja.** FilmOne's 2025 Nigeria Box Office Yearbook (as reported by ATQ News, 25 Feb 2026): the FCT was Nigeria's second-largest market, ₦1.15 billion from **five cinemas**, 198,282 admissions. Per cinema:
+
+| Rank | Cinema | 2025 revenue | Source | In Sinima |
+|---|---|---|---|---|
+| 1 | Silverbird Jabi Lake Mall | ₦486.9m (about 42% of the FCT), 6th in Nigeria | Nairametrics and Vanguard, Feb 2026 | Yes (Veezi) |
+| 2 | Genesis Ceddi Plaza | about ₦402m | yearbook excerpt in search results; table unclear, unconfirmed | Yes (Genesis) |
+| 3–5 | Silverbird Entertainment Centre (6 screens), Nova Abuja, and one more (likely The Jays, unconfirmed) | about ₦260m between them | inferred from the totals | SEC and Nova yes; The Jays listed with no times |
+
+So the go-to in Abuja is Silverbird Jabi Lake Mall, then Genesis Ceddi Plaza. Every cinema that reports to the box office is in our list. No Filmhouse, EbonyLife or Viva cinema operates in Abuja (Filmhouse's, EbonyLife's and Viva's own location lists, 15 Nov).
+
+**Lagos, for comparison** (Nairametrics, 2025 revenue): Silverbird Ikeja ₦1.117bn, EbonyLife ₦1.086bn, Filmhouse Lekki ₦1.085bn, Filmhouse Surulere ₦663m, Genesis Festival Mall ₦453m, Filmhouse Ikota ₦430m. Filmhouse is the biggest chain (7 Lagos cinemas); the single highest-grossing cinema in 2025 was Silverbird Ikeja.
+
+**Gaps found in Lagos (D-81):** Nova Lagos (Novare Lekki Mall, Sangotedo) is live (24 showtimes on 15 Nov) and was missing because Lagocine doesn't list it; added. Viva Lekki (The Palms) is on Viva's list but shows no showtimes; left out. Viva, Nova, Ozone and Sky share one platform (Reach Cinema), so one reader covers all four.
+
 ## Avengers: Doomsday in Nigeria (15 Nov 2026)
 
 Filmhouse's own film page (`/movies/avengersdoomsday-2026`) gives "Release Date 18/12/2026" (`datePublished: 2026-12-18`) and a "Buy Tickets" link to `/showtimes/2026-12-18`. Worldwide (Marvel, Wikipedia, Ster-Kinekor) it is also 18 Dec. Disney's Middle East site says 16 Dec.

@@ -425,7 +425,7 @@
       "name": "Sky Cinemas Sangotedo",
       "chain": "Sky",
       "area": "sangotedo",
-      "address": null,
+      "address": "Sky Mall, Sangotedo, Lagos",
       "geo": null,
       "website": "https://skycinemas.reachcinema.io/showtimes",
       "bookingHost": "skycinemas.reachcinema.io",
@@ -435,7 +435,24 @@
         "https://lagocine.com/cinemas/",
         "https://nairametrics.com/2025/02/01/top-10-most-visited-cinema-locations-in-lagos-2024/"
       ],
-      "notes": "8th most visited Lagos cinema in 2024 (46,085 admissions). 15 Nov 2026: has its own showtimes page (found through Lagocine's cinema page); see data/sources.json."
+      "notes": "8th most visited Lagos cinema in 2024 (46,085 admissions). 15 Nov 2026: has its own showtimes page (found through Lagocine's cinema page); see data/sources.json. Address from its own Reach page (15 Nov 2026)."
+    },
+    {
+      "id": "nova-lagos",
+      "name": "Nova Cinemas Sangotedo",
+      "chain": "Nova",
+      "area": "sangotedo",
+      "address": "Novare Lekki Mall, corner of Lekki-Epe Expressway and Monastery Road, Sangotedo, Lagos",
+      "geo": null,
+      "website": "https://novacinemang.com/showtimes?cinemaId=nov-d419ab98",
+      "bookingHost": "novacinemang.com",
+      "lagocinePage": null,
+      "listedOnLagocine": false,
+      "sourceUrls": [
+        "https://novacinemang.com/",
+        "https://locatecinemas.com/cinemas/nigeria/lagos-region/nova-lagos-8d901f4b/"
+      ],
+      "notes": "Added 15 Nov 2026 (D-81): Nova calls it \"Nova Lagos\". Its own site gives the address and showed 24 showtimes for it on 15 Nov. Not on Lagocine, so it was missing from our list. Runs on the Reach Cinema platform (cinemaId nov-d419ab98). A different mall from Sky Cinemas (Sky Mall)."
     },
     {
       "id": "thc-agege",
