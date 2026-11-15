@@ -63,6 +63,16 @@ describe("titleFormat", () => {
     const { file } = buildShowtimes({ generatedAt: EARLY, sources: [source], cinemas: [cinema], batches: [batch] });
     expect(file.showings.map((s) => [s.filmId, s.format])).toEqual([["ramayana", "IMAX"], ["whalefall", "MX4D"]]);
   });
+
+  it("names the cinema's site only when one is on record, for a showing read through another listing", () => {
+    const source = { id: "s", name: "S", url: "https://example.com/", method: "fixture" as const, status: "pending" as const, fetchedAt: EARLY, lastOkAt: EARLY, health: "ok" as const };
+    const cinema = (id: string, website: string | null) => ({ id, name: id, chain: id.toUpperCase(), area: "lekki", address: null, geo: null, website, sourceIds: ["s"] });
+    const row = (cinemaId: string) => ({ cinemaId, filmTitle: "Whalefall", rating: null, startsAt: EVENING, format: null, bookingUrl: null });
+    const batch = { sourceId: "s", fetchedAt: EARLY, builtAt: null, through: true, showings: [row("a"), row("b")] };
+    const { file } = buildShowtimes({ generatedAt: EARLY, sources: [source], cinemas: [cinema("a", "https://a.example/"), cinema("b", null)], batches: [batch] });
+    expect(file.showings.find((s) => s.cinemaId === "a")).toMatchObject({ via: { name: "A's site", url: "https://a.example/" } });
+    expect(file.showings.find((s) => s.cinemaId === "b")).not.toHaveProperty("via");
+  });
 });
 
 describe("toSampleDays (D-20)", () => {
@@ -174,8 +184,10 @@ describe("refresh --fixtures", () => {
       fetchedAt: "2026-11-11T00:36:34Z",
       via: { name: "EbonyLife's site", url: "https://ebonylifecinemas.com/", fetchedAt: "2026-11-10T23:05:05Z" },
     });
-    // No site of its own on record, so no claim about where Lagocine read it.
-    expect(all.showings.find((s) => s.cinemaId === "magnificent-ikorodu-road")).not.toHaveProperty("via");
+    // Magnificent's own site has been on record since the 15 Nov audit (D-76), so Lagocine's row says it read there.
+    expect(all.showings.find((s) => s.cinemaId === "magnificent-ikorodu-road")).toMatchObject({
+      via: { name: "Magnificent's site", url: "https://magnificentcinemas.com/" },
+    });
     expect(all.films).toHaveLength(31);
   });
 

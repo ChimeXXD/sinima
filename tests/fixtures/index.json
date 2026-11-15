@@ -26,7 +26,7 @@
       "pageUrl": "https://ticketing.eu.veezi.com/sessions/?siteToken=9chn7w68550a7sxgexpdng2ndm",
       "savedAt": "2026-11-11T00:36:35Z",
       "sample": false,
-      "why": "Silverbird is not read directly (D-33), and its page writes some titles differently from Lagocine's, so the same showing would be listed twice."
+      "why": "Kept out of the sample until Silverbird's Veezi reader replaces Lagocine for Ikeja (D-76): Veezi writes some titles differently from Lagocine, so running both would list the same showing twice."
     }
   ]
 }

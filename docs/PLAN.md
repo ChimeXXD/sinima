@@ -72,7 +72,10 @@ Dates are a target. If a week slips, cut its Should items first; never cut the c
 
 **Abuja research**
 - [ ] List Abuja's cinemas from primary sources (each chain's own site): name, address, area, booking site
-- [ ] Sources audit for each (robots.txt, terms, listing URL), as for Lagos (D-07, D-08); fill `data/sources.json`
+- [ ] Sources audit for each (robots.txt, terms, listing URL), under D-77; fill `data/sources.json`
+- [x] Lagos sources re-audited (15 Nov): every cinema has a public page; Genesis and Silverbird (Veezi) cleared; Filmhouse blocked, so Lagocine is its fallback (D-76, D-77)
+- [x] Terms read and the headless-browser route tested (15 Nov): all 14 non-Filmhouse Lagos cinemas cleared (D-77, D-78); Filmhouse stays on Lagocine
+- [ ] Messages to Filmhouse marketing, FilmOne and CINEsync asking to read Filmhouse's times directly (Chime sends)
 - [ ] Outreach drafts for Abuja cinemas in `docs/OUTREACH.md`; Chime sends them
 - [ ] Abuja areas and their neighbours, drafted for Chime to confirm (as O-10 was for Lagos)
 - [ ] Confirm Avengers: Doomsday's Nigerian opening date with Filmhouse, Silverbird, Genesis or the distributor (O-14)
@@ -89,7 +92,8 @@ Dates are a target. If a week slips, cut its Should items first; never cut the c
 
 ## Week 3: live data, remaining pages, video script (30 Nov – 6 Dec)
 
-- [ ] Refresh workflow runs for every cleared source in both cities (D-33); uncleared cinemas say "Times not available yet"
+- [ ] Readers, one per platform, tested on saved pages: Veezi (Silverbird, Filmworld; check each booking link's siteToken, since the host is shared), Genesis, Reach (Ozone, Sky; headless browser), Grand, Blue Pictures, then the script-built sites; Lagocine stays for Filmhouse and anything not yet cleared (D-76)
+- [ ] Refresh workflow runs for every cleared source in both cities (D-76); a cinema with no cleared source says "Times not available yet"; Lagocine credited on /about and on the cinema pages it feeds
 - [ ] Film page complete; cinema page; Stay or Go; started showings not bookable (e2e at `now − 1 min`)
 - [ ] Reminder (.ics with a 30-min alert, checked on iPhone and Android) and share
 - [ ] **Video script** (30–45 s): the evening problem, then the app answering it in both cities, then the Doomsday hook and the link

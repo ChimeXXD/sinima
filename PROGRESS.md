@@ -2,6 +2,12 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 15 Nov 2026 — data sources: read each cinema directly (D-76, D-77)
+
+- Checked (about 25 requests, 5 s apart per host, named UA): Filmhouse times come from filmhouseng.api.cinesync.io (403 to plain requests; headless browser got "Access Denied"); Genesis booking pages carry times in HTML; robots and pages of all 8 independents; headless browser on ozone.reachcinema.io showed 19 times.
+- `data/sources.json`: Genesis and Silverbird cleared; Lagocine cleared as fallback for the 16 cinemas not yet read directly; 7 new sources (Reach, Filmworld, Grand, Blue Pictures, Viva, THC, Magnificent) pending terms or a browser test. `data/cinemas.json`: websites and booking hosts for the 8 independents.
+- Not done: terms of the 7 new sources; browser test of EbonyLife, Viva, THC, Magnificent; Abuja.
+
 ## 15 Nov 2026 — screen review round 4 (D-75)
 
 - 404 picture: torn ticket made a component and placed at three sizes (checked by screenshot); frame fitted so the caption sits under it. Admit one component deleted after checking Design screens had no instances left.

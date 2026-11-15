@@ -345,14 +345,14 @@
       "area": "lagos-island",
       "address": null,
       "geo": null,
-      "website": null,
+      "website": "https://bluepicturesng.com/",
       "bookingHost": null,
       "lagocinePage": "https://lagocine.com/cinema/blue-pictures-onikan/",
       "listedOnLagocine": true,
       "sourceUrls": [
         "https://lagocine.com/cinemas/"
       ],
-      "notes": "No booking page found by Lagocine; tickets at the cinema."
+      "notes": "15 Nov 2026: has its own showtimes page; \"Get Ticket\" buttons, online sale not confirmed (found through Lagocine's cinema page); see data/sources.json."
     },
     {
       "id": "filmworld-idimu",
@@ -361,15 +361,15 @@
       "area": "idimu",
       "address": null,
       "geo": null,
-      "website": null,
-      "bookingHost": null,
+      "website": "https://filmworldcinemas.com/",
+      "bookingHost": "ticketing.eu.veezi.com",
       "lagocinePage": "https://lagocine.com/cinema/filmworld-idimu/",
       "listedOnLagocine": true,
       "sourceUrls": [
         "https://lagocine.com/cinemas/",
         "https://nairametrics.com/2025/02/01/top-10-most-visited-cinema-locations-in-lagos-2024/"
       ],
-      "notes": "Nairametrics lists 'Filmworld Cinemas, Ikotun' (41,911 admissions, 2024); may be the same site. No booking page found by Lagocine."
+      "notes": "Nairametrics lists 'Filmworld Cinemas, Ikotun' (41,911 admissions, 2024); may be the same site. 15 Nov 2026: has its own showtimes page (found through Lagocine's cinema page); see data/sources.json."
     },
     {
       "id": "grand-lekki",
@@ -378,14 +378,14 @@
       "area": "lekki",
       "address": null,
       "geo": null,
-      "website": null,
+      "website": "https://grandcinemas.com.ng/",
       "bookingHost": null,
       "lagocinePage": "https://lagocine.com/cinema/grand-lekki/",
       "listedOnLagocine": true,
       "sourceUrls": [
         "https://lagocine.com/cinemas/"
       ],
-      "notes": "No booking page found by Lagocine."
+      "notes": "15 Nov 2026: has its own showtimes page but no online booking link found, so tickets at the cinema (found through Lagocine's cinema page); see data/sources.json."
     },
     {
       "id": "magnificent-ikorodu-road",
@@ -394,14 +394,14 @@
       "area": "ikorodu-road",
       "address": null,
       "geo": null,
-      "website": null,
-      "bookingHost": null,
+      "website": "https://magnificentcinemas.com/",
+      "bookingHost": "magnificentcinemas.com",
       "lagocinePage": "https://lagocine.com/cinema/magnificent-ikorodu-road/",
       "listedOnLagocine": true,
       "sourceUrls": [
         "https://lagocine.com/cinemas/"
       ],
-      "notes": "On Ikorodu Road, not in Ikorodu town. No booking page found by Lagocine."
+      "notes": "On Ikorodu Road, not in Ikorodu town. 15 Nov 2026: has its own showtimes page (found through Lagocine's cinema page); see data/sources.json."
     },
     {
       "id": "ozone-yaba",
@@ -410,15 +410,15 @@
       "area": "yaba",
       "address": "E-Centre, Yaba, Lagos (no street address found)",
       "geo": null,
-      "website": null,
-      "bookingHost": null,
+      "website": "https://ozone.reachcinema.io/showtimes",
+      "bookingHost": "ozone.reachcinema.io",
       "lagocinePage": "https://lagocine.com/cinema/ozone-yaba/",
       "listedOnLagocine": true,
       "sourceUrls": [
         "https://lagocine.com/cinemas/",
         "https://www.discoverlagos.ng/post/the-best-cinemas-in-lagos-where-movie-magic-comes-alive"
       ],
-      "notes": "No booking page found by Lagocine."
+      "notes": "15 Nov 2026: has its own showtimes page (found through Lagocine's cinema page); see data/sources.json."
     },
     {
       "id": "sky-sangotedo",
@@ -427,15 +427,15 @@
       "area": "sangotedo",
       "address": null,
       "geo": null,
-      "website": null,
-      "bookingHost": null,
+      "website": "https://skycinemas.reachcinema.io/showtimes",
+      "bookingHost": "skycinemas.reachcinema.io",
       "lagocinePage": "https://lagocine.com/cinema/sky-sangotedo/",
       "listedOnLagocine": true,
       "sourceUrls": [
         "https://lagocine.com/cinemas/",
         "https://nairametrics.com/2025/02/01/top-10-most-visited-cinema-locations-in-lagos-2024/"
       ],
-      "notes": "8th most visited Lagos cinema in 2024 (46,085 admissions). No booking page found by Lagocine."
+      "notes": "8th most visited Lagos cinema in 2024 (46,085 admissions). 15 Nov 2026: has its own showtimes page (found through Lagocine's cinema page); see data/sources.json."
     },
     {
       "id": "thc-agege",
@@ -444,14 +444,14 @@
       "area": "agege",
       "address": null,
       "geo": null,
-      "website": null,
-      "bookingHost": null,
+      "website": "https://cinemaxthc.ng/",
+      "bookingHost": "cinemaxthc.ng",
       "lagocinePage": "https://lagocine.com/cinema/thc-agege/",
       "listedOnLagocine": true,
       "sourceUrls": [
         "https://lagocine.com/cinemas/"
       ],
-      "notes": "No booking page found by Lagocine."
+      "notes": "15 Nov 2026: has its own showtimes page (found through Lagocine's cinema page); see data/sources.json."
     },
     {
       "id": "viva-ikeja",
@@ -460,15 +460,15 @@
       "area": "ikeja",
       "address": "Jara Mall, Ikeja, Lagos (no street address found)",
       "geo": null,
-      "website": null,
-      "bookingHost": null,
+      "website": "https://web.vivacinemas.com/",
+      "bookingHost": "web.vivacinemas.com",
       "lagocinePage": "https://lagocine.com/cinema/viva-ikeja/",
       "listedOnLagocine": true,
       "sourceUrls": [
         "https://lagocine.com/cinemas/",
         "https://www.discoverlagos.ng/post/the-best-cinemas-in-lagos-where-movie-magic-comes-alive"
       ],
-      "notes": "No booking page found by Lagocine."
+      "notes": "15 Nov 2026: has its own showtimes page (found through Lagocine's cinema page); see data/sources.json."
     }
   ]
 }

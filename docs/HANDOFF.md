@@ -1,6 +1,13 @@
 # Handoff: read this first when you pick the project back up
 
-## Now: review round 4 done, waiting for Chime's next notes (15 Nov 2026, latest)
+## Now: data sources changed, read each cinema directly (15 Nov 2026, latest)
+
+- **D-76 / D-77:** each cinema is read from its own site; Lagocine only for cinemas not yet cleared (Filmhouse's 7 for the long run, since CINEsync answers our bot with 403). Rule: read what a visitor sees (headless browser OK), never use private back ends, disguise the bot or work around a block. CLAUDE.md rule 6 rewritten.
+- **15 Nov findings** (all in `data/sources.json`): every independent has a public page (Reach for Ozone and Sky, Veezi for Filmworld, own sites for Viva, Grand, THC, Magnificent, Blue Pictures); `data/cinemas.json` fixed. Cleared: Genesis, Silverbird (Veezi). Headless browser worked on Reach (19 times); Filmhouse got "Access Denied 403 · CINEsync". Lagocine now sells tickets.
+- **D-78:** terms read and the browser route tested: all 14 non-Filmhouse Lagos cinemas cleared. Each leaves Lagocine's list when its reader is built.
+- **Next:** draft Filmhouse / FilmOne / CINEsync messages (use the adaptive-voice skill; sign as Chimezie Ekpendu); Abuja audit the same way. Probe script: scratchpad `probe.cjs` (Playwright, named UA, images blocked); memory sat at 83 to 85%, so one page at a time.
+
+## Earlier: review round 4 done (15 Nov 2026)
 
 - **404 (D-75):** the torn ticket ("40" | "4"), component *404 torn ticket* `231:8914` on Design System row 13.1, placed on 404 iPhone, iPad and desktop. Admit one component deleted; the review section is on Archive.
 - Still open from earlier rounds: none. Next: Chime keeps reviewing the screens, then the week 1 gate (approve all screens), O-16, Abuja research, O-14.

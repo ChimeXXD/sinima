@@ -22,7 +22,7 @@ A **web app** that shows every cinema's showtimes in **Lagos and Abuja** (D-62) 
 - **Budget is $0.** Free host (Vercel Hobby or Cloudflare Pages, O-4), free GitHub Actions, free TMDB API (non-commercial). No paid services, no domains unless Chime says so.
 - **Scope** is the Must / Should / Cut table in `docs/PLAN.md`. If a week overruns, cut its Should items. Never cut the city layer, the video or launch day.
 - **Design comes first** (D-13). Day 1 runs the design phase: references, three directions, Chime picks one, then `docs/design/UI-BRIEF.md` is completed. After that the site is the source of truth.
-- **Data permission comes first** (D-07, D-08). Nothing fetches a real site on a schedule until that source is cleared in `data/sources.json`. Until then, build from saved fixtures.
+- **Read each cinema directly** (D-76, D-77). Nothing fetches a real site on a schedule until that source is cleared in `data/sources.json`. Until then, build from saved fixtures.
 - **Chime builds Tactics Board (Agmen) at the same time.** The Mac is tight on memory: one dev server at a time, stop it when you finish, and never leave Playwright browsers or watchers running.
 
 ## Stack (fixed, D-02)
@@ -83,7 +83,7 @@ Run `npm run lint`, `npm run typecheck`, `npm test` and `npm run build` before s
 3. **Time-relative text is computed in the browser from `now`**, never baked into static HTML ("Starts in 45 min", "Read 2 hours ago"). The static HTML shows absolute times; the client fills the relative words.
 4. **A showing that has started is never bookable.** At start time the row says "Started 5 min ago", loses its booking link and drops out of "Starting soon" (D-05). Tests cover the boundary second.
 5. **Booking links go to the cinema's own site** (or the booking engine it uses). We never sell, never add tracking parameters, never deep-link to seat maps or checkout pages we were not given.
-6. **Respect every source** (D-08): obey robots.txt, at most one request per 5 s per host, a named user agent with a contact URL, only public listing pages, stop the same day if asked. A source runs on a schedule only when `data/sources.json` marks it `cleared`. Never copy posters or synopses from cinema sites.
+6. **Read what a visitor can see, nothing more** (D-77, D-76): each cinema's own public listing pages first (a headless browser is fine for pages built by script), Lagocine only for cinemas we can't read (Filmhouse today). Obey robots.txt for the paths we fetch, at most one request per 5 s per host, a named user agent with a contact URL, stop the same day if asked. Never call a private back end with a site's key, never disguise the bot, never work around a block. A source runs on a schedule only when `data/sources.json` marks it `cleared`. Never copy posters or synopses from cinema sites.
 7. **Credits info says how sure it is, in words, with its source** (D-10), through `lib/wording/credits.ts`: "Stay: scene after the credits · TMDB" for one named source (D-19), "Probably stay" only for an inferred answer, "Not known yet". A missing keyword is **"Not known yet", never "Go"**; "Go" needs a linked entry in `data/credits-manual.json`.
 8. **Never invent data.** Unknown price is "Price not listed". Unknown address is left out. Fixtures are real saved pages, labelled as fixtures, and the UI shows a "Sample data" banner while fixtures power it.
 9. **Page weight budget** (D-21, supersedes D-12's numbers): set from the Day 0 measurement of the empty app and held in `scripts/check-budget.mjs`. No blocking web fonts. CI fails over budget.

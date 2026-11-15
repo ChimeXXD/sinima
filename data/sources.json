@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "auditedOn": "2026-11-11",
-  "about": "Source registry. Audited 11 Nov 2026: robots.txt, terms, listing URL pattern and days ahead for each source, from one manual request per page. Only status 'cleared' sources run on a schedule (D-08). Format: docs/DATA.md.",
+  "auditedOn": "2026-11-15",
+  "about": "Source registry. Audited 11 Nov 2026 and re-audited 15 Nov 2026 under D-77: robots.txt, terms, listing URL pattern and days ahead for each source, from one manual request per page. Only status 'cleared' sources run on a schedule (D-77). Format: docs/DATA.md.",
   "sources": [
     {
       "id": "lagocine",
@@ -10,7 +10,7 @@
       "homepage": "https://lagocine.com/",
       "listingUrlPattern": "https://lagocine.com/cinema/<cinema-id>/ and https://lagocine.com/day/<yyyy-mm-dd>/",
       "method": "public-page",
-      "status": "pending",
+      "status": "cleared",
       "robots": {
         "checkedAt": "2026-11-11",
         "allowsListing": true,
@@ -54,7 +54,7 @@
         "thc-agege",
         "viva-ikeja"
       ],
-      "notes": "Preferred source if it agrees (D-07). Says it reads each cinema's own pages daily, sells nothing, takes no commission. 11 Nov: home page is static HTML (build stamp lagocine-built 2026-11-11T00:05:05+01:00). Still needs permission: robots allowing crawling is not a licence to republish (PRD). Audit: cinema and day pages are static HTML with the times in the page. The sitemap lists day pages for today plus six days and some December dates; the Silverbird Ikeja page carried a full programme for today and tomorrow only. No fixture committed: waiting for the reply to the 11 Nov email. D-33 (11 Nov): becomes the live source on Day 6 with full credit unless it objects first; status stays pending until Chime confirms cleared that day."
+      "notes": "D-76 (15 Nov 2026): fallback only, for each cinema we cannot read directly yet; a cinema leaves this list the day its own reader is built and cleared (Genesis and Silverbird Ikeja are cleared on 15 Nov but have no reader yet, so they stay until theirs runs). Filmhouse's 7 stay on it for the long run, because Filmhouse's ticketing provider (CINEsync) answers our named bot with 403 Access Denied. Booking links still go to Filmhouse's own site, never to Lagocine (it now sells tickets: \"Lagocine sells this ticket on its own site\", 15 Nov). To be credited on /about and on each cinema page it feeds (not built yet). Its own \"last read\" time sets the showings' age. Dropped for any cinema the day we can read that cinema directly. Earlier: Preferred source if it agrees (D-07). Says it reads each cinema's own pages daily, sells nothing, takes no commission. 11 Nov: home page is static HTML (build stamp lagocine-built 2026-11-11T00:05:05+01:00). Still needs permission: robots allowing crawling is not a licence to republish (PRD). Audit: cinema and day pages are static HTML with the times in the page. The sitemap lists day pages for today plus six days and some December dates; the Silverbird Ikeja page carried a full programme for today and tomorrow only. No fixture committed: waiting for the reply to the 11 Nov email. D-33 (11 Nov): becomes the live source on Day 6 with full credit unless it objects first; status stays pending until Chime confirms cleared that day."
     },
     {
       "id": "filmhouse",
@@ -94,7 +94,7 @@
         "filmhouse-oniru",
         "filmhouse-landmark"
       ],
-      "notes": "Booking URL pattern: /movies/<film>/showtimes/<date>/<site>/select-tickets?showtime=<id>. robots.txt could not be read on 6 Nov. 11 Nov: robots.txt read at www.filmhouseng.com. Public pages are allowed, but /api/ and every /select-tickets page are disallowed, so we may link to a booking page but never fetch one. The home page HTML carries no showtimes (drawn by script); if the times come from /api/, they are off limits without permission. Contact addresses on the home page: onlinesupport@filmhouseng.com, sales@filmhouseng.com. Audit: the film page and the showtimes page (/movies/whalefall-2026/showtimes/2026-11-11?location=all) are skeletons with no times and no booking links in the HTML; the times load in the browser after the page opens. That data path is not readable under robots.txt (/api/ is disallowed), so Filmhouse needs a yes or a feed. No fixture possible."
+      "notes": "15 Nov 2026: the showtimes page carries no times; the browser loads them from filmhouseng.api.cinesync.io, which answers plain requests with 403 (its robots.txt too). A headless browser under our bot name got \"Access Denied … Error 403 · Cinema Solution By CINEsync\". We do not disguise the bot or work around the block (D-77), so Filmhouse is read through Lagocine (D-76) until Filmhouse or CINEsync says yes. Earlier: Booking URL pattern: /movies/<film>/showtimes/<date>/<site>/select-tickets?showtime=<id>. robots.txt could not be read on 6 Nov. 11 Nov: robots.txt read at www.filmhouseng.com. Public pages are allowed, but /api/ and every /select-tickets page are disallowed, so we may link to a booking page but never fetch one. The home page HTML carries no showtimes (drawn by script); if the times come from /api/, they are off limits without permission. Contact addresses on the home page: onlinesupport@filmhouseng.com, sales@filmhouseng.com. Audit: the film page and the showtimes page (/movies/whalefall-2026/showtimes/2026-11-11?location=all) are skeletons with no times and no booking links in the HTML; the times load in the browser after the page opens. That data path is not readable under robots.txt (/api/ is disallowed), so Filmhouse needs a yes or a feed. No fixture possible."
     },
     {
       "id": "genesis",
@@ -103,10 +103,10 @@
       "homepage": "https://genesiscinemas.com/",
       "listingUrlPattern": "https://genesiscinemas.com/ (home page lists /<site>/booknow/<id> links for every location)",
       "method": "public-page",
-      "status": "pending",
+      "status": "cleared",
       "robots": {
         "checkedAt": "2026-11-11",
-        "allowsListing": null,
+        "allowsListing": true,
         "quote": "User-agent: * / Content-Signal: search=yes,ai-train=no,use=reference / Allow: /  ... User-Agent: * / Disallow: /*?s="
       },
       "terms": {
@@ -130,7 +130,7 @@
         "genesis-festac",
         "genesis-maryland"
       ],
-      "notes": "Booking URL pattern: /<site>/booknow/<id>. 11 Nov: robots.txt carries the same content signal (use=reference) that made Showtimes NG do-not-use, so allowsListing is left null: treat as needing written permission unless Chime decides otherwise. The home page HTML holds /<site>/booknow/<id> links for every location. Audit: needs a written yes (D-29). No fixture committed."
+      "notes": "15 Nov 2026 (D-77): cleared. robots.txt is Cloudflare's managed file: \"User-agent: * / Content-Signal: search=yes,ai-train=no,use=reference / Allow: /\"; the signals restrict AI training and AI use, and allow search-style listings (links and short excerpts), which is what we do. Booking pages (/<site>/booknow/<id>) carry the times in their HTML (checked: Ceddi Plaza Abuja, 19:20). Booking goes on to ticketing.com/sales/<code>/book. Abuja's Ceddi Plaza is on the same site. Earlier: Booking URL pattern: /<site>/booknow/<id>. 11 Nov: robots.txt carries the same content signal (use=reference) that made Showtimes NG do-not-use, so allowsListing is left null: treat as needing written permission unless Chime decides otherwise. The home page HTML holds /<site>/booknow/<id> links for every location. Audit: needs a written yes (D-29). No fixture committed."
     },
     {
       "id": "ebonylife",
@@ -139,7 +139,7 @@
       "homepage": "https://ebonylifecinemas.com/",
       "listingUrlPattern": null,
       "method": "public-page",
-      "status": "pending",
+      "status": "cleared",
       "robots": {
         "checkedAt": "2026-11-11",
         "allowsListing": true,
@@ -147,7 +147,7 @@
       },
       "terms": {
         "url": null,
-        "checkedAt": "2026-11-11",
+        "checkedAt": "2026-11-15",
         "allowsAutomated": null,
         "quote": "No terms or privacy link on the home page; only /contact-us."
       },
@@ -164,7 +164,7 @@
       "cinemaIds": [
         "ebonylife-vi"
       ],
-      "notes": "Booking URL pattern: /movies/<uuid>?showTimeId=<uuid>&showtimeDate=<date>. 11 Nov: the site is a script-drawn app (17 KB HTML shell, no times in it). The times likely come from an API behind the page; ask before using it (RESEARCH.md). Audit: confirmed. The home page is a static shell whose embedded page data is empty; /movies is drawn in the browser. No readable listing page, so EbonyLife needs a yes or a feed. Contact address on its contact page: ebonylifecinemas@ebonylifeplace.com."
+      "notes": "15 Nov 2026 (D-77): cleared. Headless browser under our bot name showed 17 times on /movies (\"Showtimes 10:40 AM Screen 5\"); the page loads them from max-api-readonly.fusionintel.io in the browser. We read the rendered page, never that address directly. 15 Nov 2026: site is a Next.js app (__NEXT_DATA__ present, no times in the HTML); robots.txt \"User-agent: *\" with no Disallow. Next: try the headless-browser route under our bot name (D-77); if it works, clear it, otherwise Lagocine (D-76). Earlier: Booking URL pattern: /movies/<uuid>?showTimeId=<uuid>&showtimeDate=<date>. 11 Nov: the site is a script-drawn app (17 KB HTML shell, no times in it). The times likely come from an API behind the page; ask before using it (RESEARCH.md). Audit: confirmed. The home page is a static shell whose embedded page data is empty; /movies is drawn in the browser. No readable listing page, so EbonyLife needs a yes or a feed. Contact address on its contact page: ebonylifecinemas@ebonylifeplace.com."
     },
     {
       "id": "silverbird",
@@ -173,7 +173,7 @@
       "homepage": "https://ticketing.eu.veezi.com/",
       "listingUrlPattern": "https://ticketing.eu.veezi.com/sessions/?siteToken=<token> (Ikeja: 9chn7w68550a7sxgexpdng2ndm, Galleria: 4x3z2wcre0rek2beab5w344ae0)",
       "method": "public-page",
-      "status": "pending",
+      "status": "cleared",
       "robots": {
         "checkedAt": "2026-11-11",
         "allowsListing": true,
@@ -199,7 +199,7 @@
         "silverbird-ikeja",
         "silverbird-galleria"
       ],
-      "notes": "Veezi sessions pages per site token. 11 Nov: Veezi /sessions/ pages are server-rendered and not disallowed; /purchase/ pages are disallowed, so link to them but never fetch them. The Galleria page still says \"No shows currently scheduled\". Silverbird Ikeja's site token is not recorded yet. Silverbird's own site carries the use=reference content signal. Audit: the Ikeja page is server-rendered with the full programme for today and tomorrow (70 times on 11 Nov) plus a few advance dates. Dates carry no year (\"Wednesday 11, November\") and times are 12-hour (\"10:40 AM\"); the parser must add the year from the fetch date. Fixture: tests/fixtures/silverbird/2026-11-11-ikeja.html (cut down, D-24). Silverbird's own terms forbid copying its content and linking to its site without written permission, so treat Silverbird as needing a written yes even though Veezi's robots.txt allows the page (O-12)."
+      "notes": "15 Nov 2026 (D-77): cleared on Chime's rule \"read it on their website if it's readable\". Veezi's /sessions/ pages are server-rendered and allowed by Veezi's robots.txt. Known risk: Silverbird's own terms forbid copying its content without written permission; showtimes are facts, and we stop the day Silverbird asks. Earlier: Veezi sessions pages per site token. 11 Nov: Veezi /sessions/ pages are server-rendered and not disallowed; /purchase/ pages are disallowed, so link to them but never fetch them. The Galleria page still says \"No shows currently scheduled\". Silverbird Ikeja's site token is not recorded yet. Silverbird's own site carries the use=reference content signal. Audit: the Ikeja page is server-rendered with the full programme for today and tomorrow (70 times on 11 Nov) plus a few advance dates. Dates carry no year (\"Wednesday 11, November\") and times are 12-hour (\"10:40 AM\"); the parser must add the year from the fetch date. Fixture: tests/fixtures/silverbird/2026-11-11-ikeja.html (cut down, D-24). Silverbird's own terms forbid copying its content and linking to its site without written permission, so treat Silverbird as needing a written yes even though Veezi's robots.txt allows the page (O-12)."
     },
     {
       "id": "syticks",
@@ -264,6 +264,245 @@
       "daysAhead": null,
       "cinemaIds": [],
       "notes": "robots.txt content signal: search=yes, ai-train=no, use=reference. Do not use its data."
+    },
+    {
+      "id": "reachcinema",
+      "name": "Reach Cinema's pages",
+      "owner": "Reach Cinema (ticketing for Ozone and Sky)",
+      "homepage": "https://ozone.reachcinema.io/showtimes",
+      "listingUrlPattern": "https://<cinema>.reachcinema.io/showtimes",
+      "method": "public-page",
+      "status": "cleared",
+      "robots": {
+        "checkedAt": "2026-11-15",
+        "allowsListing": true,
+        "quote": "robots.txt returns 200 with no rule for User-agent: * (read for ozone.reachcinema.io)"
+      },
+      "terms": {
+        "url": null,
+        "checkedAt": "2026-11-15",
+        "allowsAutomated": null,
+        "quote": "No terms link on reachcinema.io or ozone.reachcinema.io."
+      },
+      "permission": {
+        "askedAt": null,
+        "repliedAt": null,
+        "summary": null
+      },
+      "rateLimit": {
+        "minSecondsBetweenRequests": 5,
+        "maxRunsPerDay": 3
+      },
+      "daysAhead": null,
+      "cinemaIds": [
+        "ozone-yaba",
+        "sky-sangotedo"
+      ],
+      "notes": "15 Nov 2026 (D-77): cleared. Headless browser under our bot name: Ozone 19 times, Sky 20 times, with films, halls and Book Now links. 15 Nov 2026: script-built page (Next.js). A headless browser under our bot name showed 19 times with films and halls (\"11:00 AM Hall 1 Book Now\"). Ozone and Sky share the platform, so one reader covers both. Found through Lagocine's cinema pages. Terms not read yet."
+    },
+    {
+      "id": "filmworld",
+      "name": "Filmworld's Veezi page",
+      "owner": "Filmworld Cinemas",
+      "homepage": "https://filmworldcinemas.com/",
+      "listingUrlPattern": "https://ticketing.eu.veezi.com/sessions/?siteToken=327ra3p1mr5tzhta0g0s8ajf8m",
+      "method": "public-page",
+      "status": "cleared",
+      "robots": {
+        "checkedAt": "2026-11-15",
+        "allowsListing": true,
+        "quote": "ticketing.eu.veezi.com: Disallow /purchase? and /purchase/ only. filmworldcinemas.com: Cloudflare managed (search=yes, ai-train=no, use=reference) with Disallow lines for named bots"
+      },
+      "terms": {
+        "url": "https://filmworldcinemas.com/terms-condition/",
+        "checkedAt": "2026-11-15",
+        "allowsAutomated": null,
+        "quote": "\"Use or reproduction of any content without prior written consent is prohibited.\" Veezi's website terms carry the same kind of clause. No clause on automated access."
+      },
+      "permission": {
+        "askedAt": null,
+        "repliedAt": null,
+        "summary": null
+      },
+      "rateLimit": {
+        "minSecondsBetweenRequests": 5,
+        "maxRunsPerDay": 3
+      },
+      "daysAhead": null,
+      "cinemaIds": [
+        "filmworld-idimu"
+      ],
+      "notes": "15 Nov 2026 (D-77): cleared; the copying clause is recorded as a risk (showtimes are facts), and we stop if asked. Booking links must carry Filmworld's own siteToken (327ra3p1mr5tzhta0g0s8ajf8m): Veezi is shared with Silverbird, so the host alone does not prove whose link it is. 15 Nov 2026: Veezi sessions page is server-rendered (10 distinct times in the HTML). Same reader as Silverbird. filmworldcinemas.com/showtime/daily-showtime/ did not load for us. Terms not read yet."
+    },
+    {
+      "id": "grand",
+      "name": "Grand Cinemas' site",
+      "owner": "Grand Cinemas",
+      "homepage": "https://grandcinemas.com.ng/",
+      "listingUrlPattern": "https://grandcinemas.com.ng/",
+      "method": "public-page",
+      "status": "cleared",
+      "robots": {
+        "checkedAt": "2026-11-15",
+        "allowsListing": true,
+        "quote": "User-agent: * / Disallow: /wp-admin/ / Allow: /wp-admin/admin-ajax.php"
+      },
+      "terms": {
+        "url": "https://grandcinemas.com.ng/terms-conditions/",
+        "checkedAt": "2026-11-15",
+        "allowsAutomated": null,
+        "quote": "\"This Website is for personal use and you agree not to modify, copy, distribute, reproduce, re-publish … unless you have entered into a separate agreement\"; forbids \"bots, spiders, crawlers … or any other automated process that may debilitate this Website\"."
+      },
+      "permission": {
+        "askedAt": null,
+        "repliedAt": null,
+        "summary": null
+      },
+      "rateLimit": {
+        "minSecondsBetweenRequests": 5,
+        "maxRunsPerDay": 3
+      },
+      "daysAhead": null,
+      "cinemaIds": [
+        "grand-lekki"
+      ],
+      "notes": "15 Nov 2026 (D-77): cleared; the copying clause is a recorded risk, and at a few visits a day we cannot debilitate the site. No online booking link found: tickets at the cinema. 15 Nov 2026: WordPress; the home page HTML carries the times (12 distinct). Terms not read yet."
+    },
+    {
+      "id": "bluepictures",
+      "name": "Blue Pictures' site",
+      "owner": "Blue Pictures Cinemas",
+      "homepage": "https://bluepicturesng.com/",
+      "listingUrlPattern": "https://bluepicturesng.com/",
+      "method": "public-page",
+      "status": "cleared",
+      "robots": {
+        "checkedAt": "2026-11-15",
+        "allowsListing": true,
+        "quote": "User-agent: * / Disallow: /wp-admin/ / Allow: /wp-admin/admin-ajax.php"
+      },
+      "terms": {
+        "url": null,
+        "checkedAt": "2026-11-15",
+        "allowsAutomated": null,
+        "quote": "No terms page; the privacy link points to the theme's demo site (demo.ovatheme.com)."
+      },
+      "permission": {
+        "askedAt": null,
+        "repliedAt": null,
+        "summary": null
+      },
+      "rateLimit": {
+        "minSecondsBetweenRequests": 5,
+        "maxRunsPerDay": 3
+      },
+      "daysAhead": null,
+      "cinemaIds": [
+        "blue-pictures-onikan"
+      ],
+      "notes": "15 Nov 2026 (D-77): cleared. \"Get Ticket\" buttons are on the page, but online sale is not confirmed, so no booking host is recorded. 15 Nov 2026: WordPress; the home page HTML carries the times (25 distinct). Terms not read yet."
+    },
+    {
+      "id": "viva",
+      "name": "Viva Cinemas' site",
+      "owner": "Viva Cinemas",
+      "homepage": "https://web.vivacinemas.com/showtimes",
+      "listingUrlPattern": "https://web.vivacinemas.com/showtimes",
+      "method": "public-page",
+      "status": "cleared",
+      "robots": {
+        "checkedAt": "2026-11-15",
+        "allowsListing": true,
+        "quote": "No robots.txt (404)"
+      },
+      "terms": {
+        "url": null,
+        "checkedAt": "2026-11-15",
+        "allowsAutomated": null,
+        "quote": "No terms link on the site."
+      },
+      "permission": {
+        "askedAt": null,
+        "repliedAt": null,
+        "summary": null
+      },
+      "rateLimit": {
+        "minSecondsBetweenRequests": 5,
+        "maxRunsPerDay": 3
+      },
+      "daysAhead": null,
+      "cinemaIds": [
+        "viva-ikeja"
+      ],
+      "notes": "15 Nov 2026 (D-77): cleared. Headless browser under our bot name showed the times with Book Now links. 15 Nov 2026: script-built (Next.js), no times in the HTML. Try the headless-browser route (D-77). Terms not read yet."
+    },
+    {
+      "id": "thc",
+      "name": "Cinemax THC's site",
+      "owner": "Cinemax THC",
+      "homepage": "https://cinemaxthc.ng/",
+      "listingUrlPattern": "https://cinemaxthc.ng/",
+      "method": "public-page",
+      "status": "cleared",
+      "robots": {
+        "checkedAt": "2026-11-15",
+        "allowsListing": true,
+        "quote": "No robots.txt (404)"
+      },
+      "terms": {
+        "url": null,
+        "checkedAt": "2026-11-15",
+        "allowsAutomated": null,
+        "quote": "No terms link on the site."
+      },
+      "permission": {
+        "askedAt": null,
+        "repliedAt": null,
+        "summary": null
+      },
+      "rateLimit": {
+        "minSecondsBetweenRequests": 5,
+        "maxRunsPerDay": 3
+      },
+      "daysAhead": null,
+      "cinemaIds": [
+        "thc-agege"
+      ],
+      "notes": "15 Nov 2026 (D-77): cleared. Headless browser under our bot name showed the times with Book Now links. 15 Nov 2026: script-built (Next.js, __NEXT_DATA__), no times in the HTML. Try the headless-browser route (D-77). Terms not read yet."
+    },
+    {
+      "id": "magnificent",
+      "name": "Magnificent Cinemas' site",
+      "owner": "Magnificent Cinemas",
+      "homepage": "https://magnificentcinemas.com/",
+      "listingUrlPattern": "https://magnificentcinemas.com/",
+      "method": "public-page",
+      "status": "cleared",
+      "robots": {
+        "checkedAt": "2026-11-15",
+        "allowsListing": true,
+        "quote": "No robots.txt (404)"
+      },
+      "terms": {
+        "url": null,
+        "checkedAt": "2026-11-15",
+        "allowsAutomated": null,
+        "quote": "No terms link on the site."
+      },
+      "permission": {
+        "askedAt": null,
+        "repliedAt": null,
+        "summary": null
+      },
+      "rateLimit": {
+        "minSecondsBetweenRequests": 5,
+        "maxRunsPerDay": 3
+      },
+      "daysAhead": null,
+      "cinemaIds": [
+        "magnificent-ikorodu-road"
+      ],
+      "notes": "15 Nov 2026 (D-77): cleared. Headless browser under our bot name showed the times with Book Now links. 15 Nov 2026: 4 KB page, no times in the HTML; likely script-built. Try the headless-browser route (D-77). Terms not read yet."
     }
   ]
 }
