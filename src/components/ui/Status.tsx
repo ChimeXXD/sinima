@@ -139,10 +139,21 @@ export function SampleNote() {
   return <Notice kind="sample" text={bannerFor(["sample"])!.text} />;
 }
 
-/** The page's one notice in the Sample note's style: sample data, or times a day old or older. */
+/**
+ * The page's one notice: sample data in the Sample note's style; times a day old or older as Figma's
+ * stale banner (Cinema › Times a day old), with the alert icon.
+ */
 export function Notice({ kind, text }: { kind: string; text: string }) {
+  if (kind === "sample") {
+    return (
+      <p role="status" className={s.sample} data-testid={`banner.${kind}`}>
+        {text}
+      </p>
+    );
+  }
   return (
-    <p role="status" className={s.sample} data-testid={`banner.${kind}`}>
+    <p role="status" className={s.banner} data-testid={`banner.${kind}`}>
+      <Icon name="alert" size={20} className={s.bannerIcon} />
       {text}
     </p>
   );

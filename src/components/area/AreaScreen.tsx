@@ -1,18 +1,17 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { IconButton } from "@/components/ui/Actions";
-import { AppFrame } from "@/components/ui/AppFrame";
-import { Icon } from "@/components/ui/Icon";
+import { useLazySheet } from "@/components/film/useLazySheet";
+import { AppFrame, BarBack, BarTitle, Crumb } from "@/components/ui/AppFrame";
 import { Notice } from "@/components/ui/Status";
 import { TicketFaceSticker } from "@/components/ui/Stickers";
 import { shareLink } from "@/lib/browser";
 import { areaPage, type AreaCinema } from "@/lib/data/areaPage";
 import { byFilm, dayDates, formatsOf } from "@/lib/data/programme";
 import type { Area } from "@/lib/data/load";
-import { laterName, nextDayName, pageBanner, type ListData, type ListRow } from "@/lib/data/select";
+import { laterName, nextDayName, pageBanner, type ListData } from "@/lib/data/select";
 import { formatDate } from "@/lib/time/lagos";
 import { useSaved } from "@/lib/saved";
 import { useNow } from "@/lib/time/useNow";
@@ -30,24 +29,12 @@ import s from "./area.module.css";
 
 const CITY = "Lagos"; // one city until the city layer (unit 13, O-16)
 
-// The showing sheet loads when a time is first tapped: most visits never open one (the page budget, D-21).
-type SheetPart = typeof import("@/components/film/ShowingSheet").ShowingSheet;
-let sheetPart: Promise<SheetPart> | null = null;
-function loadSheet(): Promise<SheetPart> {
-  sheetPart ??= import("@/components/film/ShowingSheet").then((part) => part.ShowingSheet);
-  sheetPart.catch(() => (sheetPart = null));
-  return sheetPart;
-}
-
 export function AreaScreen({ data, areas, slug, bg }: { data: ListData; areas: Area[]; slug: string; bg: { light: string; dark: string } }) {
   const clock = useNow();
   const live = clock !== null;
   const now = clock ?? data.at;
   const router = useRouter();
   const [typed, setTyped] = useState("");
-  const [picked, setPicked] = useState<ListRow | null>(null);
-  const [open, setOpen] = useState(false);
-  const [ShowingSheet, setShowingSheet] = useState<SheetPart | null>(null);
   const [copied, setCopied] = useState(false);
   const copiedTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const kept = useSaved();
@@ -70,13 +57,7 @@ export function AreaScreen({ data, areas, slug, bg }: { data: ListData; areas: A
   const date = formatDate(dayDates(data.rows, now)[0]);
   const banner = pageBanner(data, clock);
   const unread = [...page.saved, ...page.others].some((entry) => !entry.listed);
-  // The sheet's "next times nearby" are for the same film: it reads only that film's rows.
-  const sheetData = useMemo(() => (picked ? { ...data, rows: data.rows.filter((row) => row.film === picked.film) } : data), [data, picked]);
-
-  const openRow = (row: ListRow) => {
-    setPicked(row);
-    void loadSheet().then((part) => (setShowingSheet(() => part), setOpen(true)), () => {});
-  };
+  const sheet = useLazySheet(data);
 
   async function share() {
     const done = await shareLink({ title: `Cinemas in ${area.name}`, text: areaShareText(area.name, CITY), url: `${window.location.origin}/area/${slug}` });
@@ -102,7 +83,7 @@ export function AreaScreen({ data, areas, slug, bg }: { data: ListData; areas: A
         line={entry.listed ? cardLine({ films, formats: formatsOf(entry.rows), when, place, tomorrow: tomorrow?.from ?? null, next: nextDay }) : (place ?? "")}
         body={cardBody({ listed: entry.listed, when, tomorrow, date, next: nextDay })}
         saved={saved}
-        onOpen={openRow}
+        onOpen={sheet.openRow}
       />
     );
   };
@@ -132,10 +113,8 @@ export function AreaScreen({ data, areas, slug, bg }: { data: ListData; areas: A
 
   const bar = (
     <>
-      <Link href="/cinemas" className={s.round} aria-label={`All cinemas in ${CITY}`} data-testid="area.back">
-        <Icon name="chevron-left" size={20} />
-      </Link>
-      <span className={s.barTitle}>Area</span>
+      <BarBack href="/cinemas" label={`All cinemas in ${CITY}`} testId="area.back" />
+      <BarTitle>Area</BarTitle>
       <IconButton icon={copied ? "check" : "share-up"} label={copied ? "Link copied" : `Share cinemas in ${area.name}`} onClick={() => void share()} testId="area.share" />
     </>
   );
@@ -153,10 +132,7 @@ export function AreaScreen({ data, areas, slug, bg }: { data: ListData; areas: A
 
   return (
     <AppFrame active="cinemas" search={{ value: typed, onChange: setTyped, onSubmit: () => router.push(`/?q=${encodeURIComponent(typed.trim())}`) }} bg={bg} bar={bar} footer={footer}>
-      <Link href="/cinemas" className={s.crumb}>
-        <Icon name="chevron-left" size={18} />
-        All cinemas in {CITY}
-      </Link>
+      <Crumb href="/cinemas">All cinemas in {CITY}</Crumb>
       <AreaHero area={area.name} count={area.cinemas} />
       {banner && (
         <div className={s.notice}>
@@ -190,7 +166,7 @@ export function AreaScreen({ data, areas, slug, bg }: { data: ListData; areas: A
         </>
       )}
 
-      {ShowingSheet && <ShowingSheet data={sheetData} row={picked} open={open} now={clock} areaName={areaName} near={near} city={CITY} onPick={openRow} onClose={() => setOpen(false)} />}
+      {sheet.Sheet && <sheet.Sheet data={sheet.sheetData} row={sheet.row} open={sheet.open} now={clock} areaName={areaName} near={near} city={CITY} onPick={sheet.openRow} onClose={sheet.close} />}
     </AppFrame>
   );
 }

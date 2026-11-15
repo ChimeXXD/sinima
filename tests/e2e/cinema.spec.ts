@@ -1,8 +1,10 @@
 import { expect, test } from "@playwright/test";
 import { dataFile, freeze, sampleTime, today } from "./helpers";
 
-// A cinema's page: its films as poster cards (D-49).
-test("a cinema's page shows its films as poster cards, with a poster on every one", async ({ page, request }) => {
+// A cinema's page: every film has artwork, and a day that is over still says what was on.
+// The page as Figma draws it (build unit 8): tests/e2e/cinema-screen.spec.ts.
+
+test("every film on a cinema's page has a poster: TMDB's, or a stand-in, never an empty box", async ({ page, request }) => {
   const all = await dataFile(request, "all");
   const now = await sampleTime(request, "10:00");
   const id = "genesis-purple-lekki";
@@ -11,34 +13,24 @@ test("a cinema's page shows its films as poster cards, with a poster on every on
   await page.goto(`/cinema/${id}`);
 
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Genesis Deluxe Purple Mall");
-  expect(await page.locator('[data-testid^="film.card."]').evaluateAll((els) => els.map((el) => el.getAttribute("data-testid")!.replace("film.card.", "")))).toEqual(films);
+  expect((await page.locator('[data-testid^="film.card."]').evaluateAll((els) => els.map((el) => el.getAttribute("data-testid")!.slice(10)))).sort()).toEqual([...films].sort());
 
-  // A film TMDB has a poster for shows it; one it does not gets a title poster. Never an empty box.
   const withPoster = films.find((f) => all.films.find((x) => x.id === f)?.posterPath);
   const without = films.find((f) => !all.films.find((x) => x.id === f)?.posterPath);
   expect(withPoster && without).toBeTruthy();
-  await expect(page.getByTestId(`film.card.${withPoster}`).locator("img")).toHaveAttribute("src", /^https:\/\/image\.tmdb\.org\/t\/p\/w\d+\//);
-  const title = all.films.find((x) => x.id === without)!.title;
-  await expect(page.getByTestId(`film.card.${without}`).getByTestId("poster.title")).toHaveText(title);
+  await expect(page.getByTestId(`film.card.${withPoster}`).locator("img").first()).toHaveAttribute("src", /^https:\/\/image\.tmdb\.org\/t\/p\/w\d+\//);
+  await expect(page.getByTestId(`film.card.${without}`).getByTestId("poster.none")).toBeVisible();
   for (const card of await page.locator('[data-testid^="film.card."]').all()) {
-    expect(await card.locator("img, [data-testid='poster.title']").count()).toBe(1);
+    expect(await card.locator("img[src*='image.tmdb.org'], [data-testid='poster.none']").count()).toBe(1); // the Stay chip's sticker is an image too
   }
-  await expect(page.getByTestId("cinema.source")).toContainText("Lagocine");
 });
 
-test("the grid is five across on a desktop and two on a phone", async ({ page, request }) => {
-  await freeze(page, await sampleTime(request, "10:00"));
-  const columns = async () => page.locator('[data-testid^="film.card."]').evaluateAll((els) => new Set(els.map((el) => Math.round(el.getBoundingClientRect().left))).size);
-  await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("/cinema/genesis-purple-lekki");
-  expect(await columns()).toBe(5);
-  await page.setViewportSize({ width: 390, height: 844 });
-  expect(await columns()).toBe(2);
-});
-
-test("a cinema with nothing left today says so and offers tomorrow", async ({ page, request }) => {
+test("late at night, with every time started, each film says when it showed", async ({ page, request }) => {
   await freeze(page, await sampleTime(request, "23:55"));
   await page.goto("/cinema/genesis-purple-lekki");
-  await expect(page.locator('[data-testid^="film.card."]')).toHaveCount(0);
-  await expect(page.getByTestId("empty.day")).toContainText("Nothing more is showing today");
+  await expect(page.getByTestId("films.note")).toHaveText(/ today · all started$/);
+  await expect(page.locator('[data-testid^="time."]')).toHaveCount(0);
+  const cards = page.locator('[data-testid^="film.card."]');
+  expect(await cards.count()).toBeGreaterThan(0);
+  for (const card of await cards.all()) await expect(card.getByTestId("film.earlier")).toHaveText(/^Started earlier today at \d\d:\d\d/);
 });

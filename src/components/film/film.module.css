@@ -2,29 +2,6 @@
    details side by side, times under them, areas two to a row. Desktop 1440: the film in a 390
    column on the left, 64 apart from the times. */
 
-/* Top bar (phone, iPad): back · Film · share. */
-.round {
-  display: inline-grid;
-  place-items: center;
-  /* Figma's 40 circle inside a 44 touch area: the transparent edge is not painted. */
-  width: 44px;
-  height: 44px;
-  margin: -2px;
-  border: 2px solid transparent;
-  border-radius: var(--radius-full);
-  background: var(--bg-surface) padding-box;
-  color: var(--text-primary);
-  -webkit-tap-highlight-color: transparent;
-  transition: transform var(--dur-press) var(--ease-out);
-}
-.round:active {
-  transform: scale(0.94);
-}
-.barTitle {
-  color: var(--text-primary);
-  font: var(--type-title);
-}
-
 .layout {
   display: flex;
   flex-direction: column;

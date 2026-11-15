@@ -1,0 +1,290 @@
+/* Cinema (Figma 202:7192): the cinema's details, then its films. Phone and iPad stack them; from
+   1200 the details sit in a 380 column on the left, 64 from the films. Film cards one to a row on
+   a phone, two from an iPad. */
+
+.notice {
+  display: flex;
+  padding-top: 6px;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+}
+.info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-14);
+  padding: var(--space-12) 0 var(--space-8);
+}
+.logo {
+  display: flex;
+  padding: var(--space-8) 0 var(--space-4) 6px; /* room for the tilt */
+}
+.title {
+  color: var(--text-primary);
+  font: var(--type-heading-m);
+}
+.address {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-8);
+  color: var(--text-body-strong);
+  font: var(--type-body-m);
+}
+.pin {
+  flex: none;
+  margin-top: 1px;
+  color: var(--text-secondary);
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8);
+}
+.area {
+  padding: var(--space-4) var(--space-10);
+  border-radius: var(--radius-full);
+  background: var(--bg-surface);
+  color: var(--text-body-strong);
+  font: var(--type-caption);
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-10);
+}
+/* Save (Figma: 48 tall, 12 round, 16 in on the left and 18 on the right); Saved is the accent tint
+   with the heart filled. */
+.save {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  min-height: 48px;
+  padding: 0 18px 0 var(--space-16);
+  border: 0;
+  border-radius: var(--radius-button);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font: var(--type-button);
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform var(--dur-press) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+.save:active {
+  transform: scale(0.97);
+}
+.save[aria-pressed="true"] {
+  background: var(--bg-accent-soft);
+  color: var(--text-accent);
+}
+.save[aria-pressed="true"] svg {
+  fill: currentColor;
+}
+.hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.films {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-14);
+  min-width: 0;
+  padding-top: var(--space-20);
+}
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+.heading > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.heading h2 {
+  color: var(--text-primary);
+  font: var(--type-heading-s);
+}
+.heading p,
+.none {
+  color: var(--text-secondary);
+  font: var(--type-meta);
+}
+.heading > :last-child {
+  display: grid; /* the toggle runs full width on a phone */
+}
+/* Figma's segments here are 16 in from each side ("Today · Fri 13" is longer than "Today"). */
+.heading [role="radio"] {
+  min-width: 0;
+  padding-inline: var(--space-16);
+}
+@media (max-width: 359px) {
+  .heading [role="radio"] {
+    padding-inline: var(--space-8);
+    font-size: 13px; /* a 320 phone: both days still whole */
+  }
+}
+/* Nothing listed for tomorrow: today alone, in a pill, with why (Figma: Times a day old). */
+.heading > .alone {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-12);
+}
+.today {
+  padding: var(--space-10) var(--space-20);
+  border-radius: 14px;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font: 600 15px/1.2 var(--font-sans);
+}
+.warning {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: var(--space-8);
+  padding: var(--space-10) var(--space-14);
+  border-radius: 14px;
+  background: var(--bg-surface);
+  color: var(--text-body-strong);
+  font: var(--type-label-strong);
+}
+.rows {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-14);
+  align-items: start;
+}
+
+/* A film: poster 64 × 96, then its words and times. */
+.film {
+  display: flex;
+  gap: var(--space-14);
+  padding: var(--space-14);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-row);
+  background: var(--bg-page);
+}
+.poster {
+  flex: none;
+  width: 64px;
+  height: 96px;
+  overflow: hidden;
+  border-radius: var(--radius-button);
+  background: var(--bg-surface);
+  /* Figma: a 3 px white stroke inside the edge, over the artwork. */
+  outline: 3px solid var(--sticker-outline);
+  outline-offset: -3px;
+  box-shadow: var(--fx-shadow-poster);
+}
+.poster > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.noPoster {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  background: var(--bg-accent-soft);
+}
+.filmText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-8);
+  min-width: 0;
+}
+.filmTitle {
+  color: var(--text-primary);
+  font: var(--type-title);
+}
+.filmTitle a {
+  color: inherit;
+}
+.meta {
+  margin-top: -2px; /* Figma: 28 below the title's top, 8 apart in the column */
+  color: var(--text-secondary);
+  font: var(--type-meta);
+}
+.stay {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--space-4) var(--space-10) var(--space-4) var(--space-4);
+  border-radius: var(--radius-full);
+  background: var(--bg-accent-soft);
+  color: var(--text-brand-deep);
+  font: var(--type-caption);
+}
+.times {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}
+.earlier {
+  color: var(--text-body-strong);
+  font: var(--type-meta);
+}
+
+@media (min-width: 768px) {
+  .heading {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+  .heading > :last-child {
+    display: inline-grid;
+    width: 364px;
+  }
+  .heading > .alone {
+    width: auto;
+  }
+  .rows {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-16); /* Figma iPad; 14 on desktop */
+  }
+}
+
+@media (min-width: 1200px) {
+  .notice {
+    padding-top: 6px;
+  }
+  .body {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 64px;
+    padding-top: var(--space-24);
+  }
+  .info {
+    flex: none;
+    width: 380px;
+    padding: 0;
+  }
+  .logo > * {
+    zoom: 1.2255; /* Figma's 115 × 70 sticker on desktop, from 94 × 57 */
+  }
+  .title {
+    font: var(--type-heading-l);
+  }
+  .films {
+    flex: 1;
+    padding-top: 0;
+  }
+  .rows {
+    gap: var(--space-14);
+  }
+}

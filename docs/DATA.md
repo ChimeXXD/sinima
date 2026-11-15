@@ -197,7 +197,7 @@ Filled on Day 0 by the data-source audit. One entry per source.
 This table defines bookable (D-25): Stale rows can be booked, Old rows cannot. Sample rows keep their saved wall-clock times but sit on today's and tomorrow's dates (D-20); the sentence still names the day the page was saved.
 
 Banners (one per page, the worst case wins):
-- Stale: "Some times were read yesterday. Cinemas change programmes; check before you travel."
+- Stale: "Some times are from yesterday. Cinemas change programmes; check before you travel."
 - Old: "Some times are more than a day old and may have changed."
 - Source failing: "We couldn't read Silverbird's page today. Its times below are from yesterday."
 - Sample: "Sample data. These times are for the demo, not for booking."

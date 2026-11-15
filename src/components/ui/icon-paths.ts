@@ -1,8 +1,10 @@
 // Lucide icons (lucide.dev, ISC licence), exported from the Figma Iconography doc (158:162) on a 24 grid.
 // "info" and "share-up" (Lucide share: the screens' share, where the Iconography doc has share-2 as
-// "share") are from the Film frames (189:4253, 180:2147), scaled from 20 to the 24 grid.
+// "share") are from the Film frames (189:4253, 180:2147), and "alert" (Lucide triangle-alert) from the
+// Cinema frame's day-old banner (201:8803), scaled from 20 to the 24 grid.
 // Generated from Figma: re-export rather than edit a path by hand.
 export const ICON_PATHS = {
+  "alert": ["M21.73 17.9999L13.73 3.9998C13.5556 3.692 13.3026 3.436 12.997 3.2579C12.6912 3.0798 12.3438 2.9859 11.99 2.9859C11.6362 2.9859 11.2888 3.0798 10.9831 3.2579C10.6774 3.436 10.4244 3.692 10.25 3.9998L2.25 17.9999C2.0737 18.3052 1.9812 18.6517 1.982 19.0044C1.9828 19.357 2.0768 19.703 2.2545 20.0076C2.4321 20.3123 2.6871 20.5644 2.9937 20.7386C3.3002 20.9129 3.6474 21.003 4 20.9999H20C20.3509 20.9995 20.6956 20.9068 20.9993 20.7311C21.303 20.5554 21.5552 20.3029 21.7306 19.999C21.9058 19.695 21.998 19.3502 21.9979 18.9994C21.9979 18.6485 21.9054 18.3037 21.73 17.9999Z", "M12 9V13M12 17.0016H12.01"],
   "arrow-right": ["M5 12H19M12 19L19 12L12 5"],
   "arrow-up-right": ["M17 17V7H7M17 7L7 17"],
   "calendar-plus": ["M8 2V6M16 2V6", "M19 4H5C3.89543 4 3 4.89543 3 6V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V6C21 4.89543 20.1046 4 19 4Z", "M3 10H21M12 14V18M10 16H14"],

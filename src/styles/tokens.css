@@ -130,6 +130,7 @@
   --fx-shadow-navbar: 0 6px 20px #18181b14;
   --fx-sticker-count: 0 1.5px 3px #82828240;
   --fx-shadow-panel: 0 16px 40px #18181b24; /* Search panel (Figma Search and city). */
+  --fx-shadow-poster: 0 4px 10px #0000001f; /* A poster in a film row (Figma Cinema, unbound). */
   --fx-focus-ring: 0 0 0 3px var(--bg-accent-soft);
   --badge-format: #0b0b0fb8; /* Format badge: near-black at 72% on a poster. */
   --tile-dark: var(--p-neutral-900); /* Logo sticker tile for white logos. */

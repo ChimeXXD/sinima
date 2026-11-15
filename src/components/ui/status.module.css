@@ -225,6 +225,21 @@ button.chip:active {
   color: var(--text-secondary);
   font: var(--type-meta);
 }
+/* Stale banner (Figma Cinema 201:8803): surface, 16 round, 12 14 in, the alert icon 10 from the words. */
+.banner {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--space-10);
+  padding: var(--space-12) var(--space-14);
+  border-radius: var(--radius-tile);
+  background: var(--bg-surface);
+  color: var(--text-body-strong);
+  font: var(--type-body-m);
+}
+.bannerIcon {
+  flex: none;
+}
 .fresh {
   display: inline-flex;
   align-items: center;

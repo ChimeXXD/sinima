@@ -11,19 +11,15 @@ test("tapping a time opens that showing; sample data cannot be booked", async ({
   await page.goto(`/cinema/${row.cinemaId}`); // the times moved here from the Cinemas tab (D-56)
   await page.getByTestId(`time.${row.filmId}.${row.startsAt}`).click();
 
-  const panel = page.getByTestId("showing.panel");
-  await expect(panel).toBeVisible();
-  await expect(panel.getByTestId("showing.title")).toHaveText(all.films.find((f) => f.id === row.filmId)!.title);
-  await expect(panel.getByTestId("showing.cinema")).toHaveText(all.cinemas.find((c) => c.id === row.cinemaId)!.name);
-  await expect(panel.getByTestId("showing.time")).toHaveText(lagosClock(row.startsAt));
-  await expect(panel.getByTestId("showing.countdown")).toHaveText(/^Starts in /);
-  await expect(panel.getByTestId("showing.freshness")).toHaveText("Sample data saved from Lagocine on 11 Nov");
-  await expect(panel.getByTestId("showing.sample")).toHaveText("Sample only");
-  await expect(panel.getByTestId("showing.book")).toHaveCount(0);
+  const sheet = page.getByTestId("showing.sheet"); // Figma's sheet since build unit 8
+  await expect(sheet).toHaveAccessibleName(`${lagosClock(row.startsAt)} · ${all.cinemas.find((c) => c.id === row.cinemaId)!.name}`);
+  await expect(sheet.getByText(all.films.find((f) => f.id === row.filmId)!.title, { exact: false }).first()).toBeVisible();
+  await expect(sheet.getByTestId("countdown-badge")).toHaveText(/^Starts in/);
+  await expect(sheet.getByTestId("showing.book")).toContainText("Sample only");
   await expect(page.getByTestId("banner.sample")).toHaveText("Sample data. These times are for the demo, not for booking.");
 
-  await panel.getByTestId("showing.close").click();
-  await expect(panel).toBeHidden();
+  await page.keyboard.press("Escape");
+  await expect(sheet).toBeHidden();
 });
 
 test("a showing is gone from the card the minute it starts", async ({ page, request }) => {
@@ -47,7 +43,7 @@ test("Tomorrow shows the whole of the next day", async ({ page, request }) => {
   expect(films.size).toBeGreaterThan(3);
   await freeze(page, built);
   await page.goto(`/cinema/${id}`);
-  await page.getByTestId("day.tomorrow").click();
+  await page.getByTestId("films.day").getByRole("radio", { name: /^Tomorrow/ }).click();
   await expect(page.locator('[data-testid^="film.card."]')).toHaveCount(films.size);
 });
 

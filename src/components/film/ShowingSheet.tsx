@@ -15,14 +15,13 @@ import { formatTime } from "@/lib/time/lagos";
 import { isBeforeStart, showingState } from "@/lib/time/showingState";
 import { bookOption, calendarLine, nextPlace, shareText, shortAddress, showingSubtitle, startedNotice, type BookCase } from "@/lib/wording/filmPage";
 import { freshness } from "@/lib/wording/freshness";
+import { showingHash } from "./useLazySheet";
 import s from "./showing.module.css";
 
 // Film › Showing sheet (Figma 189:3701; a centred dialog on desktop): one showing's time and
 // cinema, its countdown, then Book on the cinema's own site, Add to calendar, Keep a countdown and
 // Share. Once it has started (189:4253) it can't be booked: a note, the next times nearby, and
 // Share this film (D-05).
-
-export const showingHash = (data: ListData, row: ListRow) => `#s=${data.cinemas[row.cinema]!.id}@${row.at}`;
 
 type Props = { data: ListData; /** The last showing opened: it stays drawn while the sheet slides away. */ row: ListRow | null; open: boolean; now: string | null; areaName: (slug: string) => string; near: (slug: string) => string[]; city: string; onPick: (row: ListRow) => void; onClose: () => void };
 

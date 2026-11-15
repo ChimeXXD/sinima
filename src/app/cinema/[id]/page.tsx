@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { CinemaBoard } from "@/components/CinemaBoard";
-import { Icon } from "@/components/Icons";
-import { KeepButton } from "@/components/KeepButton";
-import { Shell } from "@/components/Shell";
-import { areaBySlug, areas, loadAll } from "@/lib/data/load";
+import { CinemaScreen } from "@/components/cinema/CinemaScreen";
+import { areaBySlug, loadAll } from "@/lib/data/load";
 import { toListData } from "@/lib/data/select";
+import { pageColours } from "@/lib/theme/pageColours";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -22,43 +19,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: `${cinemaById((await params).id).name} · Sinima` };
 }
 
-/** One cinema: where it is, then its programme as poster cards. */
+/** One cinema: where it is, Save and Book, then its films on the day (Figma Cinema, build unit 8). */
 export default async function CinemaPage({ params }: Props) {
   const cinema = cinemaById((await params).id);
   const area = areaBySlug(cinema.area);
-  return (
-    <Shell tab="cinemas">
-      <Link className="crumb" href={`/area/${area.slug}`}>
-        <Icon name="back" />
-        Cinemas in {area.name}
-      </Link>
-      <div className="hero">
-        <div>
-          <div className="tags">
-            <span className="tag q">{cinema.bookingHost ? "Book online" : "Tickets at the cinema"}</span>
-          </div>
-          <h1 className="title" data-testid="cinema.title">
-            {cinema.name}
-          </h1>
-          <p className="sub">{cinema.address ?? `${area.name}, Lagos`}</p>
-          <div className="actions">
-            <KeepButton id={cinema.id} name={cinema.name} />
-            {cinema.address && (
-              <a className="btn" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${cinema.name}, ${cinema.address}`)}`} target="_blank" rel="noopener">
-                <Icon name="map" />
-                Open in maps
-              </a>
-            )}
-            {cinema.website && (
-              <a className="btn" href={cinema.website} target="_blank" rel="noopener">
-                <Icon name="globe" />
-                Cinema website
-              </a>
-            )}
-          </div>
-        </div>
-      </div>
-      <CinemaBoard data={toListData(loadAll(), { cinemaId: cinema.id })} areaNames={Object.fromEntries(areas.map((candidate) => [candidate.slug, candidate.name]))} />
-    </Shell>
-  );
+  return <CinemaScreen data={toListData(loadAll(), { cinemaId: cinema.id })} id={cinema.id} area={{ slug: area.slug, name: area.name }} bg={pageColours()} />;
 }

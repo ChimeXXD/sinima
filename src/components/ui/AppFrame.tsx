@@ -45,6 +45,28 @@ export function Lockup() {
   );
 }
 
+/** The top bar's back button (Figma's 40 circle inside a 44 touch area), on phones and iPads. */
+export function BarBack({ href, label, testId }: { href: string; label: string; testId: string }) {
+  return (
+    <Link href={href} className={s.round} aria-label={label} data-testid={testId}>
+      <Icon name="chevron-left" size={20} />
+    </Link>
+  );
+}
+
+/** The screen's name in the top bar: "Area", "Cinema". */
+export const BarTitle = ({ children }: { children: React.ReactNode }) => <span className={s.barTitle}>{children}</span>;
+
+/** The desktop's way back, above the title (Figma Area and Cinema: "All cinemas in Lagos"). */
+export function Crumb({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <Link href={href} className={s.crumb}>
+      <Icon name="chevron-left" size={18} />
+      {children}
+    </Link>
+  );
+}
+
 /**
  * A screen below the home screens (Figma Film) passes `bar`: on phones and iPads it takes the
  * header's place, a back button, the screen's name and a share button; the desktop navbar stays.

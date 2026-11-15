@@ -1,0 +1,64 @@
+/* Toast (Figma: 384 × 45, 16 round, 12 12 12 16 in, gap 12, brand navy). */
+.toast {
+  position: fixed;
+  z-index: 30;
+  bottom: 70px;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  width: min(384px, 100vw - 6px);
+  min-height: 45px;
+  padding: var(--space-12) var(--space-12) var(--space-12) var(--space-16);
+  border-radius: var(--radius-tile);
+  background: var(--brand-eyes);
+  color: var(--text-on-action);
+  translate: -50% 0;
+  /* Purpose: it arrives from where the eye already is, the bottom of the screen. */
+  animation: rise var(--dur-base) var(--ease-out);
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+.icon {
+  flex: none;
+}
+.icon path {
+  fill: currentColor;
+}
+.text {
+  flex: 1;
+  font: var(--type-body-m);
+}
+/* Undo: Label/Strong, with a 44 × 44 touch area; the margins keep the word where Figma puts it. */
+.undo {
+  flex: none;
+  min-width: 44px;
+  min-height: 44px;
+  margin-block: -12px;
+  margin-inline: -6.5px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: var(--type-label-strong);
+  cursor: pointer;
+}
+@media (min-width: 1200px) {
+  .toast {
+    bottom: 32px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation-name: fade;
+  }
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { IconButton, Segmented } from "@/components/ui/Actions";
-import { AppFrame } from "@/components/ui/AppFrame";
+import { AppFrame, BarBack, BarTitle } from "@/components/ui/AppFrame";
 import { Icon } from "@/components/ui/Icon";
 import { Notice, TimeChip } from "@/components/ui/Status";
 import { LogoSticker, TicketFaceSticker } from "@/components/ui/Stickers";
@@ -19,7 +19,7 @@ import { useNow } from "@/lib/time/useNow";
 import { dayWords } from "@/lib/wording/day";
 import { areaTag, earlierLine, filmFacts, heroNote, noTimes, shareText, shortAddress, timesSubtitle } from "@/lib/wording/filmPage";
 import { FilmHero } from "./FilmHero";
-import { ShowingSheet, showingHash } from "./ShowingSheet";
+import { showingHash, useLazySheet } from "./useLazySheet";
 import s from "./film.module.css";
 
 // Film (Figma 185:3558): the poster sticker and Stay or Go, then every cinema showing it in the
@@ -35,9 +35,6 @@ export function FilmScreen({ data, areas, bg }: { data: ListData; areas: Area[];
   const router = useRouter();
   const [day, setDay] = useState<Day>(0);
   const [typed, setTyped] = useState("");
-  const [picked, setPicked] = useState<ListRow | null>(null);
-  const [open, setOpen] = useState(false);
-  const [closedHash, setClosedHash] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const copiedTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
@@ -49,8 +46,8 @@ export function FilmScreen({ data, areas, bg }: { data: ListData; areas: Area[];
 
   // A shared link names its showing after the #; it opens once, until it is closed. A new link opens again.
   const hash = useHash();
-  const linked = hash !== closedHash && hash.startsWith("#s=") ? (data.rows.find((row) => showingHash(data, row) === hash) ?? null) : null;
-  const row = picked ?? linked;
+  const linked = hash.startsWith("#s=") ? (data.rows.find((row) => showingHash(data, row) === hash) ?? null) : null;
+  const sheet = useLazySheet(data, linked);
 
   const dates = dayDates(data.rows, now);
   const names = [dayWords(0, dates[0], live).name, dayWords(1, dates[1], live).name];
@@ -64,10 +61,6 @@ export function FilmScreen({ data, areas, bg }: { data: ListData; areas: Area[];
   const banner = pageBanner(data, clock);
   const stay = film.stay.verdict === "stay" || film.stay.verdict === "probably-stay";
 
-  const openRow = (next: ListRow) => {
-    setPicked(next);
-    setOpen(true);
-  };
   async function shareFilm() {
     const done = await shareLink({ title: film.title, text: shareText({ film: film.title, city: CITY }), url: `${window.location.origin}/film/${film.id}` });
     if (done === "copied") {
@@ -79,10 +72,8 @@ export function FilmScreen({ data, areas, bg }: { data: ListData; areas: Area[];
 
   const bar = (
     <>
-      <Link href="/" className={s.round} aria-label={`All films in ${CITY}`} data-testid="film.back">
-        <Icon name="chevron-left" size={20} />
-      </Link>
-      <span className={s.barTitle}>Film</span>
+      <BarBack href="/" label={`All films in ${CITY}`} testId="film.back" />
+      <BarTitle>Film</BarTitle>
       <IconButton icon={copied ? "check" : "share-up"} label={copied ? "Link copied" : `Share ${film.title}`} onClick={() => void shareFilm()} testId="film.share" />
     </>
   );
@@ -148,7 +139,7 @@ export function FilmScreen({ data, areas, bg }: { data: ListData; areas: Area[];
                   </h3>
                   <div className={s.cinemas}>
                     {group.cinemas.map((times) => (
-                      <CinemaCard key={times.cinema} data={data} times={times} now={day === 0 ? clock : null} onOpen={openRow} />
+                      <CinemaCard key={times.cinema} data={data} times={times} now={day === 0 ? clock : null} onOpen={sheet.openRow} />
                     ))}
                   </div>
                 </section>
@@ -163,22 +154,7 @@ export function FilmScreen({ data, areas, bg }: { data: ListData; areas: Area[];
         </section>
       </div>
 
-      <ShowingSheet
-        data={data}
-        row={row}
-        open={open || linked !== null}
-        now={clock}
-        areaName={areaName}
-        near={near}
-        city={CITY}
-        onPick={openRow}
-        onClose={() => {
-          setOpen(false);
-          // Keep the linked showing drawn while the sheet slides away.
-          setPicked((last) => last ?? linked);
-          setClosedHash(hash);
-        }}
-      />
+      {sheet.Sheet && <sheet.Sheet data={sheet.sheetData} row={sheet.row} open={sheet.open} now={clock} areaName={areaName} near={near} city={CITY} onPick={sheet.openRow} onClose={sheet.close} />}
     </AppFrame>
   );
 }

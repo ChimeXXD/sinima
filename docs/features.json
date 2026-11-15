@@ -283,7 +283,7 @@
       "priority": "must",
       "title": "Every showing says where its time came from; sample and stale banners",
       "criteria": [
-        "the showing panel and every card carry the freshness sentence",
+        "the showing panel and every card carry the freshness sentence (superseded by D-72: sources are credited on /about; day-old times still say so on the page, D-93)",
         "stale and sample banners show when due"
       ],
       "verify": "npm run test:e2e -- showing",
@@ -412,7 +412,7 @@
       "title": "Cinema page: its programme as poster cards",
       "criteria": [
         "today and tomorrow",
-        "address and source line",
+        "address and source line (the per-showing source line went in D-72; since D-93 Figma's cinema page: films as rows with their times, tests/e2e/cinema-screen.spec.ts)",
         "a poster or title poster on every film"
       ],
       "verify": "npm run test:e2e -- cinema",
