@@ -87,7 +87,7 @@ People in Lagos and Abuja decide on a film late, often on the move, and pay for 
 3. **Film page**: every showing in Lagos for a film, sorted by start time, grouped by area.
 4. **Cinema page**: today and tomorrow at one cinema, with its source and last-read time.
 5. **Stay or Go chip** on film pages: "Stay: one scene after the credits", with source and how sure.
-6. **Freshness line** on every showing: "Read from Filmhouse's site 2 hours ago".
+6. **Old times say so** in words ("Some times are from yesterday"); no per-showing source line (D-72 supersedes the freshness line "Read from Filmhouse's site 2 hours ago"). Sources are credited on About.
 7. **Reminder**: add-to-calendar (.ics) with a 30-minute alert, plus a live countdown on the page.
 8. **Web Push reminder** for installed web apps (later).
 9. **Travel buffer, honest version**: "You said 40 min to get there. Leave by 18:20." It uses the user's own number, never a traffic guess.

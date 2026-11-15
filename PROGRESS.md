@@ -2,6 +2,16 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 15 Nov 2026 — screen review round 1 (D-72)
+
+- Figma only. Removed every "From Lagocine, which read…" / "Read from Lagocine…" line (153); reworded stale-data and About texts without "read".
+- Shadows: audit script over every screen on Design screens; 378 clipping containers unclipped, stickers nudged, tab bar lifted to 34 px with a tighter shadow, iPad search panel inset; re-audit clean except edge-docked sheets.
+- Day toggles: iPad track height and equal halves; Film page iPhone toggle was hidden; Cinema page toggles detached and sized to the longer label.
+- Chip rows: 48 px edge fade where rows scroll; non-overflowing rows unclipped.
+- New review section `219:8741`: Cinemas title left vs centred, three sizes. iPad Cinemas logos moved off the title.
+- Docs: D-72; CLAUDE.md rule 2; PRD, SPEC, PLAN.
+- Not done: phone check; Chime's pick on the centred title.
+
 ## Every screen at three sizes (Sun 15 Nov 2026)
 
 **Changed** (design only, in Figma; nothing in the app)

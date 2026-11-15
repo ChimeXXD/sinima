@@ -83,7 +83,7 @@ Tapping any time opens that showing in a panel (a sheet on a phone): the ticket,
 
 ## 7. Accessibility
 
-- Semantic list of showings; each row reads as one sentence: "Sinners, Filmhouse Lekki, today at 19:30, starts in 45 minutes. Read from Filmhouse's site 2 hours ago."
+- Semantic list of showings; each row reads as one sentence: "Sinners, Filmhouse Lekki, today at 19:30, starts in 45 minutes." (no source sentence, D-72; old times add "Times from yesterday.")
 - Visible focus; 44 px targets; colour never the only signal (freshness and credits are words).
 - Works at 200% zoom and 320 px wide; respects `prefers-reduced-motion` and `prefers-color-scheme`.
 - `lang="en-NG"`; times in `<time datetime>`.

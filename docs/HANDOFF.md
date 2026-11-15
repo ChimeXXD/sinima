@@ -1,6 +1,26 @@
 # Handoff: read this first when you pick the project back up
 
-## Now: every screen designed, waiting for Chime's review (15 Nov 2026, latest)
+## Now: screen review round 1 done, waiting for Chime's next notes (15 Nov 2026, latest)
+
+Chime started reviewing the D-71 screens. Everything asked is done in Figma and recorded as **D-72**.
+
+| Asked | Done |
+|---|---|
+| Remove the "read from Lagocine" lines | 153 lines removed from every screen. Old times still say so ("Some times are from yesterday…", "3 films · times from yesterday"); Lagocine stays credited on About. CLAUDE.md rule 2, PRD, SPEC and PLAN updated |
+| Shadows never clipped | 378 containers unclipped; edge stickers moved in; tab bar 34 px from the bottom with shadow 0 8 24; iPad search panel inset. Re-measured: only sheets that meet the screen edge over the backdrop still touch it |
+| Day toggle on iPad | Was a 40 px track cutting 38 px pills, unequal halves. Now 46 px, equal halves, everywhere. Also found: Film page (iPhone) toggle was hidden by its heading; Cinema page "Tomorrow · Sat 14" spilled. Both fixed |
+| Chip rows clip harshly | Rows that scroll fade over the last 48 px (Starting soon areas, Cinemas pickers on phone); rule on the Chip component |
+| City dropdown flow | Already existed: Search and city, row 1 (City sheet). Row label now says it opens from "Lagos ⌄" in the title |
+| Centred Cinemas title | Option only, section **Review · Cinemas title centred** `219:8741`, right of Cinemas. Not in the design until Chime picks |
+| Admit One, countdown badge | Answered in chat, no change |
+
+Also fixed: iPad Cinemas logos overlapped "Lagos"; "Genesis Deluxe Purple Mall" was cut mid-letter on Starting soon cards (now ellipsis).
+
+**Open for Chime:** pick left or centred Cinemas title; keep reviewing the other sections. Risk to flag: D-33 promised Lagocine "full credit"; it is now only on About. A one-line footer credit would cover it if Lagocine asks.
+
+**Gotcha:** instance sublayers of Segmented control would not resize or hug (FIXED override stuck, min-size can't be overridden), so the six Cinema page toggles were detached to frames.
+
+## Earlier: every screen designed for review (15 Nov 2026)
 
 **What Chime asked:** "design the rest of the screen and organize it… think through each decision… study the site map well." Done and recorded as **D-71**. Chime will review and send corrections; nothing else is planned until then.
 
