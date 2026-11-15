@@ -121,6 +121,9 @@ export function KitDemo() {
           <span className={s.pillBox}>
             <TimePill startsAt={at(70)} now={now} bookUrl="https://filmhouseng.com" bookLabel="Book 18:40 on Filmhouse's site" />
           </span>
+          <span className={s.pillBox} data-testid="kit.latepill">
+            <TimePill startsAt={at(420)} now={now} bookUrl="https://filmhouseng.com" bookLabel="Book 00:30 on Saturday on Filmhouse's site" />
+          </span>
           <span className={s.pillBox}>
             <TimePill startsAt={at(-3)} now={now} bookUrl="https://filmhouseng.com" bookLabel="Book on Filmhouse's site" />
           </span>
@@ -129,11 +132,12 @@ export function KitDemo() {
           <TimeChip startsAt={at(90)} format="IMAX" now={now} onOpen={() => setSheet(true)} />
           <TimeChip startsAt={at(30)} format="IMAX" now={now} soonest onOpen={() => setSheet(true)} />
           <TimeChip startsAt={at(-5)} format="IMAX" now={now} onOpen={() => setSheet(true)} />
+          <TimeChip startsAt={at(420)} format="IMAX" now={now} onOpen={() => setSheet(true)} />
         </div>
         <div className={s.row}>
           <FormatBadge formats={["IMAX", "4D"]} />
           <SampleNote />
-          {now && <Freshness text={freshness({ name: "EbonyLife", method: "public-page" }, at(-120), now).text} />}
+          {now && <Freshness text={freshness({ name: "EbonyLife's site", method: "public-page" }, at(-120), now).text} />}
         </div>
       </Section>
 

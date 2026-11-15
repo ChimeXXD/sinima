@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { countdownShare, countdown } from "@/lib/time/countdown";
 import { filmNextLine } from "@/lib/wording/film";
-import { cinemaNextLine, countdownParts, showingsTonight, spokenCountdown } from "@/lib/wording/showing";
+import { lateDay } from "@/lib/time/lagos";
+import { cinemaNextLine, countdownParts, showingsTonight, spokenCountdown, spokenTime } from "@/lib/wording/showing";
 
 // The words the shared components (D-82, build unit 2) split over two type styles.
 
@@ -75,5 +76,20 @@ describe("cinema folder lines (Figma 10.3)", () => {
   });
   it("leaves the time out when there is none", () => {
     expect(cinemaNextLine("Lekki", null)).toBe("Lekki");
+  });
+});
+
+describe("after midnight: the small day beside a time (TimePill, TimeChip)", () => {
+  it("names the day for a showing between 00:00 and 03:59, listed under the evening before", () => {
+    expect(lateDay("2026-11-06T23:30:00Z")).toBe("Sat"); // 00:30 Saturday
+    expect(lateDay("2026-11-07T02:59:00Z")).toBe("Sat"); // 03:59
+  });
+  it("is null for any other time", () => {
+    expect(lateDay("2026-11-06T18:30:00Z")).toBeNull(); // 19:30
+    expect(lateDay("2026-11-07T03:00:00Z")).toBeNull(); // 04:00: a morning showing, not the evening before
+  });
+  it("is spoken in full", () => {
+    expect(spokenTime("2026-11-06T23:30:00Z")).toBe("00:30 on Saturday");
+    expect(spokenTime("2026-11-06T18:30:00Z")).toBe("19:30");
   });
 });

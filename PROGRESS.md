@@ -2,6 +2,12 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 15 Nov 2026 — after-midnight day on time pill and chip (D-85)
+
+- **Red:** parts.test.ts › after midnight › `TypeError: lateDay is not a function`.
+- **Changed:** `lateDay` (lib/time/lagos.ts; formatLateTime now uses it) and `spokenTime` (lib/wording/showing.ts); TimePill and TimeChip show "Sat" in small type after a 00:00–03:59 time, spoken as "00:30 on Saturday".
+- **Checked:** unit tests; kit.spec.ts 16 (chip still 44 tall, pill still 46, day at 12 px, spoken name); screenshot at 390.
+
 ## 15 Nov 2026 — build unit 2, shared components (D-82, D-84)
 
 - **Red:** tests/unit/lib/wording/parts.test.ts › countdownParts › "Starts in / 5 min": `TypeError: countdownParts is not a function`.

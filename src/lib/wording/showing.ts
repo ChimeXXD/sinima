@@ -1,5 +1,5 @@
 import { countdown, minutesFromStart } from "@/lib/time/countdown";
-import { formatDay, formatLateTime, formatTime } from "@/lib/time/lagos";
+import { formatDay, formatLateTime, formatTime, lateDay } from "@/lib/time/lagos";
 
 // Sentences about one showing (D-05, DATA §Showing wording). Relative words come from `now`,
 // so these run in the browser.
@@ -44,3 +44,11 @@ export const showingsTonight = (count: number) => `${count} tonight`;
 
 /** Under a cinema folder: "Lekki · next 17:40", or the area alone when nothing is left to start. */
 export const cinemaNextLine = (area: string, at: string | null) => (at === null ? area : `${area} · next ${formatLateTime(at)}`);
+
+const WEEKDAYS: Record<string, string> = { Mon: "Monday", Tue: "Tuesday", Wed: "Wednesday", Thu: "Thursday", Fri: "Friday", Sat: "Saturday", Sun: "Sunday" };
+
+/** A start time for screen readers: "19:30", or "00:30 on Saturday" after midnight. */
+export function spokenTime(iso: string): string {
+  const day = lateDay(iso);
+  return day === null ? formatTime(iso) : `${formatTime(iso)} on ${WEEKDAYS[day] ?? day}`;
+}

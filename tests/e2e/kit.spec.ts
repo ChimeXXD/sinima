@@ -173,3 +173,15 @@ test("each segment of the day switch has a 44 px touch area", async ({ page }) =
   });
   expect(area).toBeGreaterThanOrEqual(44);
 });
+
+test("after midnight a time says its day in small type, and keeps the pill and chip shapes", async ({ page }) => {
+  const chip = page.getByTestId("kit.timechips").getByTestId("time-chip").nth(3);
+  await expect(chip).toHaveText(/00:30\s*Sat\s*IMAX/);
+  await expect(chip).toHaveAccessibleName("00:30 on Saturday, IMAX, starts in 7 hours");
+  near((await box(chip)).height, 44);
+  const pill = page.getByTestId("kit.latepill").getByTestId("time-pill");
+  await expect(pill.getByTestId("late-day")).toHaveText("Sat");
+  near((await box(pill)).height, 46);
+  // The time keeps Figma's Time style; the day is the smaller caption.
+  expect(await pill.getByTestId("late-day").evaluate((el) => getComputedStyle(el).fontSize)).toBe("12px");
+});

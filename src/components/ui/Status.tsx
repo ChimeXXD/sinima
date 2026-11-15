@@ -1,9 +1,9 @@
 import { bannerFor } from "@/lib/data/select";
 import { countdown, countdownShare } from "@/lib/time/countdown";
-import { formatTime } from "@/lib/time/lagos";
+import { formatTime, lateDay } from "@/lib/time/lagos";
 import { isBeforeStart, showingState } from "@/lib/time/showingState";
 import { shortCountdown } from "@/lib/wording/film";
-import { countdownParts, spokenCountdown } from "@/lib/wording/showing";
+import { countdownParts, spokenCountdown, spokenTime } from "@/lib/wording/showing";
 import { Icon } from "./Icon";
 import { TicketFace, TicketFaceSticker } from "./Stickers";
 import s from "./status.module.css";
@@ -57,7 +57,13 @@ export function TimePill({ startsAt, now, bookUrl, bookLabel }: { startsAt: stri
   const started = now !== null && !isBeforeStart(showingState(startsAt, now));
   return (
     <span className={s.timePill} data-started={started || undefined} data-testid="time-pill">
-      <span className={s.time}>{formatTime(startsAt)}</span>
+      <span className={s.when}>
+        <span className={s.hidden}>{spokenTime(startsAt)}</span>
+        <span className={s.time} aria-hidden="true">
+          {formatTime(startsAt)}
+        </span>
+        <LateDay startsAt={startsAt} />
+      </span>
       {started ? (
         <span className={s.caption}>No booking</span>
       ) : (
@@ -81,7 +87,7 @@ export function TimeChip({ startsAt, format, now, soonest = false, onOpen }: { s
   const started = now !== null && !isBeforeStart(showingState(startsAt, now));
   const time = formatTime(startsAt);
   const spoken = now === null ? null : spokenCountdown(startsAt, now);
-  const label = [time, format, spoken].filter(Boolean).join(", ");
+  const label = [spokenTime(startsAt), format, spoken].filter(Boolean).join(", ");
   if (started) {
     return (
       <span className={s.chip} data-state="started" data-testid="time-chip">
@@ -89,6 +95,7 @@ export function TimeChip({ startsAt, format, now, soonest = false, onOpen }: { s
         <s className={s.chipTime} aria-hidden="true">
           {time}
         </s>
+        <LateDay startsAt={startsAt} />
         <span className={s.chipNote} aria-hidden="true">
           {countdown(startsAt, now!)}
         </span>
@@ -100,8 +107,22 @@ export function TimeChip({ startsAt, format, now, soonest = false, onOpen }: { s
   return (
     <button type="button" className={s.chip} data-state={soon ? "soonest" : undefined} aria-label={label} onClick={onOpen} data-testid="time-chip">
       <span className={s.chipTime}>{time}</span>
+      <LateDay startsAt={startsAt} />
       {note && <span className={s.chipNote}>{note}</span>}
     </button>
+  );
+}
+
+/**
+ * After midnight, the day in small type right after the time ("00:30 Sat"), so the time keeps its
+ * Figma style and width. Screen readers hear the full sentence from spokenTime instead.
+ */
+function LateDay({ startsAt }: { startsAt: string }) {
+  const day = lateDay(startsAt);
+  return day === null ? null : (
+    <span className={s.day} aria-hidden="true" data-testid="late-day">
+      {day}
+    </span>
   );
 }
 

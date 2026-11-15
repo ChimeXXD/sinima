@@ -78,10 +78,16 @@ export function eveningDayKey(iso: string): string {
   return dayKey(partsAt(utcMs(iso) - EVENING_ENDS_HOUR * HOUR));
 }
 
+/** "Sat" for a showing after midnight that is listed under the evening before (00:00 to 03:59); else null. */
+export function lateDay(iso: string): string | null {
+  const p = toLagos(iso);
+  return p.hour < EVENING_ENDS_HOUR ? p.weekday : null;
+}
+
 /** "19:30", or "00:30 (Sat)" for a showing after midnight that is listed under the evening before. */
 export function formatLateTime(iso: string): string {
-  const p = toLagos(iso);
-  return p.hour < EVENING_ENDS_HOUR ? `${formatTime(iso)} (${p.weekday})` : formatTime(iso);
+  const day = lateDay(iso);
+  return day === null ? formatTime(iso) : `${formatTime(iso)} (${day})`;
 }
 
 /** Whole Lagos calendar days from `now` to `iso`: 0 today, 1 tomorrow, -1 yesterday. */

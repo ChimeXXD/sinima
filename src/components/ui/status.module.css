@@ -115,9 +115,27 @@
   min-height: 34px;
   background: var(--bg-surface);
 }
+.when {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-4);
+}
 .time {
   color: var(--text-brand-deep);
   font: var(--type-time);
+}
+/* After midnight: "Sat" beside the time, quiet, in the caption style; it takes the colour around it. */
+.day {
+  color: var(--text-secondary);
+  font: var(--type-caption);
+  font-weight: 600;
+}
+.timePill[data-started] .day,
+.chip[data-state="started"] .day {
+  color: var(--state-started);
+}
+.chip[data-state="soonest"] .day {
+  color: var(--text-on-action);
 }
 .timePill[data-started] .time,
 .timePill[data-started] .caption {
