@@ -1,6 +1,27 @@
 # Handoff: read this first when you pick the project back up
 
-## Now: data sources changed, read each cinema directly (15 Nov 2026, latest)
+## Now: building the Figma design into the site, unit 1 done (15 Nov 2026, latest)
+
+**What Chime asked (D-82):** build the Figma design into the site, exactly, with motion, using the 18 design-engineering skills (routing in `~/.claude/CLAUDE.md`, detail in `~/.claude/design-skills-guide.md`). Chime reviews when the build is done, then adds their own animation references. **Take every value from Figma exactly (D-83)**: raise a concern once, then build what Figma says.
+
+**Units (PLAN week 2):** 1 foundation ✅ (`07cd9a0`) · **2 shared components (next)** · 3 Films · 4 Film + showing sheet · 5 Search and city · 6 Cinemas · 7 Area · 8 Cinema · 9 Starting soon · 10 Your cinemas · 11 About, 404, Offline · 12 Where are you watching? · 13 city layer (needs O-16). One unit per fresh session.
+
+**Unit 1 (done):** `src/styles/tokens.css` holds Figma's tokens under Figma's CSS names (`--p-*`, `--bg-page`, `--text-primary`, `--space-16`, `--radius-card`, `--type-*` font shorthands, `--fx-*` effects, `--ease-out/-in-out/-drawer`, `--dur-*`); old names (`--color-*`, `--s*`, `--r-*`) point at them until each component is rebuilt, then go. `docs/design/figma-tokens.json` + `tests/unit/tokens.test.ts` hold the two together. Fonts: Urbanist (22 KB, wght 300–800) and Story Script (6 KB: a–z, 0–9, A I L M X and ! ? . , ' ’ … -; re-cut with fontTools if a note needs another character). Dark mode is a stand-in (not designed).
+
+**How to build each unit:**
+- Read the frame in Figma (file `2WxAK7rxGC6t4Wkd5IQ6p2`; Design System page `155:1349`, Design screens `143:1349`) with `use_figma`; works without the desktop app. Component build notes are in each Doc frame (Actions `167:60`, Inputs `167:64`, Navigation `167:68`, Cards `167:72`, Status `167:76`, Overlays `167:80`, Stickers `167:84`, Layout `158:260`, Icons `158:162`: Lucide, inline SVG).
+- Layout: iPhone 390 (16 margin, 12 gutter, 2 columns), iPad 834 (32 / 16, 3–4 columns), desktop 1440 (content 1240, 100 margin, 20 gutter, 5 columns).
+- Motion: CSS and the Web Animations API only (no new dependency, D-02). Name a purpose; ease-out to enter; under 300 ms except sheets (`--dur-sheet` 450 ms, `--ease-drawer`); transform and opacity; reduced motion = gentler.
+- Check: screenshots at 390, 834 and 1440 against the Figma frame (proof:screen-judge), break-ui worst cases, proof:verifier, `/code-review medium --fix`, then commit.
+
+**Gotchas:**
+- The proof gate runs Playwright with `CI=true`, which serves `out/` as built. If `out/` was built with today's real clock in the evening, a sample-data test fails (Genesis Purple has too few times). Rebuild first: `node scripts/refresh.ts --fixtures --now $(TZ=Africa/Lagos date +%Y-%m-%d)T07:00:00Z && npx next build`. Proposed (not done, Chime didn't answer): the same fixed clock for the CI build.
+- Page budget: heaviest page 198.3 of 200 KB; old JS is ~145 KB per page, so rebuilt components must not add weight.
+- Memory: close Figma desktop and Dia before runs; Brave stays open (Chime uses it).
+
+## Earlier: data sources, Abuja, popularity (15 Nov 2026)
+
+### Data sources changed, read each cinema directly
 
 - **D-76 / D-77:** each cinema is read from its own site; Lagocine only for cinemas not yet cleared (Filmhouse's 7 for the long run, since CINEsync answers our bot with 403). Rule: read what a visitor sees (headless browser OK), never use private back ends, disguise the bot or work around a block. CLAUDE.md rule 6 rewritten.
 - **15 Nov findings** (all in `data/sources.json`): every independent has a public page (Reach for Ozone and Sky, Veezi for Filmworld, own sites for Viva, Grand, THC, Magnificent, Blue Pictures); `data/cinemas.json` fixed. Cleared: Genesis, Silverbird (Veezi). Headless browser worked on Reach (19 times); Filmhouse got "Access Denied 403 · CINEsync". Lagocine now sells tickets.

@@ -82,8 +82,8 @@ describe("tokens match the Figma design system (D-66, D-82)", () => {
   });
 });
 
-// Figma's own pairs that miss WCAG AA (4.5:1) in light mode. Built exactly as designed, waiting for
-// Chime's call (O-17). Remove a pair from here once it is fixed; the test below then holds it to AA.
+// Figma's own pairs that miss WCAG AA (4.5:1) in light mode, kept on purpose: Chime chose Figma's
+// colours exactly (D-83). If Figma changes one, remove it here; the test below then holds it to AA.
 const KNOWN_LOW = new Set(["--text-on-action on --action-primary", "--text-accent on --bg-page", "--text-secondary on --bg-surface"]);
 
 describe("contrast (WCAG 2.1)", () => {
