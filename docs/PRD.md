@@ -1,16 +1,16 @@
-> Written 6 Nov 2026. Decisions in `docs/DECISIONS.md` supersede anything here that disagrees. The name is **Sinima** (D-36, 11 Nov 2026); "Lagos Showtimes" and "Wetin Dey Show" were working names.
+> Written 6 Nov 2026; scope and launch updated 15 Nov 2026 (D-62: Lagos and Abuja, launch on X with a motion-graphics video, timed to Avengers: Doomsday). Decisions in `docs/DECISIONS.md` supersede anything here that disagrees. The name is **Sinima** (D-36, 11 Nov 2026); "Lagos Showtimes" and "Wetin Dey Show" were working names.
 
 # Sinima (earlier working names: Wetin Dey Show, Lagos Showtimes)
 
-Every Lagos cinema's showtimes in one fast phone page, with when your film starts, where the time came from, and whether to stay for the credits.
+Every cinema's showtimes in **Lagos and Abuja** in one fast phone page, with when your film starts, where the time came from, and whether to stay for the credits.
 
 ## Summary
 
-Lagos is Nigeria's cinema capital, and its box office is growing fast: ₦15.6 billion nationally in 2025, up about 35% on 2024, with Nollywood now level with Hollywood. Showtimes are scattered across chain websites, booking engines and Instagram. Two listings sites (Lagocine and Showtimes NG) already gather today's times, and Lagocine does it well and honestly. What nobody does is answer the evening question: **"What can I catch in the next two hours, near me, and should I stay after the credits?"** This web app answers it in one screen. It carries Meridian's rule: every time says where it came from and how fresh it is, in words. It is a one-week, $0 portfolio build with Claude Code, shipped as an open-source repo and a case study on chimexd.work.
+Lagos is Nigeria's cinema capital, and its box office is growing fast: ₦15.6 billion nationally in 2025, up about 35% on 2024, with Nollywood now level with Hollywood. Showtimes are scattered across chain websites, booking engines and Instagram. Two listings sites (Lagocine and Showtimes NG) already gather today's times, and Lagocine does it well and honestly. What nobody does is answer the evening question: **"What can I catch in the next two hours, near me, and should I stay after the credits?"** This web app answers it in one screen, for Lagos and Abuja (D-62). It carries Meridian's rule: every time says where it came from and how fresh it is, in words. It is a $0 portfolio build with Claude Code, shipped as an open-source repo and a case study on chimexd.work, and **launched publicly on X with a motion-graphics explainer video two or three days before Avengers: Doomsday opens** (worldwide 18 Dec 2026; target launch Tue 15 Dec).
 
 ## Problem and audience
 
-People in Lagos decide on a film late, often on the move, and pay for every megabyte.
+People in Lagos and Abuja decide on a film late, often on the move, and pay for every megabyte. (The evidence below is about Lagos; Abuja's cinemas are researched in week 1 of the plan.)
 
 - **The evening decider.** Off work in Lekki or Ikeja at 18:00, wants a film "tonight, near here". Today they open two or three chain sites, each with its own layout, or scroll a cinema's Instagram.
 - **The planner with friends.** Picks a film, then needs one showing that suits everyone, and shares it in a WhatsApp group.
@@ -148,9 +148,9 @@ Durations assume Claude Code on focused days.
 | Phase | Goal | Scope | Done when | Duration |
 | --- | --- | --- | --- | --- |
 | 0 | Set up and ask | Repo, Next.js scaffold, CI, data-source audit, permission emails sent by Chime | Empty app deployed privately; audit table filled; emails sent | 1 day |
-| 1 | MVP (the week) | Home "Starting soon", film, cinema and area pages, freshness, Stay or Go from TMDB, .ics, share link, PWA install, data-saver; data from fixtures and any cleared source | A Lagos user finds a showing in the next 2 hours near them in under 20 s on a mid-range Android on 3G; Lighthouse ≥ 90; repo public | 7 days |
+| 1 | Launch (Lagos and Abuja) | Films, Cinemas, Starting soon and Your cinemas; film and cinema pages; freshness; Stay or Go from TMDB; .ics; share; both cities with a city picker; data from fixtures and cleared sources; the X launch with a motion-graphics video | A user in Lagos or Abuja finds a showing in the next 2 hours near them in under 20 s on a mid-range Android on 3G; Lighthouse ≥ 90; launched on X by 15–16 Dec 2026 | About a month (D-62) |
 | 2 | Live and returning | Scheduled refresh for every cleared source; Web Push for installed users; travel buffer; Coming soon; format filters | 7 days of clean daily refreshes; push reminder fires on iPhone and Android | 1–2 weeks |
-| 3 | Social and community | Group plan link, crowd credits confirmations, Abuja and Port Harcourt | 50 confirmations collected; a group plan used by real friends | 2–3 weeks |
+| 3 | Social and community | Group plan link, crowd credits confirmations, Port Harcourt | 50 confirmations collected; a group plan used by real friends | 2–3 weeks |
 
 ## Feature and deliverable checklist
 
@@ -204,8 +204,11 @@ Durations assume Claude Code on focused days.
 - [ ] Attribution page: sources, TMDB notice and logo, takedown contact
 - [ ] README with screenshots, architecture diagram and honest numbers
 - [ ] Case study draft for chimexd.work
-- [ ] Repo public (MIT) on Day 7; deployed on the free host
-- [ ] 30-second screen recording of "find a film tonight"
+- [ ] Repo public (MIT); deployed on the free host
+- [ ] Motion-graphics explainer video (30–45 s) for the X launch, with burned-in captions
+- [ ] X launch kit: pinned launch post, thread, screenshots, link card checked
+- [ ] Launch on X on Tue 15 Dec 2026 (backup Wed 16), 2–3 days before Avengers: Doomsday; Nigerian opening date confirmed first (O-14)
+- [ ] Avengers: Doomsday showings listed for both cities once cinemas publish them
 
 ## Data access and legal
 
@@ -250,7 +253,7 @@ This section shapes the whole build. The short version: **ask first, fetch polit
 
 ## Success metrics
 
-| Metric | Target this week | How measured |
+| Metric | Target at launch | How measured |
 | --- | --- | --- |
 | Time to find a showing in the next 2 hours near you | Under 20 s | Playwright timing plus 3 people timed on their phones |
 | Home page transferred size | ≤ 150 KB on first load | CI budget check, Lighthouse |
@@ -259,7 +262,9 @@ This section shapes the whole build. The short version: **ask first, fetch polit
 | Started showings shown as bookable | 0 | Unit and e2e tests |
 | Films with a Stay or Go answer (not "Not known yet") | Report the real share | Build log |
 | Sources with written permission or cleared terms | Report the real count | `data/sources.json` |
-| Permission replies | Logged by Day 7 | DECISIONS |
+| Permission replies | Logged before launch, both cities | DECISIONS |
+| Cities covered | Lagos and Abuja | `data/cinemas.json` |
+| Launch reach on X | Report the real numbers (views, reposts, link clicks) | X analytics after launch |
 
 ## Sources
 

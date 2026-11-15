@@ -5,22 +5,22 @@ Every product and architecture decision so far is in `docs/DECISIONS.md`. Don't 
 
 ## What we are building
 
-A **web app** that shows every Lagos cinema's showtimes in one place, fast on a phone. One line: **"What's starting soon near me, and should I stay after the credits?"**
+A **web app** that shows every cinema's showtimes in **Lagos and Abuja** (D-62) in one place, fast on a phone. One line: **"What's starting soon near me, and should I stay after the credits?"**
 
-- Home is **Starting soon near you**: showings in the next 2 hours in your area, then later tonight. Each area has its own static page (`/area/[slug]`); `/` is all of Lagos and sends a returning visitor to their area (D-18).
-- Film page: every showing in Lagos by start time and area. Cinema and area pages.
+- Tabs: **Films** (home), **Cinemas**, **Starting soon**, **Your cinemas** (D-55, D-61). Each area has its own static page (`/area/[slug]`); two cities need a city layer above areas (O-16, week 2 of the plan).
+- Film page: every showing in the city by start time and area. Cinema and area pages.
 - **Stay or Go** chip: whether a film has a mid- or post-credits scene, with its source and how sure (D-10).
 - **Every showing says where it came from and how fresh it is**, in words: "Read from Filmhouse's site 2 hours ago" (D-04).
 - Reminder: add to calendar (.ics) and a live countdown. Booking always goes to the cinema's own site.
-- Primary user: Chime in Lagos (UTC+1, no DST), on an iPhone; also a mid-range Android on mobile data.
+- Primary users: Chime in Lagos and people in Abuja (both UTC+1, no DST), on an iPhone; also a mid-range Android on mobile data.
 - Research and the full idea: `docs/PRD.md`, `docs/RESEARCH.md`. Spec: `docs/SPEC.md`. Data format: `docs/DATA.md`.
 
 ## Project frame (D-01)
 
-- **Portfolio project, built in about one week** with Claude Code. Case study on chimexd.work next to Meridian.
+- **Portfolio project** built with Claude Code, **launched publicly on X with a motion-graphics video on Tue 15 Dec 2026** (backup Wed 16), 2–3 days before Avengers: Doomsday opens (D-62). Case study on chimexd.work next to Meridian.
 - **The repo is public from Day 0** (D-30, supersedes "private until launch day"), open source (MIT). Everything committed is public at once: no personal addresses, no keys, no full saved cinema pages (D-24).
 - **Budget is $0.** Free host (Vercel Hobby or Cloudflare Pages, O-4), free GitHub Actions, free TMDB API (non-commercial). No paid services, no domains unless Chime says so.
-- **Scope** is the Must / Should / Cut table in `docs/PLAN.md`. If a day overruns, cut its Should items. Never cut Day 7 (README, case study, public repo).
+- **Scope** is the Must / Should / Cut table in `docs/PLAN.md`. If a week overruns, cut its Should items. Never cut the city layer, the video or launch day.
 - **Design comes first** (D-13). Day 1 runs the design phase: references, three directions, Chime picks one, then `docs/design/UI-BRIEF.md` is completed. After that the site is the source of truth.
 - **Data permission comes first** (D-07, D-08). Nothing fetches a real site on a schedule until that source is cleared in `data/sources.json`. Until then, build from saved fixtures.
 - **Chime builds Tactics Board (Agmen) at the same time.** The Mac is tight on memory: one dev server at a time, stop it when you finish, and never leave Playwright browsers or watchers running.
@@ -78,7 +78,7 @@ Run `npm run lint`, `npm run typecheck`, `npm test` and `npm run build` before s
 
 ## Rules that protect correctness
 
-1. **Times are stored as UTC ISO 8601 strings** (`2026-11-06T18:30:00Z`) and shown in **Africa/Lagos** with `Intl.DateTimeFormat(..., { timeZone: "Africa/Lagos" })`, whatever the device's zone. 24-hour clock ("19:30"). Never build a `Date` from a local-time string without a zone. Parsers convert the cinema's local time to UTC once, in one tested function.
+1. **Times are stored as UTC ISO 8601 strings** (Abuja shares Lagos's clock, so `Africa/Lagos` serves both cities) (`2026-11-06T18:30:00Z`) and shown in **Africa/Lagos** with `Intl.DateTimeFormat(..., { timeZone: "Africa/Lagos" })`, whatever the device's zone. 24-hour clock ("19:30"). Never build a `Date` from a local-time string without a zone. Parsers convert the cinema's local time to UTC once, in one tested function.
 2. **Every showing carries its source and `fetchedAt`**, and the UI says freshness **in words**, through `lib/wording/freshness.ts` only (D-04): "Read from Filmhouse's site 2 hours ago". Never a coloured dot alone. Data older than the stale limit says so and is never hidden silently (`docs/DATA.md` §Freshness).
 3. **Time-relative text is computed in the browser from `now`**, never baked into static HTML ("Starts in 45 min", "Read 2 hours ago"). The static HTML shows absolute times; the client fills the relative words.
 4. **A showing that has started is never bookable.** At start time the row says "Started 5 min ago", loses its booking link and drops out of "Starting soon" (D-05). Tests cover the boundary second.

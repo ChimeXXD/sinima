@@ -1,117 +1,124 @@
-# Sinima: the one-week build
+# Sinima: the plan to launch
 
-Written 6 Nov 2026, revised 11 Nov 2026 after the plan review (`PLAN-REVIEW.md`, D-18 to D-25). Decisions are in `DECISIONS.md`. The PRD is `PRD.md`; this plan replaces its Phase 1 for the week.
+Written 6 Nov 2026 as a one-week plan. **Restructured 15 Nov 2026 (D-62):** Sinima launches for **Lagos and Abuja**, on **X (Twitter)** with a **motion-graphics video**, **two or three days before Avengers: Doomsday** opens. Decisions are in `DECISIONS.md`; the PRD is `PRD.md`. The first week's checklist is kept at the end as a record.
 
-## What "done" means
+## What changed on 15 Nov
 
-A **portfolio project** (D-01). We build it with Claude Code in one week and ship a **public, open-source repo** and a **live site on a free host**, which Chime features on chimexd.work next to Meridian.
+| Before | Now |
+| --- | --- |
+| Lagos only; Abuja and Port Harcourt "Phase 3 or never" (O-7) | **Lagos and Abuja** at launch. Port Harcourt stays out |
+| One week, ending with a public repo and a case study (D-01) | **About a month**, ending with a public launch on X. Still $0 |
+| A 30-second screen recording for the portfolio | A **motion-graphics video** that explains the app, made for the X launch |
+| No launch moment | **Timed to Avengers: Doomsday**: launch 2–3 days before it opens, ride the hype |
 
-The finished project is:
-1. A live web app where someone in Lagos opens one page on their phone and sees what starts in the next 2 hours in their area, with where each time came from and how fresh it is, and books on the cinema's own site.
-2. A film page with every showing in Lagos and a Stay or Go answer that says how sure it is.
-3. A public repo that reads like senior work: README with screenshots, an architecture diagram (sources → JSON → static pages), the data schema, tests, a CI badge, honest numbers (page weight, Lighthouse, coverage, permission replies).
-4. A case study for chimexd.work.
+**The date.** Avengers: Doomsday opens worldwide on **Friday 18 Dec 2026**. Some countries open earlier (UK 16 Dec, India 17 Dec). Nigeria's date is not confirmed yet (O-14). Target: **Tuesday 15 Dec 2026, backup Wednesday 16 Dec**. If Nigeria opens before 18 Dec, launch moves to 2–3 days before the Nigerian date.
 
-The selling point: **what's starting soon near me, and should I stay after the credits?**
+## What "done" means on launch day
 
-## The week at a glance
+1. **A live web app for Lagos and Abuja.** Someone in either city opens it on their phone, picks their city once, and sees films, cinemas and what starts in the next 2 hours near them, with where each time came from and how fresh it is. Booking goes to the cinema's own site.
+2. **Doomsday-ready.** When cinemas publish Avengers: Doomsday times (often presales a week or more ahead), its film page lists every showing in both cities with formats (IMAX, 4D), and its Stay or Go chip says how sure it is (D-10).
+3. **The X launch.** A pinned launch post with the motion-graphics video, a short thread with screenshots, and a share card that looks right when the link is posted.
+4. **A public repo and a case study** that read like senior work (README, architecture, tests, honest numbers), as planned.
 
-Dates are a suggestion; start Day 0 whenever Chime does, and shift the rest.
+## The month at a glance
 
-| Day | Focus | Gate (must pass before the next day) |
+| Week | Dates | Focus | Gate (must pass before the next week) |
+| --- | --- | --- | --- |
+| 1 | Sat 15 – Sun 22 Nov | **Design** settled in Figma (Round 10: Ghost + Keepsy, D-63). **Abuja research**: cinemas, areas, sources | Chime approves the phone and desktop screens; Abuja cinema list, sources audit and outreach drafts done |
+| 2 | Mon 23 – Sun 29 Nov | **Build the approved design**; add the **city layer** (Lagos, Abuja) to data, routes and screens | Both cities browse on sample data; tests and budget green; Chime checks on the phone |
+| 3 | Mon 30 Nov – Sun 6 Dec | **Live data** for cleared sources in both cities; film and cinema pages, reminder, share. **Video**: script and storyboard | Refresh runs for every cleared source; storyboard approved by Chime |
+| 4 | Mon 7 – Sun 13 Dec | **Harden** (budget, Lighthouse, accessibility, real phones). **Video produced.** Launch kit written. Quiet soft launch to friends in both cities | Video final; launch thread final; no open bugs that block finding a showing |
+| Launch | **Tue 15 Dec** (backup Wed 16) | Post on X; watch and fix | Site up, video posted, link card correct |
+| After | Fri 18 Dec onwards | Doomsday weekend: watch real use, fix fast, then write the case study | Case study draft; launch numbers logged |
+
+Dates are a target. If a week slips, cut its Should items first; never cut the city layer, the video or the launch day.
+
+## Scope to launch
+
+| Must (the launch breaks without it) | Should (if the week has room) | Cut (not before launch) |
 | --- | --- | --- |
-| 0 | Setup + data-source audit + permission emails | Empty Next.js app builds, lints and deploys privately; CI green; `data/sources.json` audit filled; Chime has sent the outreach emails; empty-app size measured and the budget set (D-21) |
-| 1 | **Design direction** + core lane (D-14) | 3 directions on the direction board; **Chime picks one**; name decided (O-1); UI brief §1–3 and tokens. Core lane: time, wording and `.ics` tests green |
-| 2 | Data: schema, validator, fixtures, first parser | `showtimes.json` v1 validates; parsers for at least two sources pass on saved fixtures; sample data lands on today's dates (D-20); coverage decision (O-5) and launch tier (D-23) |
-| 3 | Home "Starting soon" + area picker | Chime approves home on the phone; a showing in the next 2 hours found in under 20 s |
-| 4 | Film, cinema and area pages + Stay or Go | Film page lists every showing; Stay or Go from TMDB with confidence words; started showings never bookable (e2e) |
-| 5 | Reminder, share, install, offline | .ics opens in iPhone Calendar and Google Calendar with a 30-min alert; WhatsApp preview card shows; offline banner with data age |
-| 6 | Harden | Budget, Lighthouse ≥ 90, accessibility pass, real phones on mobile data; refresh workflow ready (enabled only for cleared sources) |
-| 7 | Portfolio and public | Repo public (MIT); README, case study and screen recording done; live URL works |
+| **Lagos and Abuja**: city picker, areas per city, the saved city on the phone | "Use my location" picks the city and nearest area | Port Harcourt and other cities |
+| Films (home), Cinemas, Starting soon, Your cinemas (D-55, D-61) | Kids and Nollywood/Hollywood filters | Accounts, synced favourites |
+| Film page: every showing in the city, by area, with formats (D-50) | Price when listed | Web Push (Phase 2, D-11) |
+| Freshness line on every showing; stale and sample-data banners (D-04) | Travel buffer from the user's own estimate | Ticket sales, commission, ads |
+| Started showings never bookable (D-05) | "Report a wrong time" link (D-22) | Posters from cinema sites |
+| Stay or Go chip with confidence words (D-10) | Offline last data (PWA) | Native app |
+| .ics reminder + live countdown | WhatsApp share text per showing | Group plans (Phase 3) |
+| Booking link to the cinema's own site | | |
+| Data from fixtures or cleared sources only (D-07, D-08) | | |
+| `/about`: sources for both cities, TMDB notice, takedown | | |
+| Page weight budget and Playwright e2e in CI | | |
+| **Motion-graphics explainer video** for X | A second cut, 15 s, for reposts | |
+| **X launch kit**: launch post, thread, screenshots, link card | | |
 
-## Scope for the week
+## Week 1: design and Abuja research (15–22 Nov)
 
-| Must (the demo breaks without it) | Should (if the day has room) | Cut (not this week) |
+**Design (D-63)**
+- [x] Round 10 in Figma: Ghost's plainness, buttons and pop-up; Keepsy's sticker structure; the parts Chime commented on in PamPam, Posh, Phantom and Sweatpals
+- [ ] Round 10 fixes from Chime (15 Nov): city-neutral title in place of "Films in Lagos"; a cleaner ticket sticker cut, as good as Keepsy's; countdown pills centred on the poster (phone and desktop); every Starting soon card the same height; the Starting soon countdown badge centred; one extra screen with a Phantom-style tab bar, in the Ghost and Keepsy style (keep the current tab bar)
+- [ ] City picker designed (Lagos ↔ Abuja) in the same style
+- [ ] Chime approves the phone and desktop screens
+
+**Abuja research**
+- [ ] List Abuja's cinemas from primary sources (each chain's own site): name, address, area, booking site
+- [ ] Sources audit for each (robots.txt, terms, listing URL), as for Lagos (D-07, D-08); fill `data/sources.json`
+- [ ] Outreach drafts for Abuja cinemas in `docs/OUTREACH.md`; Chime sends them
+- [ ] Abuja areas and their neighbours, drafted for Chime to confirm (as O-10 was for Lagos)
+- [ ] Confirm Avengers: Doomsday's Nigerian opening date with Filmhouse, Silverbird, Genesis or the distributor (O-14)
+
+## Week 2: build the design and the city layer (23–29 Nov)
+
+- [ ] Data: a `city` above areas in `cinemas.json` and the schema; Abuja fixtures; validator and tests updated
+- [ ] Routes for two cities (O-16); the saved city on the phone, like the saved area (D-18)
+- [ ] Build the approved Round 10 screens; check them against the Figma frames at 390 and 360 px and on desktop
+- [ ] Time: Abuja is on the same clock as Lagos (UTC+1, `Africa/Lagos`); tests cover a showing in each city
+- [ ] Budget and e2e green; Chime checks both cities on the phone
+
+## Week 3: live data, remaining pages, video script (30 Nov – 6 Dec)
+
+- [ ] Refresh workflow runs for every cleared source in both cities (D-33); uncleared cinemas say "Times not available yet"
+- [ ] Film page complete; cinema page; Stay or Go; started showings not bookable (e2e at `now − 1 min`)
+- [ ] Reminder (.ics with a 30-min alert, checked on iPhone and Android) and share
+- [ ] **Video script** (30–45 s): the evening problem, then the app answering it in both cities, then the Doomsday hook and the link
+- [ ] **Storyboard** in Figma from the approved screens; Chime approves
+
+## Week 4: harden, make the video, prepare the launch (7–13 Dec)
+
+- [ ] Budget, Lighthouse ≥ 90 (mobile), accessibility pass, real phones on mobile data in both cities
+- [ ] **Motion-graphics video** produced (tool chosen at $0, O-15), exported for X (16:9 and 4:5); captions burned in for silent autoplay
+- [ ] Launch kit: launch post, a 4–5 post thread, screenshots, the link card (OG image) checked in X's composer
+- [ ] Doomsday check: if presales are listed, the film page shows them in both cities
+- [ ] Soft launch to a few friends in Lagos and Abuja; fix what they hit
+- [ ] Repo public-ready: README, permission status, launch tier (D-23)
+
+## Launch: Tue 15 Dec (backup Wed 16 Dec)
+
+- [ ] Morning check: data fresh in both cities, banners right, booking links work
+- [ ] Post on X: video, thread, link; pin it
+- [ ] Watch for broken links or wrong times; fix the same day
+
+**Care with the Doomsday hook.** Use the film's title in text and its TMDB poster as the app shows it. Do not use Marvel's logo, trailer footage or key art in the video or posts; the hook is the timing, not their brand.
+
+## After launch (from 18 Dec)
+
+- [ ] Doomsday weekend: watch real use, fix fast
+- [ ] Case study draft in `docs/CASE-STUDY.md` with launch numbers (visits, shares, permission replies, data freshness)
+
+---
+
+## Record: the first week (6–15 Nov)
+
+Kept as it was planned; unchecked items moved into the weeks above.
+
+| Day | Focus | Status |
 | --- | --- | --- |
-| Schema v1, validator, time and freshness wording, with tests | Kids filter; Nollywood/Hollywood filter | Accounts, logins, favourites synced across devices |
-| Home: Starting soon (2 h) + Later tonight, by area | "Use my location" to pick nearest area | Web Push (Phase 2, D-11) |
-| Film page, cinema page, area page | Format filter (IMAX, 3D) | Group plan "who's in" (Phase 3) |
-| Freshness line on every showing; stale and sample-data banners | Price when listed | Crowd credits confirmations (Phase 3) |
-| Started showings not bookable (D-05) | Travel buffer from the user's own estimate | Coming soon calendar (Phase 2) |
-| Stay or Go chip from TMDB with confidence words | Data-saver toggle (default from `saveData`) | Abuja, Port Harcourt (O-7) |
-| .ics reminder + live countdown | PWA install + offline last data | Ticket sales, commission, ads |
-| Booking link to the cinema's own site | WhatsApp preview card image (OG) | Posters from cinema sites |
-| Data from fixtures or cleared sources | Refresh workflow live for cleared sources | Native app |
-| `/about`: sources, TMDB notice, takedown | "Runs 2 h 10 min · out about 21:40" (D-22) | |
-| Page weight budget in CI (D-21); Playwright e2e | "Report a wrong time" link (D-22) | |
-| "Now showing" film list with a filter box (D-22) | Share link that opens on the exact showing (D-22) | |
-| Neighbouring areas in the empty state (D-22) | | |
-| Manual credits file; sample data on today's dates (D-19, D-20) | | |
+| 0 | Setup, data-source audit, permission emails | Done |
+| 1 | Design direction and core lane | Done (design since reworked: D-49 onward) |
+| 2 | Data: schema, validator, fixtures, parsers | Done except `cinemas.json` coordinates and addresses |
+| 3 | Home | Built, then redesigned (D-49 to D-61); Chime's phone approval still open |
+| 4 | Film, cinema, area, Stay or Go | Moved to week 3 |
+| 5 | Reminder, share, install | Moved to week 3 |
+| 6 | Harden | Moved to week 4 |
+| 7 | Portfolio and public | Repo already public (D-30); README and case study moved to week 4 and after launch |
 
-## Day by day
-
-### Day 0: Setup, audit and ask
-- [x] Chime decides the host (O-4: Vercel, D-27). Repo is public from Day 0 (D-30). Originally: create private repo `ChimeXXD/lagos-showtimes` (D-17); first commit of these docs (push it together with the scaffold, so CI's first run has a `package.json`)
-- [x] `create-next-app` with the portfolio versions (pin exact: next 16.4.3, react 19.3.1, typescript 5.9.3, tailwindcss 4.3.3, @playwright/test 1.64.1, eslint 9); `output: "export"`; add Vitest and cheerio (D-03)
-- [x] Scripts: `lint`, `typecheck`, `test`, `test:e2e`, `build`, `budget`, `refresh`; one Vitest test and one Playwright test pass
-- [x] CI (`.github/workflows/ci.yml`) green on `main` (run 42931829240)
-- [x] Measure the empty app's transferred size and JS; set the budget from it and log it as a decision (D-21, O-9)
-- [x] Private deploy on the chosen host (preview protected or unlisted)
-- [x] **Data-source audit**: for each source in DECISIONS O-2, read robots.txt and terms, quote the relevant lines, note the listing URL pattern and how many days ahead it publishes. Fill `data/sources.json` (format in `DATA.md`). Save one listing page per source to `tmp/` by hand-triggered single request, then commit a cut-down copy (listing markup only) to `tests/fixtures/<source>/<date>.html` (D-24)
-- [x] **Chime sends the outreach emails** (`docs/OUTREACH.md`): Lagocine first, then Filmhouse, Genesis, EbonyLife, Silverbird, Syticks. Log "Asked" dates in DECISIONS
-- [x] TMDB terms read by Claude (D-31); Chime's key is in `.env.local` (11 Nov). Still to do before the scheduled refresh: the GitHub secret `TMDB_READ_TOKEN`
-
-### Day 1: Design direction (D-13) + core lane (D-14)
-- [x] Collect 30–50 references by surface (`docs/design/REFERENCES.md`); images stay local
-- [x] Pattern summary: what the picks share, what to avoid
-- [x] `docs/design/direction-board/index.html`: three directions, each showing Starting soon, a film page with Stay or Go, and a stale-data state, at 390 px wide
-- [x] **Chime picks a direction and the name (O-1)**; log both as decisions (D-35: direction B · Poster; D-36: Sinima)
-- [x] Fill UI brief §1–3; write `src/styles/tokens.css` (D-37, D-38)
-- [x] Logo and icon: Ticket S in Ink and blue (D-42, D-43), in the header, tab, home screen and manifest
-- [x] Core lane, tests first: `lib/time/lagos.ts`, `showingState.ts`, `lib/wording/freshness.ts`, `credits.ts`, `lib/ics/ics.ts`
-
-### Day 2: Data
-- [x] `lib/data/types.ts` and `validate.ts` from `DATA.md`; the DATA.md example validates; broken fixtures fail with clear messages
-- [x] Parsers for two sources, tests first on saved fixtures: Lagocine (the live source from Day 6, D-33) and Veezi (the Silverbird Ikeja fixture). Save and cut down one Lagocine cinema page and one day page first (D-24)
-- [x] `scripts/refresh.ts --fixtures` writes `data/showtimes.json` and the per-area files from fixtures, with dates moved onto today and tomorrow (D-18, D-20)
-- [x] `scripts/tmdb.ts`: match films, read keywords 179430/179431, write `data/credits.json`; `data/tmdb-overrides.json` and `data/credits-manual.json` merged in (D-19, D-25); report the share of films with an answer
-- [x] Draft the neighbouring areas list for Chime to confirm (O-10): the draft is in `DECISIONS.md` under O-10, waiting for Chime
-- [x] Decide coverage (O-5) and name the launch tier (D-23): coverage is the 20 cinemas Lagocine lists (D-33); the site is tier C (sample data) today and becomes tier A on Day 6 if Lagocine has not objected
-- [ ] Update `data/cinemas.json` (coordinates, addresses from the cinemas' own pages): not started; it needs pages that have not been saved
-
-### Day 3: Home
-- [x] `/area/[slug]` as the static "Starting soon near you" page and `/` for all Lagos (D-18): next 2 hours, then Later tonight, then Tomorrow
-- [x] Area picker (remembered; `/` sends a returning visitor to their area); empty state with neighbouring areas (D-22)
-- [x] "Now showing" film list on home with a filter box (D-22)
-- [x] Showing row: time, film, cinema, format, freshness line, Book link
-- [x] Sample-data and stale banners
-- [ ] Chime approves home on the phone; screenshot saved
-
-### Day 4: Film, cinema, area, Stay or Go
-- [ ] Film page: all showings by start time, grouped by area; Stay or Go chip
-- [ ] Cinema page: today and tomorrow, address, source, last read
-- [ ] Area page
-- [ ] e2e: a showing at `now − 1 min` shows "Started" with no Book link
-- [ ] Filters (Should): kids, Nollywood/Hollywood, format
-- [ ] "Runs … · out about …" on the film page when runtime is known (Should, D-22)
-- [ ] "Report a wrong time" link (Should, D-22)
-
-### Day 5: Reminder, share, install
-- [ ] "Remind me" downloads an .ics with a 30-min alert; check on iPhone Calendar and Google Calendar (Android)
-- [ ] Countdown on the chosen showing ("Starts in 45 min")
-- [ ] Share: Web Share API with WhatsApp text fallback; the link opens on the exact showing (Should, D-22); OG preview card per film (Should)
-- [ ] Service worker, network-first (D-25; the manifest and icons were done on Day 1 with the logo): offline shows last data with its age (Should)
-
-### Day 6: Harden
-- [ ] Budget check and Lighthouse ≥ 90 (mobile) on home and film pages
-- [ ] Accessibility: keyboard, VoiceOver, TalkBack, 200% zoom, reduced motion
-- [ ] Real phones on mobile data: Chime's iPhone and a mid-range Android; note real load times
-- [ ] Refresh workflow: if Lagocine has not objected, Chime confirms it as `cleared` and the schedule goes on (D-33); otherwise leave it disabled and say so in the README
-- [ ] `/about` complete: sources, TMDB logo and notice, takedown
-
-### Day 7: Portfolio and public
-- [ ] Rename repo to the chosen name if needed (D-17)
-- [ ] README: screenshots, what it does, architecture diagram, data schema link, how to run, honest numbers, permission status, the launch tier reached (D-23)
-- [ ] Case study draft in `docs/CASE-STUDY.md` for chimexd.work
-- [ ] 30-second screen recording of "find a film tonight"
-- [ ] Make the repo public; CI on every push and pull request
+Done in the first week: Next.js scaffold with the pinned versions, CI green, budget set (D-21, D-26), Vercel deploy, data-source audit and outreach emails (Lagos), TMDB terms and key, core lane tests (time, wording, `.ics`), schema and validator, Lagocine and Veezi parsers, `refresh --fixtures`, TMDB matching, neighbouring areas (D-46), the redesigned app (D-54 to D-61), and the logo work (Logo Options page in Figma).
