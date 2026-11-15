@@ -124,6 +124,13 @@
   background: var(--action-primary);
   color: var(--text-on-action);
 }
+.tile[data-tone="soft"] {
+  background: var(--bg-accent-soft);
+  color: var(--text-accent);
+}
+div.option:active {
+  transform: none;
+}
 .text {
   display: flex;
   flex: 1;

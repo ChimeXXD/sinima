@@ -62,12 +62,12 @@ test("search says so when no film matches, and Escape closes it", async ({ page 
 for (const width of [390, 360, 320]) {
   test(`at ${width} px every area chip is whole on screen, none cut off or covered`, async ({ page }) => {
     await page.setViewportSize({ width, height: 800 });
-    await page.goto("/film/ramayana"); // the Cinemas tab uses pickers on a phone since D-56; a film's page still has chips
+    await page.goto("/soon"); // the Cinemas tab uses pickers on a phone since D-56, and a film's page has no chips since D-88; Starting soon still has them
     const chips = page.locator('[data-testid^="area.chip."], [data-testid="area.more"]');
     await expect(chips).toHaveCount(5); // three areas, All Lagos, More areas
     const cut = await chips.evaluateAll((els) =>
       els.filter((el) => {
-        // On a film's page the chips sit low; bring each into view first, or a point below the
+        // The chips can sit low on a page; bring each into view first, or a point below the
         // window reads as "covered" (it did in CI, where the font sets a little wider).
         el.scrollIntoView({ block: "center" });
         const box = el.getBoundingClientRect();

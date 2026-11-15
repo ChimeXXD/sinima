@@ -32,17 +32,22 @@ export function Lockup() {
   );
 }
 
-export function AppFrame({ active, search, city = "lagos", bg, areas, children }: { active: SectionId; search: { value: string; onChange: (text: string) => void }; city?: CityChoice; bg: { light: string; dark: string }; areas: string[]; children: React.ReactNode }) {
+/**
+ * A screen below the home screens (Figma Film) passes `bar`: on phones and iPads it takes the
+ * header's place, a back button, the screen's name and a share button; the desktop navbar stays.
+ */
+export function AppFrame({ active, search, city = "lagos", bg, areas, bar, children }: { active: SectionId; search: { value: string; onChange: (text: string) => void; onSubmit?: () => void }; city?: CityChoice; bg: { light: string; dark: string }; areas: string[]; bar?: React.ReactNode; children: React.ReactNode }) {
   const saved = useSaved().length;
   // Cinemas goes straight to the saved area's cinemas, if there is one (D-18).
   const area = useSavedArea();
   const hrefs = area && areas.includes(area) ? { cinemas: `/area/${area}` } : {};
   return (
     <>
-      <header className={s.header}>
+      <header className={s.header} data-bar={bar ? "" : undefined}>
+        {bar && <div className={s.bar}>{bar}</div>}
         <Lockup />
         <div className={s.search}>
-          <SearchBar city={city} value={search.value} onChange={search.onChange} />
+          <SearchBar city={city} value={search.value} onChange={search.onChange} onSubmit={search.onSubmit} />
         </div>
         <div className={s.nav}>
           <SectionNav active={active} saved={saved} hrefs={hrefs} />

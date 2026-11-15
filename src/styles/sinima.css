@@ -123,8 +123,6 @@ summary.chip::-webkit-details-marker { display: none; }
 .ptitle { font-size: 17px; line-height: 1.2; font-weight: 700; letter-spacing: -0.01em; }
 .pmeta { color: var(--color-text-muted); font-size: 13px; margin-top: -4px; }
 
-/* Film page: cinemas with their times as full-width rows (Airbnb "Select a time") */
-.film { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: var(--s10); margin-top: var(--s4); align-items: start; }
 .stay { margin-top: var(--s4); padding: var(--s4); border-radius: 16px; background: var(--color-soft); }
 .stay b { display: block; font-size: 16px; }
 .stay span { color: var(--color-text-muted); font-size: 13px; }
@@ -187,7 +185,7 @@ summary.chip::-webkit-details-marker { display: none; }
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
 /* `backwards`, not `both`: an animation that keeps filling after it ends keeps each block in its own layer, and
    the blocks further down the page then paint over the open "More areas" menu. The end state is the plain style. */
-.head, .filters, .label, .pcard, .venue, .hero, .film > div:first-child, .frow { animation: row-in 420ms cubic-bezier(0.22, 0.61, 0.36, 1) backwards; animation-delay: calc(var(--i, 0) * 45ms); }
+.head, .filters, .label, .pcard, .venue, .hero, .frow { animation: row-in 420ms cubic-bezier(0.22, 0.61, 0.36, 1) backwards; animation-delay: calc(var(--i, 0) * 45ms); }
 .scard { animation: pop 520ms cubic-bezier(0.34, 1.56, 0.64, 1) 220ms both; }
 .sheet > :not(.scard):not(.grab), .panel-body > *, .modal > :not(.scard) { animation: row-in 420ms cubic-bezier(0.22, 0.61, 0.36, 1) both; animation-delay: calc(160ms + var(--i, 0) * 50ms); }
 .pwrap .soon { animation: blink 2s ease-in-out infinite; }
@@ -236,7 +234,6 @@ dialog.modal[open] { display: grid; gap: var(--s4); animation: row-in 420ms cubi
 }
 @media (max-width: 960px) {
   .pgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .film { grid-template-columns: 220px minmax(0, 1fr); gap: var(--s6); }
 }
 @media (max-width: 760px) {
   .top > .round { display: inline-grid; }
@@ -279,9 +276,6 @@ dialog.modal[open] { display: grid; gap: var(--s4); animation: row-in 420ms cubi
   .daytiles { grid-template-columns: 1fr 1fr; }
   .pgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s6) var(--s3); }
   .ptitle { font-size: 15px; }
-  /* minmax(0, …): a bare 1fr grows to fit the row of chips, and the page scrolls sideways. */
-  .film { grid-template-columns: minmax(0, 1fr); gap: var(--s5); }
-  .film .fposter { display: grid; grid-template-columns: 112px 1fr; gap: var(--s4); align-items: end; }
   .slots { grid-template-columns: 1fr; }
   .label span { display: none; }
   .label h2 + span { display: inline; }

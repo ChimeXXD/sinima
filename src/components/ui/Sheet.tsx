@@ -46,16 +46,18 @@ export function Sheet({ open, onClose, title, subtitle, children, testId = "shee
   );
 }
 
-type OptionRowProps = { icon: IconName; title: string; desc?: string; selected?: boolean; testId?: string } & ({ href: string; onClick?: never } | { href?: never; onClick: () => void });
+type OptionRowProps = { icon: IconName; title: string; desc?: string; selected?: boolean; tone?: "primary" | "soft"; testId?: string } & ({ href: string; onClick?: never } | { href?: never; onClick: () => void } | { href?: never; onClick?: never });
 
 /**
  * 12.1 Option row: an icon tile, a title and a line under it. A link (to another site, in a new
- * tab) or a button; a picked option is tinted and ticked.
+ * tab), a button, or with neither just a statement; a picked option is tinted and ticked. The
+ * tile is the action colour, or the soft tint for the quieter rows of a sheet (Figma Film). Only a
+ * row given `selected` is a toggle (aria-pressed); the others are plain buttons.
  */
-export function OptionRow({ icon, title, desc, selected = false, testId, href, onClick }: OptionRowProps) {
+export function OptionRow({ icon, title, desc, selected, tone = "primary", testId, href, onClick }: OptionRowProps) {
   const inner = (
     <>
-      <span className={s.tile}>
+      <span className={s.tile} data-tone={tone}>
         <Icon name={icon} size={22} stroke={2.2} />
       </span>
       <span className={s.text}>
@@ -69,6 +71,13 @@ export function OptionRow({ icon, title, desc, selected = false, testId, href, o
       )}
     </>
   );
+  if (href === undefined && onClick === undefined) {
+    return (
+      <div className={s.option} data-testid={testId}>
+        {inner}
+      </div>
+    );
+  }
   return href !== undefined ? (
     <a className={s.option} href={href} target="_blank" rel="noopener" data-selected={selected || undefined} data-testid={testId}>
       {inner}

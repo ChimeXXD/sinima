@@ -58,6 +58,30 @@
   color: var(--text-primary);
 }
 
+/* Phone and iPad on a screen with a top bar (Figma Film › Top bar): back, name, share; 60 tall. */
+.bar {
+  display: none;
+}
+@media (max-width: 1199.98px) {
+  .header[data-bar] {
+    display: block;
+    padding-top: var(--space-14);
+    padding-bottom: 6px;
+  }
+  .header[data-bar] > :not(.bar) {
+    display: none;
+  }
+  .header[data-bar] > .nav {
+    display: contents; /* the floating tab bar stays */
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 40px;
+  }
+}
+
 .main {
   display: flex;
   flex-direction: column;

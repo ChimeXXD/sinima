@@ -24,29 +24,8 @@ test("Films (the home page, D-55) lists every film still showing; typing narrows
   await expect(page.getByTestId("credits.chip")).toHaveText("Stay: scene after the credits · TMDB");
 });
 
-test("on a film's page, choosing IMAX and an area leaves only the cinemas that match (D-50)", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
-  const now = await sampleTime(request, "10:00");
-  const rows = today(all, now).filter((s) => s.filmId === "ramayana");
-  const imax = rows.filter((s) => (s.format ?? "").startsWith("IMAX"));
-  const cinemas = [...new Set(imax.map((s) => s.cinemaId))];
-  const others = new Set(rows.map((s) => s.cinemaId).filter((id) => !cinemas.includes(id)));
-  expect(cinemas.sort()).toEqual(["filmhouse-circle-mall", "filmhouse-lekki-imax"]);
-  await freeze(page, now);
-  await page.goto("/film/ramayana");
-
-  const venues = page.locator('[data-testid^="venue."]');
-  await expect(venues).toHaveCount(new Set(rows.map((s) => s.cinemaId)).size);
-  await page.getByTestId("format.chip.IMAX").click();
-  expect((await venues.evaluateAll((els) => els.map((el) => el.getAttribute("data-testid")!.replace("venue.", "")))).sort()).toEqual(cinemas);
-  await expect(page.getByTestId("format.left-out")).toHaveText(`${others.size} more cinemas show Ramayana in another format or don't say the format.`);
-  const first = imax.find((s) => s.cinemaId === "filmhouse-lekki-imax")!;
-  await expect(page.getByTestId("venue.filmhouse-lekki-imax").locator("[data-testid^='time.']").first()).toContainText(lagosClock(first.startsAt));
-
-  await page.getByTestId("area.chip.victoria-island").click();
-  await expect(venues).toHaveCount(0);
-  await expect(page.getByTestId("empty.film")).toContainText("No cinema in Victoria Island is showing Ramayana in IMAX today");
-});
+// The film page's format and area chips (D-50) are gone in the Figma design (D-88): it lists every
+// cinema by area, your area first. tests/e2e/film-screen.spec.ts covers it.
 
 for (const path of ["/film/ramayana", "/", "/cinemas", "/soon", "/cinema/ebonylife-vi"]) {
   test(`${path} does not scroll sideways on a phone`, async ({ page, request }) => {

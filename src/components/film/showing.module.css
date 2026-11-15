@@ -1,0 +1,47 @@
+/* Film › Showing sheet: the parts beyond the shared Sheet and OptionRow. */
+
+/* Showing sheet (Figma 189:3701, 189:4253) */
+.badge {
+  align-self: flex-start;
+}
+.startedNote {
+  display: flex;
+  align-items: center;
+  gap: var(--space-10);
+  padding: var(--space-12) var(--space-14);
+  border-radius: var(--radius-tile);
+  background: var(--bg-surface);
+  color: var(--text-body-strong);
+  font: var(--type-body-m);
+}
+.startedNote > svg {
+  flex: none;
+  color: var(--text-secondary);
+}
+.nextList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+}
+.next {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+.nextTime {
+  flex: none;
+  width: 124px;
+}
+.nextText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.nextName {
+  color: var(--text-primary);
+  font: var(--type-body-m);
+}
+.nextPlace {
+  color: var(--text-secondary);
+  font: var(--type-meta);
+}

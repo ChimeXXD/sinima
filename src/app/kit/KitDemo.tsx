@@ -17,7 +17,7 @@ import s from "./kit.module.css";
 // words appear only once the page is running (rule 3).
 const NOW = "2026-11-06T16:30:00Z";
 const at = (minutes: number) => new Date(Date.parse(NOW) + minutes * 60_000).toISOString().replace(".000Z", "Z");
-const film = (id: string, title: string) => ({ id, title, poster: null, rating: null, runtimeMin: null, stay: { chip: "", detail: "" } });
+const film = (id: string, title: string) => ({ id, title, poster: null, rating: null, runtimeMin: null, stay: { verdict: "unknown" as const, chip: "", detail: "" } });
 const RAMAYANA = film("ramayana-rise-of-a-legend", "Ramayana: Rise of a Legend");
 const STREET = film("street-fighter", "Street Fighter");
 const CLAYFACE = film("clayface", "Clayface");

@@ -10,7 +10,7 @@ const file = example as ShowtimesFile;
 const list = (starts: string[]): ListData => ({
   sample: false,
   at: NOW,
-  films: [{ id: "whalefall", title: "Whalefall", poster: null, rating: null, runtimeMin: null, stay: { chip: "", detail: "" } }],
+  films: [{ id: "whalefall", title: "Whalefall", poster: null, rating: null, runtimeMin: null, stay: { verdict: "unknown", chip: "", detail: "" } }],
   cinemas: [{ id: "a", name: "A", area: "lekki", chain: "A", online: false, address: null, website: null }],
   fresh: [{ source: "Lagocine", method: "public-page", url: "https://lagocine.com/", fetchedAt: "2026-11-06T16:00:00Z" }],
   rows: starts.map((at) => ({ at, film: 0, cinema: 0, format: null, book: null, fresh: 0 })),
@@ -27,8 +27,8 @@ describe("toListData", () => {
     expect(data.sample).toBe(true);
     expect(data.at).toBe("2026-11-06T16:05:00Z");
     expect(data.films).toEqual([
-      { id: "spider-man-brand-new-day", title: "Spider-Man: Brand New Day", poster: null, rating: null, runtimeMin: null, stay: { chip: "Credits scene: not known yet", detail: "No source has told us yet." } },
-      { id: "one-gidi-night", title: "One Gidi Night", poster: null, rating: null, runtimeMin: null, stay: { chip: "Credits scene: not known yet", detail: "No source has told us yet." } },
+      { id: "spider-man-brand-new-day", title: "Spider-Man: Brand New Day", poster: null, rating: null, runtimeMin: null, stay: { verdict: "unknown", chip: "Credits scene: not known yet", detail: "No source has told us yet." } },
+      { id: "one-gidi-night", title: "One Gidi Night", poster: null, rating: null, runtimeMin: null, stay: { verdict: "unknown", chip: "Credits scene: not known yet", detail: "No source has told us yet." } },
     ]);
     expect(data.cinemas[1]).toEqual({ id: "ebonylife-vi", name: "EbonyLife Cinemas", area: "victoria-island", chain: "EbonyLife", online: false, address: "1637 Adetokunbo Ademola Street, Victoria Island, Lagos", website: "https://ebonylifecinemas.com/" });
     expect(data.rows).toEqual([
@@ -40,7 +40,7 @@ describe("toListData", () => {
   it("carries the poster, rating, runtime and the Stay or Go wording", () => {
     const stay = { during: "unknown", after: "yes", confidence: "confirmed", sources: [{ name: "TMDB", url: "https://www.themoviedb.org/movie/1", checkedAt: "2026-11-06T10:00:00Z" }], count: null } as const;
     const rich = toListData({ ...file, films: [{ ...file.films[0]!, posterPath: "/abc.jpg", rating: "12A", runtimeMin: 145, credits: { ...stay, sources: [...stay.sources] } }, file.films[1]!] });
-    expect(rich.films[0]).toEqual({ id: "spider-man-brand-new-day", title: "Spider-Man: Brand New Day", poster: "/abc.jpg", rating: "12A", runtimeMin: 145, stay: { chip: "Stay: scene after the credits · TMDB", detail: "TMDB lists an after-credits scene." } });
+    expect(rich.films[0]).toEqual({ id: "spider-man-brand-new-day", title: "Spider-Man: Brand New Day", poster: "/abc.jpg", rating: "12A", runtimeMin: 145, stay: { verdict: "stay", chip: "Stay: scene after the credits · TMDB", detail: "TMDB lists an after-credits scene." } });
   });
 
   it("can keep one cinema's showings only", () => {

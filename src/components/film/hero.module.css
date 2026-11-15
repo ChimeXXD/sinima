@@ -1,0 +1,97 @@
+/* Film › Poster sticker hero: 390 × 330. Figma gives each layer's top-left corner after its tilt;
+   these are the same layers placed by their unrotated box, turned about the centre (Figma's −4°
+   is CSS's 4deg). */
+
+.hero {
+  position: relative;
+  width: 390px;
+  max-width: 100%;
+  height: 330px;
+  margin-inline: auto;
+}
+
+/* 196 × 290, radius 14, a 5 px white die-cut edge drawn outside, Sticker/Large. */
+.poster {
+  position: absolute;
+  top: 26.5px;
+  left: calc(50% - 108.35px); /* 86.65 in the 390 frame */
+  width: 196px;
+  height: 290px;
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--bg-surface);
+  box-shadow:
+    0 0 0 5px var(--sticker-outline),
+    var(--fx-sticker-large);
+  rotate: 4deg;
+  /* Purpose: the page arrives with the poster pressed on like a sticker, the others after it. */
+  animation: stick var(--dur-base) var(--ease-out) backwards;
+}
+.poster > * {
+  width: 100%;
+  height: 100%;
+}
+.poster img {
+  object-fit: cover;
+}
+
+.sticker {
+  position: absolute;
+  object-fit: contain;
+  filter: drop-shadow(var(--fx-sticker-large));
+  animation: stick var(--dur-base) var(--ease-out) backwards;
+}
+.glasses {
+  top: 47px;
+  left: max(8px, 50% - 175.7px); /* 19.3; on a 360 phone its tilted corner stays on screen */
+  width: 76px;
+  height: 76px;
+  rotate: 12deg;
+  animation-delay: 60ms;
+}
+.popcorn {
+  top: 194px;
+  left: calc(50% + 109.9px); /* 304.9 */
+  width: 62px;
+  height: 62px;
+  rotate: -10deg;
+  animation-delay: 100ms;
+}
+.note {
+  position: absolute;
+  top: 124.3px;
+  left: calc(50% + 102.4px); /* 297.4 */
+  color: var(--text-accent);
+  font: var(--type-handwritten);
+  white-space: nowrap;
+  rotate: -7deg;
+  animation: stick var(--dur-base) var(--ease-out) 140ms backwards;
+}
+
+@keyframes stick {
+  from {
+    opacity: 0;
+    scale: 0.85;
+  }
+}
+
+/* At 360 everything still fits round the centre. Narrower (320), the glasses' edge is cut rather
+   than letting the page scroll sideways. */
+@media (max-width: 359px) {
+  .hero {
+    overflow-x: clip;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .poster,
+  .sticker,
+  .note {
+    animation-name: fade;
+  }
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}

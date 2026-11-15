@@ -69,3 +69,26 @@ export function onBackdrop(event: { target: EventTarget; currentTarget: HTMLDial
 export function useQuery(name: string): string | null {
   return useSyncExternalStore(onAddressChange, () => new URLSearchParams(window.location.search).get(name), () => null);
 }
+
+/**
+ * Shares a link: the phone's own share sheet where there is one, else the link is copied. Says
+ * which happened, so the button can confirm a copy; "none" when neither worked or the visitor
+ * closed the share sheet.
+ */
+export async function shareLink(link: { title: string; text: string; url: string }): Promise<"shared" | "copied" | "none"> {
+  if (typeof navigator.share === "function") {
+    try {
+      await navigator.share(link);
+      return "shared";
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") return "none";
+      // Not allowed here (a desktop browser without a share target): copy instead.
+    }
+  }
+  try {
+    await navigator.clipboard.writeText(link.url);
+    return "copied";
+  } catch {
+    return "none";
+  }
+}

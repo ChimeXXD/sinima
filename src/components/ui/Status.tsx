@@ -80,20 +80,20 @@ export function TimePill({ startsAt, now, bookUrl, bookLabel }: { startsAt: stri
 
 /**
  * 11.3b Time chip: a start time in the lists on Film and Cinema pages; it opens the showing sheet.
- * The soonest says "in 30 min"; a started one is struck through, says "Started 5 min ago", and is
+ * The soonest says "in 30 min" after its format; a started one is struck through, says "Started 5 min ago", and is
  * not a button (D-05). Read out as one sentence: "18:00, IMAX, starts in 30 minutes".
  */
-export function TimeChip({ startsAt, format, now, soonest = false, onOpen }: { startsAt: string; format: string | null; now: string | null; soonest?: boolean; onOpen: () => void }) {
+export function TimeChip({ startsAt, format, now, soonest = false, onOpen, testId = "time-chip" }: { startsAt: string; format: string | null; now: string | null; soonest?: boolean; onOpen: () => void; testId?: string }) {
   const started = now !== null && !isBeforeStart(showingState(startsAt, now));
   const time = formatTime(startsAt);
   const spoken = now === null ? null : spokenCountdown(startsAt, now);
   const label = [spokenTime(startsAt), format, spoken].filter(Boolean).join(", ");
   if (started) {
     return (
-      <span className={s.chip} data-state="started" data-testid="time-chip">
+      <span className={s.chip} data-state="started" data-testid={testId}>
         <span className={s.hidden}>{label}</span>
         <s className={s.chipTime} aria-hidden="true">
-          {time}
+          <time dateTime={startsAt}>{time}</time>
         </s>
         <LateDay startsAt={startsAt} />
         <span className={s.chipNote} aria-hidden="true">
@@ -103,10 +103,13 @@ export function TimeChip({ startsAt, format, now, soonest = false, onOpen }: { s
     );
   }
   const soon = soonest && now !== null;
-  const note = soon ? shortCountdown(startsAt, now) : format;
+  // Figma Film: "IMAX · in 30 min" on the soonest, "IMAX" on the others.
+  const note = [format, soon ? shortCountdown(startsAt, now) : null].filter(Boolean).join(" · ") || null;
   return (
-    <button type="button" className={s.chip} data-state={soon ? "soonest" : undefined} aria-label={label} onClick={onOpen} data-testid="time-chip">
-      <span className={s.chipTime}>{time}</span>
+    <button type="button" className={s.chip} data-state={soon ? "soonest" : undefined} aria-label={label} onClick={onOpen} data-testid={testId}>
+      <time dateTime={startsAt} className={s.chipTime}>
+        {time}
+      </time>
       <LateDay startsAt={startsAt} />
       {note && <span className={s.chipNote}>{note}</span>}
     </button>

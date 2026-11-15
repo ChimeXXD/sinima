@@ -12,12 +12,12 @@ const DOODLES = [
 const hash = (text: string) => [...text].reduce((n, c) => (n * 31 + c.charCodeAt(0)) >>> 0, 7);
 
 /** `small` is for the strip on a cinema card and the ticket; the default is a poster card. */
-export function Poster({ film, small = false }: { film: ListFilm; small?: boolean }) {
+export function Poster({ film, small = false, eager = false }: { film: ListFilm; small?: boolean; /** Above the fold (a film page's hero): load at once. */ eager?: boolean }) {
   if (film.poster) {
     const [one, two] = small ? ["w154", "w342"] : ["w342", "w500"];
     return (
       // eslint-disable-next-line @next/next/no-img-element -- a static export has no image optimiser; TMDB serves sized files
-      <img className="po" src={`${TMDB_IMAGES}${one}${film.poster}`} srcSet={`${TMDB_IMAGES}${one}${film.poster} 1x, ${TMDB_IMAGES}${two}${film.poster} 2x`} alt="" loading="lazy" decoding="async" width={342} height={513} />
+      <img className="po" src={`${TMDB_IMAGES}${one}${film.poster}`} srcSet={`${TMDB_IMAGES}${one}${film.poster} 1x, ${TMDB_IMAGES}${two}${film.poster} 2x`} alt="" loading={eager ? "eager" : "lazy"} decoding="async" width={342} height={513} />
     );
   }
   const seed = hash(film.id);

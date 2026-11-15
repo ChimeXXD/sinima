@@ -1,0 +1,280 @@
+/* Film (Figma 185:3558). Phone 390: hero, details and times in one column. iPad 834: the hero and
+   details side by side, times under them, areas two to a row. Desktop 1440: the film in a 390
+   column on the left, 64 apart from the times. */
+
+/* Top bar (phone, iPad): back · Film · share. */
+.round {
+  display: inline-grid;
+  place-items: center;
+  /* Figma's 40 circle inside a 44 touch area: the transparent edge is not painted. */
+  width: 44px;
+  height: 44px;
+  margin: -2px;
+  border: 2px solid transparent;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface) padding-box;
+  color: var(--text-primary);
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--dur-press) var(--ease-out);
+}
+.round:active {
+  transform: scale(0.94);
+}
+.barTitle {
+  color: var(--text-primary);
+  font: var(--type-title);
+}
+
+.layout {
+  display: flex;
+  flex-direction: column;
+}
+.filmColumn {
+  display: flex;
+  flex-direction: column;
+}
+.filmColumn > :nth-child(2) {
+  /* The hero runs edge to edge, as Figma's frame; its stickers hold to its centre. */
+  width: auto;
+  max-width: none;
+  margin-inline: calc(-1 * var(--gutter));
+}
+.crumb {
+  display: none;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-12);
+  padding-top: var(--space-8);
+}
+.title {
+  color: var(--text-primary);
+  font: var(--type-heading-m);
+}
+.facts {
+  color: var(--text-secondary);
+  font: var(--type-body-m);
+}
+.dot {
+  padding-inline: 0.5em; /* Figma's two spaces either side */
+}
+
+/* Stay or Go: the ticket and the verdict on a pill. A source's "Stay" is tinted; not known is grey
+   with the ticket faded. */
+.stay {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  padding: 6px var(--space-14) 6px 6px;
+  border-radius: var(--radius-full);
+  background: var(--bg-accent-soft);
+  color: var(--text-brand-deep);
+  font: var(--type-label-strong);
+}
+.stay[data-verdict="quiet"] {
+  background: var(--bg-surface);
+  color: var(--text-body-strong);
+}
+.stay[data-verdict="quiet"] .stayTicket {
+  opacity: 0.55;
+}
+.stayDetail {
+  color: var(--text-secondary);
+  font: var(--type-meta);
+}
+
+/* Times */
+.showings {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding-top: var(--space-20);
+}
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+.heading > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.heading h2 {
+  color: var(--text-primary);
+  font: var(--type-heading-s);
+}
+.heading p,
+.none {
+  color: var(--text-secondary);
+  font: var(--type-meta);
+}
+.heading > :last-child {
+  display: grid; /* the toggle runs full width on a phone */
+}
+
+.areas {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.area {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+.areaName {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  color: var(--text-primary);
+  font: var(--type-heading-s);
+}
+.tag {
+  padding: 3px var(--space-8);
+  border-radius: var(--radius-full);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  font: var(--type-caption);
+}
+.tag[data-tag="home"] {
+  background: var(--bg-accent-soft);
+  color: var(--text-accent);
+}
+.cinemas {
+  display: grid;
+  gap: var(--space-12) var(--space-16);
+}
+
+.cinema {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  min-width: 0;
+  padding: var(--space-16);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-row);
+  background: var(--bg-page);
+}
+.cinemaHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-10);
+}
+.cinemaText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.cinemaName {
+  color: var(--text-primary);
+  font: var(--type-title);
+  overflow-wrap: anywhere;
+}
+.address {
+  color: var(--text-secondary);
+  font: var(--type-meta);
+}
+.cinemaHead > :last-child {
+  flex: none;
+}
+.times {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}
+
+.earlier {
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-tile);
+  background: var(--bg-surface);
+  color: var(--text-body-strong);
+  font: var(--type-meta);
+}
+
+/* iPad: hero and details side by side; the heading on one row; areas two to a row, an area with
+   more than one cinema across both, its cinemas two to a row. */
+@media (min-width: 768px) {
+  .filmColumn {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-24);
+    padding-top: var(--space-8);
+  }
+  .filmColumn > :nth-child(2) {
+    flex: none;
+    width: 390px;
+    margin-inline: calc(12px - var(--gutter)) 0; /* Figma: 12 from the edge */
+  }
+  .details {
+    flex: 1;
+    padding-top: 0;
+  }
+  .title {
+    font: var(--type-heading-l);
+  }
+  .showings {
+    padding-top: var(--space-32);
+  }
+  .heading {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-12);
+  }
+  .heading > :last-child {
+    display: inline-grid;
+    width: 264px;
+  }
+  .areas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px var(--space-16);
+  }
+  .area[data-wide] {
+    grid-column: 1 / -1;
+  }
+  .area[data-wide] .cinemas {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Desktop: the film's column on the left, the times on the right. */
+@media (min-width: 1200px) {
+  .layout {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 64px;
+    padding-top: 28px;
+  }
+  .filmColumn {
+    flex: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-16);
+    width: 390px;
+    padding-top: 0;
+  }
+  .filmColumn > :nth-child(2) {
+    margin-inline: 0;
+  }
+  .crumb {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    gap: 6px;
+    padding-block: var(--space-10);
+    color: var(--text-secondary);
+    font: var(--type-body-m);
+  }
+  .showings {
+    flex: 1;
+    min-width: 0;
+    padding-top: 0;
+  }
+}

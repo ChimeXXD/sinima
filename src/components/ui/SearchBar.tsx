@@ -10,9 +10,10 @@ const CITY_NAMES: Record<CityChoice, string> = { lagos: "Lagos", abuja: "Abuja",
 
 /**
  * 8.1 Search bar. The field finds a film; the pill on the right shows the city and opens the city
- * sheet. Both cities shows a globe instead of the pin.
+ * sheet. Both cities shows a globe instead of the pin. Enter calls `onSubmit` (a page that is not
+ * the Films list sends the search there).
  */
-export function SearchBar({ city, value, onChange, onCity, testId = "search" }: { city: CityChoice; value: string; onChange: (text: string) => void; onCity?: () => void; testId?: string }) {
+export function SearchBar({ city, value, onChange, onSubmit, onCity, testId = "search" }: { city: CityChoice; value: string; onChange: (text: string) => void; onSubmit?: () => void; onCity?: () => void; testId?: string }) {
   const pill = (
     <>
       <Icon name={city === "both" ? "globe" : "map-pin"} size={14} />
@@ -23,7 +24,7 @@ export function SearchBar({ city, value, onChange, onCity, testId = "search" }: 
   return (
     <div className={s.bar} data-testid={testId}>
       <Icon name="search" size={18} className={s.searchIcon} />
-      <input className={s.field} type="search" placeholder="Find a film" aria-label="Find a film" value={value} onChange={(event) => onChange(event.target.value)} autoComplete="off" enterKeyHint="search" data-testid={`${testId}.field`} />
+      <input className={s.field} type="search" placeholder="Find a film" aria-label="Find a film" value={value} onChange={(event) => onChange(event.target.value)} onKeyDown={(event) => event.key === "Enter" && !event.nativeEvent.isComposing && onSubmit?.()} autoComplete="off" enterKeyHint="search" data-testid={`${testId}.field`} />
       {onCity ? (
         <button type="button" className={s.city} aria-haspopup="dialog" aria-label={`City: ${CITY_NAMES[city]}. Change city`} onClick={onCity} data-testid={`${testId}.city`}>
           {pill}

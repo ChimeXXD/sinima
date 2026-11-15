@@ -12,3 +12,13 @@ export function formatTag(format: string | null | undefined): FormatTag | null {
   if (text === "3D") return "3D";
   return null;
 }
+
+/**
+ * A showing's format as the cinema names it, for a time chip and the film's facts: "IMAX" for
+ * "IMAX 2D", "MX4D" and "4DX" as they are, "3D". Standard 2D and an unknown format say nothing.
+ */
+export function formatLabel(format: string | null | undefined): string | null {
+  const tag = formatTag(format);
+  if (tag === null) return null;
+  return tag === "4D" ? (format ?? "").trim().toUpperCase() : tag;
+}
