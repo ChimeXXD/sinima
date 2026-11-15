@@ -1,6 +1,6 @@
 # CLAUDE.md — Sinima
 
-**Sinima** is the name (D-36; "Lagos Showtimes" was the working title, so older notes and log entries still say it). You are building this project. Read this file first, then `docs/HANDOFF.md` (the latest session summary), `docs/PLAN.md` for the current day and `PROGRESS.md` for where the last session stopped.
+**Sinima** is the name (D-36; "Lagos Showtimes" was the working title, so older notes and log entries still say it). You are building this project. Read this file first. **Design source of truth: the Figma *Design System* page (tokens, styles, components) and the *Design screens* page (D-66); build from them.** Then `docs/HANDOFF.md` (the latest session summary), `docs/PLAN.md` for the current day and `PROGRESS.md` for where the last session stopped.
 Every product and architecture decision so far is in `docs/DECISIONS.md`. Don't reopen one unless it blocks you. If it does, write the problem under "Open" in `docs/DECISIONS.md` and ask Chime. Chime is they/them.
 
 ## What we are building
@@ -88,7 +88,7 @@ Run `npm run lint`, `npm run typecheck`, `npm test` and `npm run build` before s
 8. **Never invent data.** Unknown price is "Price not listed". Unknown address is left out. Fixtures are real saved pages, labelled as fixtures, and the UI shows a "Sample data" banner while fixtures power it.
 9. **Page weight budget** (D-21, supersedes D-12's numbers): set from the Day 0 measurement of the empty app and held in `scripts/check-budget.mjs`. No blocking web fonts. CI fails over budget.
 10. **TMDB is build-time only.** The key lives in `.env.local` and GitHub Secrets, never in client code. Attribution and the TMDB notice are on `/about` (D-09).
-11. **Location never leaves the device.** "Use my location" runs only on tap, picks the nearest area, and stores only the area slug.
+11. **Location never leaves the device.** On a first visit the site asks for location as it opens, only to pick the city: Lagos or Abuja, and Lagos for anywhere else or no answer (D-65). "Use my location" for the nearest area runs only on tap. Only the city and area slugs are stored.
 
 ## Working style
 

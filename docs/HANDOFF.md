@@ -1,5 +1,9 @@
 # Handoff: read this first when you pick the project back up
 
+## Now: design system and design screens (15 Nov 2026, latest)
+
+Figma is organised: **Design screens** (was Round 10) and **Design System** first, then dividers: Logo Options | UI8 kits | Previous · PamPam/Posh/Phantom/Sweatpals | Archive. The Design System page holds the tokens (variables in Sinima · Primitives, Tokens, Size, with CSS names), text styles, effect styles, colour styles, and the components with build notes (D-66). Title is **What's on in Lagos** with the city tappable; first visit asks for location as the site opens; Lagos or Abuja is picked, anything else falls back to Lagos (D-65; rule 11 updated). Your cinemas folders show the chain logo sticker (D-67). Screens done: iPhone (Films, Starting soon, Film + sheet, Your cinemas, Entry 1 to 3, Phantom-style), iPad (Films · iPad `164:218`), desktop (Films). **Next:** iPad and desktop for Starting soon, Film and its sheet (desktop: centred dialog), Your cinemas and Entry; a no-poster variant for the Film card component; then Chime approves and the build starts (week 2). Gotcha: the use_figma screenshot often draws image fills inside instances or under background blur as one repeated poster; Figma itself is right (checked in Brave twice).
+
 ## Now: scope change (15 Nov 2026), read first
 
 **D-62:** Sinima launches for **Lagos and Abuja**, on **X with a motion-graphics explainer video**, on **Tue 15 Dec 2026** (backup Wed 16), 2–3 days before Avengers: Doomsday opens (worldwide 18 Dec; Nigeria to confirm, O-14). `PLAN.md` is restructured into four weeks plus launch; PRD and CLAUDE.md updated. **D-63:** Round 10 (Ghost + Keepsy) is the working design; Ghost and Keepsy are the style reference for all design. Next in the plan (week 1): Chime approves Round 10 (or asks for more), the city picker, Abuja research (cinemas, sources, areas), and the open questions O-14 to O-16.

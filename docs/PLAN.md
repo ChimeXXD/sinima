@@ -57,10 +57,14 @@ Dates are a target. If a week slips, cut its Should items first; never cut the c
 - [x] Round 10 in Figma: Ghost's plainness, buttons and pop-up; Keepsy's sticker structure; the parts Chime commented on in PamPam, Posh, Phantom and Sweatpals
 - [x] Round 10 fixes from Chime (15 Nov): city-neutral title in place of "Films in Lagos"; a cleaner ticket sticker cut, as good as Keepsy's; countdown pills centred on the poster (phone and desktop); every Starting soon card the same height; the Starting soon countdown badge centred; one extra screen with a Phantom-style tab bar, in the Ghost and Keepsy style (keep the current tab bar)
 - [x] Phantom-style tab bar on every screen and desktop, count sticker made smaller (D-64)
-- [ ] Pick the home title (four options on the Round 10 page, D-64)
+- [x] Home title: "What's on in Lagos", city tappable; first visit picks the city from location, Lagos as fallback (D-65)
 - [x] City picker designed (Lagos ↔ Abuja): first visit, switch from the search bar, search across both cities, one address per city (proposals A to D, D-64)
 - [ ] Chime decides the two-city proposals and O-16
-- [ ] Chime approves the phone and desktop screens
+- [x] Design System page: tokens as variables, text and effect styles, components with states and build notes (D-66)
+- [x] Your cinemas folders show each chain's logo sticker (D-67)
+- [x] Figma pages organised with dividers; Round 10 renamed Design screens (D-66)
+- [ ] Every screen at iPhone, iPad and desktop size (done: Films on all three; to do: Starting soon, Film and its sheet, Your cinemas, Entry on iPad and desktop)
+- [ ] Chime approves the phone, iPad and desktop screens
 
 **Abuja research**
 - [ ] List Abuja's cinemas from primary sources (each chain's own site): name, address, area, booking site
