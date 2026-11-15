@@ -1,5 +1,9 @@
 # Handoff: read this first when you pick the project back up
 
+## Now: sitemap draft 3 waiting for approval (15 Nov 2026, latest)
+
+`docs/design/structure/Sinima - Sitemap (draft 3).pdf` (source `sitemap-v3.html`, rendered with Playwright; Urbanist and the Sinima tokens). Waiting for Chime's approval; nothing else changes until then (D-69). After approval: design every screen on its page 7 with **one row per screen: iPhone, iPad, desktop side by side, rows going down** (replaces the per-device sections).
+
 ## Now: file organised like Odin (15 Nov 2026, latest)
 
 D-68: pages Cover · Design screens · Design System · Archive, then dividers and the references. Cover thumbnail frame `166:394` is the file thumbnail (the plugin API can't set it; Figma already showed "Restore default thumbnail" for it, and the file tile shows it). Design screens: sections iPhone `166:530`, iPad `166:543`, Desktop `166:546`, each flow under a navy header bar, screens named "Flow - State - Device". Design System: guideline frame `168:60` at x 0, then Doc · 1 Colour … 13 Stickers in a row. Next: iPad and desktop versions of Entry, Search and city, Starting soon, Film (+ dialog) and Your cinemas, placed in their device sections under the same flow headers.

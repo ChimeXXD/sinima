@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en-NG">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sinima · Sitemap draft 3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700;800&family=Story+Script&display=swap" rel="stylesheet">
+<style>
+  /* Tokens from the Figma Design System page (Sinima · Tokens, D-66) */
+  :root {
+    --bg-page: #ffffff; --bg-surface: #f4f4f5; --bg-accent-soft: #eef3ff; --border-hairline: #e4e4e7;
+    --text-primary: #18181b; --text-secondary: #71717a; --text-body-strong: #3f3f46;
+    --action-primary: #3b82f6; --action-primary-edge: #2563eb; --brand-ticket: #5b8def; --brand-eyes: #0b1b3f;
+    --city-lagos: #5b8def; --city-abuja: #10b981; --city-abuja-soft: #e7f8f1; --amber: #f59e0b; --amber-soft: #fdf2d8;
+  }
+  * { box-sizing: border-box; }
+  @page { size: 1123px 794px; margin: 0; }
+  html, body { margin: 0; background: #d4d4d8; color: var(--text-primary); font: 500 13px/1.45 "Urbanist", system-ui, sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page { position: relative; width: 1123px; height: 794px; margin: 24px auto; padding: 44px 56px 44px; background: var(--bg-page); overflow: hidden; break-after: page; }
+  @media print { html, body { background: #fff; } .page { margin: 0; } }
+  .eyebrow { font: 800 11px/1 "Urbanist"; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); }
+  h1 { margin: 10px 0 8px; font: 300 40px/1.08 "Urbanist"; letter-spacing: -0.01em; }
+  h2 { margin: 0 0 4px; font: 600 16px/1.25 "Urbanist"; }
+  h3 { margin: 0; font: 600 14px/1.3 "Urbanist"; }
+  p { margin: 0; }
+  .lede { max-width: 780px; font-size: 15px; color: var(--text-body-strong); }
+  .small { font-size: 12px; color: var(--text-secondary); }
+  .hand { font: 400 20px/1 "Story Script", cursive; color: var(--action-primary); }
+  .foot { position: absolute; left: 56px; right: 56px; bottom: 20px; display: flex; justify-content: space-between; font: 600 10.5px/1 "Urbanist"; color: var(--text-secondary); }
+  .card { background: var(--bg-page); border: 1px solid var(--border-hairline); border-radius: 20px; padding: 16px 18px; box-shadow: 0 6px 18px rgb(24 24 27 / .06); }
+  .card.soft { background: var(--bg-surface); border-color: transparent; box-shadow: none; }
+  .card.ice { background: var(--bg-accent-soft); border-color: transparent; box-shadow: none; }
+  .card.navy { background: var(--brand-eyes); color: #fff; border-color: var(--brand-eyes); }
+  .card.navy .small { color: #c7d2fe; }
+  .grid { display: grid; gap: 14px; }
+  .tag { display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 10px; border-radius: 999px; font: 700 11px/1 "Urbanist"; background: var(--bg-surface); white-space: nowrap; }
+  .tag.blue { background: var(--action-primary); color: #fff; }
+  .tag.ice { background: var(--bg-accent-soft); color: var(--brand-eyes); }
+  .tag.done { background: #dcfce7; color: #166534; }
+  .tag.todo { background: var(--amber-soft); color: #92400e; }
+  .url { font: 700 11.5px/1.3 ui-monospace, "SF Mono", Menlo, monospace; color: var(--action-primary-edge); }
+  .city { display: inline-flex; align-items: center; height: 24px; padding: 0 12px; border-radius: 999px; color: #fff; font: 800 11px/1 "Urbanist"; letter-spacing: .06em; box-shadow: 0 0 0 3px #fff, 0 2.8px 5.7px 3px rgb(130 130 130 / .25); }
+  .city.l { background: var(--city-lagos); transform: rotate(-4deg); } .city.a { background: var(--city-abuja); transform: rotate(4deg); }
+  ul.plain { margin: 6px 0 0; padding: 0; list-style: none; display: grid; gap: 5px; }
+  ul.plain li { padding-left: 14px; position: relative; }
+  ul.plain li::before { content: ""; position: absolute; left: 0; top: 7px; width: 6px; height: 6px; border-radius: 999px; background: var(--brand-ticket); }
+  /* Cover */
+  .cover { background: var(--bg-accent-soft); }
+  .cover .glow { position: absolute; inset: -120px -160px auto auto; width: 760px; height: 760px; border-radius: 50%; background: #fff; filter: blur(80px); opacity: .9; }
+  .cover h1 { position: relative; font-size: 76px; line-height: 1; margin: 150px 0 0; max-width: 620px; }
+  .cover .lede { position: relative; margin-top: 18px; font-size: 17px; max-width: 520px; }
+  .brand { position: relative; display: flex; align-items: center; gap: 14px; font: 600 28px/1 "Urbanist"; color: var(--brand-eyes); }
+  .meta { position: absolute; left: 56px; bottom: 56px; display: flex; gap: 44px; font: 600 12px/1.5 "Urbanist"; color: var(--text-secondary); }
+  .meta b { display: block; color: var(--text-primary); font-weight: 700; }
+  /* Map */
+  .node { position: absolute; border-radius: 16px; padding: 10px 12px; background: #fff; border: 1px solid var(--border-hairline); box-shadow: 0 6px 18px rgb(24 24 27 / .06); }
+  .node h3 { font-size: 13.5px; }
+  .node .url { display: block; margin-top: 3px; font-size: 10.5px; }
+  .node p { font-size: 11px; color: var(--text-secondary); margin-top: 3px; line-height: 1.35; }
+  .node.tab { border: 1.5px solid var(--action-primary); }
+  .node.tab h3::before { content: "Tab · "; color: var(--action-primary); }
+  .node.over { background: var(--bg-surface); border-style: dashed; box-shadow: none; }
+  .node.ext { background: var(--amber-soft); border-color: transparent; box-shadow: none; }
+  .node.navy { background: var(--brand-eyes); color: #fff; border-color: var(--brand-eyes); }
+  .node.navy p { color: #c7d2fe; } .node.navy .url { color: #93c5fd; }
+  svg.wires { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  svg.wires path { fill: none; stroke: #a1a1aa; stroke-width: 1.5; }
+  svg.wires path.dash { stroke-dasharray: 4 4; }
+  .legend { display: flex; gap: 16px; align-items: center; font-size: 11.5px; color: var(--text-secondary); }
+  .legend i { display: inline-block; width: 16px; height: 12px; border-radius: 4px; margin-right: 6px; vertical-align: -1px; }
+  table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 12px; }
+  th { text-align: left; font: 800 10.5px/1 "Urbanist"; letter-spacing: .06em; text-transform: uppercase; color: var(--text-secondary); padding: 0 10px 8px; }
+  td { padding: 8px 10px; border-top: 1px solid var(--border-hairline); vertical-align: top; }
+  td b { font-weight: 700; }
+  .num { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 999px; background: var(--action-primary); color: #fff; font: 700 12px/1 "Urbanist"; box-shadow: 0 0 0 3px #fff, 0 2px 5px rgb(130 130 130 / .3); }
+  .step { display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: start; }
+  .ticket { width: 44px; height: 33px; }
+</style>
+</head>
+<body>
+
+<!-- 1 · Cover -->
+<section class="page cover">
+  <div class="glow"></div>
+  <div class="brand">
+    <svg class="ticket" viewBox="-5.3 -7.4 122.6 98.8"><g transform="rotate(-8 56 42)"><path fill-rule="evenodd" fill="#5b8def" d="M16 0H96A16 16 0 0 1 112 16V30A12 12 0 0 0 112 54V68A16 16 0 0 1 96 84H16A16 16 0 0 1 0 68V54A12 12 0 0 0 0 30V16A16 16 0 0 1 16 0ZM81.5 18a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0 -5 0ZM81.5 30a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0 -5 0ZM81.5 42a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0 -5 0ZM81.5 54a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0 -5 0ZM81.5 66a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0 -5 0Z"/><ellipse cx="38" cy="42" rx="7" ry="10.5" fill="#0b1b3f"/><ellipse cx="62" cy="42" rx="7" ry="10.5" fill="#0b1b3f"/></g></svg>
+    Sinima
+  </div>
+  <h1>Sitemap, draft 3</h1>
+  <p class="lede">Every page Sinima needs for the launch, in two cities, and how they connect. Approve this first; the screens are designed from it, each at iPhone, iPad and desktop size.</p>
+  <div style="position:relative;display:flex;gap:18px;margin-top:26px"><span class="city l">LAGOS</span><span class="city a">ABUJA</span></div>
+  <div class="meta"><div><b>Date</b>Sun 15 Nov 2026</div><div><b>Replaces</b>Draft 2 (12 Nov)</div><div><b>Launch</b>Tue 15 Dec on X</div><div><b>Status</b>For Chime's approval</div></div>
+</section>
+
+<!-- 2 · What changed -->
+<section class="page">
+  <div class="eyebrow">01 · Since draft 2</div>
+  <h1>What changed, and why the map is new</h1>
+  <p class="lede">Draft 2 was one city with Cinemas as home. Since then the plan and the design moved on; this draft puts every decision since 12 Nov into one map.</p>
+  <div class="grid" style="grid-template-columns:repeat(3,1fr);margin-top:26px">
+    <div class="card"><span class="tag ice">D-62</span><h2 style="margin-top:10px">Two cities</h2><p class="small">Lagos and Abuja at launch. Every page belongs to a city; the city is in the address and in the search bar.</p></div>
+    <div class="card"><span class="tag ice">D-55</span><h2 style="margin-top:10px">Films is home</h2><p class="small">People arrive with a film in mind. The home page is Films; Cinemas and Starting soon are tabs.</p></div>
+    <div class="card"><span class="tag ice">D-61 · D-64</span><h2 style="margin-top:10px">Four tabs</h2><p class="small">Films · Cinemas · Starting soon · Your cinemas, in the approved floating tab bar (phone, iPad) and pill nav (desktop).</p></div>
+    <div class="card"><span class="tag ice">D-65</span><h2 style="margin-top:10px">First visit picks the city</h2><p class="small">"Where are you watching?" asks for location as the site opens. Lagos or Abuja is picked; anywhere else, Lagos.</p></div>
+    <div class="card"><span class="tag ice">D-64</span><h2 style="margin-top:10px">Search across both cities</h2><p class="small">The city switch sits in the search bar: Lagos, Abuja or Both cities. Results are grouped by city.</p></div>
+    <div class="card"><span class="tag ice">D-50 · D-67</span><h2 style="margin-top:10px">Format and logos</h2><p class="small">Find a film by format (IMAX, 4D) and area. Saved cinemas show their own logo as a sticker.</p></div>
+  </div>
+  <div class="card soft" style="margin-top:16px;display:flex;gap:28px;align-items:center">
+    <div style="flex:1"><h2>Unchanged rules that shape every page</h2><p class="small">Every time says where it came from and how fresh it is, in words · a showing that has started is never bookable · booking always goes to the cinema's own site · location never leaves the phone · a "Sample data" notice while saved pages power the site.</p></div>
+    <span class="hand">same rules, two cities</span>
+  </div>
+  <div class="foot"><span>Sinima · Sitemap · Draft 3</span><span>2 / 9</span></div>
+</section>
+
+<!-- 3 · The map -->
+<section class="page">
+  <div class="eyebrow">02 · The map</div>
+  <h1 style="font-size:32px">Every page, and how they connect</h1>
+  <div class="legend" style="margin-top:4px"><span><i style="border:1.5px solid #3b82f6"></i>Tab</span><span><i style="background:#fff;border:1px solid #e4e4e7"></i>Page</span><span><i style="background:#f4f4f5;border:1px dashed #a1a1aa"></i>Pop-up (no address of its own)</span><span><i style="background:#fdf2d8"></i>Leaves Sinima</span><span><i style="background:#0b1b3f"></i>Entry</span></div>
+  <div style="position:absolute;left:56px;right:56px;top:178px;bottom:40px">
+    <svg class="wires" viewBox="0 0 1011 596" preserveAspectRatio="none">
+      <path d="M150 48 H185"/><path d="M150 48 C168 48 168 194 185 194" class="dash"/>
+      <path d="M270 110 V150"/><path d="M270 290 V238" class="dash"/>
+      <path d="M355 194 C375 194 375 48 395 48"/><path d="M355 194 H395"/><path d="M355 194 C375 194 375 348 395 348"/><path d="M355 194 C375 194 375 498 395 498"/>
+      <path d="M585 48 H625"/><path d="M585 198 C605 198 605 163 625 163"/><path d="M585 198 C605 198 605 278 625 278"/><path d="M585 348 C605 348 605 387 625 387" class="dash"/><path d="M585 498 C605 498 605 487 625 487"/>
+      <path d="M820 40 H855"/><path d="M820 278 C838 278 838 40 855 40" class="dash"/><path d="M820 387 C840 387 840 40 855 40" class="dash"/>
+      <path d="M892 74 V108"/><path d="M974 74 V108"/>
+    </svg>
+    <div style="position:absolute;top:-28px;left:0;right:0;font:800 10.5px/1 Urbanist;letter-spacing:.08em;color:#71717a">
+      <span style="position:absolute;left:0">ENTRY</span><span style="position:absolute;left:185px">CITY</span><span style="position:absolute;left:395px">TABS</span><span style="position:absolute;left:625px">PAGES</span><span style="position:absolute;left:855px">POP-UPS AND EXITS</span></div>
+    <div class="node navy" style="left:0px;top:0px;width:150px;height:96px"><h3>Open Sinima</h3><span class="url">/</span><p>Saved city opens its Films; a first visit asks.</p></div>
+    <div class="node " style="left:0px;top:372px;width:150px;height:82px"><h3>Not found</h3><span class="url">404</span><p>Back to Films in your city.</p></div>
+    <div class="node " style="left:0px;top:470px;width:150px;height:82px"><h3>Offline</h3><p>Last saved times with their age (Should).</p></div>
+    <div class="node " style="left:185px;top:0px;width:170px;height:110px"><h3>Where are you watching?</h3><span class="url">/ (first visit)</span><p>Asks for location. Lagos or Abuja; else Lagos.</p></div>
+    <div class="node " style="left:185px;top:150px;width:170px;height:88px;background:#eef3ff;border-color:transparent;box-shadow:none"><h3>A city</h3><span class="url">/lagos · /abuja</span><p>Every page below lives in one city.</p></div>
+    <div class="node over" style="left:185px;top:290px;width:170px;height:88px"><h3>City sheet</h3><p>From the search bar or the title: Lagos · Abuja · Both.</p></div>
+    <div class="node tab" style="left:395px;top:0px;width:190px;height:96px"><h3>Films</h3><span class="url">/lagos</span><p>Home: What's on in Lagos; posters, day, formats.</p></div>
+    <div class="node tab" style="left:395px;top:150px;width:190px;height:96px"><h3>Cinemas</h3><span class="url">/lagos/cinemas</span><p>Every cinema as a logo row, nearest area first.</p></div>
+    <div class="node tab" style="left:395px;top:300px;width:190px;height:96px"><h3>Starting soon</h3><span class="url">/lagos/starting-soon</span><p>Next 2 hours, then later tonight, by area.</p></div>
+    <div class="node tab" style="left:395px;top:450px;width:190px;height:96px"><h3>Your cinemas</h3><span class="url">/lagos/your-cinemas</span><p>Saved cinemas as logo-sticker folders.</p></div>
+    <div class="node " style="left:625px;top:0px;width:195px;height:96px"><h3>Film</h3><span class="url">/lagos/film/ramayana</span><p>Every showing in the city by area; Stay or Go.</p></div>
+    <div class="node " style="left:625px;top:118px;width:195px;height:90px"><h3>Area</h3><span class="url">/lagos/area/lekki</span><p>Its cinemas, then the areas next to it.</p></div>
+    <div class="node " style="left:625px;top:226px;width:195px;height:104px"><h3>Cinema</h3><span class="url">/lagos/cinema/filmhouse-lekki</span><p>Today and tomorrow, address, source, save.</p></div>
+    <div class="node over" style="left:625px;top:350px;width:195px;height:74px"><h3>Showing card</h3><p>Tap a time anywhere: opens the showing.</p></div>
+    <div class="node " style="left:625px;top:450px;width:195px;height:74px"><h3>Empty: none saved</h3><p>How to save a cinema (heart on its page).</p></div>
+    <div class="node over" style="left:855px;top:0px;width:156px;height:74px"><h3>Showing sheet</h3><p>Desktop: a centred dialog.</p></div>
+    <div class="node ext" style="left:855px;top:108px;width:74px;height:74px"><h3>Book</h3><p>Cinema's own site</p></div>
+    <div class="node ext" style="left:937px;top:108px;width:74px;height:74px"><h3>Calendar</h3><p>.ics, 30-min alert</p></div>
+    <div class="node over" style="left:855px;top:226px;width:156px;height:74px"><h3>Search</h3><p>Results grouped by city; opens a Film.</p></div>
+    <div class="node over" style="left:855px;top:328px;width:156px;height:74px"><h3>Share</h3><p>Link to the exact showing.</p></div>
+    <div class="node " style="left:855px;top:430px;width:156px;height:90px"><h3>About</h3><span class="url">/about</span><p>Sources per city, TMDB, logos, takedown.</p></div>
+  </div>
+  <div class="foot"><span>Sinima · Sitemap · Draft 3</span><span>3 / 9</span></div>
+</section>
+
+<!-- 4 · Pages in detail -->
+<section class="page">
+  <div class="eyebrow">03 · Pages</div>
+  <h1 style="font-size:32px">What is on each page, and where it leads</h1>
+  <table style="margin-top:14px">
+    <tr><th style="width:150px">Page</th><th style="width:190px">Address</th><th>On the page</th><th style="width:210px">Leads to</th></tr>
+    <tr><td><b>Where are you watching?</b></td><td class="url">/ (first visit only)</td><td>Location asked as it opens; Lagos and Abuja cards with their areas; Continue; Use my location; a line when we fall back to Lagos.</td><td>Films in the picked city</td></tr>
+    <tr><td><b>Films</b> · home</td><td class="url">/lagos · /abuja</td><td>"What's on in Lagos" (tap the city to switch) with stickers; Today / Tomorrow; format chips; Now showing, then Later today, as poster cards with countdown pills and "Next 17:40 · 4 cinemas".</td><td>Film · City sheet · Search</td></tr>
+    <tr><td><b>Film</b></td><td class="url">/[city]/film/[slug]</td><td>Poster sticker; runtime, formats; Stay or Go chip with its source; day switch; every showing grouped by area, each cinema with its times and freshness line.</td><td>Showing sheet · Cinema · Share</td></tr>
+    <tr><td><b>Cinemas</b></td><td class="url">/[city]/cinemas</td><td>Every cinema as a logo row ("Next at 14:00 · 4 films · Lekki", tags); area, day and format pickers; cinemas we can't read listed as "Times not available yet".</td><td>Area · Cinema</td></tr>
+    <tr><td><b>Area</b></td><td class="url">/[city]/area/[slug]</td><td>Your cinemas in the area, the area's cinemas, then the areas next to it, each with "Show all".</td><td>Cinema</td></tr>
+    <tr><td><b>Cinema</b></td><td class="url">/[city]/cinema/[id]</td><td>Logo, address, source and last read; save (heart); day tabs for as many days as it publishes; films with their times.</td><td>Showing sheet · Film</td></tr>
+    <tr><td><b>Starting soon</b></td><td class="url">/[city]/starting-soon</td><td>"Starting soon in Lekki"; area chips; Next 2 hours as equal-height cards with countdown rings; started showings with no booking; Later tonight rows.</td><td>Showing sheet · Film</td></tr>
+    <tr><td><b>Your cinemas</b></td><td class="url">/[city]/your-cinemas</td><td>Saved cinemas as folders (posters + logo sticker + "4 tonight"); add-a-cinema tile; empty state. Saved on this phone only.</td><td>Cinema</td></tr>
+    <tr><td><b>About</b></td><td class="url">/about</td><td>How it works; sources per city and when each was read; TMDB notice; logos belong to their owners; ask for removal.</td><td>GitHub issues · cinema sites</td></tr>
+  </table>
+  <div class="foot"><span>Sinima · Sitemap · Draft 3</span><span>4 / 9</span></div>
+</section>
+
+<!-- 5 · Pop-ups and notices -->
+<section class="page">
+  <div class="eyebrow">04 · Pop-ups and notices</div>
+  <h1 style="font-size:32px">Things that open over a page</h1>
+  <p class="lede">These have no address of their own (except a shared showing link). On phone and iPad they are Ghost sheets from the bottom; on desktop, centred dialogs.</p>
+  <div class="grid" style="grid-template-columns:repeat(4,1fr);margin-top:22px">
+    <div class="card"><h2>Showing sheet</h2><p class="small">Time, cinema, area, countdown; Book on the cinema's site; Add to calendar; Keep a countdown; freshness line. Started: no Book.</p><p class="url" style="margin-top:8px">?showing=… (shareable)</p></div>
+    <div class="card"><h2>City sheet</h2><p class="small">Lagos · Abuja · Both cities, each with its areas. Changes the city everywhere and saves it on the phone.</p></div>
+    <div class="card"><h2>Search</h2><p class="small">Opens in place. Scope: Both cities · Lagos · Abuja. Matching films grouped by city; Enter shows all matches on Films.</p></div>
+    <div class="card"><h2>Pickers</h2><p class="small">Area, day and format pickers on Cinemas (phone), each a small sheet (D-56).</p></div>
+    <div class="card"><h2>Share</h2><p class="small">Share, Copy link, WhatsApp; the link opens on the exact showing in the right city.</p></div>
+    <div class="card"><h2>Location prompt</h2><p class="small">The browser's own prompt on a first visit. Not ours to style; our page explains it.</p></div>
+    <div class="card"><h2>Theme</h2><p class="small">Light and dark switch in the header (D-58, D-60). Dark is designed after light is approved.</p></div>
+    <div class="card"><h2>Tab bar</h2><p class="small">Always on screen; the active tab names itself; a count sticker on Your cinemas.</p></div>
+  </div>
+  <div class="card soft" style="margin-top:16px">
+    <h2>Notices that can appear on any page (one at a time, the most serious)</h2>
+    <ul class="plain small" style="grid-template-columns:repeat(2,1fr);column-gap:30px">
+      <li>"Sample data" while saved pages power the site</li><li>"Some times were read yesterday" when a source is a day old</li>
+      <li>"You're offline" with the age of the saved times</li><li>"We couldn't place you in Lagos or Abuja, so here's Lagos" after the first visit</li>
+      <li>"Abuja's cinemas are being added" until Abuja has data</li><li>"13 cinemas don't say their format" when a format is chosen</li>
+    </ul>
+  </div>
+  <div class="foot"><span>Sinima · Sitemap · Draft 3</span><span>5 / 9</span></div>
+</section>
+
+<!-- 6 · Two cities -->
+<section class="page">
+  <div class="eyebrow">05 · Two cities</div>
+  <h1 style="font-size:32px">How the city works across the site</h1>
+  <div class="grid" style="grid-template-columns:1.1fr 1fr;margin-top:20px;gap:22px">
+    <div class="grid" style="gap:12px">
+      <div class="step"><span class="num">1</span><div><h3>First visit to sinima-app.vercel.app</h3><p class="small">"Where are you watching?" opens and the browser asks for location.</p></div></div>
+      <div class="step"><span class="num">2</span><div><h3>In Lagos or Abuja</h3><p class="small">That city is picked. Continue → /lagos or /abuja.</p></div></div>
+      <div class="step"><span class="num">3</span><div><h3>Anywhere else, refused, or no answer</h3><p class="small">Lagos, with a line saying so. One tap on the city switches.</p></div></div>
+      <div class="step"><span class="num">4</span><div><h3>Next visits</h3><p class="small">The saved city opens straight away. The position itself is never kept or sent; only "lagos" or "abuja".</p></div></div>
+      <div class="step"><span class="num">5</span><div><h3>Switching</h3><p class="small">Tap the circled city in the title or the city chip in the search bar → City sheet. The page you are on reopens in the other city (a film page stays on the same film).</p></div></div>
+      <div class="step"><span class="num">6</span><div><h3>Both cities</h3><p class="small">For search only: results grouped "In Lagos" and "In Abuja". Browsing pages always show one city.</p></div></div>
+    </div>
+    <div class="card ice">
+      <h2>One address per city (O-16, proposed)</h2>
+      <p class="small" style="margin-bottom:10px">A link shared on X or WhatsApp always opens the right city, even for someone who has never picked one.</p>
+      <table style="font-size:11.5px">
+        <tr><td class="url">/</td><td>Saved city, or asks once</td></tr>
+        <tr><td class="url">/lagos</td><td>What's on in Lagos</td></tr>
+        <tr><td class="url">/abuja/cinemas</td><td>Every cinema in Abuja</td></tr>
+        <tr><td class="url">/lagos/area/lekki</td><td>Lekki</td></tr>
+        <tr><td class="url">/abuja/film/ramayana</td><td>Ramayana in Abuja</td></tr>
+        <tr><td class="url">/lagos/starting-soon</td><td>Starting soon in Lagos</td></tr>
+        <tr><td class="url">/about</td><td>Both cities</td></tr>
+      </table>
+      <p class="small" style="margin-top:10px">Today's addresses (/films, /soon, /yours…) redirect to the new ones, so old links keep working.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Sinima · Sitemap · Draft 3</span><span>6 / 9</span></div>
+</section>
+
+<!-- 7 · Screens to design -->
+<section class="page">
+  <div class="eyebrow">06 · Screens to design</div>
+  <h1 style="font-size:32px">Every screen, at three sizes</h1>
+  <p class="lede">In Figma each screen is one row: iPhone, iPad and desktop side by side, rows going down the page. States are designed where they change the layout.</p>
+  <table style="margin-top:14px">
+    <tr><th>Screen</th><th style="width:110px">iPhone 390</th><th style="width:110px">iPad 834</th><th style="width:110px">Desktop 1440</th><th>States</th></tr>
+    <tr><td><b>Where are you watching?</b></td><td><span class="tag done">Designed</span></td><td><span class="tag todo">To design</span></td><td><span class="tag todo">To design</span></td><td class="small">Asking, found Abuja, elsewhere → Lagos</td></tr>
+    <tr><td><b>Films</b></td><td><span class="tag done">Designed</span></td><td><span class="tag done">Designed</span></td><td><span class="tag done">Designed</span></td><td class="small">Default, no poster, a format chosen, empty day, Abuja</td></tr>
+    <tr><td><b>Film</b> + showing sheet</td><td><span class="tag done">Designed</span></td><td><span class="tag todo">To design</span></td><td><span class="tag todo">To design</span></td><td class="small">Default, sheet / dialog, started showing, Stay or Go not known</td></tr>
+    <tr><td><b>Cinemas</b> + pickers</td><td><span class="tag todo">To design</span></td><td><span class="tag todo">To design</span></td><td><span class="tag todo">To design</span></td><td class="small">Default, picker open, not readable cinema</td></tr>
+    <tr><td><b>Area</b></td><td><span class="tag todo">To design</span></td><td><span class="tag todo">To design</span></td><td><span class="tag todo">To design</span></td><td class="small">Default, nothing in the area</td></tr>
+    <tr><td><b>Cinema</b></td><td><span class="tag todo">To design</span></td><td><span class="tag todo">To design</span></td><td><span class="tag todo">To design</span></td><td class="small">Default, saved, times a day old</td></tr>
+    <tr><td><b>Starting soon</b></td><td><span class="tag done">Designed</span></td><td><span class="tag todo">To design</span></td><td><span class="tag todo">To design</span></td><td class="small">Default, nothing in 2 hours</td></tr>
+    <tr><td><b>Your cinemas</b></td><td><span class="tag done">Designed</span></td><td><span class="tag todo">To design</span></td><td><span class="tag todo">To design</span></td><td class="small">Default, none saved</td></tr>
+    <tr><td><b>Search</b> + City sheet</td><td><span class="tag done">Designed</span></td><td><span class="tag todo">To design</span></td><td><span class="tag todo">To design</span></td><td class="small">Typing, both cities, no match</td></tr>
+    <tr><td><b>About</b> · 404 · Offline</td><td><span class="tag todo">To design</span></td><td><span class="tag todo">To design</span></td><td><span class="tag todo">To design</span></td><td class="small">One state each</td></tr>
+  </table>
+  <div class="foot"><span>Sinima · Sitemap · Draft 3</span><span>7 / 9</span></div>
+</section>
+
+<!-- 8 · Journeys -->
+<section class="page">
+  <div class="eyebrow">07 · Journeys</div>
+  <h1 style="font-size:32px">Four ways through, one ending: the cinema's site</h1>
+  <div class="grid" style="grid-template-columns:repeat(2,1fr);margin-top:20px;gap:16px">
+    <div class="card"><span class="tag blue">A · First visit</span><h2 style="margin-top:8px">"What's on?"</h2><p class="small">Opens Sinima → allows location → Abuja picked → What's on in Abuja → taps a poster → Film → taps 18:20 → sheet → Book on the cinema's site.</p><p class="hand" style="margin-top:8px;font-size:18px">5 taps, no sign-up</p></div>
+    <div class="card"><span class="tag blue">B · Film in mind</span><h2 style="margin-top:8px">"Where is Avengers: Doomsday showing?"</h2><p class="small">Search → types "Doom" → Both cities shows it in Lagos and Abuja → Film in Lagos → filters IMAX → picks a time → Book.</p><p class="hand" style="margin-top:8px;font-size:18px">the launch-week journey</p></div>
+    <div class="card"><span class="tag blue">C · Right now</span><h2 style="margin-top:8px">"What can I catch?"</h2><p class="small">Starting soon → Lekki → the 17:45 card says 15 min → Book. A card that has started shows "Started 3 min ago" and no Book.</p></div>
+    <div class="card"><span class="tag blue">D · A friend sent a link</span><h2 style="margin-top:8px">"Coming to this one?"</h2><p class="small">Taps a WhatsApp link → opens on the showing, in the right city, sheet open → Add to calendar (30-min alert) or Book.</p></div>
+  </div>
+  <div class="card soft" style="margin-top:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+    <div><h3>The film has started</h3><p class="small">The time greys out and says when it started; no Book.</p></div>
+    <div><h3>The times are a day old</h3><p class="small">Said in words on the cinema and in the sheet; never hidden.</p></div>
+    <div><h3>A cinema we can't read</h3><p class="small">Listed with "Times not available yet" and a link to its site.</p></div>
+  </div>
+  <div class="foot"><span>Sinima · Sitemap · Draft 3</span><span>8 / 9</span></div>
+</section>
+
+<!-- 9 · For approval -->
+<section class="page">
+  <div class="eyebrow">08 · For approval</div>
+  <h1 style="font-size:32px">What to decide before the screens</h1>
+  <div class="grid" style="grid-template-columns:repeat(2,1fr);margin-top:20px;gap:16px">
+    <div class="card"><h2>1 · This map</h2><p class="small">Nine pages (Where are you watching?, Films, Film, Cinemas, Area, Cinema, Starting soon, Your cinemas, About) plus 404 and offline, and the pop-ups on page 5. Anything to add or drop?</p></div>
+    <div class="card"><h2>2 · One address per city (O-16)</h2><p class="small">/lagos/… and /abuja/… as on page 6, with old links redirected. Proposed.</p></div>
+    <div class="card"><h2>3 · Area pages stay</h2><p class="small">Kept under Cinemas for "cinemas near me" and for links; not a tab.</p></div>
+    <div class="card"><h2>4 · Both cities is for search only</h2><p class="small">Browsing pages show one city at a time; only search spans both.</p></div>
+    <div class="card"><h2>5 · Not in this map</h2><p class="small">Accounts, ticket sales, seat maps, ads, push notifications, Port Harcourt, a coming-soon calendar.</p></div>
+    <div class="card navy"><h2>After approval</h2><p class="small">Design every screen on page 7 at iPhone, iPad and desktop, one row each, from the Design System components; then build (week 2).</p></div>
+  </div>
+  <div class="foot"><span>Sinima · Sitemap · Draft 3</span><span>9 / 9</span></div>
+</section>
+</body>
+</html>
