@@ -2,6 +2,12 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 15 Nov 2026 — screen review round 2 (D-73)
+
+- Cinemas title centred with four logo stickers left and right and "21 of them!" below, at three sizes on Default and Area picker open; overlap check: none; phone title block 163 px.
+- Admit one: eight options in review section `225:9281` (Fluent Emoji 3D, MIT, die-cut with PIL, uploaded to Figma). Not applied until Chime picks.
+- Not done: phone check.
+
 ## 15 Nov 2026 — screen review round 1 (D-72)
 
 - Figma only. Removed every "From Lagocine, which read…" / "Read from Lagocine…" line (153); reworded stale-data and About texts without "read".

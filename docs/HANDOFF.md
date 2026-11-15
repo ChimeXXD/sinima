@@ -1,6 +1,12 @@
 # Handoff: read this first when you pick the project back up
 
-## Now: screen review round 1 done, waiting for Chime's next notes (15 Nov 2026, latest)
+## Now: review round 2, waiting for Chime's pick on Admit one (15 Nov 2026, latest)
+
+- **Cinemas title (D-73), done in the design:** centred; two logo stickers left (Filmhouse, Genesis), two right (EbonyLife, Silverbird); "21 of them!" below. Phone two lines like Films, iPad and desktop one line. Default and Area picker open, all sizes. Old review section is on Archive.
+- **Admit one (D-73), waiting:** options on *Review · Replace Admit one* `225:9281`, right of Films. Films title: A ticket without words, B ticket, C drink, D projector, E film strip. 404: F magnifier, G torch, H ghost. Art is Fluent Emoji 3D (MIT) with a white border made by `diecut.py` (scratchpad, PIL: alpha MaxFilter ≈4.5% of width, 9% padding). Once picked: replace on every Films-title screen (Ticket sticker frame), Where are you watching? iPad and desktop, and 404; credit Fluent on About.
+- Countdown badge: Chime is happy with the ring vs pill split.
+
+## Earlier: screen review round 1 (15 Nov 2026)
 
 Chime started reviewing the D-71 screens. Everything asked is done in Figma and recorded as **D-72**.
 

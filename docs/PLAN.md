@@ -65,7 +65,8 @@ Dates are a target. If a week slips, cut its Should items first; never cut the c
 - [x] Figma pages organised with dividers; Round 10 renamed Design screens (D-66); then reorganised like Odin, with a cover thumbnail (D-68)
 - [x] Every screen at iPhone, iPad and desktop size: all ten flows of sitemap draft 3, one row per state (D-70, D-71)
 - [x] Screen review round 1 (15 Nov): no Lagocine source lines, no clipped shadows, day toggle fixed, chip rows fade at the edge, iPad Cinemas logos off the title (D-72)
-- [ ] Chime picks: Cinemas title left (now) or centred (review section `219:8741`)
+- [x] Cinemas title centred with logo stickers left and right, "21 of them!" below, three sizes (D-73)
+- [ ] Chime picks the Admit one replacement (review section `225:9281`, D-73); apply it to Films, Where are you watching? and 404
 - [ ] Chime approves the phone, iPad and desktop screens
 
 **Abuja research**
