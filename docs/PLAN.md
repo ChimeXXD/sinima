@@ -55,8 +55,11 @@ Dates are a target. If a week slips, cut its Should items first; never cut the c
 
 **Design (D-63)**
 - [x] Round 10 in Figma: Ghost's plainness, buttons and pop-up; Keepsy's sticker structure; the parts Chime commented on in PamPam, Posh, Phantom and Sweatpals
-- [ ] Round 10 fixes from Chime (15 Nov): city-neutral title in place of "Films in Lagos"; a cleaner ticket sticker cut, as good as Keepsy's; countdown pills centred on the poster (phone and desktop); every Starting soon card the same height; the Starting soon countdown badge centred; one extra screen with a Phantom-style tab bar, in the Ghost and Keepsy style (keep the current tab bar)
-- [ ] City picker designed (Lagos ↔ Abuja) in the same style
+- [x] Round 10 fixes from Chime (15 Nov): city-neutral title in place of "Films in Lagos"; a cleaner ticket sticker cut, as good as Keepsy's; countdown pills centred on the poster (phone and desktop); every Starting soon card the same height; the Starting soon countdown badge centred; one extra screen with a Phantom-style tab bar, in the Ghost and Keepsy style (keep the current tab bar)
+- [x] Phantom-style tab bar on every screen and desktop, count sticker made smaller (D-64)
+- [ ] Pick the home title (four options on the Round 10 page, D-64)
+- [x] City picker designed (Lagos ↔ Abuja): first visit, switch from the search bar, search across both cities, one address per city (proposals A to D, D-64)
+- [ ] Chime decides the two-city proposals and O-16
 - [ ] Chime approves the phone and desktop screens
 
 **Abuja research**
