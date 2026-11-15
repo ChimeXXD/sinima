@@ -55,8 +55,8 @@ test("the phone tab bar floats 24 px from the bottom, centred, with the count st
   const nav = await box(page.getByTestId("nav"));
   near(844 - (nav.y + nav.height), 24);
   near(nav.x + nav.width / 2, 195);
-  near((await box(page.getByTestId("nav.films"))).height, 52);
-  const cinemas = await box(page.getByTestId("nav.cinemas"));
+  near((await box(page.getByTestId("tab.films"))).height, 52);
+  const cinemas = await box(page.getByTestId("tab.cinemas"));
   near(cinemas.width, 50);
   near(cinemas.height, 50);
   await expect(page.getByTestId("nav.count")).toHaveText("4");
@@ -70,7 +70,7 @@ test("on desktop every tab is labelled in a 52 px pill that hugs its tabs", asyn
   const nav = await box(page.getByTestId("nav"));
   near(nav.height, 52);
   expect(nav.width).toBeLessThan(600);
-  await expect(page.getByTestId("nav.cinemas")).toContainText("Cinemas");
+  await expect(page.getByTestId("tab.cinemas")).toContainText("Cinemas");
 });
 
 test("a started showing has no booking link; one still to start books on the cinema's site (D-05)", async ({ page }) => {
@@ -157,9 +157,9 @@ test("on a 360 px phone the tab bar fits whichever tab is open (Figma: 336 at mo
   const nav = page.getByTestId("nav");
   for (const id of ["films", "cinemas", "soon", "yours"]) {
     // Make each tab the open one in turn, as its own page would.
-    await nav.evaluate((el, open) => el.querySelectorAll("a").forEach((a) => (a.dataset.testid === `nav.${open}` ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"))), id);
+    await nav.evaluate((el, open) => el.querySelectorAll("a").forEach((a) => (a.dataset.testid === `tab.${open}` ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"))), id);
     const bar = await box(nav);
-    const last = await box(page.getByTestId("nav.yours"));
+    const last = await box(page.getByTestId("tab.yours"));
     expect(bar.width, id).toBeLessThanOrEqual(336);
     expect(last.x + last.width, id).toBeLessThanOrEqual(bar.x + bar.width - 6);
   }

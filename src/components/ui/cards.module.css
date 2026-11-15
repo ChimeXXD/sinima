@@ -234,3 +234,31 @@
   color: var(--text-secondary);
   font: var(--type-meta);
 }
+
+/* No poster yet (Figma Films › Tele X Zikora): accent tint, note top left, ticket top right, title. */
+.noPoster {
+  position: relative;
+  background: var(--bg-accent-soft);
+}
+.noPosterNote {
+  position: absolute;
+  top: var(--space-16);
+  left: var(--space-14);
+  color: var(--text-secondary);
+  font: 500 12px/1.2 var(--font-sans); /* Figma: Urbanist Medium 12 */
+}
+.noPosterTicket {
+  position: absolute;
+  top: var(--space-12);
+  right: 9px;
+  rotate: 10deg;
+}
+.noPosterTitle {
+  position: absolute;
+  right: var(--space-14);
+  bottom: 28px;
+  left: var(--space-14);
+  color: var(--text-brand-deep);
+  font: 600 26px/1.05 var(--font-sans); /* Figma: Urbanist SemiBold 26 */
+  overflow-wrap: anywhere;
+}

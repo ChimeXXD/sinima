@@ -1,5 +1,5 @@
 import logos from "../../../data/logos.json";
-import { TICKET_FACE, TICKET_STICKER } from "./ticket-paths";
+import { TICKET_FACE } from "./ticket-paths";
 import s from "./stickers.module.css";
 
 // 13 · Stickers (Figma 167:84): Keepsy die-cut stickers. All decorative: the words beside them
@@ -17,16 +17,15 @@ export function TicketFace({ height = 24, className }: { height?: number; classN
   );
 }
 
-/** The ticket face as a die-cut sticker, for decoration and the freshness line. Figma's is 46 tall. */
+/**
+ * The ticket face as a die-cut sticker, for decoration and the freshness line. Figma's is 46 tall.
+ * One cached file (Figma's colours are the same in both themes), so a page of no-poster cards does
+ * not repeat its path data (the page budget, D-21).
+ */
 export function TicketFaceSticker({ height = 46, className }: { height?: number; className?: string }) {
   return (
-    <svg className={`${s.sticker} ${className ?? ""}`} viewBox={TICKET_STICKER.viewBox} height={height} width={(height * 55.4) / 46} aria-hidden="true" focusable="false">
-      <path fill="var(--sticker-outline)" stroke="var(--sticker-outline)" strokeWidth={6.3} strokeLinejoin="round" d={TICKET_STICKER.outline} />
-      <path fill="var(--brand-ticket)" fillRule="evenodd" d={TICKET_STICKER.ticket} />
-      {TICKET_STICKER.eyes.map((d) => (
-        <path key={d} fill="var(--brand-eyes)" d={d} />
-      ))}
-    </svg>
+    // eslint-disable-next-line @next/next/no-img-element -- a static export has no image optimiser
+    <img className={`${s.sticker} ${className ?? ""}`} src="/stickers/ticket.svg" alt="" height={height} width={(height * 55.4) / 46} decoding="async" />
   );
 }
 

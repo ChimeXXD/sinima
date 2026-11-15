@@ -1,0 +1,110 @@
+/* The shared frame (Figma Design screens: Header / Navbar, Footer). Margins from Layout & grid:
+   16 on a phone, 32 on an iPad, 100 on desktop with the content 1240 wide and centred. */
+
+.header,
+.main,
+.footer {
+  --gutter: var(--space-16);
+  padding-inline: max(var(--gutter), (100% - 1240px) / 2);
+}
+@media (min-width: 768px) {
+  .header,
+  .main,
+  .footer {
+    --gutter: var(--space-32);
+  }
+}
+/* From 1200 the content centres at 1240, so the margin reaches 100 at Figma's 1440. */
+
+/* Phone and iPad: lockup and theme switch on one row, search under them; the nav floats. */
+.header {
+  display: grid;
+  grid-template-areas:
+    "lockup theme"
+    "search search";
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: var(--space-14) 0;
+  padding-top: var(--space-14);
+  padding-bottom: var(--space-8);
+}
+.lockup {
+  grid-area: lockup;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  justify-self: start;
+  min-height: 44px; /* the 30 px lockup, with a 44 px touch area */
+  color: var(--text-primary);
+}
+.search {
+  grid-area: search;
+}
+.nav {
+  display: contents;
+}
+/* Two classes, so these beat the old global .round until it goes. */
+.header .theme {
+  grid-area: theme;
+  display: inline-grid;
+  place-items: center;
+  border-radius: var(--radius-full);
+  /* Figma's 40 circle inside a 44 touch area: the transparent edge is not painted. */
+  width: 44px;
+  height: 44px;
+  margin: -2px;
+  border: 2px solid transparent;
+  background: var(--bg-surface) padding-box;
+  color: var(--text-primary);
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer {
+  padding-top: var(--space-24);
+  padding-bottom: 120px; /* clear of the floating tab bar */
+  color: var(--text-secondary);
+  font: var(--type-meta);
+}
+@media (min-width: 768px) {
+  .footer {
+    padding-bottom: 130px;
+  }
+}
+
+/* Desktop: one navbar, a hairline under it. */
+@media (min-width: 1200px) {
+  .header {
+    grid-template-areas: "lockup search . nav theme";
+    grid-template-columns: auto minmax(240px, 500px) 1fr auto auto;
+    gap: 0 28px;
+    padding-top: var(--space-16);
+    padding-bottom: var(--space-16);
+    border-bottom: 1px solid var(--border-hairline);
+  }
+  .nav {
+    display: block;
+    grid-area: nav;
+  }
+  .header .theme {
+    margin: 0;
+    border: 0;
+  }
+  .footer {
+    padding-top: var(--space-48);
+    padding-bottom: 64px;
+    font: 500 14px/1.25 var(--font-sans); /* Figma: Urbanist Medium 14 */
+  }
+}
+
+.hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

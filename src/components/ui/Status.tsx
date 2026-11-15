@@ -133,9 +133,14 @@ export function FormatBadge({ formats }: { formats: string[] }) {
 
 /** 11.4 Sample note, shown while saved fixtures power the page (rule 8). */
 export function SampleNote() {
+  return <Notice kind="sample" text={bannerFor(["sample"])!.text} />;
+}
+
+/** The page's one notice in the Sample note's style: sample data, or times a day old or older. */
+export function Notice({ kind, text }: { kind: string; text: string }) {
   return (
-    <p role="status" className={s.sample} data-testid="banner.sample">
-      {bannerFor(["sample"])!.text}
+    <p role="status" className={s.sample} data-testid={`banner.${kind}`}>
+      {text}
     </p>
   );
 }

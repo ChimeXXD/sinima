@@ -7,17 +7,17 @@ test("Films (the home page, D-55) lists every film still showing; typing narrows
   const showing = new Set(today(all, now).map((s) => s.filmId));
   await freeze(page, now);
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Films in Lagos");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("What's on in Lagos"); // Figma Films (D-82)
   const cards = page.locator('[data-testid^="film.card."]');
   await expect(cards).toHaveCount(showing.size);
 
-  await page.getByTestId("films.filter").fill("  RAMA ");
+  await page.getByTestId("search.field").fill("  RAMA ");
   await expect(cards).toHaveCount([...showing].filter((id) => id.includes("rama")).length);
-  await page.getByTestId("films.filter").fill("zzz");
+  await page.getByTestId("search.field").fill("zzz");
   await expect(cards).toHaveCount(0);
   await expect(page.getByTestId("films.none")).toHaveText('No film showing matches "zzz".');
 
-  await page.getByTestId("films.filter").fill("spider");
+  await page.getByTestId("search.field").fill("spider");
   await cards.first().getByRole("link").first().click();
   await expect(page).toHaveURL(/\/film\/spider-man-brand-new-day$/);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Spider-Man: Brand New Day");

@@ -5,11 +5,13 @@ test("the header shows the Ticket S mark beside the name", async ({ page }) => {
   await page.goto("/");
   const brand = page.getByTestId("wordmark");
   await expect(brand).toHaveText("Sinima");
-  const mark = brand.locator("svg");
+  // Figma's lockup (D-82): the ticket face, then the wordmark drawn as a second svg.
+  const mark = brand.locator("svg").first();
   await expect(mark).toBeVisible();
   await expect(mark).toHaveAttribute("aria-hidden", "true"); // the name beside it is the label
-  // One cut shape: the notches and dots are holes, not painted circles.
-  await expect(mark.locator("path")).toHaveAttribute("fill-rule", "evenodd");
+  // The ticket is one cut shape: the notches and tear-line dots are holes, not painted circles.
+  await expect(mark.locator("path").first()).toHaveAttribute("fill-rule", "evenodd");
+  await expect(brand.locator("svg").last()).toHaveAttribute("aria-hidden", "true");
 });
 
 test("the tab icon, home-screen icon and manifest icons all load", async ({ page, request }) => {

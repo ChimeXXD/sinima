@@ -2,7 +2,7 @@ import type { CreditsInfo, ShowtimesFile, SourceMethod, Via } from "@/lib/data/t
 import { EVENING_ENDS_HOUR, eveningDayKey, toLagos, utcMs, utcString } from "@/lib/time/lagos";
 import { isBeforeStart, showingState } from "@/lib/time/showingState";
 import { creditsWording } from "@/lib/wording/credits";
-import type { FreshnessBand } from "@/lib/wording/freshness";
+import { freshness, type FreshnessBand } from "@/lib/wording/freshness";
 
 // What a list page needs from a data file, and how its rows fall into sections. The page sends
 // ListData to the browser, so it holds only what a row shows, with repeated values stored once.
@@ -73,7 +73,7 @@ export function toListData(file: ShowtimesFile, only: { filmId?: string; cinemaI
   };
 }
 
-const startsSoon = (at: string, now: string) => isBeforeStart(showingState(at, now)) && utcMs(at) - utcMs(now) <= SOON_WINDOW;
+export const startsSoon = (at: string, now: string) => isBeforeStart(showingState(at, now)) && utcMs(at) - utcMs(now) <= SOON_WINDOW;
 
 /**
  * The home sections: Starting soon (the next 2 hours), Later tonight (to 04:00) and Tomorrow.
@@ -106,6 +106,13 @@ export function bannerFor(bands: FreshnessBand[]): Banner | null {
   if (bands.includes("old")) return { kind: "old", text: "Some times are more than a day old and may have changed." };
   if (bands.includes("stale")) return { kind: "stale", text: "Some times were read yesterday. Cinemas change programmes; check before you travel." };
   return null;
+}
+
+/** The page's one banner for its data: sample data at once; the age of real times only once the browser has the clock (rule 3). */
+export function pageBanner(data: ListData, now: string | null): Banner | null {
+  if (data.sample) return bannerFor(["sample"]);
+  if (now === null) return null;
+  return bannerFor(data.fresh.map((from) => freshness({ name: from.source, method: from.method }, from.fetchedAt, now, from.via).band));
 }
 
 /**

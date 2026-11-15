@@ -1,0 +1,126 @@
+/* Films (Figma 175:3480): controls, sections and the poster grid at 2, 4 and 5 columns. */
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  padding-block: var(--space-4);
+}
+.controls > :first-child {
+  display: grid;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}
+.notice {
+  display: flex;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  padding-top: 26px;
+  padding-bottom: var(--space-8);
+}
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.heading h2 {
+  color: var(--text-primary);
+  font: var(--type-heading-m);
+}
+.heading p {
+  color: var(--text-secondary);
+  font: 500 14px/1.2 var(--font-sans); /* Figma: Urbanist Medium 14 */
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px var(--space-12);
+  align-items: start;
+}
+.formatNote {
+  color: var(--text-secondary);
+  font: var(--type-meta);
+}
+.none {
+  padding-block: var(--space-32);
+  color: var(--text-secondary);
+  font: var(--type-body-l);
+}
+
+/* Nothing more starts today: centred, a ticket, the words, See tomorrow, a handwritten goodbye. */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-14);
+  padding: 40px 0 var(--space-24);
+  text-align: center;
+}
+.empty h2 {
+  color: var(--text-primary);
+  font: var(--type-heading-m);
+}
+.empty p {
+  max-width: 34em;
+  color: var(--text-secondary);
+  font: var(--type-body-l);
+}
+.hand {
+  color: var(--action-primary);
+  font: var(--type-handwritten);
+  rotate: -3deg;
+}
+
+@media (min-width: 768px) {
+  .controls {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .section {
+    gap: 22px;
+    padding-top: 30px;
+  }
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: var(--space-16);
+  }
+}
+
+@media (min-width: 1200px) {
+  .controls {
+    flex-wrap: nowrap;
+    gap: var(--space-16);
+    padding-block: 0;
+  }
+  .notice {
+    margin-left: auto;
+  }
+  .section {
+    gap: var(--space-20);
+    padding-top: 44px;
+    padding-bottom: 0;
+  }
+  .heading {
+    flex-direction: row;
+    align-items: baseline;
+    gap: var(--space-14);
+  }
+  .heading h2 {
+    font: var(--type-heading-l);
+  }
+  .heading p {
+    font-size: 15px;
+  }
+  .grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: var(--space-20);
+  }
+}

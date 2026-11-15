@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Poster } from "@/components/Poster";
 import { Button, Chip, IconButton, Segmented } from "@/components/ui/Actions";
-import { CinemaFolder, FilmCard, ShowingCard, type FolderTint } from "@/components/ui/Cards";
+import { CinemaFolder, FilmCard, NoPoster, ShowingCard, type FolderTint } from "@/components/ui/Cards";
 import { SearchBar, type CityChoice } from "@/components/ui/SearchBar";
 import { SectionNav } from "@/components/ui/SectionNav";
 import { OptionRow, Sheet } from "@/components/ui/Sheet";
@@ -90,23 +89,23 @@ export function KitDemo() {
 
       <Section id="cards" title="10 · Cards">
         <div className={s.grid}>
-          <FilmCard href="/film/ramayana-rise-of-a-legend" title={RAMAYANA.title} meta="3 h 21 min" poster={<Poster film={RAMAYANA} />} formats={["IMAX", "4D"]} next={at(5)} cinemas={4} now={now} testId="kit.filmcard" />
+          <FilmCard href="/film/ramayana-rise-of-a-legend" title={RAMAYANA.title} meta="3 h 21 min" poster={<NoPoster title={RAMAYANA.title} />} formats={["IMAX", "4D"]} next={at(5)} cinemas={4} now={now} testId="kit.filmcard" />
         </div>
         <div className={s.grid}>
-          <ShowingCard title={STREET.title} cinema="Filmhouse Surulere" meta="2 h 0 min · 15" poster={<Poster film={STREET} />} startsAt={at(10)} now={now} bookUrl="https://filmhouseng.com" bookLabel="Book Street Fighter at 17:40 on Filmhouse's site" testId="kit.showing.upcoming" />
-          <ShowingCard title={CLAYFACE.title} cinema="Filmhouse Surulere" meta="1 h 49 min · 18" poster={<Poster film={CLAYFACE} />} startsAt={at(-3)} now={now} bookUrl="https://filmhouseng.com" bookLabel="Book Clayface on Filmhouse's site" testId="kit.showing.started" />
+          <ShowingCard title={STREET.title} cinema="Filmhouse Surulere" meta="2 h 0 min · 15" poster={<NoPoster title={STREET.title} />} startsAt={at(10)} now={now} bookUrl="https://filmhouseng.com" bookLabel="Book Street Fighter at 17:40 on Filmhouse's site" testId="kit.showing.upcoming" />
+          <ShowingCard title={CLAYFACE.title} cinema="Filmhouse Surulere" meta="1 h 49 min · 18" poster={<NoPoster title={CLAYFACE.title} />} startsAt={at(-3)} now={now} bookUrl="https://filmhouseng.com" bookLabel="Book Clayface on Filmhouse's site" testId="kit.showing.started" />
         </div>
         <div className={s.grid}>
           {FOLDERS.map(([name, chain, area, tonight, tint]) => (
-            <CinemaFolder key={name} href="/kit" name={name} chain={chain} area={area} next={at(10)} tonight={tonight} tint={tint} posters={[<Poster key="a" film={RAMAYANA} small />, <Poster key="b" film={STREET} small />, <Poster key="c" film={CLAYFACE} small />]} testId={`kit.folder.${chain}`} />
+            <CinemaFolder key={name} href="/kit" name={name} chain={chain} area={area} next={at(10)} tonight={tonight} tint={tint} posters={[<NoPoster key="a" title={RAMAYANA.title} />, <NoPoster key="b" title={STREET.title} />, <NoPoster key="c" title={CLAYFACE.title} />]} testId={`kit.folder.${chain}`} />
           ))}
         </div>
       </Section>
 
       <Section id="worst" title="Worst case">
         <div className={s.grid}>
-          <FilmCard href="/kit" title="Ramayana: Rise of a Legend, Part Two: The Return of the King of Ayodhya" meta="3 h 21 min · 18" poster={<Poster film={RAMAYANA} />} formats={["IMAX", "4DX", "ScreenX", "MX4D"]} next={at(1)} cinemas={1} now={now} testId="kit.worst.film" />
-          <ShowingCard title="Spider-Man: Across the Spider-Verse (Original Version with Subtitles)" cinema="Genesis Deluxe Cinemas Maryland Mall Ikeja" meta="2 h 20 min · PG" poster={<Poster film={STREET} />} startsAt={at(0)} now={now} bookUrl={null} bookLabel="" testId="kit.worst.showing" />
+          <FilmCard href="/kit" title="Ramayana: Rise of a Legend, Part Two: The Return of the King of Ayodhya" meta="3 h 21 min · 18" poster={<NoPoster title={RAMAYANA.title} />} formats={["IMAX", "4DX", "ScreenX", "MX4D"]} next={at(1)} cinemas={1} now={now} testId="kit.worst.film" />
+          <ShowingCard title="Spider-Man: Across the Spider-Verse (Original Version with Subtitles)" cinema="Genesis Deluxe Cinemas Maryland Mall Ikeja" meta="2 h 20 min · PG" poster={<NoPoster title={STREET.title} />} startsAt={at(0)} now={now} bookUrl={null} bookLabel="" testId="kit.worst.showing" />
           <CinemaFolder href="/kit" name="Genesis Deluxe Cinemas Lekki Phase One Admiralty Way" chain="Unknown chain" area="Eti-Osa and Lekki Phase One" next={null} tonight={128} tint="pink" posters={[]} testId="kit.worst.folder" />
         </div>
       </Section>

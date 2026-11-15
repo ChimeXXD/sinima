@@ -2,6 +2,15 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 15 Nov 2026 — build unit 3, Films (D-86, D-87)
+
+- **Red:** tests/unit/lib/data/films.test.ts and tests/unit/lib/wording/films.test.ts: `Cannot find package '@/lib/data/films'` / `'@/lib/wording/films'`.
+- **Changed (working tree):** `lib/data/films.ts` (sections: next 2 hours, later tonight, one list for tomorrow, a format, or before the clock; format coverage; last start), `lib/wording/films.ts`; `ui/AppFrame` (lockup with Figma's wordmark, search bar, nav, theme switch, footer), `ui/Cards` NoPoster, `ui/Status` Notice; `components/films/` FilmsScreen, FilmsHero (stickers anchored to the edges on phone and iPad, round the centre on desktop; "tonight!" waits for the clock), hero stickers from Figma in `public/stickers/`; the die-cut ticket is one SVG file. `/` uses it; FilmsBoard deleted. Old stylesheets now load with the old Shell only. Desktop layout from 1200 px (D-86).
+- **Checked:** unit tests (films 20); e2e: films-screen.spec 8 new (2-hour split, IMAX and its note, nothing more today with and without tomorrow, 2/4/5 columns, nav position), whole suite green after updating tests to the new design (flagged: home title "What's on in Lagos"; search field id; brand test for Figma's two-part lockup; tab-name test measures text, not icons).
+- **Budget:** Films 212.6 KB, Cinemas 200.2 against the old 200: Chime raised the limit to 215 / 165 JS for the build (D-87).
+- **Reviewed:** `/code-review medium --fix`: cards said "Next 14:00" before the clock (now "From" until it is known; rule 3, D-05); banner logic shared as `pageBanner`; filmSections simplified. proof:verifier FAIL, fixed: theme switch and logo now 44 px touch targets (Figma's 40 circle drawn inside), "tonight!" only beside today's list, last inline sentences moved to lib/wording, and at 360 px the glasses covered "in" (corner stickers now shrink below 390; e2e checks no overlap at 360 and 390). Full gate green.
+- **Not done:** Abuja state (unit 13); the city pill and "Lagos ⌄" open nothing yet (unit 5); real posters need TMDB data; not checked on Chime's phone.
+
 ## 15 Nov 2026 — after-midnight day on time pill and chip (D-85)
 
 - **Red:** parts.test.ts › after midnight › `TypeError: lateDay is not a function`.

@@ -2,10 +2,11 @@ import Link from "next/link";
 import { minutesFromStart } from "@/lib/time/countdown";
 import { isBeforeStart, showingState } from "@/lib/time/showingState";
 import { filmNextLine } from "@/lib/wording/film";
+import { NO_POSTER } from "@/lib/wording/films";
 import { cinemaNextLine, showingsTonight } from "@/lib/wording/showing";
 import { Icon } from "./Icon";
 import { CountdownBadge, CountdownPill, FormatBadge, TimePill } from "./Status";
-import { LogoSticker } from "./Stickers";
+import { LogoSticker, TicketFaceSticker } from "./Stickers";
 import s from "./cards.module.css";
 
 // 10 · Cards (Figma 167:72): films, showings and saved cinemas. Posters come in as `poster`, so
@@ -16,10 +17,10 @@ import s from "./cards.module.css";
  * edge (only within the hour); then the title (2 lines at most), runtime · rating, and the stats
  * line "Next 17:40 · 4 cinemas".
  */
-export function FilmCard(props: { href: string; title: string; meta: string; poster: React.ReactNode; formats: string[]; next: string | null; cinemas: number; now: string | null; testId?: string }) {
-  const { href, title, meta, poster, formats, next, cinemas, now, testId } = props;
+export function FilmCard(props: { href: string; title: string; meta: string; poster: React.ReactNode; formats: string[]; next: string | null; cinemas: number; now: string | null; nextWord?: "Next" | "From"; testId?: string }) {
+  const { href, title, meta, poster, formats, next, cinemas, now, nextWord, testId } = props;
   const soon = next !== null && now !== null && isBeforeStart(showingState(next, now)) && minutesFromStart(next, now).minutes <= 60; // as the old card
-  const stats = next === null ? null : filmNextLine(next, cinemas);
+  const stats = next === null ? null : filmNextLine(next, cinemas, nextWord);
   return (
     <article className={s.film} data-testid={testId}>
       <Link href={href} className={s.posterArea} aria-label={title} tabIndex={-1}>
@@ -39,7 +40,9 @@ export function FilmCard(props: { href: string; title: string; meta: string; pos
       <p className={s.meta}>{meta}</p>
       {stats && (
         <p className={s.stats}>
-          <b>{stats.next}</b>
+          <b>
+            <time dateTime={next!}>{stats.next}</time>
+          </b>
           <span className={s.dot} aria-hidden="true">
             ·
           </span>
@@ -77,6 +80,24 @@ export function ShowingCard(props: { title: string; cinema: string; meta: string
       {/* No Book link until the clock is known: the static HTML cannot tell whether it has started (D-05). */}
       <TimePill startsAt={startsAt} now={now} bookUrl={bookUrl} bookLabel={bookLabel} />
     </article>
+  );
+}
+
+/**
+ * A poster face for a film with no artwork yet (Figma: Tele X Zikora): the title large on the
+ * accent tint, a ticket sticker, and "Poster not listed yet". Never an empty box (D-49).
+ */
+export function NoPoster({ title }: { title: string }) {
+  return (
+    <div className={s.noPoster} data-testid="poster.none">
+      <span className={s.noPosterNote}>
+        {NO_POSTER[0]}
+        <br />
+        {NO_POSTER[1]}
+      </span>
+      <TicketFaceSticker height={46} className={s.noPosterTicket} />
+      <b className={s.noPosterTitle}>{title}</b>
+    </div>
   );
 }
 

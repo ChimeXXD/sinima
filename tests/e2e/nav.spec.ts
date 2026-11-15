@@ -6,7 +6,7 @@ import { freeze, sampleTime } from "./helpers";
 // D-61: a fourth tab, Your cinemas, holds the hearted cinemas.
 test("the site opens on Films, and the tabs read Films, Cinemas, Starting soon, Your cinemas on every page", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Films in Lagos");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("What's on in Lagos");
   await expect(page.getByTestId("tab.films")).toHaveAttribute("aria-current", "page");
   for (const path of ["/", "/cinemas", "/area/lekki", "/soon", "/yours", "/film/ramayana", "/cinema/ebonylife-vi"]) {
     await page.goto(path);
@@ -23,7 +23,7 @@ test("a saved area takes the Cinemas tab to that area, not the Films home", asyn
   await page.getByTestId("sheet.area.ikeja").click();
   await expect(page).toHaveURL(/\/area\/ikeja$/);
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Films in Lagos");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("What's on in Lagos");
   await page.getByTestId("tab.cinemas").click();
   await expect(page).toHaveURL(/\/area\/ikeja$/);
 });
@@ -90,9 +90,13 @@ for (const width of [360, 320]) {
     // A wrapped name still fits in the 44 px tab, so count the lines of text, not the tab's height.
     const wrapped = await page.getByRole("navigation", { name: "Sections" }).getByRole("link").evaluateAll((els) =>
       els.filter((el) => {
-        const range = document.createRange();
-        range.selectNodeContents(el);
-        return new Set([...range.getClientRects()].map((rect) => Math.round(rect.top))).size > 1;
+        // The text only: a tab may also hold an icon, which is not a line of its name.
+        const texts = [...el.querySelectorAll("*"), el].flatMap((node) => [...node.childNodes].filter((child) => child.nodeType === Node.TEXT_NODE && child.textContent!.trim()));
+        return texts.some((text) => {
+          const range = document.createRange();
+          range.selectNodeContents(text);
+          return new Set([...range.getClientRects()].map((rect) => Math.round(rect.top))).size > 1;
+        });
       }).map((el) => el.textContent),
     );
     expect(wrapped).toEqual([]);

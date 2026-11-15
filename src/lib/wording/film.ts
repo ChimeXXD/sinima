@@ -19,7 +19,10 @@ export function shortCountdown(at: string, now: string): string {
   return hours === 0 ? `in ${minutes} min` : minutes % 60 === 0 ? `in ${hours} h` : `in ${hours} h ${minutes % 60} min`;
 }
 
-/** The film card's stats line (Figma 10.1): "Next 17:40" in the strong style, then "4 cinemas". */
-export function filmNextLine(at: string, cinemas: number): { next: string; where: string } {
-  return { next: `Next ${formatLateTime(at)}`, where: `${cinemas} ${cinemas === 1 ? "cinema" : "cinemas"}` };
+/**
+ * The film card's stats line (Figma 10.1): "Next 17:40" in the strong style, then "4 cinemas".
+ * "From 17:40" in the page's own HTML, which cannot tell whether that showing has started (rule 3).
+ */
+export function filmNextLine(at: string, cinemas: number, word: "Next" | "From" = "Next"): { next: string; where: string } {
+  return { next: `${word} ${formatLateTime(at)}`, where: `${cinemas} ${cinemas === 1 ? "cinema" : "cinemas"}` };
 }

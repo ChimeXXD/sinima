@@ -50,7 +50,7 @@
     gap: var(--space-16);
   }
 }
-@media (min-width: 1024px) {
+@media (min-width: 1200px) {
   .page {
     padding-inline: 100px;
   }

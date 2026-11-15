@@ -36,7 +36,11 @@ function paintBar(theme: Theme | null, bg: { light: string; dark: string }) {
  * choice on this device; layout.tsx applies a kept choice before the page is drawn. The page changes
  * at once and only the icon moves (D-60).
  */
-export function ThemeToggle({ bg }: { bg: { light: string; dark: string } }) {
+/**
+ * `icons` replaces the sun and moon: the rebuilt frame passes Figma's Lucide pair, so pages still on
+ * the old frame do not load the new icon set (the page budget, D-21).
+ */
+export function ThemeToggle({ bg, className, icons }: { bg: { light: string; dark: string }; className?: string; icons?: { sun: React.ReactNode; moon: React.ReactNode } }) {
   const theme = useSyncExternalStore(subscribe, current, () => null);
   useEffect(() => {
     const chosen = document.documentElement.dataset.theme;
@@ -66,17 +70,17 @@ export function ThemeToggle({ bg }: { bg: { light: string; dark: string } }) {
   return (
     <button
       type="button"
-      className="round theme"
+      className={className ? `round theme ${className}` : "round theme"}
       data-testid="theme.toggle"
       aria-label={theme ? `Switch to ${next} mode` : "Switch between light and dark mode"}
       onClick={apply}
     >
       {/* Both icons are drawn; the stylesheet shows the one for the theme on screen (theme-switch.css). */}
       <span className="sun">
-        <Icon name="sun" />
+        {icons?.sun ?? <Icon name="sun" />}
       </span>
       <span className="moon">
-        <Icon name="moon" />
+        {icons?.moon ?? <Icon name="moon" />}
       </span>
     </button>
   );

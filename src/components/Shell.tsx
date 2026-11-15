@@ -1,3 +1,6 @@
+// The old screens' styles load with the old frame only, so rebuilt screens do not carry them (D-21).
+import "@/styles/sinima.css";
+import "@/styles/cinemas.css";
 import Link from "next/link";
 import { LogoMark } from "@/components/Logo";
 import { Search } from "@/components/Search";

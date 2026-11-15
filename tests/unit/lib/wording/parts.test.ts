@@ -65,6 +65,9 @@ describe("filmNextLine: the stats line under a film card (Figma 10.1)", () => {
   it("marks a showing after midnight with its day", () => {
     expect(filmNextLine("2026-11-06T23:30:00Z", 2).next).toBe("Next 00:30 (Sat)");
   });
+  it("says From in the page's own HTML, which cannot tell whether the showing has started (rule 3)", () => {
+    expect(filmNextLine(START, 4, "From").next).toBe("From 19:30");
+  });
 });
 
 describe("cinema folder lines (Figma 10.3)", () => {

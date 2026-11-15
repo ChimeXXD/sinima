@@ -150,7 +150,7 @@
 }
 
 /* Desktop: a centred dialog, 440 wide, that grows in from 96%. */
-@media (min-width: 1024px) {
+@media (min-width: 1200px) {
   .sheet {
     inset: 0;
     width: 440px;

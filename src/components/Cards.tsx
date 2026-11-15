@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Poster } from "@/components/Poster";
 import { TimeChip } from "@/components/Showing";
 import { formatsOf } from "@/lib/data/programme";
-import { bannerFor, type ListData, type ListRow } from "@/lib/data/select";
+import { pageBanner, type ListData, type ListRow } from "@/lib/data/select";
 import { minutesFromStart } from "@/lib/time/countdown";
 import { filmMeta, shortCountdown } from "@/lib/wording/film";
 import { freshness } from "@/lib/wording/freshness";
@@ -18,8 +18,7 @@ export function sourceLine(data: ListData, row: ListRow, now: string | null): st
 
 /** The one notice a page shows: sample data, or times that are a day old or older. */
 export function Banner({ data, now }: { data: ListData; now: string | null }) {
-  const bands = data.sample ? (["sample"] as const) : now === null ? [] : data.fresh.map((from) => freshness({ name: from.source, method: from.method }, from.fetchedAt, now, from.via).band);
-  const banner = bannerFor([...bands]);
+  const banner = pageBanner(data, now);
   return banner ? (
     <p role="status" className="banner" data-testid={`banner.${banner.kind}`}>
       {banner.text}
