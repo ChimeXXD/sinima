@@ -62,7 +62,7 @@ Dates are a target. If a week slips, cut its Should items first; never cut the c
 - [ ] Chime decides the two-city proposals and O-16
 - [x] Design System page: tokens as variables, text and effect styles, components with states and build notes (D-66)
 - [x] Your cinemas folders show each chain's logo sticker (D-67)
-- [x] Figma pages organised with dividers; Round 10 renamed Design screens (D-66)
+- [x] Figma pages organised with dividers; Round 10 renamed Design screens (D-66); then reorganised like Odin, with a cover thumbnail (D-68)
 - [ ] Every screen at iPhone, iPad and desktop size (done: Films on all three; to do: Starting soon, Film and its sheet, Your cinemas, Entry on iPad and desktop)
 - [ ] Chime approves the phone, iPad and desktop screens
 
