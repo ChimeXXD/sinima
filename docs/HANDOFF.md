@@ -1,6 +1,10 @@
 # Handoff: read this first when you pick the project back up
 
-## Now: designing flow by flow (15 Nov 2026, latest)
+## Now: every screen designed, waiting for Chime's corrections (15 Nov 2026, latest)
+
+Design screens holds ten flow sections (one row per state, iPhone · iPad · desktop): Where are you watching? `172:519`, Films `175:3480`, Film `185:3558`, Search and city `192:7519`, Cinemas `200:6415`, Area `200:6420`, Cinema `202:7192`, Starting soon `205:8598`, Your cinemas `210:9891`, About, 404 and Offline `210:9896` (D-71). All content comes from the sample data at Fri 13 Nov 17:30 Lagos; D-71 lists the calls made (a to i) for Chime to check. New component: Time chip (`179:2000`, Design System 11.3b). Old iPhone screens with wrong data are on Archive. **Next:** Chime's corrections, then approval (week 1 gate). Gotchas: binding a variable to a paint drops the paint's opacity (use layer opacity for scrims); detached Option rows and Button Secondary instances need their fills re-applied; text with mixed fonts needs `getStyledTextSegments` before editing.
+
+## Earlier: designing flow by flow (15 Nov 2026, latest)
 
 Flow 1 **Where are you watching?** is done at iPhone, iPad and desktop: section `172:519` at the top of Design screens, one row per state (D-70). Every screen has the browser mockup on top (components `173:82` iPhone, `173:104` iPad, `173:140` desktop, in "Mockup · Browser chrome" on the Design System page); iPhone and iPad frames have radius 40. The old per-device sections (iPhone `166:530`, iPad `166:543`, Desktop `166:546`) hold the not-yet-redone flows; each flow moves into its own row-per-screen section as it is designed. Next flow per the sitemap: Films (then Film + sheet, Search and city, Cinemas, Area, Cinema, Starting soon, Your cinemas, About/404/Offline).
 

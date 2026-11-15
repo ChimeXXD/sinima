@@ -2,6 +2,23 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## Every screen at three sizes (Sun 15 Nov 2026)
+
+**Changed** (design only, in Figma; nothing in the app)
+- Designed the rest of sitemap draft 3: Films states, Film (+ sheet, dialog, started), Search and city, Cinemas, Area, Cinema, Starting soon, Your cinemas, About, 404 and Offline, each at iPhone, iPad and desktop, one section per flow (D-71).
+- Fixed wrong data in earlier screens: Ramayana at 16 cinemas (merged ids), Ramayana's credits scene "not known yet", "Later tonight", 16 films in the next 2 hours, 30 films tomorrow, last showing 23:40, the folders' films and next times.
+- Design System: new Time chip; Showing card poster stretches; Cinema folder samples corrected.
+
+**Checked**
+- Every number cross-checked against `data/*.json` with scripts at the fixed clock; wording matched to `lib/wording` and `lib/time/countdown.ts`.
+- Screenshots of every flow at all three sizes; fixed clipped text, non-wrapping lists, black scrims and buttons, overlapping stickers, and sections overlapping after rows grew.
+
+**Not verified**
+- Not seen on a real phone; dark mode not designed; Abuja is still sample content.
+
+**Next**
+- Chime's corrections, then approval of the screens.
+
 ## Round 9, desktop layouts, and the finalists in Figma (Sat 14 Nov 2026)
 
 **Changed** (design only; nothing in the app)
