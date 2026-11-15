@@ -2,6 +2,13 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 15 Nov 2026 — outreach drafts, Abuja audit, Doomsday date (D-79, D-80)
+
+- `docs/OUTREACH.md` §4: Filmhouse, FilmOne, CINEsync drafts (voice score 100/100, voice check clean; follow-up sign-off fixed to Chimezie).
+- Abuja: 6 cinemas found, 4 readable directly (Silverbird SEC and Jabi on Veezi, Genesis Ceddi Plaza, Nova Lugbe by headless browser, 23 times). Recorded in docs/RESEARCH.md.
+- Avengers: Doomsday opens in Nigeria Fri 18 Dec (Filmhouse's own page); O-14 closed.
+- Not done: Abuja areas need Chime's confirmation; two Abuja addresses need confirming on the cinemas' pages.
+
 ## 15 Nov 2026 — data sources: read each cinema directly (D-76, D-77)
 
 - Checked (about 25 requests, 5 s apart per host, named UA): Filmhouse times come from filmhouseng.api.cinesync.io (403 to plain requests; headless browser got "Access Denied"); Genesis booking pages carry times in HTML; robots and pages of all 8 independents; headless browser on ozone.reachcinema.io showed 19 times.

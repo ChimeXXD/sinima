@@ -64,6 +64,29 @@ The market research, competitors and sources are in `PRD.md` (6 Nov 2026). This 
 - Ticketing platforms' Lagos cinema coverage (Nairabox, Syticks, others).
 - TMDB API rate limits and caching rules.
 
+## Abuja audit (15 Nov 2026, under D-77)
+
+Found through search, a directory (connectciti.com) and another listings site (cinephiles.ng), used only to learn which cinemas exist; each was then checked on its own site. Requests: our bot name, 3 to 5 s apart.
+
+| Cinema | Area (draft) | Where its times live | Readable? |
+|---|---|---|---|
+| Silverbird Entertainment Centre | Central Business District | Veezi, `siteToken=ntfpkgyc0phrmzxb2ctk828vd4` (linked from silverbirdcinemas.com as "Online Booking (SEC, Abuja)") | Yes: server-rendered, 12 times on 15 Nov |
+| Silverbird Jabi Lake Mall | Jabi | Veezi, `siteToken=ypr75qx9nh88brqya85qtg3wqc` (from silverbirdcinemas.com/cinema/jabi/) | Yes: same reader as Silverbird Lagos |
+| Genesis Ceddi Plaza | Central Business District | genesiscinemas.com/ceddi-plaza-abuja/booknow/<id> | Yes: times in the HTML (19:20 seen) |
+| Nova Cinema, Novare Gateway Mall | Lugbe ("Musa Yar'Adua expressway (Airport road) Lugbe District Abuja", the mall's own page) | novacinemang.com/showtimes, script-built, looks like the Reach platform | Yes, with the headless browser: 23 times on 15 Nov |
+| The Jays Cinemas | Kuje ("Union Home Estate Road Kuchiyako, Kuje", its own site) | thejayscinemas.com (WordPress); no times shown | Not yet: "Times not available yet" |
+| Banex Cinema | Wuse 2 (unverified) | No website found; cinephiles.ng shows 0 upcoming | Unknown; may be closed. Left out until confirmed |
+
+Not listed: private-hire cinemas (Deja Vu, Wuse 2; Showroom, Jahi) have no public showtimes. No Filmhouse, EbonyLife or Viva cinema was found in Abuja (inference from search, not exhaustive). So Abuja needs no Lagocine at all.
+
+Addresses for Silverbird SEC (1161 Memorial Drive, by Musa Yar'Adua Centre) and Genesis Ceddi Plaza (264 Tafawa Balewa Way) come from directories; confirm on each cinema's page before they go into `data/cinemas.json`.
+
+Areas and neighbours, drafted for Chime to confirm (as O-10 was for Lagos): Central Business District ↔ Jabi, Central Business District ↔ Lugbe (Airport Road), Lugbe ↔ Kuje.
+
+## Avengers: Doomsday in Nigeria (15 Nov 2026)
+
+Filmhouse's own film page (`/movies/avengersdoomsday-2026`) gives "Release Date 18/12/2026" (`datePublished: 2026-12-18`) and a "Buy Tickets" link to `/showtimes/2026-12-18`. Worldwide (Marvel, Wikipedia, Ster-Kinekor) it is also 18 Dec. Disney's Middle East site says 16 Dec.
+
 ## Source audit findings (11 Nov 2026)
 
 One manual request per page, with the named user agent. Full quotes are in `data/sources.json`.

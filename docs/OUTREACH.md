@@ -1,6 +1,6 @@
 # Outreach drafts
 
-Short, polite emails asking for permission to use showtimes. **Chime sends these, not Claude.** Send Lagocine first (D-07). Log the date sent and any reply in `docs/DECISIONS.md` (O-2) and `data/sources.json`.
+Short, polite emails about showtimes. **Chime sends these, not Claude.** Since D-76 (15 Nov) we read each cinema's own site and ask only where we can't: Filmhouse (section 4). Log the date sent and any reply in `docs/DECISIONS.md` (O-2) and `data/sources.json`.
 
 Find addresses on each site's contact or privacy page. Lagocine's is linked from its privacy page. Don't guess addresses.
 
@@ -60,6 +60,60 @@ chimexd.work
 
 ---
 
+## 4. Filmhouse, FilmOne and CINEsync (15 Nov 2026, D-76)
+
+Filmhouse's 7 Lagos cinemas are the only ones we can't read ourselves: its ticketing provider, CINEsync, refuses our bot. Until one of these says yes, Filmhouse's times come through Lagocine. Send all three; find each address or DM on their own contact page or official Instagram, never guessed. Checked with the voice score (100/100) and the banned list; Chime approves before sending.
+
+### 4a. Filmhouse marketing (email or Instagram DM)
+
+**Subject:** Listing Filmhouse's showtimes on a free Lagos and Abuja app
+
+Hi Filmhouse team,
+
+I'm Chimezie, a product designer in Lagos. I'm building Sinima, a free, open-source web app that shows cinema showtimes in Lagos and Abuja in one place, so people can find a film starting soon near them. It goes live in mid-December, a few days before Avengers: Doomsday.
+
+I'd like to list Filmhouse's showtimes and send every visitor to your own site to book. I won't sell tickets, show ads or take any commission, and I won't add tracking to your links.
+
+Your showtimes load through CINEsync, which turns automated readers away, so I'm asking first. Could I read your public showtimes a few times a day, or is there a feed I could use? I'll stop at once if you ask.
+
+I emailed onlinesupport@filmhouseng.com on 11 November and haven't heard back.
+
+Thank you,
+Chimezie Ekpendu
+https://chimexd.work
+
+### 4b. FilmOne Entertainment (Filmhouse's parent company)
+
+**Subject:** Who to ask about listing Filmhouse showtimes?
+
+Hi FilmOne team,
+
+I'm Chimezie, a product designer in Lagos. I'm building Sinima, a free, open-source web app that shows cinema showtimes in Lagos and Abuja in one place. It goes live in mid-December, a few days before Avengers: Doomsday.
+
+I'd like to list Filmhouse's showtimes and send every visitor to Filmhouse's own site to book. I won't sell tickets, show ads or take any commission.
+
+Who's the right person to ask about this? I emailed Filmhouse's support address on 11 November and haven't heard back.
+
+Thank you,
+Chimezie Ekpendu
+https://chimexd.work
+
+### 4c. CINEsync (Filmhouse's ticketing provider)
+
+**Subject:** A showtimes feed for Filmhouse on a free listings app?
+
+Hi CINEsync team,
+
+I'm Chimezie, a product designer in Lagos. I'm building Sinima, a free, open-source web app that lists cinema showtimes in Lagos and Abuja and sends people to each cinema's own site to book.
+
+Filmhouse's showtimes come through CINEsync, and your server turns our reader away. That's fine, and I won't try to get around it. Do you offer a feed for listings like this, or could Filmhouse approve one? I'd read it a few times a day at most.
+
+Thanks,
+Chimezie Ekpendu
+https://chimexd.work
+
+---
+
 ## Follow-up (one week later, once only)
 
-Hi again. Just checking you saw my note below about listing your showtimes with links to your booking. A quick yes or no is perfect. Thanks, Chime.
+Hi again. Just checking you saw my note below about listing your showtimes with links to your booking. A quick yes or no is perfect. Thanks, Chimezie.

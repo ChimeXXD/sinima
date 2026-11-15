@@ -71,14 +71,14 @@ Dates are a target. If a week slips, cut its Should items first; never cut the c
 - [ ] Chime approves the phone, iPad and desktop screens
 
 **Abuja research**
-- [ ] List Abuja's cinemas from primary sources (each chain's own site): name, address, area, booking site
-- [ ] Sources audit for each (robots.txt, terms, listing URL), under D-77; fill `data/sources.json`
+- [x] List Abuja's cinemas (15 Nov, D-79): Silverbird SEC, Silverbird Jabi Lake Mall, Genesis Ceddi Plaza, Nova (Lugbe), The Jays (Kuje, no times); Banex unconfirmed. Two addresses still to confirm on the cinemas' own pages
+- [x] Abuja sources audit (15 Nov, D-79): 4 readable directly (Veezi, Genesis, Nova by headless browser); recorded in docs/RESEARCH.md, goes into `data/sources.json` with the city layer (week 2)
 - [x] Lagos sources re-audited (15 Nov): every cinema has a public page; Genesis and Silverbird (Veezi) cleared; Filmhouse blocked, so Lagocine is its fallback (D-76, D-77)
 - [x] Terms read and the headless-browser route tested (15 Nov): all 14 non-Filmhouse Lagos cinemas cleared (D-77, D-78); Filmhouse stays on Lagocine
 - [ ] Messages to Filmhouse marketing, FilmOne and CINEsync asking to read Filmhouse's times directly (Chime sends)
-- [ ] Outreach drafts for Abuja cinemas in `docs/OUTREACH.md`; Chime sends them
-- [ ] Abuja areas and their neighbours, drafted for Chime to confirm (as O-10 was for Lagos)
-- [ ] Confirm Avengers: Doomsday's Nigerian opening date with Filmhouse, Silverbird, Genesis or the distributor (O-14)
+- [x] Outreach: none needed for Abuja (all readable, D-79); Filmhouse, FilmOne and CINEsync drafts are in `docs/OUTREACH.md` §4 for Chime to send
+- [ ] Abuja areas and their neighbours: drafted (Central Business District, Jabi, Lugbe, Kuje; docs/RESEARCH.md), Chime to confirm
+- [x] Avengers: Doomsday opens in Nigeria Fri 18 Dec 2026, per Filmhouse's own page; launch stays Tue 15 Dec (D-80, closes O-14)
 
 ## Week 2: build the design and the city layer (23–29 Nov)
 
