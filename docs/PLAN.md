@@ -66,7 +66,8 @@ Dates are a target. If a week slips, cut its Should items first; never cut the c
 - [x] Every screen at iPhone, iPad and desktop size: all ten flows of sitemap draft 3, one row per state (D-70, D-71)
 - [x] Screen review round 1 (15 Nov): no Lagocine source lines, no clipped shadows, day toggle fixed, chip rows fade at the edge, iPad Cinemas logos off the title (D-72)
 - [x] Cinemas title centred with logo stickers left and right, "21 of them!" below, three sizes (D-73)
-- [ ] Chime picks the Admit one replacement (review section `225:9281`, D-73); apply it to Films, Where are you watching? and 404
+- [x] Drink sticker replaces Admit one in every Films title and on Where are you watching? (D-74)
+- [ ] Chime picks the 404 picture (review section `225:9281`: torn ticket, ticket as the zero, big screen; D-74); then apply it at three sizes and delete the retired Admit one component
 - [ ] Chime approves the phone, iPad and desktop screens
 
 **Abuja research**
@@ -81,6 +82,7 @@ Dates are a target. If a week slips, cut its Should items first; never cut the c
 - [ ] Data: a `city` above areas in `cinemas.json` and the schema; Abuja fixtures; validator and tests updated
 - [ ] Routes for two cities (O-16); the saved city on the phone, like the saved area (D-18)
 - [ ] Build the approved Round 10 screens; check them against the Figma frames at 390 and 360 px and on desktop
+- [ ] Stickers: ship `docs/design/stickers/drink.png` as `public/stickers/drink.png`; credit Fluent Emoji (MIT) on `/about` (D-74)
 - [ ] Drop the per-showing source line from the built components (D-72); keep the stale-time warnings and the About credit; update `freshness.ts` tests to match
 - [ ] Time: Abuja is on the same clock as Lagos (UTC+1, `Africa/Lagos`); tests cover a showing in each city
 - [ ] Budget and e2e green; Chime checks both cities on the phone

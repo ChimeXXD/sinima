@@ -2,6 +2,12 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 15 Nov 2026 — screen review round 3 (D-74)
+
+- Drink sticker component; replaced Admit one in 24 Films titles and 6 Where are you watching? screens; checked by screenshot at phone, desktop and iPad.
+- 404: three on-brand pictures that show "404" (torn ticket, ticket as the zero, big screen), placed in 404 iPhone copies for review.
+- Not done: 404 pick; phone check.
+
 ## 15 Nov 2026 — screen review round 2 (D-73)
 
 - Cinemas title centred with four logo stickers left and right and "21 of them!" below, at three sizes on Default and Area picker open; overlap check: none; phone title block 163 px.

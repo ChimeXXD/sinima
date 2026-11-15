@@ -1,6 +1,12 @@
 # Handoff: read this first when you pick the project back up
 
-## Now: review round 2, waiting for Chime's pick on Admit one (15 Nov 2026, latest)
+## Now: review round 3, waiting for Chime's pick of the 404 picture (15 Nov 2026, latest)
+
+- **Drink (D-74), done:** *Drink sticker* component `226:80` (Design System, 13.1) replaced Admit one in all 24 Films titles and the 6 Where are you watching? screens (iPad, desktop). Admit one component renamed "retired". PNG, licence and `diecut.py` in `docs/design/stickers/`.
+- **404 (D-74), waiting:** *Review · 404 illustration* `225:9281`, right of Films: Now (Admit one), 1 torn ticket, 2 ticket as the zero, 3 on the big screen; close-ups under each screen. Built from the brand ticket path (SVG, `createNodeFromSvg`), booleans for the torn halves. When picked: make it a component, place it on 404 iPhone, iPad and desktop, delete the retired Admit one component.
+- **Gotchas:** `clone()` of a node inside a frame came back with page-relative coordinates once grouped, so build fresh nodes instead of cloning when grouping; a mask must be the bottom layer of its group (`insertChild(0, mask)`); SVG paths with negative coordinates get cropped by the viewBox, so translate to 0,0 first.
+
+## Earlier: review round 2 (15 Nov 2026)
 
 - **Cinemas title (D-73), done in the design:** centred; two logo stickers left (Filmhouse, Genesis), two right (EbonyLife, Silverbird); "21 of them!" below. Phone two lines like Films, iPad and desktop one line. Default and Area picker open, all sizes. Old review section is on Archive.
 - **Admit one (D-73), waiting:** options on *Review · Replace Admit one* `225:9281`, right of Films. Films title: A ticket without words, B ticket, C drink, D projector, E film strip. 404: F magnifier, G torch, H ghost. Art is Fluent Emoji 3D (MIT) with a white border made by `diecut.py` (scratchpad, PIL: alpha MaxFilter ≈4.5% of width, 9% padding). Once picked: replace on every Films-title screen (Ticket sticker frame), Where are you watching? iPad and desktop, and 404; credit Fluent on About.
