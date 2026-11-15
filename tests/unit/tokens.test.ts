@@ -1,15 +1,22 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import figma from "../../docs/design/figma-tokens.json";
 import { hasHardCodedColour } from "../../scripts/check-tokens.mjs";
 
 const ROOT = join(import.meta.dirname, "..", "..");
 const css = readFileSync(join(ROOT, "src", "styles", "tokens.css"), "utf8");
 
-// Every colour token is written as `--color-name: light-dark(#light, #dark);`.
+/** The value a custom property is declared with in tokens.css, or undefined. */
+function declared(name: string): string | undefined {
+  const m = css.match(new RegExp(`${name.replace(/[-]/g, "\\-")}:\\s*([^;]+);`));
+  return m?.[1]?.trim();
+}
+
+// Semantic colours are written `--name: light-dark(#light, #dark);`. Figma holds the light mode only.
 const colours = new Map<string, { light: string; dark: string }>();
-for (const m of css.matchAll(/--color-([\w-]+):\s*light-dark\((#[0-9a-f]{6}),\s*(#[0-9a-f]{6})\)/gi)) {
-  colours.set(m[1]!, { light: m[2]!, dark: m[3]! });
+for (const m of css.matchAll(/(--[\w-]+):\s*light-dark\((#[0-9a-f]{6}),\s*(#[0-9a-f]{6})\)/gi)) {
+  colours.set(m[1]!, { light: m[2]!.toLowerCase(), dark: m[3]!.toLowerCase() });
 }
 
 function luminance(hex: string): number {
@@ -30,38 +37,86 @@ function pair(fg: string, bg: string, mode: "light" | "dark"): number {
   return contrast(f[mode], b[mode]);
 }
 
-describe("design tokens (D-53)", () => {
-  it("defines every colour role in light and dark", () => {
-    const roles = ["bg", "surface", "text", "text-muted", "accent", "accent-text", "book", "book-text", "stale", "focus", "line"];
-    expect(roles.filter((r) => !colours.has(r))).toEqual([]);
+describe("tokens match the Figma design system (D-66, D-82)", () => {
+  it("declares every primitive colour with Figma's value", () => {
+    const wrong = Object.entries(figma.primitives).filter(([name, hex]) => declared(name)?.toLowerCase() !== hex);
+    expect(wrong).toEqual([]);
   });
 
-  it("uses the Lagoon colours from D-53: Teal for the primary button, Sea mist where white would be", () => {
-    expect(colours.get("book")).toEqual({ light: "#0b6e69", dark: "#5fd4c8" });
-    expect(colours.get("surface")?.light).toBe("#d9ebe7");
-    expect(colours.get("text")?.dark).toBe("#d9ebe7");
-    expect(colours.get("bg")?.dark).toBe("#0a0a0a");
+  it("declares every semantic colour with Figma's light value, and a dark value", () => {
+    const wrong = Object.entries(figma.semantic).filter(([name, t]) => colours.get(name)?.light !== t.light);
+    expect(wrong.map(([name]) => name)).toEqual([]);
   });
 
-  it.each(["light", "dark"] as const)("keeps start times at AAA (7:1) in %s", (mode) => {
-    expect(pair("text", "bg", mode)).toBeGreaterThanOrEqual(7);
-    expect(pair("text", "surface", mode)).toBeGreaterThanOrEqual(7);
+  it("declares every space and radius in px", () => {
+    const wrong = Object.entries(figma.size).filter(([name, px]) => declared(name) !== `${px}px`);
+    expect(wrong).toEqual([]);
   });
 
-  it.each(["light", "dark"] as const)("keeps all other text at AA (4.5:1) in %s", (mode) => {
+  it("declares every text style as a font shorthand with Figma's weight, size, line height and family", () => {
+    const wrong = Object.entries(figma.text).filter(([name, t]) => {
+      const v = declared(`--type-${name.toLowerCase().replace("/", "-")}`);
+      const family = t.family === "Urbanist" ? "var(--font-sans)" : "var(--font-hand)";
+      return v !== `${t.weight} ${t.size}px/${t.lineHeight} ${family}`;
+    });
+    expect(wrong.map(([name]) => name)).toEqual([]);
+    // CSS's font shorthand has no letter-spacing, so a style that tracks carries it separately.
+    const tracked = Object.entries(figma.text).filter(([, t]) => t.letterSpacingEm !== 0);
+    for (const [name, t] of tracked) expect(declared(`--type-${name.toLowerCase().replace("/", "-")}-tracking`), name).toBe(`${t.letterSpacingEm}em`);
+  });
+
+  it("declares every shadow and blur with Figma's values", () => {
+    const wrong = Object.entries(figma.effects).filter(([name, value]) => declared(`--fx-${name.toLowerCase().replace("/", "-")}`) !== value);
+    expect(wrong.map(([name]) => name)).toEqual([]);
+  });
+
+  it("uses Urbanist for text and Story Script for handwritten notes", () => {
+    expect(declared("--font-sans")).toMatch(/^"Urbanist"/);
+    expect(declared("--font-hand")).toMatch(/^"Story Script"/);
+  });
+
+  it("names the motion curves the skills require (ease-out to enter, never ease-in)", () => {
+    expect(declared("--ease-out")).toBe("cubic-bezier(0.23, 1, 0.32, 1)");
+    expect(declared("--ease-in-out")).toBe("cubic-bezier(0.77, 0, 0.175, 1)");
+    expect(declared("--ease-drawer")).toBe("cubic-bezier(0.32, 0.72, 0, 1)");
+  });
+});
+
+// Figma's own pairs that miss WCAG AA (4.5:1) in light mode. Built exactly as designed, waiting for
+// Chime's call (O-17). Remove a pair from here once it is fixed; the test below then holds it to AA.
+const KNOWN_LOW = new Set(["--text-on-action on --action-primary", "--text-accent on --bg-page", "--text-secondary on --bg-surface"]);
+
+describe("contrast (WCAG 2.1)", () => {
+  it.each(["light", "dark"] as const)("keeps body text at AAA (7:1) in %s", (mode) => {
+    expect(pair("--text-primary", "--bg-page", mode)).toBeGreaterThanOrEqual(7);
+    expect(pair("--text-primary", "--bg-surface", mode)).toBeGreaterThanOrEqual(7);
+  });
+
+  it.each(["light", "dark"] as const)("keeps all other text at AA (4.5:1) in %s, apart from the known Figma pairs", (mode) => {
     const pairs: [string, string][] = [
-      ["text-muted", "bg"], ["text-muted", "surface"],
-      ["stale", "bg"], ["stale", "surface"],
-      ["book-text", "book"], ["accent-text", "accent"],
-      ["book", "bg"], // direction B outlines and links in the Book colour
+      ["--text-secondary", "--bg-page"], ["--text-secondary", "--bg-surface"],
+      ["--text-body-strong", "--bg-page"], ["--text-body-strong", "--bg-surface"],
+      ["--text-on-action", "--action-primary"], ["--text-on-action", "--action-secondary"],
+      ["--text-accent", "--bg-page"], ["--text-brand-deep", "--bg-accent-soft"],
+      ["--color-stale", "--bg-page"], ["--color-stale", "--bg-surface"], // the old-data warning (rule 2)
     ];
-    const low = pairs.filter(([fg, bg]) => pair(fg, bg, mode) < 4.5).map(([fg, bg]) => `${fg} on ${bg}`);
+    const low = pairs
+      .filter(([fg, bg]) => pair(fg, bg, mode) < 4.5)
+      .map(([fg, bg]) => `${fg} on ${bg}`)
+      .filter((p) => !(mode === "light" && KNOWN_LOW.has(p)));
     expect(low).toEqual([]);
   });
 
-  it.each(["light", "dark"] as const)("keeps the focus ring at 3:1 against the page in %s", (mode) => {
-    expect(pair("focus", "bg", mode)).toBeGreaterThanOrEqual(3);
-    expect(pair("focus", "surface", mode)).toBeGreaterThanOrEqual(3);
+  it.each(["light", "dark"] as const)("keeps the focus ring at 3:1 against the page and the surface in %s", (mode) => {
+    expect(pair("--color-focus", "--bg-page", mode)).toBeGreaterThanOrEqual(3);
+    expect(pair("--color-focus", "--bg-surface", mode)).toBeGreaterThanOrEqual(3);
+  });
+
+  it("still finds each known low pair low, so a fix is noticed and the exception removed", () => {
+    for (const p of KNOWN_LOW) {
+      const [fg, bg] = p.split(" on ") as [string, string];
+      expect(pair(fg, bg, "light"), p).toBeLessThan(4.5);
+    }
   });
 });
 

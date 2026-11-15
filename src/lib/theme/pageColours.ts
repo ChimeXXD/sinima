@@ -7,8 +7,8 @@ let cached: { light: string; dark: string } | undefined;
 export function pageColours(): { light: string; dark: string } {
   if (cached) return cached;
   const css = readFileSync(join(process.cwd(), "src", "styles", "tokens.css"), "utf8");
-  const match = css.match(/--color-bg:\s*light-dark\((#[0-9a-f]{6}),\s*(#[0-9a-f]{6})\)/i);
-  if (!match) throw new Error("tokens.css: --color-bg must be written as light-dark(#rrggbb, #rrggbb)");
+  const match = css.match(/--bg-page:\s*light-dark\((#[0-9a-f]{6}),\s*(#[0-9a-f]{6})\)/i);
+  if (!match) throw new Error("tokens.css: --bg-page must be written as light-dark(#rrggbb, #rrggbb)");
   cached = { light: match[1]!, dark: match[2]! };
   return cached;
 }

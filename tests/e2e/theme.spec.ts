@@ -1,11 +1,11 @@
 import { expect, test } from "@playwright/test";
 
-// The Lagoon tokens (D-53) as the browser actually renders them.
+// The Figma tokens (D-82) as the browser actually renders them. Dark is a stand-in until it is designed.
 const rgb = (hex: string) => `rgb(${[1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)).join(", ")})`;
 
 for (const [scheme, bg, text] of [
-  ["light", "#eef6f4", "#0c3b47"],
-  ["dark", "#0a0a0a", "#d9ebe7"],
+  ["light", "#ffffff", "#18181b"],
+  ["dark", "#000000", "#fafafa"],
 ] as const) {
   test(`the page uses the ${scheme} palette`, async ({ page }) => {
     await page.emulateMedia({ colorScheme: scheme });
@@ -25,8 +25,12 @@ test("the two fonts load from our own site and stay inside 40 KB together", asyn
   });
   await page.goto("/");
   await page.evaluate(() => document.fonts.ready);
-  expect(await page.evaluate(() => document.fonts.check('600 28px "Geist"'))).toBe(true);
-  expect(fonts.map((f) => new URL(f.url).pathname).sort()).toEqual(["/fonts/anton-sinima.woff2", "/fonts/geist-sinima.woff2"]);
+  expect(await page.evaluate(() => document.fonts.check('600 28px "Urbanist"'))).toBe(true);
+  // Story Script loads only on a page with a handwritten note, so the list is a subset of our two files.
+  const paths = fonts.map((f) => new URL(f.url));
+  expect(paths.every((u) => u.origin === new URL(page.url()).origin)).toBe(true);
+  expect(paths.map((u) => u.pathname)).toContain("/fonts/urbanist-sinima.woff2");
+  expect(paths.map((u) => u.pathname).filter((p) => !["/fonts/urbanist-sinima.woff2", "/fonts/story-script-sinima.woff2"].includes(p))).toEqual([]);
   expect(fonts.reduce((sum, f) => sum + f.bytes, 0)).toBeLessThanOrEqual(40 * 1024);
 });
 
@@ -50,15 +54,15 @@ for (const [name, viewport] of [["phone", { width: 390, height: 844 }], ["comput
     await expect(toggle).toBeVisible();
     await expect(toggle).toHaveAccessibleName("Switch to dark mode");
     await toggle.click();
-    await expect(body).toHaveCSS("background-color", rgb("#0a0a0a"));
+    await expect(body).toHaveCSS("background-color", rgb("#000000"));
     await expect(toggle).toHaveAccessibleName("Switch to light mode");
-    await expect(page.locator('meta[name="theme-color"]').first()).toHaveAttribute("content", "#0a0a0a");
+    await expect(page.locator('meta[name="theme-color"]').first()).toHaveAttribute("content", "#000000");
 
     await page.goto("/soon"); // another page, a full load: still dark, from the first paint
     expect(await page.evaluate(() => document.documentElement.dataset.theme)).toBe("dark");
-    await expect(body).toHaveCSS("background-color", rgb("#0a0a0a"));
+    await expect(body).toHaveCSS("background-color", rgb("#000000"));
     await page.getByTestId("theme.toggle").click();
-    await expect(body).toHaveCSS("background-color", rgb("#eef6f4"));
+    await expect(body).toHaveCSS("background-color", rgb("#ffffff"));
   });
 }
 
@@ -95,7 +99,7 @@ for (const reduced of [false, true]) {
       };
     });
     // Right after the tap: the page is already dark, and the moon is part-way in.
-    expect(after.background).toBe(rgb("#0a0a0a"));
+    expect(after.background).toBe(rgb("#000000"));
     expect(await page.evaluate(() => (window as unknown as { transitions: number }).transitions)).toBe(0);
     expect(after.moving).toEqual(reduced ? ["opacity"] : ["filter", "opacity", "transform"]);
     expect(after.colours).toBe(0);

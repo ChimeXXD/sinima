@@ -19,7 +19,7 @@ const BUDGET = {
   pages: () =>
     ["index.html", "cinemas.html", "soon.html", "yours.html", heaviest("area"), heaviest("cinema"), heaviest("film")].map((html) => ({
       html,
-      data: ["fonts/geist-sinima.woff2", "fonts/anton-sinima.woff2"],
+      data: ["fonts/urbanist-sinima.woff2", "fonts/story-script-sinima.woff2"],
     })),
   jsKb: 160,
   totalKb: 200,

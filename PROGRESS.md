@@ -2,6 +2,12 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 15 Nov 2026 — build unit 1, foundation (D-82), in progress
+
+- **Changed:** `src/styles/tokens.css` rewritten from Figma's variables and styles (26 primitives, 25 semantic colours, spaces, radii, 15 text styles as font shorthands, 9 effects, motion curves); old role names point at the new tokens until each component is rebuilt. `docs/design/figma-tokens.json` is the Figma export; `tests/unit/tokens.test.ts` now holds tokens.css to it and checks contrast, with Figma's three low pairs listed (O-17). Fonts: Urbanist and Story Script (OFL), trimmed with fontTools to 24 KB and 12 KB; Geist and Anton removed. `tests/e2e/theme.spec.ts` updated to the Figma palette and fonts (cap still 40 KB). pageColours reads `--bg-page`; the budget counts the new fonts.
+- **Checked:** token test (Figma drift, contrast incl. focus ring and stale wording, Badge tracking), all unit tests, lint, typecheck, 74/74 e2e, budget (heaviest page Cinemas 198.3 of 200 KB after trimming fonts to 22 KB + 6 KB). Reviewed by proof:verifier: its gaps (dropped focus and stale contrast checks, an untrue ₦ note, untested Badge tracking) fixed.
+- **Not verified:** how the old screens look in the new palette (they are rebuilt from unit 3 on); dark mode is a stand-in.
+
 ## 15 Nov 2026 — popular cinemas, Nova Lagos added (D-81)
 
 - Abuja popularity from 2025 box office (FilmOne yearbook via ATQ; Nairametrics): Silverbird Jabi Lake Mall first, Genesis Ceddi Plaza second; all five box-office cinemas covered.

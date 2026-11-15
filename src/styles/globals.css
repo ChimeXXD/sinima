@@ -4,29 +4,32 @@
 @import "./cinemas.css";
 @import "./theme-switch.css";
 
-/* Geist and Anton (SIL Open Font License, public/fonts/OFL.txt), cut down to what the site uses:
-   Geist to Latin text at weights 400 to 700 (17 KB), Anton to capitals, digits and punctuation
-   (4 KB; it only sets poster titles and the share headline, both in capitals). `swap` shows the
-   phone's own font first, so a font never blocks the page. */
+/* Urbanist and Story Script (SIL Open Font License, public/fonts/OFL.txt), the Figma type (D-82),
+   cut down with fontTools to what the site writes. Urbanist: one variable file for weights 300 to
+   800, Latin-1 plus curly quotes, dashes, bullets and arrows (22 KB; no ₦: add it from the
+   latin-ext file when a page first shows a price in naira). Story Script sets the
+   handwritten notes only, so it holds just a-z, 0-9, the capitals A I L M X and ! ? . , ' ’ … - (6 KB);
+   a note needing another character must re-cut the file. A page without a note never loads it.
+   `swap` shows the phone's own font first, so a font never blocks the page. */
 @font-face {
-  font-family: "Geist";
-  src: url("/fonts/geist-sinima.woff2") format("woff2");
-  font-weight: 400 700;
+  font-family: "Urbanist";
+  src: url("/fonts/urbanist-sinima.woff2") format("woff2");
+  font-weight: 300 800;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: "Anton";
-  src: url("/fonts/anton-sinima.woff2") format("woff2");
+  font-family: "Story Script";
+  src: url("/fonts/story-script-sinima.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 body {
-  background: var(--color-bg);
-  color: var(--color-text);
-  font: 400 15px/1.45 var(--font-sans);
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font: var(--type-body-m);
 }
 button { font: inherit; color: inherit; cursor: pointer; }
 a { color: inherit; text-decoration: none; }

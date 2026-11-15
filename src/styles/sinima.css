@@ -93,8 +93,8 @@ summary.chip::-webkit-details-marker { display: none; }
 .po { display: block; width: 100%; aspect-ratio: 2 / 3; object-fit: cover; border-radius: var(--r-poster); background: var(--color-soft); }
 .tp { position: relative; display: flex; flex-direction: column; justify-content: space-between; width: 100%; aspect-ratio: 2 / 3; padding: 9% 9% 8%; border-radius: var(--r-poster); overflow: hidden; container-type: inline-size; }
 .tp { flex-direction: column-reverse; }
-.tp b { font: 400 21cqw/0.95 var(--font-display); text-transform: uppercase; letter-spacing: 0.005em; overflow-wrap: anywhere; position: relative; }
-.tp b.long { font-size: 16cqw; }
+.tp b { font: 600 13cqw/1.05 var(--font-sans); overflow-wrap: break-word; hyphens: auto; position: relative; } /* Interim, until the no-poster card is rebuilt from Figma (D-82). */
+.tp b.long { font-size: 10.5cqw; }
 .tp i { font: 600 5.2cqw/1.2 var(--font-sans); font-style: normal; letter-spacing: 0.08em; text-transform: uppercase; position: relative; max-width: 52%; }
 .tp svg { position: absolute; inset: -9% -14% auto auto; width: 62%; opacity: 0.85; }
 .tp.a { background: var(--color-tp-teal); color: var(--color-tp-foam); } .tp.b { background: var(--color-tp-lagoon); color: var(--color-tp-aqua); } .tp.c { background: var(--color-tp-coral); color: var(--color-tp-foam); }
@@ -162,13 +162,13 @@ summary.chip::-webkit-details-marker { display: none; }
 /* Share (Fixtured): headline, tilted card, two buttons */
 .share { text-align: center; justify-items: center; }
 .share .x { justify-self: end; }
-.share h3 { font: 400 44px/0.95 var(--font-display); text-transform: uppercase; letter-spacing: 0.005em; max-width: 320px; }
+.share h3 { font: var(--type-heading-l); overflow-wrap: break-word; max-width: 320px; }
 .share > p { color: var(--color-text-muted); max-width: 300px; }
 .scard { width: 250px; margin: var(--s3) 0 var(--s4); padding: var(--s4) var(--s5); border-radius: 16px; background: var(--color-book); color: var(--color-book-text); text-align: left; transform: rotate(-6deg); box-shadow: 0 14px 30px var(--color-shade-strong); position: relative; }
 .scard::before, .scard::after { content: ""; position: absolute; top: 56%; width: 18px; height: 18px; border-radius: 999px; background: var(--color-bg); }
 .scard::before { left: -9px; } .scard::after { right: -9px; }
 .scard small { font-size: 12px; font-weight: 600; opacity: 0.8; }
-.scard b { display: block; margin: 2px 0 var(--s2); font: 400 30px/1 var(--font-display); text-transform: uppercase; }
+.scard b { display: block; margin: 2px 0 var(--s2); font: var(--type-heading-m); overflow-wrap: break-word; }
 .scard span { display: block; font-size: 13px; }
 .scard em { display: flex; align-items: center; gap: 6px; margin-top: var(--s5); padding-top: var(--s3); border-top: 1.5px dashed currentColor; font-style: normal; font-size: 12px; font-weight: 600; }
 .scard em svg { width: 11px; height: 15px; }
