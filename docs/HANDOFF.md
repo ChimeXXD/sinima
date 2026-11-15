@@ -1,5 +1,9 @@
 # Handoff: read this first when you pick the project back up
 
+## Now: designing flow by flow (15 Nov 2026, latest)
+
+Flow 1 **Where are you watching?** is done at iPhone, iPad and desktop: section `172:519` at the top of Design screens, one row per state (D-70). Every screen has the browser mockup on top (components `173:82` iPhone, `173:104` iPad, `173:140` desktop, in "Mockup · Browser chrome" on the Design System page); iPhone and iPad frames have radius 40. The old per-device sections (iPhone `166:530`, iPad `166:543`, Desktop `166:546`) hold the not-yet-redone flows; each flow moves into its own row-per-screen section as it is designed. Next flow per the sitemap: Films (then Film + sheet, Search and city, Cinemas, Area, Cinema, Starting soon, Your cinemas, About/404/Offline).
+
 ## Now: sitemap draft 3 waiting for approval (15 Nov 2026, latest)
 
 `docs/design/structure/Sinima - Sitemap (draft 3).pdf` (source `sitemap-v3.html`, rendered with Playwright; Urbanist and the Sinima tokens). Waiting for Chime's approval; nothing else changes until then (D-69). After approval: design every screen on its page 7 with **one row per screen: iPhone, iPad, desktop side by side, rows going down** (replaces the per-device sections).
