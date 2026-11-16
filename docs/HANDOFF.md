@@ -1,6 +1,16 @@
 # Handoff: read this first when you pick the project back up
 
-## Now: review round 2 built (16 Nov 2026, latest)
+## Now: motion audit built (16 Nov 2026, latest)
+
+**What Chime asked (D-112):** audit every animation with the design-engineering skills in a sensible order, then build every recommendation. All 22 are built (PROGRESS's top entry lists them, with the measurements).
+
+**New pieces to know:** `ui/inputMode.ts` (html[data-input] = keys | pointer, and `byKeys()`), `html[data-arrived]` set by `tabSlide.ts` after the first move inside the site, `afterPaint()` and `bump()` in `ui/motion.ts`, `onShare` in `PosterTravel.tsx`, `public/brand/wordmark.svg`.
+
+**Waiting on Chime:** the phone check; still: Figma's toast colours, D-108, TMDB logo, Abuja cinemas.
+
+**Gotchas:** before a commit, build with the sample data at 08:00 (`node scripts/refresh.ts --fixtures --now $(TZ=Africa/Lagos date +%F)T07:00:00Z && npx next build`): the gate serves the existing out/ (CI=true), and `npm run build` late in the day drops the day's earlier showings, failing cinema-screen's first test. Tests with a paused clock (freeze) can't run rAF or setTimeout: deferred work uses scheduler.postTask where it exists.
+
+## Earlier: review round 2 built (16 Nov 2026)
 
 **What Chime asked (D-109):** the Cinemas page is approved; the tab change still looked instant; the pickers and "Lagos ⌄" covered their own button: drop them under it as Design Bookmark's Spring dropdown, with the chevron turning up; a lighter toast, coloured by context (error: a soft red); the bulb half hidden in its shade like the reference.
 

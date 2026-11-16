@@ -45,6 +45,14 @@
   background: currentColor;
   mask: url("/brand/wordmark.svg") center / contain no-repeat;
 }
+/* Forced colours drop a background colour: paint it in the system text colour instead, or the
+   wordmark (an svg path before) would vanish. */
+@media (forced-colors: active) {
+  .wordmark {
+    background: CanvasText;
+    forced-color-adjust: none;
+  }
+}
 .search {
   position: relative; /* the search panel opens over it */
   grid-area: search;

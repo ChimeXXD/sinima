@@ -61,6 +61,8 @@ export function useTabSlide(content: React.RefObject<HTMLElement | null>): void 
   useLayoutEffect(() => {
     const move = pending;
     pending = null;
+    // Any page after the first (a link, the back button, a search or city change by the router).
+    if (current) arrived();
     current = window.location.pathname;
     // A page that took more than a few seconds to arrive is a page load, not a move.
     if (!move || Date.now() - move.at > 3000 || !content.current) return;

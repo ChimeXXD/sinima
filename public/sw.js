@@ -27,7 +27,7 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
       .open(PAGES)
-      .then((cache) => Promise.all(["/", "/lagos", "/abuja"].map((path) => cache.add(path).catch(() => {}))))
+      .then((cache) => Promise.all(["/", "/lagos", "/abuja", "/brand/wordmark.svg"].map((path) => cache.add(path).catch(() => {}))))
       .catch(() => {}),
   );
 });

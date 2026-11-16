@@ -68,4 +68,7 @@
   .toast {
     transition-property: opacity;
   }
+  .toast[data-leaving] {
+    transform: none; /* or it would jump 6 px as it fades */
+  }
 }

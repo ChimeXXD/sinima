@@ -83,6 +83,8 @@ export function Segmented<T extends string>({ options, value, onChange, label, t
   // React transition: on Films that would take a view-transition snapshot of the page each time.
   // `pending` holds the tapped option until `value` moves on from where it was.
   const [pending, setPending] = useState<{ to: T; from: T } | null>(null);
+  // `value` has moved on (the tap landed, or something else changed it): it speaks again.
+  if (pending && pending.from !== value) setPending(null);
   const shown = pending && pending.from === value ? pending.to : value;
   const index = Math.max(0, options.indexOf(shown));
   const change = (next: T, how: ChangeHow) => {

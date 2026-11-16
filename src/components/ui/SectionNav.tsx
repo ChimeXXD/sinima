@@ -27,13 +27,13 @@ export const SECTIONS = [
 
 export type SectionId = (typeof SECTIONS)[number]["id"];
 
+const noSubscribe = () => () => {};
+
 /**
  * `saved` is how many cinemas are kept on Your cinemas: a count sticker on its tab, hidden on
  * that tab itself and when there are none. `hrefs` replaces a tab's link (the /kit page keeps
  * its tabs on itself).
  */
-const noSubscribe = () => () => {};
-
 export function SectionNav({ active, saved = 0, hrefs = {}, live = true }: { active: SectionId; saved?: number; hrefs?: Partial<Record<SectionId, string>>; /** The springs (R9); off on /kit, where the tabs don't go anywhere. */ live?: boolean }) {
   const from = SECTIONS.findIndex(({ id }) => id === active);
   const nav = useRef<HTMLElement>(null);

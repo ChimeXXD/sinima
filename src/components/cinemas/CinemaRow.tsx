@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "@/components/ui/CityLink";
 import { Icon } from "@/components/ui/Icon";
 import { afterPaint, pop } from "@/components/ui/motion";
@@ -20,11 +20,22 @@ import s from "./cinemas.module.css";
  */
 export function CinemaRow({ href, name, chain, area, line, at, formats, saved, onSave, testId }: { href: string; name: string; chain: string; area: string; line: { lead: string; time: string | null; rest: string }; /** The instant `line.time` shows. */ at: string | null; formats: string[]; saved: boolean; /** Keep or let go (the heart has already popped). */ onSave: () => void; testId: string }) {
   const [shown, setShown] = useState<{ to: boolean; from: boolean } | null>(null);
+  // `saved` has moved on (the tap was kept, or Undo or another screen changed it): it speaks again.
+  if (shown && shown.from !== saved) setShown(null);
   const pressed = shown && shown.from === saved ? shown.to : saved;
+  // A save waiting for its frame: a second tap before it runs cancels it (two toggles are none),
+  // rather than queueing a second save that reads the same stale list.
+  const queued = useRef(false);
   const tap = (event: React.MouseEvent<HTMLButtonElement>) => {
     if (!pressed) pop(event.currentTarget.querySelector("svg"));
     setShown({ to: !pressed, from: saved });
-    afterPaint(onSave);
+    queued.current = !queued.current;
+    if (!queued.current) return;
+    afterPaint(() => {
+      if (!queued.current) return;
+      queued.current = false;
+      onSave();
+    });
   };
   return (
     <div className={s.row} data-testid={testId}>

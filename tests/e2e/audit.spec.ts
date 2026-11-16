@@ -189,9 +189,13 @@ test.describe("F3: taps answer before the list redraws", () => {
   test("Today/Tomorrow: the thumb moves at once, the list follows", async ({ page }) => {
     await page.goto("/lagos");
     const day = page.getByTestId("films.day");
-    await day.getByRole("radio").nth(1).click();
+    // Read in the same task as the tap, as for the heart: the thumb has moved before any list work.
+    const atOnce = await day.evaluate((el) => {
+      el.querySelectorAll<HTMLElement>("[role=radio]")[1]!.dispatchEvent(new MouseEvent("click", { bubbles: true, detail: 1 }));
+      return new Promise<string>((done) => queueMicrotask(() => done(getComputedStyle(el).getPropertyValue("--i").trim())));
+    });
+    expect(atOnce).toBe("1");
     await expect(day.getByRole("radio").nth(1)).toHaveAttribute("aria-checked", "true");
-    expect(await day.evaluate((el) => getComputedStyle(el).getPropertyValue("--i").trim())).toBe("1");
   });
 });
 
@@ -229,4 +233,14 @@ test.describe("unit 8: what's added", () => {
     await expect(sheet.getByTestId("pick.ebonylife-vi")).toHaveAttribute("aria-pressed", "true");
     expect(await tick("ebonylife-vi").evaluate((el) => getComputedStyle(el).animationName)).toContain("checkIn");
   });
+});
+
+test("F3: after Undo the row's heart is empty again", async ({ page }) => {
+  await page.goto("/lagos/cinemas");
+  const heart = page.getByTestId("cinema.keep").first();
+  await heart.click();
+  await expect(heart).toHaveAttribute("aria-pressed", "true");
+  await page.getByTestId("toast").getByRole("button", { name: "Undo" }).click();
+  await expect(heart).toHaveAttribute("aria-pressed", "false");
+  await expect.poll(() => page.evaluate(() => localStorage.getItem("ls.cinemas"))).toBe("[]");
 });

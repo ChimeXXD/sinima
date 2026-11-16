@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Icon, type IconName } from "./Icon";
+import { motion } from "./motion";
 import s from "./toast.module.css";
 
 // Toast (Figma Cinema › Toast · saved): 384 wide and centred, 70 above the bottom on a phone
@@ -11,7 +12,6 @@ import s from "./toast.module.css";
 // without drawing it afresh.
 
 const SHOWN_MS = 4000;
-const LEAVE_MS = 200; // its 160 ms exit, and a frame to spare
 
 /** `tone`: info (a saved cinema, a copied link) is blue; an error is red (D-109 d). */
 export function Toast({ icon, text, tone = "info", stamp, onUndo, onDone }: { icon: IconName; text: string; tone?: "info" | "error"; /** What it's about: a new one restarts its time. */ stamp?: string; onUndo?: () => void; onDone: () => void }) {
@@ -24,7 +24,7 @@ export function Toast({ icon, text, tone = "info", stamp, onUndo, onDone }: { ic
   }, [stamp]);
   useEffect(() => {
     if (!gone) return;
-    const id = setTimeout(onDone, LEAVE_MS);
+    const id = setTimeout(onDone, motion().fast + 40); // its exit (--dur-fast), and a frame to spare
     return () => clearTimeout(id);
   }, [gone, onDone]);
   return (
