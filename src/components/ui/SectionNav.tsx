@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/components/ui/CityLink";
 import { Icon, type IconName } from "./Icon";
 import s from "./nav.module.css";
 

@@ -10,12 +10,12 @@ test("an old shared link to a showing on a cinema's page (#s=<film>@<start>) ope
   const row = today(all, now)[0]!;
   const cinema = all.cinemas.find((c) => c.id === row.cinemaId)!;
   await freeze(page, now);
-  await page.goto(`/cinema/${cinema.id}#s=${row.filmId}@${row.startsAt}`);
+  await page.goto(`/lagos/cinema/${cinema.id}#s=${row.filmId}@${row.startsAt}`);
   await expect(page.getByTestId("showing.sheet")).toHaveAccessibleName(`${lagosClock(row.startsAt)} · ${cinema.name}`);
 });
 
 test("an address with a broken % after the # still opens the page", async ({ page }) => {
-  await page.goto("/cinema/genesis-purple-lekki#%E0%A4%A");
+  await page.goto("/lagos/cinema/genesis-purple-lekki#%E0%A4%A");
   await expect(page.getByTestId("cinema.title")).toHaveText("Genesis Deluxe Purple Mall");
   await expect(page.getByTestId("showing.sheet")).toHaveCount(0);
 });
@@ -40,9 +40,9 @@ test("a live showing can be booked on the cinema's own site until the second it 
   const all = await dataFile(request, "all");
   const row = today(all, await sampleTime(request, "18:00")).find((s) => s.cinemaId === "ebonylife-vi")!;
   const now = new Date(Date.parse(row.startsAt) - 60_000);
-  await asLiveData(page, "/cinema/ebonylife-vi", new Date(now.getTime() - 3_600_000));
+  await asLiveData(page, "/lagos/cinema/ebonylife-vi", new Date(now.getTime() - 3_600_000));
   await freeze(page, now);
-  await page.goto("/cinema/ebonylife-vi");
+  await page.goto("/lagos/cinema/ebonylife-vi");
   await expect(page.getByTestId("banner.sample")).toHaveCount(0);
   await page.getByTestId(`time.${row.filmId}.${row.startsAt}`).click();
 
@@ -63,9 +63,9 @@ test("times read 30 hours ago show the stale banner, and the showing says so in 
   const all = await dataFile(request, "all");
   const now = await sampleTime(request, "18:00");
   const row = today(all, now).find((s) => s.cinemaId === "ebonylife-vi")!;
-  await asLiveData(page, "/cinema/ebonylife-vi", new Date(now.getTime() - 30 * 3_600_000));
+  await asLiveData(page, "/lagos/cinema/ebonylife-vi", new Date(now.getTime() - 30 * 3_600_000));
   await freeze(page, now);
-  await page.goto("/cinema/ebonylife-vi");
+  await page.goto("/lagos/cinema/ebonylife-vi");
   await expect(page.getByTestId("banner.stale")).toHaveText("Some times are from yesterday. Cinemas change programmes; check before you travel.");
   // Figma Cinema › Times a day old: the films' note and a warning say so too.
   await expect(page.getByTestId("films.note")).toHaveText(/ · times from yesterday$/);

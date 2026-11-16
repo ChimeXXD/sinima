@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 // The Ticket S logo (D-42) in the header, the browser tab, the home screen and the manifest.
 test("the header shows the Ticket S mark beside the name", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/lagos");
   const brand = page.getByTestId("wordmark");
   await expect(brand).toHaveText("Sinima");
   // Figma's lockup (D-82): the ticket face, then the wordmark drawn as a second svg.
@@ -15,7 +15,7 @@ test("the header shows the Ticket S mark beside the name", async ({ page }) => {
 });
 
 test("the tab icon, home-screen icon and manifest icons all load", async ({ page, request }) => {
-  await page.goto("/");
+  await page.goto("/lagos");
   const hrefs = await page.locator('link[rel="icon"], link[rel="apple-touch-icon"]').evaluateAll((els) => els.map((e) => (e as HTMLLinkElement).href));
   expect(hrefs.some((h) => h.endsWith(".svg"))).toBe(true);
   expect(hrefs.some((h) => h.includes("apple-touch-icon"))).toBe(true);
@@ -37,7 +37,7 @@ test("the tab icon, home-screen icon and manifest icons all load", async ({ page
 });
 
 test("PNG icons are the size they claim", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/lagos");
   for (const [src, size] of [["/icons/icon-192.png", 192], ["/icons/icon-512.png", 512], ["/icons/icon-maskable-512.png", 512], ["/icons/apple-touch-icon.png", 180]] as const) {
     const dims = await page.evaluate(async (s) => {
       const img = new Image();

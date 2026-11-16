@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link, useCity } from "@/components/ui/CityLink";
 import { createContext, useEffect, useRef, useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useServiceWorker } from "@/lib/offline";
@@ -83,8 +83,10 @@ export function Crumb({ href, children }: { href: string; children: React.ReactN
  * A screen below the home screens (Figma Film) passes `bar`: on phones and iPads it takes the
  * header's place, a back button, the screen's name and a share button; the desktop navbar stays.
  */
-export function AppFrame({ active, search, city: cityChoice = "lagos", bg, bar, footer, onAbout = false, children }: { active: SectionId; search: { value: string; onChange: (text: string) => void; onSubmit?: () => void }; city?: CityChoice; bg: { light: string; dark: string }; bar?: React.ReactNode; /** The page's own footer lines, in place of the note (Figma Cinemas). */ footer?: React.ReactNode; /** About itself: no link to About in the footer. */ onAbout?: boolean; children: React.ReactNode }) {
+export function AppFrame({ active, search, city: chosen, bg, bar, footer, onAbout = false, children }: { active: SectionId; search: { value: string; onChange: (text: string) => void; onSubmit?: () => void }; city?: CityChoice; bg: { light: string; dark: string }; bar?: React.ReactNode; /** The page's own footer lines, in place of the note (Figma Cinemas). */ footer?: React.ReactNode; /** About itself: no link to About in the footer. */ onAbout?: boolean; children: React.ReactNode }) {
   const saved = useSaved().length;
+  const pageCity = useCity();
+  const cityChoice: CityChoice = chosen ?? pageCity;
   useServiceWorker();
   const [open, setOpen] = useState(false);
   const [city, setCity] = useState<boolean | null>(null); // null until first opened

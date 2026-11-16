@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useCityRouter as useRouter, useCityPath } from "@/components/ui/CityLink";
 import { useRef, useState } from "react";
 import { IconButton } from "@/components/ui/Actions";
 import { useLazySheet } from "@/components/film/useLazySheet";
@@ -30,6 +30,7 @@ import s from "./area.module.css";
 const CITY = "Lagos"; // one city until the city layer (unit 13, O-16)
 
 export function AreaScreen({ data, areas, slug, bg }: { data: ListData; areas: Area[]; slug: string; bg: { light: string; dark: string } }) {
+  const cityHref = useCityPath();
   const clock = useNow();
   const live = clock !== null;
   const now = clock ?? data.at;
@@ -60,7 +61,7 @@ export function AreaScreen({ data, areas, slug, bg }: { data: ListData; areas: A
   const sheet = useLazySheet(data);
 
   async function share() {
-    const done = await shareLink({ title: `Cinemas in ${area.name}`, text: areaShareText(area.name, CITY), url: `${window.location.origin}/area/${slug}` });
+    const done = await shareLink({ title: `Cinemas in ${area.name}`, text: areaShareText(area.name, CITY), url: `${window.location.origin}${cityHref(`/area/${slug}`)}` });
     if (done === "copied") {
       setCopied(true);
       clearTimeout(copiedTimer.current);

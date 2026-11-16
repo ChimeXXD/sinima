@@ -21,7 +21,7 @@ test("on a phone, search opens over the page, finds films in Lagos and opens one
   const all = await dataFile(request, "all");
   const now = await sampleTime(request, "17:30");
   await freeze(page, now);
-  await page.goto("/");
+  await page.goto("/lagos");
   await openSearch(page);
   await expect(page.getByTestId("search.scope.lagos")).toHaveAttribute("aria-pressed", "true");
   const cancel = (await page.getByTestId("search.cancel").boundingBox())!;
@@ -43,7 +43,7 @@ test("on a phone, search opens over the page, finds films in Lagos and opens one
 
 test("both cities groups the results by city; Abuja says its cinemas are being added", async ({ page, request }) => {
   await freeze(page, await sampleTime(request, "17:30"));
-  await page.goto("/");
+  await page.goto("/lagos");
   await openSearch(page);
   await page.getByTestId("search.query").fill("rama");
   await page.getByTestId("search.scope.both").click();
@@ -55,7 +55,7 @@ test("both cities groups the results by city; Abuja says its cinemas are being a
 
 test("no match names the cities searched, and leads back to what's on", async ({ page, request }) => {
   await freeze(page, await sampleTime(request, "17:30"));
-  await page.goto("/");
+  await page.goto("/lagos");
   await openSearch(page);
   await page.getByTestId("search.query").fill("Avengers");
   await expect(page.getByTestId("search.none").getByRole("heading")).toHaveText("Nothing called “Avengers” in Lagos yet");
@@ -72,7 +72,7 @@ test("no match names the cities searched, and leads back to what's on", async ({
 });
 
 test("Cancel closes search and empties it; Escape closes it and gives focus back to the bar", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/lagos");
   await openSearch(page);
   await page.getByTestId("search.query").fill("rama");
   await page.getByTestId("search.cancel").click();
@@ -88,12 +88,12 @@ test("Cancel closes search and empties it; Escape closes it and gives focus back
 test("Enter on another page lists the matches on Films", async ({ page, request }) => {
   await freeze(page, await sampleTime(request, "17:30"));
   await page.setViewportSize({ width: 1440, height: 900 }); // a film page's search is in the desktop navbar
-  await page.goto("/film/ramayana");
+  await page.goto("/lagos/film/ramayana");
   await openSearch(page);
   await page.getByTestId("search.query").fill("spider");
   await expect(page.getByText("Press Enter to see it on Films.")).toBeVisible();
   await page.keyboard.press("Enter");
-  await expect(page).toHaveURL(/\/\?q=spider$/);
+  await expect(page).toHaveURL(/\/lagos\?q=spider$/);
   await expect(page.locator('[data-testid^="film.card."]')).toHaveCount(1);
 });
 
@@ -106,7 +106,7 @@ for (const { width, height } of [
 ]) {
   test(`at ${width} px search is a panel over the bar, the page dimmed; a tap outside closes it`, async ({ page }) => {
     await page.setViewportSize({ width, height });
-    await page.goto("/");
+    await page.goto("/lagos");
     const bar = (await page.getByTestId("search").boundingBox())!;
     const inner = await page.evaluate(() => document.documentElement.clientWidth);
     await openSearch(page);
@@ -124,8 +124,8 @@ for (const { width, height } of [
   });
 }
 
-test("the city sheet opens from the search bar and from the Films title; Lagos is picked, Abuja is coming", async ({ page }) => {
-  await page.goto("/");
+test("the city sheet opens from the search bar and from the Films title; Lagos is picked, Abuja's cinemas are coming", async ({ page }) => {
+  await page.goto("/lagos");
   await page.getByTestId("search.city").click();
   const sheet = page.getByTestId("city");
   await expect(sheet).toBeVisible();
@@ -133,7 +133,6 @@ test("the city sheet opens from the search bar and from the Films title; Lagos i
   await expect(page.getByTestId("city.lagos")).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByTestId("city.lagos")).toContainText(/\d+ cinemas in Lekki, Victoria Island, Ikeja and \d+ more areas/);
   await expect(page.getByTestId("city.abuja")).toHaveText("AbujaAbujaAbuja's cinemas are being added");
-  await expect(page.getByTestId("city.abuja").getByRole("button")).toHaveCount(0);
   await page.getByTestId("city.lagos").click();
   await expect(sheet).toBeHidden();
 
@@ -141,4 +140,16 @@ test("the city sheet opens from the search bar and from the Films title; Lagos i
   await expect(sheet).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(sheet).toBeHidden();
+});
+
+// Since the city layer (D-98) Abuja can be picked: it opens Abuja's same tab, kept on this phone.
+test("picking Abuja in the city sheet opens Abuja's same tab and keeps the city", async ({ page }) => {
+  await page.goto("/lagos/cinemas");
+  await page.getByTestId("search.city").click();
+  await page.getByTestId("city.abuja").click();
+  await expect(page).toHaveURL(/\/abuja\/cinemas$/);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Cinemas in Abuja");
+  expect(await page.evaluate(() => localStorage.getItem("ls.city"))).toBe("abuja");
+  await page.getByTestId("search.city").click();
+  await expect(page.getByTestId("city.abuja")).toHaveAttribute("aria-pressed", "true");
 });

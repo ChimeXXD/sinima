@@ -17,7 +17,7 @@ test("your area's next 2 hours as cards, soonest first, then the rest of tonight
   const now = await sampleTime(request, "17:30");
   await keepArea(page, "lekki");
   await freeze(page, now);
-  await page.goto("/soon");
+  await page.goto("/lagos/soon");
 
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Starting soon in Lekki");
   const chips = await page.getByRole("group", { name: "Area" }).locator('[data-testid^="area.chip."]').evaluateAll((els) => els.map((el) => el.getAttribute("data-testid")!.slice(10)));
@@ -54,7 +54,7 @@ test("All Lagos takes every area; the chips don't move, and the area stays kept"
   const now = await sampleTime(request, "17:30");
   await keepArea(page, "lekki");
   await freeze(page, now);
-  await page.goto("/soon");
+  await page.goto("/lagos/soon");
   await page.getByTestId("area.chip.all").click();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Starting soon in Lagos");
   const soon = today(all, now).filter((s) => Date.parse(s.startsAt) - now.getTime() <= 2 * HOUR);
@@ -68,7 +68,7 @@ test("All Lagos takes every area; the chips don't move, and the area stays kept"
 test("with no area kept: all of Lagos, All Lagos first, then every area", async ({ page, request }) => {
   const all = await dataFile(request, "all");
   await freeze(page, await sampleTime(request, "17:30"));
-  await page.goto("/soon");
+  await page.goto("/lagos/soon");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Starting soon in Lagos");
   const chips = await page.getByRole("group", { name: "Area" }).locator('[data-testid^="area.chip."]').evaluateAll((els) => els.map((el) => el.getAttribute("data-testid")!.slice(10)));
   expect(chips[0]).toBe("all");
@@ -81,7 +81,7 @@ test("a card opens the showing sheet; Book is never on a sample time; Escape giv
   const now = await sampleTime(request, "17:30");
   await keepArea(page, "lekki");
   await freeze(page, now);
-  await page.goto("/soon");
+  await page.goto("/lagos/soon");
   const row = today(all, now).find((s) => areaOf(all, s.cinemaId) === "lekki")!;
   const cinema = all.cinemas.find((c) => c.id === row.cinemaId)!;
   const card = page.getByTestId(`soon.${key(row)}`);
@@ -102,7 +102,7 @@ test("Keep a countdown puts the showing at the top of Starting soon until it beg
   // A showing in Ikeja, more than 2 hours away: not otherwise on a Lekki page.
   const row = today(all, now).find((s) => areaOf(all, s.cinemaId) === "ikeja" && Date.parse(s.startsAt) - now.getTime() > 2 * HOUR)!;
   await page.addInitScript((id) => localStorage.setItem("ls.countdowns", JSON.stringify([id])), `${row.filmId}|${row.cinemaId}|${row.startsAt}`);
-  await page.goto("/soon");
+  await page.goto("/lagos/soon");
   const kept = page.getByTestId("section.kept");
   await expect(kept.locator("h2")).toHaveText("Your countdowns");
   await expect(kept.locator("h2 + p")).toHaveText("Kept on this phone until each film starts");
@@ -118,7 +118,7 @@ test("nothing in the next 2 hours: Figma's words, what's left in Lagos, and tomo
   const now = new Date((await sampleTime(request, "22:50")).getTime() - 24 * HOUR); // the first day, so tomorrow has times
   await keepArea(page, "lekki");
   await freeze(page, now);
-  await page.goto("/soon");
+  await page.goto("/lagos/soon");
   const quiet = page.getByTestId("soon.quiet");
   await expect(quiet.locator("h2")).toHaveText("Nothing starts in Lekki in the next 2 hours");
   const left = today(all, now);
@@ -132,7 +132,7 @@ test("nothing in the next 2 hours: Figma's words, what's left in Lagos, and tomo
   const film = all.films.find((f) => f.id === tomorrow.filmId)!.title.split(": ")[0];
   await expect(quiet.locator("p").last()).toHaveText(`Tomorrow in Lekki starts at ${lagosClock(tomorrow.startsAt)} with ${film} at ${all.cinemas.find((c) => c.id === tomorrow.cinemaId)!.name}.`);
   await expect(page.getByTestId("soon.tomorrow")).toHaveText("See tomorrow in Lekki");
-  await expect(page.getByTestId("soon.tomorrow")).toHaveAttribute("href", "/area/lekki");
+  await expect(page.getByTestId("soon.tomorrow")).toHaveAttribute("href", "/lagos/area/lekki");
   await expect(page.getByTestId("soon.tomorrow")).not.toHaveAttribute("target", "_blank"); // a page of this site opens in place
   await expect(quiet).toContainText("early night?");
   await expect(page.getByTestId("section.soon")).toHaveCount(0);
@@ -142,7 +142,7 @@ test("nothing in the next 2 hours: Figma's words, what's left in Lagos, and tomo
 test.describe("before the page knows the time", () => {
   test.use({ javaScriptEnabled: false });
   test("the page's own HTML lists the day for all of Lagos, with no countdowns (rule 3)", async ({ page }) => {
-    await page.goto("/soon");
+    await page.goto("/lagos/soon");
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Starting soon in Lagos");
     await expect(page.getByTestId("section.day").locator("h2")).toHaveText(/^Showings on \w{3} \d{1,2} \w{3}$/);
     await expect(page.getByTestId("day.rows").locator('[data-testid^="later."]')).toHaveCount(6);
@@ -156,7 +156,7 @@ test("cards are 2, 4 and 6 to a row and the later rows 1, 2 and 2, at Figma's wi
   await freeze(page, await sampleTime(request, "17:30"));
   for (const [width, columns, cardWidth, rows, rowWidth] of [[390, 2, 173, 1, 358], [834, 4, 182, 2, 378], [1440, 6, 193, 2, 613]] as const) {
     await page.setViewportSize({ width, height: 900 });
-    await page.goto("/soon");
+    await page.goto("/lagos/soon");
     const cards = await page.getByTestId("section.soon").locator('[data-testid^="soon."]').evaluateAll((els) => els.slice(0, 6).map((el) => el.getBoundingClientRect()).map((r) => ({ x: Math.round(r.x), w: Math.round(r.width), h: Math.round(r.height) })));
     expect(new Set(cards.slice(0, columns).map((c) => c.x)).size).toBe(columns);
     expect(cards[0]!.w).toBe(cardWidth);
@@ -178,7 +178,7 @@ for (const width of [320, 360, 390, 834, 1440]) {
     const bad: string[] = [];
     for (const slug of slugs) {
       await keepArea(page, slug);
-      await page.goto("/soon");
+      await page.goto("/lagos/soon");
       await expect(page.getByTestId("soon.place")).not.toHaveText("Lagos");
       const hit = await page.evaluate(() => {
         const box = (el: Element | null) => el!.getBoundingClientRect();

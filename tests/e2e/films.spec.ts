@@ -6,7 +6,7 @@ test("Films (the home page, D-55) lists every film still showing; typing narrows
   const now = await sampleTime(request, "18:00");
   const showing = new Set(today(all, now).map((s) => s.filmId));
   await freeze(page, now);
-  await page.goto("/");
+  await page.goto("/lagos");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("What's on in Lagos"); // Figma Films (D-82)
   const cards = page.locator('[data-testid^="film.card."]');
   await expect(cards).toHaveCount(showing.size);
@@ -32,7 +32,7 @@ test("Films (the home page, D-55) lists every film still showing; typing narrows
 // The film page's format and area chips (D-50) are gone in the Figma design (D-88): it lists every
 // cinema by area, your area first. tests/e2e/film-screen.spec.ts covers it.
 
-for (const path of ["/film/ramayana", "/", "/cinemas", "/soon", "/cinema/ebonylife-vi"]) {
+for (const path of ["/lagos/film/ramayana", "/lagos", "/lagos/cinemas", "/lagos/soon", "/lagos/cinema/ebonylife-vi"]) {
   test(`${path} does not scroll sideways on a phone`, async ({ page, request }) => {
     await freeze(page, await sampleTime(request, "10:00"));
     await page.goto(path);
@@ -46,7 +46,7 @@ test("Starting soon lists only what starts in the next 2 hours, soonest first", 
   const now = await sampleTime(request, "18:00");
   const soon = today(all, now).filter((s) => Date.parse(s.startsAt) - now.getTime() <= 2 * 3_600_000);
   await freeze(page, now);
-  await page.goto("/soon");
+  await page.goto("/lagos/soon");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Starting soon in Lagos");
   // Each card's test id ends with its start (Figma Starting soon, build unit 9).
   const starts = await page.getByTestId("section.soon").locator("[data-testid^='soon.']").evaluateAll((els) => els.map((el) => el.getAttribute("data-testid")!.slice(-20)));
@@ -61,7 +61,7 @@ test.describe("with the phone set to New York", () => {
     const now = await sampleTime(request, "18:00");
     const row = today(all, now).find((s) => s.cinemaId === "ebonylife-vi")!;
     await freeze(page, now);
-    await page.goto("/cinema/ebonylife-vi");
+    await page.goto("/lagos/cinema/ebonylife-vi");
     expect(await page.evaluate(() => Intl.DateTimeFormat().resolvedOptions().timeZone)).toBe("America/New_York");
     await expect(page.locator("[data-testid^='time.']").first()).toContainText(lagosClock(row.startsAt));
   });

@@ -21,7 +21,7 @@ test("kept cinemas first, then the area's others soonest first, then the areas n
   const now = await sampleTime(request, "17:30");
   await keepCinemas(page, ["filmhouse-lekki-imax", "ebonylife-vi"]); // one here, one elsewhere
   await freeze(page, now);
-  await page.goto("/area/lekki");
+  await page.goto("/lagos/area/lekki");
 
   const lekki = all.cinemas.filter((c) => c.area === "lekki").map((c) => c.id);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Cinemas in Lekki");
@@ -47,7 +47,7 @@ test("kept cinemas first, then the area's others soonest first, then the areas n
     const count = all.cinemas.filter((c) => c.area === area).length;
     const card = page.getByTestId(`next.card.${area}`);
     await expect(card.getByTestId("next.line")).toHaveText(`${plural(count, "cinema")} · next ${lagosClock(first.startsAt)} at ${all.cinemas.find((c) => c.id === first.cinemaId)!.name}`);
-    await expect(card).toHaveAttribute("href", `/area/${area}`);
+    await expect(card).toHaveAttribute("href", `/lagos/area/${area}`);
   }
 });
 
@@ -55,7 +55,7 @@ test("a cinema card shows its next three times with their films, the soonest mar
   const all = await dataFile(request, "all");
   const now = await sampleTime(request, "17:30");
   await freeze(page, now);
-  await page.goto("/area/lekki");
+  await page.goto("/lagos/area/lekki");
 
   const id = "filmhouse-circle-mall";
   const rows = today(all, now).filter((s) => s.cinemaId === id);
@@ -76,7 +76,7 @@ test("a cinema card shows its next three times with their films, the soonest mar
     if (row.startsAt === first) await expect(chip).toHaveAttribute("data-state", "soonest");
     else await expect(chip).not.toHaveAttribute("data-state", "soonest");
   }
-  await expect(card.getByTestId("cinema.all")).toHaveAttribute("href", `/cinema/${id}`);
+  await expect(card.getByTestId("cinema.all")).toHaveAttribute("href", `/lagos/cinema/${id}`);
   await expect(card.getByTestId("cinema.save")).toHaveCount(0); // only kept cinemas carry the heart (Figma)
 });
 
@@ -84,7 +84,7 @@ test("a time opens the showing sheet; sample times can't be booked; Escape close
   const all = await dataFile(request, "all");
   const now = await sampleTime(request, "17:30");
   await freeze(page, now);
-  await page.goto("/area/lekki");
+  await page.goto("/lagos/area/lekki");
   const row = today(all, now).find((s) => s.cinemaId === "grand-lekki")!;
   const chip = page.getByTestId(`time.grand-lekki.${row.startsAt}`).first();
   await chip.click();
@@ -99,7 +99,7 @@ test("a time opens the showing sheet; sample times can't be booked; Escape close
 test("the heart on a kept cinema lets it go: it moves to the area's other cinemas", async ({ page, request }) => {
   await keepCinemas(page, ["grand-lekki"]);
   await freeze(page, await sampleTime(request, "17:30"));
-  await page.goto("/area/lekki");
+  await page.goto("/lagos/area/lekki");
   const heart = page.getByTestId("cinema.card.grand-lekki").getByTestId("cinema.save");
   await expect(heart).toHaveAttribute("aria-pressed", "true");
   await expect(heart).toHaveAccessibleName("Remove Grand Cinemas Lekki from your cinemas");
@@ -117,7 +117,7 @@ test("with nothing more tonight, it says whose showing was last and the areas ne
   expect(island.map((c) => c.id)).toEqual(["blue-pictures-onikan"]);
   const last = all.showings.filter((s) => s.cinemaId === "blue-pictures-onikan" && s.startsAt.slice(0, 10) === day.toISOString().slice(0, 10)).map((s) => s.startsAt).sort().at(-1)!;
   await freeze(page, new Date(Date.parse(last) + 60_000));
-  await page.goto("/area/lagos-island");
+  await page.goto("/lagos/area/lagos-island");
 
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Cinemas in Lagos Island");
   await expect(page.getByTestId("area.count")).toHaveText("1 cinema");
@@ -135,7 +135,7 @@ test("with nothing more tonight, it says whose showing was last and the areas ne
 test("a cinema whose times we can't read says so, and the footer explains", async ({ page, request }) => {
   const all = await dataFile(request, "all");
   await freeze(page, await sampleTime(request, "17:30"));
-  await page.goto("/area/victoria-island");
+  await page.goto("/lagos/area/victoria-island");
   const unread = all.cinemas.filter((c) => c.area === "victoria-island" && !all.showings.some((s) => s.cinemaId === c.id));
   expect(unread.length).toBeGreaterThan(0);
   for (const cinema of unread) await expect(page.getByTestId(`cinema.card.${cinema.id}`).getByTestId("cinema.none")).toHaveText("Times not available yet");
@@ -145,13 +145,13 @@ test("a cinema whose times we can't read says so, and the footer explains", asyn
 
 test("phone and iPad: a top bar with back and share; desktop: a link back to all cinemas", async ({ page, request }) => {
   await freeze(page, await sampleTime(request, "17:30"));
-  await page.goto("/area/lekki");
-  await expect(page.getByTestId("area.back")).toHaveAttribute("href", "/cinemas");
+  await page.goto("/lagos/area/lekki");
+  await expect(page.getByTestId("area.back")).toHaveAttribute("href", "/lagos/cinemas");
   await expect(page.getByTestId("area.share")).toBeVisible();
   await expect(page.getByTestId("wordmark")).toBeHidden();
   await page.setViewportSize({ width: 1440, height: 900 });
   await expect(page.getByTestId("area.back")).toBeHidden();
-  await expect(page.getByRole("link", { name: "All cinemas in Lagos" })).toHaveAttribute("href", "/cinemas");
+  await expect(page.getByRole("link", { name: "All cinemas in Lagos" })).toHaveAttribute("href", "/lagos/cinemas");
   await expect(page.getByTestId("tab.cinemas")).toHaveAttribute("aria-current", "page");
 });
 
@@ -159,7 +159,7 @@ test("cards sit one to a row on a phone, two on an iPad and three on a computer,
   await freeze(page, await sampleTime(request, "17:30"));
   for (const [width, columns, cardWidth, nextWidth] of [[390, 1, 358, 358], [834, 2, 377, 377], [1440, 3, 403, 612]] as const) {
     await page.setViewportSize({ width, height: 900 });
-    await page.goto("/area/lekki");
+    await page.goto("/lagos/area/lekki");
     const boxes = await page.getByTestId("group.area").locator('[data-testid^="cinema.card."]').evaluateAll((els) => els.slice(0, 3).map((el) => el.getBoundingClientRect()).map((r) => ({ x: Math.round(r.x), w: Math.round(r.width) })));
     expect(new Set(boxes.map((b) => b.x)).size).toBe(columns);
     expect(boxes[0]!.w).toBe(cardWidth);
@@ -176,7 +176,7 @@ for (const width of [320, 360, 390, 834, 1440]) {
     const slugs = [...new Set(all.cinemas.map((c) => c.area))];
     const bad: string[] = [];
     for (const slug of slugs) {
-      await page.goto(`/area/${slug}`);
+      await page.goto(`/lagos/area/${slug}`);
       const hit = await page.evaluate(() => {
         const box = (el: Element | null) => el!.getBoundingClientRect();
         const name = box(document.querySelector('[data-testid="area.name"]'));
@@ -200,7 +200,7 @@ for (const width of [390, 360, 320]) {
     await page.setViewportSize({ width, height: 800 });
     await keepCinemas(page, ["grand-lekki"]);
     await freeze(page, await sampleTime(request, "17:30"));
-    await page.goto("/area/lekki");
+    await page.goto("/lagos/area/lekki");
     await expect(page.getByTestId("group.saved")).toBeVisible();
     // clientWidth, not innerWidth: a phone's layout viewport grows to fit content that is too wide.
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);

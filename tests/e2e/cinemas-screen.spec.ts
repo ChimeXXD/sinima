@@ -21,7 +21,7 @@ test("with Lekki kept, Lekki's cinemas come first, then the areas next to it, th
   const now = await sampleTime(request, "17:30");
   await keep(page, "lekki");
   await freeze(page, now);
-  await page.goto("/cinemas");
+  await page.goto("/lagos/cinemas");
 
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Cinemas in Lagos");
   await expect(page.getByTestId("cinemas.count")).toHaveText(`${all.cinemas.length} of them!`);
@@ -47,7 +47,7 @@ test("a row gives the next time and the films left tonight, its area and formats
   const all = await dataFile(request, "all");
   const now = await sampleTime(request, "17:30");
   await freeze(page, now);
-  await page.goto("/cinemas");
+  await page.goto("/lagos/cinemas");
 
   const left = today(all, now);
   const first = left[0]!.cinemaId;
@@ -66,14 +66,14 @@ test("a row gives the next time and the films left tonight, its area and formats
   await expect(page.getByTestId("cinemas.no-times")).toHaveText("“Times not available yet”: we can't read this cinema's times yet. Check its own site.");
 
   await card.click();
-  await expect(page).toHaveURL(new RegExp(`/cinema/${first}$`));
+  await expect(page).toHaveURL(new RegExp(`/lagos/cinema/${first}$`));
 });
 
 test("with no area kept, one list of every cinema, soonest first", async ({ page, request }) => {
   const all = await dataFile(request, "all");
   const now = await sampleTime(request, "17:30");
   await freeze(page, now);
-  await page.goto("/cinemas");
+  await page.goto("/lagos/cinemas");
   await expect(page.getByTestId("pick.area")).toHaveText("AreaAll");
   await expect(page.getByTestId("group.all").getByRole("heading", { level: 2 })).toHaveText("All cinemas");
   expect(await shown(page, "all")).toEqual(order(all, now, all.cinemas.map((c) => c.id)));
@@ -82,7 +82,7 @@ test("with no area kept, one list of every cinema, soonest first", async ({ page
 test("choosing an area regroups the page in place and is kept on this phone", async ({ page, request }) => {
   const all = await dataFile(request, "all");
   await freeze(page, await sampleTime(request, "17:30"));
-  await page.goto("/cinemas");
+  await page.goto("/lagos/cinemas");
   await page.getByTestId("pick.area").click();
   const sheet = page.getByTestId("sheet.area");
   await expect(sheet).toBeVisible();
@@ -107,7 +107,7 @@ test("choosing an area regroups the page in place and is kept on this phone", as
 for (const [name, viewport] of [["phone", { width: 390, height: 844 }], ["iPad", { width: 834, height: 1194 }]] as const) {
   test(`on a ${name} the area sheet rises from the bottom with every area on screen`, async ({ page }) => {
     await page.setViewportSize(viewport);
-    await page.goto("/cinemas");
+    await page.goto("/lagos/cinemas");
     await page.getByTestId("pick.area").click();
     await settle(page);
     const box = (await page.getByTestId("sheet.area").boundingBox())!;
@@ -125,7 +125,7 @@ for (const [name, viewport] of [["phone", { width: 390, height: 844 }], ["iPad",
 
 test("on a computer the area picker opens a popover from the picker, two areas to a row", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("/cinemas");
+  await page.goto("/lagos/cinemas");
   const picker = (await page.getByTestId("pick.area").boundingBox())!;
   await page.getByTestId("pick.area").click();
   await settle(page);
@@ -149,7 +149,7 @@ test("on a computer the area picker opens a popover from the picker, two areas t
 
 test("the day picker shows tomorrow, and says so", async ({ page, request }) => {
   await freeze(page, new Date((await dataFile(request, "all")).generatedAt)); // the data's first day, so tomorrow has times
-  await page.goto("/cinemas");
+  await page.goto("/lagos/cinemas");
   await page.getByTestId("pick.day").click();
   await page.getByTestId("day.option.tomorrow").click();
   await expect(page.getByTestId("sheet.day")).toBeHidden();
@@ -166,7 +166,7 @@ test("choosing IMAX leaves only cinemas showing in IMAX, and says which were lef
   expect(imax.length).toBeGreaterThan(0);
   expect(silent).toBeGreaterThan(1);
   await freeze(page, now);
-  await page.goto("/cinemas");
+  await page.goto("/lagos/cinemas");
   await page.getByTestId("pick.format").click();
   await page.getByTestId("format.option.IMAX").click();
   await expect(page.getByTestId("pick.format")).toHaveText("FormatIMAX");
@@ -178,7 +178,7 @@ test("the rows sit one to a line on a phone and two on an iPad and a computer, a
   await freeze(page, await sampleTime(request, "17:30"));
   for (const [width, columns, cardWidth] of [[390, 1, 358], [834, 2, 377], [1440, 2, 612]] as const) {
     await page.setViewportSize({ width, height: 900 });
-    await page.goto("/cinemas");
+    await page.goto("/lagos/cinemas");
     const cards = page.getByTestId("group.all").locator('[data-testid^="cinema.card."]');
     const boxes = await cards.evaluateAll((els) => els.slice(0, 4).map((el) => el.getBoundingClientRect()).map((r) => ({ x: Math.round(r.x), w: Math.round(r.width) })));
     expect(new Set(boxes.map((b) => b.x)).size).toBe(columns);
@@ -191,7 +191,7 @@ for (const width of [390, 360, 320]) {
     await page.setViewportSize({ width, height: 800 });
     await keep(page, "lekki");
     await freeze(page, await sampleTime(request, "17:30"));
-    await page.goto("/cinemas");
+    await page.goto("/lagos/cinemas");
     await expect(page.getByTestId("group.area")).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     const short = await page.locator('main button, [data-testid^="cinema.card."]').evaluateAll((els) => els.filter((el) => { const h = el.getBoundingClientRect().height; return h > 0 && h < 43.5; }).map((el) => el.outerHTML.slice(0, 90)));
@@ -200,7 +200,7 @@ for (const width of [390, 360, 320]) {
 }
 
 test("the footer says the logos are the chains' own and how to have one removed", async ({ page }) => {
-  await page.goto("/cinemas");
+  await page.goto("/lagos/cinemas");
   await expect(page.getByTestId("footer.logos")).toContainText("Cinema logos belong to their owners");
   await expect(page.getByTestId("footer.logos").getByRole("link")).toHaveAttribute("href", "https://github.com/ChimeXXD/sinima/issues");
 });

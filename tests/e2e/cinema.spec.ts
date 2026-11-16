@@ -10,7 +10,7 @@ test("every film on a cinema's page has a poster: TMDB's, or a stand-in, never a
   const id = "genesis-purple-lekki";
   const films = [...new Set(today(all, now).filter((s) => s.cinemaId === id).map((s) => s.filmId))];
   await freeze(page, now);
-  await page.goto(`/cinema/${id}`);
+  await page.goto(`/lagos/cinema/${id}`);
 
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Genesis Deluxe Purple Mall");
   expect((await page.locator('[data-testid^="film.card."]').evaluateAll((els) => els.map((el) => el.getAttribute("data-testid")!.slice(10)))).sort()).toEqual([...films].sort());
@@ -27,7 +27,7 @@ test("every film on a cinema's page has a poster: TMDB's, or a stand-in, never a
 
 test("late at night, with every time started, each film says when it showed", async ({ page, request }) => {
   await freeze(page, await sampleTime(request, "23:55"));
-  await page.goto("/cinema/genesis-purple-lekki");
+  await page.goto("/lagos/cinema/genesis-purple-lekki");
   await expect(page.getByTestId("films.note")).toHaveText(/ today · all started$/);
   await expect(page.locator('[data-testid^="time."]')).toHaveCount(0);
   const cards = page.locator('[data-testid^="film.card."]');

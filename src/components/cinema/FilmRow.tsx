@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/components/ui/CityLink";
 import { Poster } from "@/components/Poster";
 import { TimeChip } from "@/components/ui/Status";
 import { TicketFace, TicketFaceSticker } from "@/components/ui/Stickers";

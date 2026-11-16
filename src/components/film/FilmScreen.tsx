@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { Link, useCityPath, useCityRouter as useRouter } from "@/components/ui/CityLink";
 import { useRef, useState } from "react";
 import { IconButton, Segmented } from "@/components/ui/Actions";
 import { AppFrame, BarBack, BarTitle } from "@/components/ui/AppFrame";
@@ -29,6 +28,7 @@ import s from "./film.module.css";
 const CITY = "Lagos"; // one city until the city layer (unit 13, O-16)
 
 export function FilmScreen({ data, areas, bg }: { data: ListData; areas: Area[]; bg: { light: string; dark: string } }) {
+  const cityHref = useCityPath();
   const clock = useNow();
   const live = clock !== null;
   const now = clock ?? data.at;
@@ -62,7 +62,7 @@ export function FilmScreen({ data, areas, bg }: { data: ListData; areas: Area[];
   const stay = film.stay.verdict === "stay" || film.stay.verdict === "probably-stay";
 
   async function shareFilm() {
-    const done = await shareLink({ title: film.title, text: shareText({ film: film.title, city: CITY }), url: `${window.location.origin}/film/${film.id}` });
+    const done = await shareLink({ title: film.title, text: shareText({ film: film.title, city: CITY }), url: `${window.location.origin}${cityHref(`/film/${film.id}`)}` });
     if (done === "copied") {
       setCopied(true);
       clearTimeout(copiedTimer.current);

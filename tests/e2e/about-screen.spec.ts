@@ -28,7 +28,7 @@ test("About: how it works, every source with cinemas and its real status, TMDB, 
 });
 
 test("every other page's footer leads to About", async ({ page }) => {
-  for (const path of ["/", "/cinemas", "/soon", "/yours", "/cinema/ebonylife-vi"]) {
+  for (const path of ["/lagos", "/lagos/cinemas", "/lagos/soon", "/lagos/yours", "/lagos/cinema/ebonylife-vi"]) {
     await page.goto(path);
     await expect(page.getByTestId("footer.about")).toHaveAttribute("href", "/about");
   }

@@ -1,5 +1,6 @@
 "use client";
 
+import { useCityPath } from "@/components/ui/CityLink";
 import { useState } from "react";
 import { OptionRow, Sheet } from "@/components/ui/Sheet";
 import { Icon } from "@/components/ui/Icon";
@@ -26,6 +27,7 @@ import s from "./showing.module.css";
 type Props = { data: ListData; /** The last showing opened: it stays drawn while the sheet slides away. */ row: ListRow | null; open: boolean; now: string | null; areaName: (slug: string) => string; near: (slug: string) => string[]; city: string; onPick: (row: ListRow) => void; onClose: () => void };
 
 export function ShowingSheet({ data, row, open, now, areaName, near, city, onPick, onClose }: Props) {
+  const cityHref = useCityPath();
   const kept = useCountdowns();
   const [copied, setCopied] = useState<string | null>(null);
   if (!row) return <Sheet open={false} onClose={onClose} title="" testId="showing.sheet">{null}</Sheet>;
@@ -36,7 +38,7 @@ export function ShowingSheet({ data, row, open, now, areaName, near, city, onPic
   const upcoming = now === null || isBeforeStart(showingState(row.at, now));
   // "Link copied" belongs to the showing it was copied for.
   const was = (what: string) => copied === `${what}|${row.cinema}|${row.at}`;
-  const filmUrl = () => `${window.location.origin}/film/${film.id}`;
+  const filmUrl = () => `${window.location.origin}${cityHref(`/film/${film.id}`)}`;
 
   async function share(what: "showing" | "film") {
     const link =

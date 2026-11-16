@@ -2,11 +2,11 @@
 // still opens with no connection and says how old the times are (Figma Offline, build unit 11).
 // Pages, page data, the times files, fonts, stickers, logos and icons: the network first, the saved
 // copy when it fails. Next's hashed build files and TMDB posters: the saved copy first (posters
-// are fetched with CORS, so only ones that loaded are saved, at their real size). Films is saved
-// when the worker installs and each page when it is first shown, so a page opened once opens
+// are fetched with CORS, so only ones that loaded are saved, at their real size). Each city's Films
+// is saved when the worker installs and each page when it is first shown, so a page opened once opens
 // offline. Nothing is sent anywhere; the caches live on this phone only.
 
-const VERSION = "v1";
+const VERSION = "v2"; // v2: the city layer (D-98) moved every page, so v1's copies are dropped
 const PAGES = `pages-${VERSION}`;
 const FILES = `files-${VERSION}`;
 const POSTERS = `posters-${VERSION}`;
@@ -27,7 +27,7 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
       .open(PAGES)
-      .then((cache) => cache.add("/"))
+      .then((cache) => Promise.all(["/", "/lagos", "/abuja"].map((path) => cache.add(path).catch(() => {}))))
       .catch(() => {}),
   );
 });

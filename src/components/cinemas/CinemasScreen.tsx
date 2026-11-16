@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useCityRouter as useRouter } from "@/components/ui/CityLink";
 import { useState } from "react";
 import { AppFrame, LogoNote } from "@/components/ui/AppFrame";
 import { PageNotice } from "@/components/ui/Status";

@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
-import { FilmsScreen } from "@/components/films/FilmsScreen";
-import { loadAll } from "@/lib/data/load";
-import { toListData } from "@/lib/data/select";
-import { pageColours } from "@/lib/theme/pageColours";
+import { ForwardToCity } from "@/components/city/Forward";
 
-export const metadata: Metadata = { title: "What's on in Lagos · Sinima" };
+export const metadata: Metadata = { title: "Sinima" };
 
-/** Home: every film showing in Lagos, as posters. A visitor picks a film, then sees where it is on (D-55). */
-export default function FilmsPage() {
-  return <FilmsScreen data={toListData(loadAll())} bg={pageColours()} />;
+/** "/": the city kept on this phone, or Lagos (D-98). */
+export default function Home() {
+  return <ForwardToCity />;
 }

@@ -1,12 +1,13 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/components/ui/CityLink";
 import { useEffect, useRef, useState } from "react";
 import { Chip } from "@/components/ui/Actions";
 import { Icon } from "@/components/ui/Icon";
 import { Notice } from "@/components/ui/Status";
 import { CitySticker, TicketFaceSticker } from "@/components/ui/Stickers";
 import { hasCinemas, searchFilms, type Scope, type SearchIndex, type SearchResult } from "@/lib/data/search";
+import type { City } from "@/lib/city";
 import { pageBanner } from "@/lib/data/select";
 import { useNow } from "@/lib/time/useNow";
 import { ABUJA_SOON, CITY_NAME, enterHint, matchCount, noMatch, resultMeta, resultNext, SEARCH_FAILED } from "@/lib/wording/search";
@@ -122,7 +123,7 @@ export default function SearchOverlay({ query, onQuery, onSubmit, onClose, city 
                   {matchCount(found, scope, text)}
                 </p>
                 {groups[0]!.results.map((result) => (
-                  <Result key={result.film.id} result={result} now={now!} onOpen={() => onClose()} />
+                  <Result key={result.film.id} city={groups[0]!.city} result={result} now={now!} onOpen={() => onClose()} />
                 ))}
               </>
             )}
@@ -139,7 +140,7 @@ export default function SearchOverlay({ query, onQuery, onSubmit, onClose, city 
                       In {CITY_NAME[group.city]}
                     </h3>
                     {group.results.map((result) => (
-                      <Result key={result.film.id} result={result} now={now!} onOpen={() => onClose()} />
+                      <Result key={result.film.id} city={group.city} result={result} now={now!} onOpen={() => onClose()} />
                     ))}
                   </section>
                 ) : group.city === "abuja" && abujaSoon ? (
@@ -156,10 +157,11 @@ export default function SearchOverlay({ query, onQuery, onSubmit, onClose, city 
   );
 }
 
-function Result({ result, now, onOpen }: { result: SearchResult; now: string; onOpen: () => void }) {
+/** A result opens the film in its own city's pages, whatever city the page is in. */
+function Result({ city, result, now, onOpen }: { city: City; result: SearchResult; now: string; onOpen: () => void }) {
   const { film } = result;
   return (
-    <Link href={`/film/${film.id}`} className={s.result} onClick={onOpen} data-testid={`search.hit.${film.id}`}>
+    <Link href={`/${city}/film/${film.id}`} className={s.result} onClick={onOpen} data-testid={`search.hit.${film.id}`}>
       {film.poster ? (
         // eslint-disable-next-line @next/next/no-img-element -- a static export has no image optimiser; TMDB serves sized files
         <img className={s.poster} src={`${TMDB}w154${film.poster}`} srcSet={`${TMDB}w154${film.poster} 1x, ${TMDB}w342${film.poster} 2x`} alt="" crossOrigin="anonymous" width={52} height={78} loading="lazy" decoding="async" />

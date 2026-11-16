@@ -15,7 +15,7 @@ async function saveForOffline(page: Page, path: string) {
 test("Films opens offline from the saved copy, and the banner says when it was saved (Figma Offline)", async ({ page, context, request }) => {
   const savedAt = await sampleTime(request, "17:05");
   await freeze(page, savedAt);
-  await saveForOffline(page, "/");
+  await saveForOffline(page, "/lagos");
   await expect(page.getByTestId("banner.offline")).toHaveCount(0);
 
   await context.setOffline(true);
@@ -32,10 +32,10 @@ test("Films opens offline from the saved copy, and the banner says when it was s
 });
 
 test("a page saved earlier opens offline too; one never opened falls back to Films", async ({ page, context }) => {
-  await saveForOffline(page, "/cinemas");
-  await page.goto("/"); // Films, saved through the service worker
+  await saveForOffline(page, "/lagos/cinemas");
+  await page.goto("/lagos"); // Films, saved through the service worker
   await context.setOffline(true);
-  await page.goto("/cinemas");
+  await page.goto("/lagos/cinemas");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Cinemas in Lagos");
   await expect(page.getByTestId("banner.offline")).toBeVisible();
   await page.goto("/about");
@@ -43,14 +43,14 @@ test("a page saved earlier opens offline too; one never opened falls back to Fil
 });
 
 test("a page opened just once, on the first visit, opens offline too", async ({ page, context }) => {
-  await page.goto("/film/ramayana"); // the first visit: the worker isn't in charge yet
+  await page.goto("/lagos/film/ramayana"); // the first visit: the worker isn't in charge yet
   await page.evaluate(() => navigator.serviceWorker.ready.then(() => undefined));
   // The page asks the worker to save it, and the scripts it starts with, once the worker runs (not
   // the noModule polyfill, which a phone that runs the site never loads).
   await expect
     .poll(() =>
       page.evaluate(async () => {
-        const urls = ["/film/ramayana", ...[...document.querySelectorAll("script[src]:not([nomodule])")].map((el) => new URL((el as HTMLScriptElement).src).pathname)];
+        const urls = ["/lagos/film/ramayana", ...[...document.querySelectorAll("script[src]:not([nomodule])")].map((el) => new URL((el as HTMLScriptElement).src).pathname)];
         const found = await Promise.all(urls.map((url) => caches.match(url)));
         return found.filter((hit) => !hit).length;
       }),
@@ -58,7 +58,7 @@ test("a page opened just once, on the first visit, opens offline too", async ({ 
     )
     .toBe(0);
   await context.setOffline(true);
-  await page.goto("/film/ramayana");
+  await page.goto("/lagos/film/ramayana");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Ramayana");
   await expect(page.getByTestId("banner.offline")).toBeVisible();
 });

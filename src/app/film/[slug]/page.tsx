@@ -1,23 +1,12 @@
 import type { Metadata } from "next";
-import { FilmScreen } from "@/components/film/FilmScreen";
-import { areas, loadAll } from "@/lib/data/load";
-import { toListData } from "@/lib/data/select";
-import { pageColours } from "@/lib/theme/pageColours";
+import { Forward } from "@/components/city/Forward";
+import { loadAll } from "@/lib/data/load";
 
-type Props = { params: Promise<{ slug: string }> };
-
+export const metadata: Metadata = { title: "Sinima", robots: { index: false } };
 export const dynamicParams = false;
 export const generateStaticParams = () => loadAll().films.map((film) => ({ slug: film.id }));
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  return { title: `${loadAll().films.find((film) => film.id === slug)?.title ?? "Film"} · Sinima` };
-}
-
-/** One film: its poster and Stay or Go, then every cinema showing it, by area (Figma Film). */
-export default async function FilmPage({ params }: Props) {
-  const { slug } = await params;
-  const data = toListData(loadAll(), { filmId: slug });
-  if (!data.films[0]) throw new Error(`No film "${slug}" in the data`);
-  return <FilmScreen data={data} areas={areas} bg={pageColours()} />;
+/** The old /film/<slug>, before the city came first (D-98). */
+export default async function Old({ params }: { params: Promise<{ slug: string }> }) {
+  return <Forward to={`/lagos/film/${(await params).slug}`} />;
 }

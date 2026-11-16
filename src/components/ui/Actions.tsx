@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/components/ui/CityLink";
 import { useRef, useState } from "react";
 import { Icon, type IconName } from "./Icon";
 import s from "./actions.module.css";

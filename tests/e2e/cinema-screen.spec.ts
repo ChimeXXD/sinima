@@ -24,7 +24,7 @@ test("the cinema, then its films tonight soonest first, each with its times stil
   const all = await dataFile(request, "all");
   const now = await firstDay(request, "17:30");
   await freeze(page, now);
-  await page.goto(`/cinema/${ID}`);
+  await page.goto(`/lagos/cinema/${ID}`);
 
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Filmhouse Lekki IMAX");
   await expect(page.getByTestId("cinema.address")).toHaveText("The Rock Drive, off Bisola Durosinmi Etti Drive, Lekki Phase 1, Lagos");
@@ -59,7 +59,7 @@ test("Tomorrow lists the next day's films with all their times", async ({ page, 
   const all = await dataFile(request, "all");
   const now = await firstDay(request, "17:30");
   await freeze(page, now);
-  await page.goto(`/cinema/${ID}`);
+  await page.goto(`/lagos/cinema/${ID}`);
   await page.getByTestId("films.day").getByRole("radio", { name: /^Tomorrow/ }).click();
   await expect(page.getByTestId("films.title")).toHaveText("Films tomorrow");
   const next = filmsOn(all, ID, new Date(now.getTime() + 24 * HOUR - 17 * HOUR)); // the next day, before its first show
@@ -69,7 +69,7 @@ test("Tomorrow lists the next day's films with all their times", async ({ page, 
 
 test("with nothing listed for tomorrow, today stands alone and says so; the started line has no tomorrow", async ({ page, request }) => {
   await freeze(page, await sampleTime(request, "17:30")); // the data's last day
-  await page.goto(`/cinema/${ID}`);
+  await page.goto(`/lagos/cinema/${ID}`);
   await expect(page.getByTestId("films.day")).toHaveCount(0);
   await expect(page.getByTestId("films.today")).toHaveText(/^Today · \w{3} \d+$/);
   await expect(page.getByTestId("films.not-listed")).toHaveText(/^Filmhouse hasn't listed (Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)day yet\.$/);
@@ -78,7 +78,7 @@ test("with nothing listed for tomorrow, today stands alone and says so; the star
 
 test("Save keeps the cinema on this phone, says so in a toast, and Undo takes it back (Figma Saved)", async ({ page, request }) => {
   await freeze(page, await firstDay(request, "17:30"));
-  await page.goto(`/cinema/${ID}`);
+  await page.goto(`/lagos/cinema/${ID}`);
   const save = page.getByTestId("cinema.save");
   await save.click();
   await expect(save).toHaveText(/^Saved /);
@@ -106,7 +106,7 @@ test("a time opens the showing sheet; sample times can't be booked; Escape gives
   const all = await dataFile(request, "all");
   const now = await firstDay(request, "17:30");
   await freeze(page, now);
-  await page.goto(`/cinema/${ID}`);
+  await page.goto(`/lagos/cinema/${ID}`);
   const row = filmsOn(all, ID, now).left[0]!;
   const chip = page.getByTestId(`time.${row.filmId}.${row.startsAt}`);
   await chip.click();
@@ -122,15 +122,15 @@ test("a cinema that sells only at the door has no Book button, and its footer sa
   const all = await dataFile(request, "all");
   const door = (all.cinemas as (DataFile["cinemas"][number] & { bookingHost: string | null })[]).find((c) => !c.bookingHost && all.showings.some((s) => s.cinemaId === c.id));
   test.skip(!door, "every listed cinema sells online");
-  await page.goto(`/cinema/${door!.id}`);
+  await page.goto(`/lagos/cinema/${door!.id}`);
   await expect(page.getByTestId("cinema.book")).toHaveCount(0);
   await expect(page.getByTestId("footer.tickets")).toHaveText(`${door!.name} sells the tickets at the cinema. Sinima only shows the times.`);
 });
 
 test("phone and iPad: the top bar; desktop: the cinema on the left and its films beside it, two to a row", async ({ page, request }) => {
   await freeze(page, await firstDay(request, "17:30"));
-  await page.goto(`/cinema/${ID}`);
-  await expect(page.getByTestId("cinema.back")).toHaveAttribute("href", "/cinemas");
+  await page.goto(`/lagos/cinema/${ID}`);
+  await expect(page.getByTestId("cinema.back")).toHaveAttribute("href", "/lagos/cinemas");
   await expect(page.getByTestId("cinema.share")).toBeVisible();
   for (const [width, columns, cardWidth] of [[390, 1, 358], [834, 2, 377], [1440, 2, 391]] as const) {
     await page.setViewportSize({ width, height: 900 });
@@ -140,7 +140,7 @@ test("phone and iPad: the top bar; desktop: the cinema on the left and its films
   }
   await expect(page.getByTestId("cinema.back")).toBeHidden();
   const crumb = page.getByRole("link", { name: "All cinemas in Lagos" });
-  await expect(crumb).toHaveAttribute("href", "/cinemas");
+  await expect(crumb).toHaveAttribute("href", "/lagos/cinemas");
   expect((await crumb.boundingBox())!.height).toBeGreaterThanOrEqual(44);
   const title = (await page.getByRole("heading", { level: 1 }).boundingBox())!;
   const films = (await page.getByTestId("films.title").boundingBox())!;
@@ -152,7 +152,7 @@ for (const width of [390, 360, 320]) {
   test(`at ${width} px nothing scrolls sideways, and every button and time is at least 44 px tall`, async ({ page, request }) => {
     await page.setViewportSize({ width, height: 800 });
     await freeze(page, await firstDay(request, "17:30"));
-    await page.goto(`/cinema/${ID}`);
+    await page.goto(`/lagos/cinema/${ID}`);
     await expect(page.locator('[data-testid^="film.card."]').first()).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
     // Each segment shows its whole label.

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/components/ui/CityLink";
 import { minutesFromStart } from "@/lib/time/countdown";
 import { isBeforeStart, showingState } from "@/lib/time/showingState";
 import { filmNextLine } from "@/lib/wording/film";

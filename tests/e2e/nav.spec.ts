@@ -4,10 +4,10 @@ import { expect, test } from "@playwright/test";
 // sees every cinema showing it.
 // D-61: a fourth tab, Your cinemas, holds the hearted cinemas.
 test("the site opens on Films, and the tabs read Films, Cinemas, Starting soon, Your cinemas on every page", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/lagos");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("What's on in Lagos");
   await expect(page.getByTestId("tab.films")).toHaveAttribute("aria-current", "page");
-  for (const path of ["/", "/cinemas", "/area/lekki", "/soon", "/yours", "/film/ramayana", "/cinema/ebonylife-vi"]) {
+  for (const path of ["/lagos", "/lagos/cinemas", "/lagos/area/lekki", "/lagos/soon", "/lagos/yours", "/lagos/film/ramayana", "/lagos/cinema/ebonylife-vi"]) {
     await page.goto(path);
     await expect(page.getByRole("navigation", { name: "Sections" }).getByRole("link")).toHaveText(["Films", "Cinemas", "Starting soon", "Your cinemas"]);
   }
@@ -18,10 +18,10 @@ test("the site opens on Films, and the tabs read Films, Cinemas, Starting soon, 
 
 // D-91: the Cinemas tab keeps the saved area on its own page: that area's cinemas come first.
 test("a saved area puts its cinemas first on the Cinemas tab", async ({ page }) => {
-  await page.goto("/cinemas");
+  await page.goto("/lagos/cinemas");
   await page.getByTestId("pick.area").click();
   await page.getByTestId("sheet.area.ikeja").click();
-  await page.goto("/");
+  await page.goto("/lagos");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("What's on in Lagos");
   await page.getByTestId("tab.cinemas").click();
   await expect(page).toHaveURL(/\/cinemas$/);
@@ -34,7 +34,7 @@ test("a saved area puts its cinemas first on the Cinemas tab", async ({ page }) 
 for (const width of [390, 360, 320]) {
   test(`at ${width} px every area chip is whole on screen, none cut off or covered`, async ({ page }) => {
     await page.setViewportSize({ width, height: 800 });
-    await page.goto("/soon"); // the Cinemas tab uses pickers on a phone since D-56, and a film's page has no chips since D-88; Starting soon still has them
+    await page.goto("/lagos/soon"); // the Cinemas tab uses pickers on a phone since D-56, and a film's page has no chips since D-88; Starting soon still has them
     // With no area kept: All Lagos and every area, in a row that scrolls sideways (Figma, build unit 9).
     const chips = page.locator('[data-testid^="area.chip."]');
     await expect(chips).toHaveCount(13); // All Lagos and 12 areas
@@ -59,7 +59,7 @@ for (const width of [390, 360, 320]) {
 for (const width of [360, 320]) {
   test(`at ${width} px each tab name stays on one line`, async ({ page }) => {
     await page.setViewportSize({ width, height: 800 });
-    await page.goto("/");
+    await page.goto("/lagos");
     // A wrapped name still fits in the 44 px tab, so count the lines of text, not the tab's height.
     const wrapped = await page.getByRole("navigation", { name: "Sections" }).getByRole("link").evaluateAll((els) =>
       els.filter((el) => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useCityRouter as useRouter, useCityPath } from "@/components/ui/CityLink";
 import { useCallback, useRef, useState } from "react";
 import { useLazySheet } from "@/components/film/useLazySheet";
 import { Button, IconButton, Segmented } from "@/components/ui/Actions";
@@ -29,6 +29,7 @@ import s from "./cinema.module.css";
 const CITY = "Lagos"; // one city until the city layer (unit 13, O-16)
 
 export function CinemaScreen({ data, id, area, bg }: { data: ListData; id: string; area: { slug: string; name: string }; bg: { light: string; dark: string } }) {
+  const cityHref = useCityPath();
   const clock = useNow();
   const live = clock !== null;
   const now = clock ?? data.at;
@@ -64,7 +65,7 @@ export function CinemaScreen({ data, id, area, bg }: { data: ListData; id: strin
     setToast(!saved); // only saving says so; letting go is quiet
   }
   async function share() {
-    const done = await shareLink({ title: cinema.name, text: `${cinema.name} · times on Sinima`, url: `${window.location.origin}/cinema/${id}` });
+    const done = await shareLink({ title: cinema.name, text: `${cinema.name} · times on Sinima`, url: `${window.location.origin}${cityHref(`/cinema/${id}`)}` });
     if (done === "copied") {
       setCopied(true);
       clearTimeout(copiedTimer.current);

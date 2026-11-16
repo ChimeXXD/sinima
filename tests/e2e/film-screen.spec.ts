@@ -20,7 +20,7 @@ async function startOf(request: Parameters<typeof dataFile>[0], cinema: string, 
 test("your area first, then the areas next to it, then the rest soonest first (Figma: Stay or Go not known)", async ({ page, request }) => {
   await freeze(page, await sampleTime(request, "17:30"));
   await keepArea(page, "lekki");
-  await page.goto("/film/ramayana");
+  await page.goto("/lagos/film/ramayana");
   await expect(page.getByTestId("film.title")).toHaveText("Ramayana");
   await expect(page.getByTestId("film.facts")).toHaveText("3 h 21 min·IMAX·MX4D·at 10 cinemas in Lagos today");
   await expect(page.getByTestId("credits.chip")).toHaveText("Credits scene: not known yet");
@@ -47,7 +47,7 @@ test("your area first, then the areas next to it, then the rest soonest first (F
 
 test("with no area kept, every area is in order of its soonest time, with no tags", async ({ page, request }) => {
   await freeze(page, await sampleTime(request, "17:30"));
-  await page.goto("/film/ramayana");
+  await page.goto("/lagos/film/ramayana");
   await expect(page.getByText(`${await sampleDay(request)} · soonest first`)).toBeVisible();
   expect(await ids(page, "area.")).toEqual(["area.lekki", "area.victoria-island", "area.maryland", "area.festac", "area.surulere"]);
   await expect(page.getByTestId("area.victoria-island").getByRole("heading")).toHaveText("Victoria Island");
@@ -55,7 +55,7 @@ test("with no area kept, every area is in order of its soonest time, with no tag
 
 test("a film with a credits scene says Stay, with its source, and stay put! (Figma: Default)", async ({ page, request }) => {
   await freeze(page, await sampleTime(request, "17:30"));
-  await page.goto("/film/spider-man-brand-new-day");
+  await page.goto("/lagos/film/spider-man-brand-new-day");
   await expect(page.getByTestId("credits.chip")).toHaveText("Stay: scene after the credits · TMDB");
   await expect(page.getByTestId("credits.detail")).toHaveText("TMDB lists an after-credits scene.");
   await expect(page.getByTestId("film.note")).toHaveText("stay put!");
@@ -63,7 +63,7 @@ test("a film with a credits scene says Stay, with its source, and stay put! (Fig
 
 test("a time opens its sheet: sample times can't be booked; calendar, countdown; Escape closes it", async ({ page, request }) => {
   await freeze(page, await sampleTime(request, "17:30"));
-  await page.goto("/film/ramayana");
+  await page.goto("/lagos/film/ramayana");
   const at = await startOf(request, "filmhouse-circle-mall", "18:00");
   const chip = page.getByTestId(`time.filmhouse-circle-mall.${at}`);
   await chip.click();
@@ -94,7 +94,7 @@ test("once the showing starts the sheet can't book it, and offers the next times
   const at = await startOf(request, "filmhouse-circle-mall", "18:00");
   await freeze(page, new Date(Date.parse(at) - 60_000));
   await keepArea(page, "lekki");
-  await page.goto("/film/ramayana");
+  await page.goto("/lagos/film/ramayana");
   await page.getByTestId(`time.filmhouse-circle-mall.${at}`).click();
   const sheet = page.getByTestId("showing.sheet");
   await expect(sheet.getByTestId("showing.book")).toBeVisible();
@@ -129,9 +129,9 @@ async function asLiveData(page: Page, path: string, readAt: Date) {
 test("a live showing books on the cinema's own site until the second it starts, never after (rule 4)", async ({ page, request }) => {
   const at = await startOf(request, "filmhouse-circle-mall", "18:00");
   const now = new Date(Date.parse(at) - 60_000);
-  await asLiveData(page, "/film/ramayana", new Date(now.getTime() - 3_600_000));
+  await asLiveData(page, "/lagos/film/ramayana", new Date(now.getTime() - 3_600_000));
   await freeze(page, now);
-  await page.goto("/film/ramayana");
+  await page.goto("/lagos/film/ramayana");
   await expect(page.getByTestId("banner.sample")).toHaveCount(0);
   await page.getByTestId(`time.filmhouse-circle-mall.${at}`).click();
   const book = page.getByTestId("showing.sheet").getByTestId("showing.book");
@@ -146,7 +146,7 @@ test("a live showing books on the cinema's own site until the second it starts, 
 test("a shared link opens its showing, once", async ({ page, request }) => {
   await freeze(page, await sampleTime(request, "17:30"));
   const at = await startOf(request, "filmhouse-oniru", "18:15");
-  await page.goto(`/film/ramayana#s=filmhouse-oniru@${at}`);
+  await page.goto(`/lagos/film/ramayana#s=filmhouse-oniru@${at}`);
   const sheet = page.getByTestId("showing.sheet");
   await expect(sheet).toHaveAccessibleName("18:15 · Filmhouse Oniru");
   await sheet.getByTestId("showing.sheet.close").click();
@@ -155,7 +155,7 @@ test("a shared link opens its showing, once", async ({ page, request }) => {
 
 test("Tomorrow with no times says so", async ({ page, request }) => {
   await freeze(page, await sampleTime(request, "17:30"));
-  await page.goto("/film/ramayana");
+  await page.goto("/lagos/film/ramayana");
   await page.getByTestId("film.day").getByRole("radio", { name: "Tomorrow" }).click();
   await expect(page.getByTestId("film.none")).toHaveText("No times for Ramayana are listed tomorrow yet.");
 });
@@ -163,8 +163,8 @@ test("Tomorrow with no times says so", async ({ page, request }) => {
 test("phone: a top bar with back and share instead of the header; desktop: the film's column on the left", async ({ page, request }) => {
   await freeze(page, await sampleTime(request, "17:30"));
   await keepArea(page, "lekki");
-  await page.goto("/film/ramayana");
-  await expect(page.getByTestId("film.back")).toHaveAttribute("href", "/");
+  await page.goto("/lagos/film/ramayana");
+  await expect(page.getByTestId("film.back")).toHaveAttribute("href", "/lagos");
   for (const id of ["film.back", "film.share"]) {
     const box = (await page.getByTestId(id).boundingBox())!;
     expect(Math.min(box.width, box.height)).toBeGreaterThanOrEqual(40); // the 40 circle, drawn as in Figma
@@ -193,7 +193,7 @@ test("phone: a top bar with back and share instead of the header; desktop: the f
 test("on a 360 phone the hero still runs edge to edge with its stickers on screen", async ({ page, request }) => {
   await page.setViewportSize({ width: 360, height: 800 });
   await freeze(page, await sampleTime(request, "17:30"));
-  await page.goto("/film/ramayana");
+  await page.goto("/lagos/film/ramayana");
   const hero = (await page.getByTestId("film.hero").boundingBox())!;
   expect(hero.x).toBe(0);
   expect(hero.width).toBe(360);

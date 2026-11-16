@@ -1,24 +1,12 @@
 import type { Metadata } from "next";
-import { AreaScreen } from "@/components/area/AreaScreen";
-import { areaBySlug, areas, loadAll } from "@/lib/data/load";
-import { toListData } from "@/lib/data/select";
-import { pageColours } from "@/lib/theme/pageColours";
+import { Forward } from "@/components/city/Forward";
+import { areas } from "@/lib/data/load";
 
-type Props = { params: Promise<{ slug: string }> };
-
+export const metadata: Metadata = { title: "Sinima", robots: { index: false } };
 export const dynamicParams = false;
 export const generateStaticParams = () => areas.map((area) => ({ slug: area.slug }));
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  return { title: `Cinemas in ${areaBySlug((await params).slug).name} · Sinima` };
-}
-
-/** One area's cinemas, then the areas next to it (Figma Area, build unit 7). The page carries only those areas' showings. */
-export default async function AreaPage({ params }: Props) {
-  const area = areaBySlug((await params).slug);
-  const file = loadAll();
-  const shown = new Set([area.slug, ...area.neighbours]);
-  const areaOf = new Map(file.cinemas.map((cinema) => [cinema.id, cinema.area]));
-  const data = toListData({ ...file, showings: file.showings.filter((showing) => shown.has(areaOf.get(showing.cinemaId) ?? "")) });
-  return <AreaScreen data={data} areas={areas} slug={area.slug} bg={pageColours()} />;
+/** The old /area/<slug>, before the city came first (D-98). */
+export default async function Old({ params }: { params: Promise<{ slug: string }> }) {
+  return <Forward to={`/lagos/area/${(await params).slug}`} />;
 }

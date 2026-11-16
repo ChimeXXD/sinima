@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/components/ui/CityLink";
 import { useEffect, useRef, useState } from "react";
 import { Poster } from "@/components/Poster";
 import { Chip } from "@/components/ui/Actions";

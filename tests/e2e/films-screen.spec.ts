@@ -10,7 +10,7 @@ test("today splits into the next 2 hours and later tonight, soonest first, each 
   const all = await dataFile(request, "all");
   const now = await sampleTime(request, "17:30");
   await freeze(page, now);
-  await page.goto("/");
+  await page.goto("/lagos");
   const left = today(all, now);
   const soonFilms = new Set(left.filter((s) => Date.parse(s.startsAt) - now.getTime() <= 2 * HOUR).map((s) => s.filmId));
   const laterFilms = new Set(left.map((s) => s.filmId).filter((id) => !soonFilms.has(id)));
@@ -37,7 +37,7 @@ test("choosing IMAX leaves only IMAX films, and says which cinemas were left out
   const now = await sampleTime(request, "17:30");
   const imax = new Set(today(all, now).filter((s) => /^IMAX/i.test(s.format ?? "")).map((s) => s.filmId));
   await freeze(page, now);
-  await page.goto("/");
+  await page.goto("/lagos");
   await page.getByTestId("format.IMAX").click();
   const section = page.getByTestId("section.format");
   await expect(section.getByRole("heading", { level: 2 })).toHaveText("In IMAX");
@@ -59,7 +59,7 @@ async function afterLastShowing(request: Parameters<typeof dataFile>[0], first: 
 
 test("after the last showing has started, the page says so and offers tomorrow", async ({ page, request }) => {
   await freeze(page, await afterLastShowing(request, true));
-  await page.goto("/");
+  await page.goto("/lagos");
   const empty = page.getByTestId("films.empty");
   await expect(empty.getByRole("heading", { level: 2 })).toHaveText("Nothing more starts today");
   await expect(empty.locator("p")).toContainText(/The last showing in Lagos began at \d\d:\d\d\. Tomorrow's times are in: \d+ films? from \d\d:\d\d\./);
@@ -70,7 +70,7 @@ test("after the last showing has started, the page says so and offers tomorrow",
 
 test("with no times for tomorrow yet, it says so and offers nothing it cannot show", async ({ page, request }) => {
   await freeze(page, await afterLastShowing(request, false));
-  await page.goto("/");
+  await page.goto("/lagos");
   await expect(page.getByTestId("films.empty").locator("p")).toContainText("Tomorrow's times aren't in yet.");
   await expect(page.getByTestId("films.tomorrow")).toHaveCount(0);
 });
@@ -84,7 +84,7 @@ for (const [width, columns] of [
   test(`at ${width} px the posters sit in ${columns} columns and nothing scrolls sideways`, async ({ page, request }) => {
     await page.setViewportSize({ width, height: 900 });
     await freeze(page, await sampleTime(request, "17:30"));
-    await page.goto("/");
+    await page.goto("/lagos");
     const cards = page.getByTestId("section.soon").locator('[data-testid^="film.card."]');
     const lefts = await cards.evaluateAll((els) => [...new Set(els.map((el) => Math.round(el.getBoundingClientRect().left)))]);
     expect(lefts.length).toBe(columns);
@@ -97,7 +97,7 @@ for (const [width, columns] of [
 }
 
 test("the theme switch and the logo are 44 px touch targets; the switch still looks 40 on a phone", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/lagos");
   const theme = page.getByTestId("theme.toggle");
   const box = (await theme.boundingBox())!;
   expect(Math.min(box.width, box.height)).toBeGreaterThanOrEqual(44);
@@ -107,7 +107,7 @@ test("the theme switch and the logo are 44 px touch targets; the switch still lo
 
 test('"tonight!" sits beside today\'s list only, never over Tomorrow', async ({ page, request }) => {
   await freeze(page, await sampleTime(request, "17:30"));
-  await page.goto("/");
+  await page.goto("/lagos");
   await expect(page.getByText("tonight!")).toBeVisible();
   await page.getByRole("radio", { name: "Tomorrow" }).click();
   await expect(page.getByText("tonight!")).toHaveCount(0);
@@ -116,7 +116,7 @@ test('"tonight!" sits beside today\'s list only, never over Tomorrow', async ({ 
 for (const width of [360, 390]) {
   test(`at ${width} px no hero sticker covers the title`, async ({ page }) => {
     await page.setViewportSize({ width, height: 800 });
-    await page.goto("/");
+    await page.goto("/lagos");
     await page.waitForTimeout(500); // the stickers' entrance
     // The words themselves: the first line is a block, so its box spans the page.
     const title = await page.getByTestId("films.title").locator("span").first().evaluate((el) => {

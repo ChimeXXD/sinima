@@ -8,7 +8,7 @@ test("tapping a time opens that showing; sample data cannot be booked", async ({
   const now = await sampleTime(request, "18:00");
   const row = today(all, now).find((s) => all.cinemas.find((c) => c.id === s.cinemaId)!.area === "lekki")!;
   await freeze(page, now);
-  await page.goto(`/cinema/${row.cinemaId}`); // the times moved here from the Cinemas tab (D-56)
+  await page.goto(`/lagos/cinema/${row.cinemaId}`); // the times moved here from the Cinemas tab (D-56)
   await page.getByTestId(`time.${row.filmId}.${row.startsAt}`).click();
 
   const sheet = page.getByTestId("showing.sheet"); // Figma's sheet since build unit 8
@@ -26,7 +26,7 @@ test("a showing is gone from the card the minute it starts", async ({ page, requ
   const all = await dataFile(request, "all");
   const row = today(all, await sampleTime(request, "18:00")).find((s) => all.cinemas.find((c) => c.id === s.cinemaId)!.area === "lekki")!;
   await freeze(page, new Date(Date.parse(row.startsAt) - 60_000));
-  await page.goto(`/cinema/${row.cinemaId}`);
+  await page.goto(`/lagos/cinema/${row.cinemaId}`);
   const chip = page.getByTestId(`time.${row.filmId}.${row.startsAt}`);
   await expect(chip).toBeVisible();
   await page.clock.runFor(61_000);
@@ -42,7 +42,7 @@ test("Tomorrow shows the whole of the next day", async ({ page, request }) => {
   const films = new Set(tomorrow.filter((s) => s.cinemaId === id).map((s) => s.filmId));
   expect(films.size).toBeGreaterThan(3);
   await freeze(page, built);
-  await page.goto(`/cinema/${id}`);
+  await page.goto(`/lagos/cinema/${id}`);
   await page.getByTestId("films.day").getByRole("radio", { name: /^Tomorrow/ }).click();
   await expect(page.locator('[data-testid^="film.card."]')).toHaveCount(films.size);
 });
@@ -57,7 +57,7 @@ test("Tomorrow shows the whole of the next day", async ({ page, request }) => {
 for (const width of [390, 360, 320]) {
   test(`at ${width} px the four tabs fit, each whole on screen`, async ({ page }) => {
     await page.setViewportSize({ width, height: 800 });
-    for (const path of ["/yours", "/soon", "/cinemas", "/"]) {
+    for (const path of ["/lagos/yours", "/lagos/soon", "/lagos/cinemas", "/lagos"]) {
       await page.goto(path);
       const tabs = page.locator('[data-testid^="tab."]');
       await expect(tabs).toHaveCount(4);
@@ -70,7 +70,7 @@ for (const width of [390, 360, 320]) {
 // IMAX on the Cinemas tab: tests/e2e/cinemas-screen.spec.ts.
 
 // CLAUDE.md rule 3: the page's own HTML may be read on a later day than it was built.
-for (const path of ["/area/lekki", "/cinemas", "/", "/soon", "/cinema/genesis-purple-lekki", "/film/ramayana"]) {
+for (const path of ["/lagos/area/lekki", "/lagos/cinemas", "/lagos", "/lagos/soon", "/lagos/cinema/genesis-purple-lekki", "/lagos/film/ramayana"]) {
   test(`${path}: the page's own HTML holds absolute times and the sample banner, and no word that depends on the clock`, async ({ request }) => {
     const html = (await (await request.get(path)).text()).replace(/<script[\s\S]*?<\/script>/g, "").replace(/<title>[^<]*<\/title>/, "");
     expect([...html.matchAll(/<time datetime="[^"]+Z"/gi)].length).toBeGreaterThan(5);
@@ -80,15 +80,15 @@ for (const path of ["/area/lekki", "/cinemas", "/", "/soon", "/cinema/genesis-pu
   });
 }
 
-test("/area/lekki's own HTML names its cinemas", async ({ request }) => {
-  expect(await (await request.get("/area/lekki")).text()).toContain("Filmhouse Lekki IMAX");
+test("/lagos/area/lekki's own HTML names its cinemas", async ({ request }) => {
+  expect(await (await request.get("/lagos/area/lekki")).text()).toContain("Filmhouse Lekki IMAX");
 });
 
 for (const width of [390, 360, 320]) {
   test(`nothing scrolls sideways at ${width} px, and every time and button is at least 44 px tall`, async ({ page, request }) => {
     await page.setViewportSize({ width, height: 800 });
     await freeze(page, await sampleTime(request, "18:00"));
-    await page.goto("/area/lekki");
+    await page.goto("/lagos/area/lekki");
     await expect(page.locator('[data-testid^="cinema.card."]').first()).toBeVisible();
     // clientWidth, not innerWidth: a phone's layout viewport grows to fit content that is too wide.
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);

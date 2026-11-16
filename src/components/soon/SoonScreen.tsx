@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useCityRouter as useRouter } from "@/components/ui/CityLink";
 import { useMemo, useState } from "react";
 import { Poster } from "@/components/Poster";
 import { useLazySheet } from "@/components/film/useLazySheet";

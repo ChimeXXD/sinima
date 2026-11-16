@@ -15,9 +15,10 @@ const KB = 1024;
 // (paths under out/): a fetched JSON file is not referenced in the HTML, so it must be listed.
 const BUDGET = {
   // The fonts are loaded from the stylesheet, not the HTML, so they are listed here to be counted.
-  // Each kind of page: home (Films), Cinemas, Starting soon, Your cinemas, About, the 404, and the heaviest area, cinema and film page.
+  // Each kind of page, under its city since D-98: Films, Cinemas, Starting soon, Your cinemas, the
+  // heaviest area, cinema and film page, Abuja's Films, About, the 404 and "/".
   pages: () =>
-    ["index.html", "cinemas.html", "soon.html", "yours.html", "about.html", "404.html", heaviest("area"), heaviest("cinema"), heaviest("film")].map((html) => ({
+    ["lagos.html", "lagos/cinemas.html", "lagos/soon.html", "lagos/yours.html", heaviest("lagos/area"), heaviest("lagos/cinema"), heaviest("lagos/film"), "abuja.html", "about.html", "404.html", "index.html"].map((html) => ({
       html,
       data: ["fonts/urbanist-sinima.woff2", "fonts/story-script-sinima.woff2"],
     })),

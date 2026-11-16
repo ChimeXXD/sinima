@@ -2,6 +2,18 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 16 Nov 2026 — build unit 13, the city layer (D-98, D-100)
+
+Done before unit 12: Where are you watching? sits at `/` and leads to `/lagos` or `/abuja`, which this unit makes.
+
+- **Red:** tests/unit/lib/city.test.ts: `Cannot find package '@/lib/city'`. tests/e2e/city.spec.ts first run: 1 of 5 failed on my locator (the film card is an article, its link inside). Budget: Lagos Films, Cinemas and Starting soon 0.5–0.7 KB over 217 with Abuja's screen in the same routes.
+- **Changed:** pages moved to `src/app/[city]/…` (Lagos only); Abuja's tabs at `src/app/abuja/…` (`components/city/CityComingScreen`, words `lib/wording/city.ts`); old paths and `/` forward (`components/city/Forward`); `lib/city.ts` (`cityPath`, `cityOfPath`, `CITY_KEY`); `components/ui/CityLink` (`Link`, `useCityRouter`, `useCityPath`, `useCity`, `useKeptCity`), used by every component in place of next/link and next/navigation's router; share links carry the city; AppFrame's search bar follows the page's city; CitySheet picks either city and opens the same tab there; `lib/data/load.ts` `cityParam`; the service worker saves `/`, `/lagos`, `/abuja` at install; `check-budget.mjs` measures the moved pages and Abuja's Films.
+- **Checked:** unit city 4 (605 total); e2e city.spec 5 (old addresses forward with `#s=` kept, `/` follows `ls.city`, Lagos links carry `/lagos`, Abuja's four tabs say its cinemas are being added with no times and lead to Lagos, Abuja film and cinema pages 404), search.spec's new pick-Abuja test; full e2e 173 green after the move.
+- **Tests changed:** every e2e path moved to `/lagos/…` (Films `/lagos`); search.spec's city sheet test no longer asserts that Abuja can't be picked (D-98 makes it pickable) and a new test picks it; the `?q=` address check is `/lagos?q=`; `check-budget.mjs`'s page list follows the moved pages.
+- **Reviewed:** proof:verifier 6 of 8: the 404's button said Lagos but followed the kept city (now names the city it opens); Enter on an Abuja page landed on Abuja's empty Films (now lists the matches on Lagos's Films); both tested in city.spec. `/code-review medium --fix` (9 found, 5 fixed): search results link to their own city's film page; `/kit` and `#` links keep their path; the `/` forwarder reads `CITY_KEY`; tidy-ups. By hand after it: switching city on About stays on About; the worker saves `/`, `/lagos` and `/abuja` one by one and moves to cache v2 so the old pages' copies go. Left: the 404 page is built without a city, so on `/abuja/…` its links may first be drawn for Lagos (not seen).
+- **Budget:** Lagos Films 216.8, Starting soon 216.9, Cinemas 215.5, Your cinemas 210.7, area 214.7, cinema 213.0, film 214.4; Abuja 198.5; About 200.4; 404 203.3; `/` 168.8 of 217.
+- **Not verified:** on Chime's phone. Abuja has no times until its cinemas and saved pages are added (PLAN week 2).
+
 ## 16 Nov 2026 — build unit 11, About, 404 and Offline (D-99)
 
 - **Red:** tests/unit/lib/wording/offline.test.ts: `Cannot find package '@/lib/wording/offline'`. The About logic and wording tests were written in the same step as their code, so they were not seen failing first. Budget, after the 404: every page over (JS 178 of 165 KB; Next loads the 404 in every page's root boundary).
