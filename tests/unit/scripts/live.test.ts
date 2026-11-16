@@ -188,6 +188,19 @@ describe("liveBuildFiles (the build step)", () => {
     expect(built).toMatchObject({ tmdbId: 42, runtimeMin: 101, posterPath: "/new.jpg", trailerKey: "newTrailer1" });
   });
 
+  it("keeps the credits a live film was read with when nothing is saved under its id (D-119)", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "sinima-live-"));
+    await live(dir);
+    const path = join(dir, LIVE_DIR, "showtimes.json");
+    const read = JSON.parse(readFileSync(path, "utf8")) as ShowtimesFile;
+    const film = read.films[0]!;
+    writeFileSync(path, JSON.stringify({ ...read, films: read.films.map((f) => (f.id === film.id ? { ...f, tmdbId: 7, posterPath: "/kept.jpg" } : f)) }));
+    writeFileSync(join(dir, "data/credits-manual.json"), JSON.stringify({ films: {} }));
+    writeFileSync(join(dir, "data/credits.json"), JSON.stringify({ tmdb: {} }));
+    const built = (liveBuildFiles(dir, NOW)?.get("data/showtimes.json") as ShowtimesFile).films.find((f) => f.id === film.id);
+    expect(built).toMatchObject({ tmdbId: 7, posterPath: "/kept.jpg" });
+  });
+
   it("gives nothing when there is no live data, so the caller makes sample data", () => {
     const dir = mkdtempSync(join(tmpdir(), "sinima-live-"));
     expect(liveBuildFiles(dir, NOW)).toBeNull();

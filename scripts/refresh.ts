@@ -90,7 +90,12 @@ export function writeFiles(files: Map<string, ShowtimesFile>, root: string): { w
 
 /** Checks each file a page loads against the budget, then writes them all; returns the exit code. */
 function writeChecked(files: Map<string, ShowtimesFile>, log: string[], root: string, what: string): number {
-  for (const line of log) console.log(`refresh: ${line}`);
+  for (const line of log) {
+    console.log(`refresh: ${line}`);
+    // A source that failed keeps its old rows and the run still succeeds (D-119), so on GitHub it
+    // is raised as a warning on the run, where it shows instead of passing unseen.
+    if (process.env.GITHUB_ACTIONS === "true" && line.includes(": could not be read (")) console.log(`::warning title=A source could not be read::${line}`);
+  }
   let overBudget = false;
   for (const [path, file] of files) {
     const size = gzipKb(serialise(path, file));
@@ -124,7 +129,8 @@ export function main(argv: string[]): number | Promise<number> {
           return 1;
         },
       )
-      .finally(() => renderText.close());
+      // A browser that won't close must not fail a run whose data is already written.
+      .finally(() => renderText.close().catch((error: unknown) => console.error(`refresh --live: the browser did not close cleanly (${error instanceof Error ? error.message : String(error)}).`)));
   }
   if (!argv.includes("--fixtures") && !argv.includes("--build")) {
     console.error("refresh: say --fixtures (sample data), --live (read the cleared sources) or --build (live data if it is there, else sample). Nothing was read or written.");

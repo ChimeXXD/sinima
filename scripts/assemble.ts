@@ -19,17 +19,25 @@ export const SAMPLE_PATHS: Paths = { main: "data/showtimes.json", part: (slug) =
 /**
  * What scripts/tmdb.ts last wrote (if it has run) for a film, with Chime's own entries on top (D-19).
  * A merged film (D-119) is looked up under its own id first, then under each spelling's id, so it
- * keeps a poster or answer saved under the way one source writes it.
+ * keeps a poster or answer saved under the way one source writes it. TMDB's answer and Chime's own
+ * entry are each found on their own, so one under the film's id never hides the other under a
+ * spelling's. With `savedOnly`, a film with nothing saved under any of its ids gives undefined.
  */
-export function creditsLookup(root: string): (filmId: string, spellings?: string[]) => FilmCredits | undefined {
+export function creditsLookup(root: string, options: { savedOnly?: boolean } = {}): (filmId: string, spellings?: string[]) => FilmCredits | undefined {
   const creditsPath = join(root, "data/credits.json");
   const tmdb = existsSync(creditsPath) ? readJson<{ tmdb: Record<string, TmdbFilm> }>(creditsPath).tmdb : {};
   const manualPath = join(root, "data/credits-manual.json");
   const manual = existsSync(manualPath) ? readJson<{ films: Record<string, ManualEntry> }>(manualPath).films : {};
   return (filmId, spellings = []) => {
-    const saved = (id: string) => Object.hasOwn(tmdb, id) || Object.hasOwn(manual, id);
-    const id = [filmId, ...spellings].find(saved) ?? filmId;
-    return mergeCredits({ filmIds: [id], tmdb, manual })[id];
+    const ids = [filmId, ...spellings];
+    const tmdbKey = ids.find((id) => Object.hasOwn(tmdb, id));
+    const manualKey = ids.find((id) => Object.hasOwn(manual, id));
+    if (options.savedOnly && tmdbKey === undefined && manualKey === undefined) return undefined;
+    return mergeCredits({
+      filmIds: [filmId],
+      tmdb: tmdbKey === undefined ? {} : { [filmId]: tmdb[tmdbKey] as TmdbFilm },
+      manual: manualKey === undefined ? {} : { [filmId]: manual[manualKey] as ManualEntry },
+    })[filmId];
   };
 }
 

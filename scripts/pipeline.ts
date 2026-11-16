@@ -53,6 +53,13 @@ export function filmIdFromTitle(title: string): string {
 /** Where a subtitle starts: ":" or a dash with a space each side ("Spider-Man" has none). */
 const SUBTITLE_SEPARATOR = /:\s*|\s+[-–—]\s+/g;
 
+/** The ids of a title's shorter spellings: what comes before each subtitle separator ("agbara-nla" for "Agbara Nla: The Return"). */
+export function subtitleHeadIds(title: string): string[] {
+  const shown = filmTitle(title);
+  const heads = [...shown.matchAll(SUBTITLE_SEPARATOR)].map((found) => shown.slice(0, found.index)).filter((head) => /[a-z0-9]/i.test(head));
+  return [...new Set(heads.map(filmIdFromTitle))].filter((id) => id !== filmIdFromTitle(title));
+}
+
 /**
  * Every source's title to one film (D-119), so "AGBARA NLA" (Veezi) and "Agbara Nla: The Return"
  * (Lagocine) are one film. Titles that make the same id are one film. A short title joins a longer
@@ -62,13 +69,6 @@ const SUBTITLE_SEPARATOR = /:\s*|\s+[-–—]\s+/g;
  * The id is the longer title's, so data/credits.json keeps lining up; the title shown is that
  * film's own, as a source writes it in mixed case if any does.
  */
-/** The ids of a title's shorter spellings: what comes before each subtitle separator ("agbara-nla" for "Agbara Nla: The Return"). */
-export function subtitleHeadIds(title: string): string[] {
-  const shown = filmTitle(title);
-  const heads = [...shown.matchAll(SUBTITLE_SEPARATOR)].map((found) => shown.slice(0, found.index)).filter((head) => /[a-z0-9]/i.test(head));
-  return [...new Set(heads.map(filmIdFromTitle))].filter((id) => id !== filmIdFromTitle(title));
-}
-
 export function matchFilms(titles: string[], aliases: Record<string, string>): { films: Map<string, { id: string; title: string }>; log: string[] } {
   const log: string[] = [];
   const distinct = [...new Set(titles)];

@@ -134,4 +134,16 @@ describe("creditsLookup across spellings (D-119)", () => {
     expect(lookup("agbara-nla-the-return", ["agbara-nla"])).toMatchObject({ tmdbId: 1 });
     expect(creditsLookup(project({}, manual))("agbara-nla-the-return", ["agbara-nla"])?.credits).toMatchObject({ after: "yes" });
   });
+
+  it("keeps Chime's own entry under a spelling when TMDB's answer is under the merged film's id", () => {
+    const manual = { "agbara-nla": { during: "no", after: "yes", source: { name: "Seen in the cinema", url: "https://example.com/", checkedAt: "2026-11-16T09:00:00Z" } } };
+    const found = creditsLookup(project({ "agbara-nla-the-return": tmdb(1) }, manual))("agbara-nla-the-return", ["agbara-nla"]);
+    expect(found).toMatchObject({ tmdbId: 1, posterPath: "/p1.jpg" });
+    expect(found?.credits).toMatchObject({ after: "yes" });
+  });
+
+  it("with savedOnly, gives nothing for a film with nothing saved under any of its ids", () => {
+    expect(creditsLookup(project({}), { savedOnly: true })("agbara-nla-the-return")).toBeUndefined();
+    expect(creditsLookup(project({ "agbara-nla-the-return": tmdb(1) }), { savedOnly: true })("agbara-nla-the-return")).toMatchObject({ tmdbId: 1 });
+  });
 });

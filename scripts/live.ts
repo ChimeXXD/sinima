@@ -129,7 +129,9 @@ export function liveBuildFiles(root: string, now: string): Map<string, Showtimes
   const mainPath = join(root, LIVE_PATHS.main);
   if (!existsSync(mainPath)) return null;
   // Today's credits.json on each film: a poster or trailer found since the read shows at once (D-117).
-  const creditsFor = creditsLookup(root);
+  // Only what is saved under the film's id: a merged film (D-119) keeps what the read found under
+  // a spelling's id, instead of being wiped back to "not known".
+  const creditsFor = creditsLookup(root, { savedOnly: true });
   const read = readJson<ShowtimesFile>(mainPath);
   const checked = validateShowtimes({ ...read, films: read.films.map((film) => ({ ...film, ...creditsFor(film.id) })) });
   if (!checked.ok) throw new Error(`data/live/showtimes.json with today's credits was refused:\n${checked.errors.join("\n")}`);
