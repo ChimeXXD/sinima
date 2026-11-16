@@ -27,8 +27,8 @@ A **web app** that shows every cinema's showtimes in **Lagos and Abuja** (D-62) 
 
 ## Stack (fixed, D-02)
 
-- **Next.js 16.4.3** App Router, **static export** (`output: "export"`), **React 19.3.1**, **TypeScript 5.9.3** (strict), **Tailwind CSS 4.3.3** (`@tailwindcss/postcss`). Same versions as Chime's portfolio.
-- **ESLint 9** with `eslint-config-next` 16.4.3. **Vitest** for unit tests (D-03). **@playwright/test 1.64.1** for e2e.
+- **Next.js 16.4.6** (D-115) App Router, **static export** (`output: "export"`), **React 19.3.1**, **TypeScript 5.9.3** (strict), **Tailwind CSS 4.3.3** (`@tailwindcss/postcss`). Same versions as Chime's portfolio, except Next.js (16.4.6 here for a security patch, D-115).
+- **ESLint 9** with `eslint-config-next` 16.4.6. **Vitest** for unit tests (D-03). **@playwright/test 1.64.1** for e2e.
 - Node 22. npm (not pnpm or yarn).
 - Fetch scripts are TypeScript in `scripts/`, run with Node's built-in type stripping (`node scripts/x.ts`); HTML parsing with `cheerio` (dev dependency, scripts only, D-03).
 - **No other runtime dependencies** without Chime's OK. No UI kit, no date library: use `Intl.DateTimeFormat` with `timeZone: "Africa/Lagos"`.

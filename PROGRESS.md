@@ -2,6 +2,13 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 16 Nov 2026 — security patch: Next.js 16.4.6 (D-115)
+
+- **Why:** `next build` printed a security notice. `npm audit`: 8 moderate, from two advisories: GHSA-mfr8-8qww-v76h (Next.js 16.3.0–16.4.4, `'use cache'` through `unstable_cache()` on a running server) and GHSA-g3hv-75wg-m249 (minimatch under typescript-eslint, dev only). Neither reached the live site (static export, neither feature in `src/`, minimatch not shipped); Chime chose to patch.
+- **Changed:** `next` and `eslint-config-next` 16.4.3 → 16.4.6 (exact), typescript-eslint refreshed in the lockfile. CLAUDE.md stack line and D-115. The upgrade tool's own command was not used; the versions were set by hand.
+- **Checked:** `npm audit` 0 vulnerabilities; build shows Next.js 16.4.6, 147 pages, no notice; full gate green (lint, unit, typecheck, e2e, budget). Code review skipped: no source change.
+- **Not verified:** the portfolio repo still pins 16.4.3.
+
 ## 16 Nov 2026 — 12-hour clock (D-114)
 
 - **Changed:** `formatTime` in `src/lib/time/lagos.ts` says "7:30 PM" (no leading zero, no-break space, "12:00 AM" midnight, "12:00 PM" noon); `formatLateTime` follows ("12:30 AM (Sat)"). Every on-screen and screen-reader time goes through it. `icsFileName` keeps "1930" from `toLagos`. Example times in the wording doc comments and the `/kit` labels moved to 12-hour; rule comments ("the evening ends at 04:00") stay. CLAUDE.md rule 1 updated.
