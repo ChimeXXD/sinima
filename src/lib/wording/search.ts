@@ -21,7 +21,7 @@ export function matchCount(n: number, city: City, query: string): string {
  */
 const dayAfter = (at: string, now: string) => (lagosDaysFrom(now, at) === 0 ? "today" : "tomorrow");
 
-/** Today's word: "tonight" from 17:00 and for the late shows after midnight; "today" for a daytime show. */
+/** Today's word: "tonight" from 5:00 PM and for the late shows after midnight; "today" for a daytime show. */
 function todayWord(at: string, now: string): "tonight" | "today" {
   const late = (iso: string) => toLagos(iso).hour < EVENING_ENDS_HOUR;
   if (late(now)) return late(at) ? "tonight" : "today";
@@ -35,7 +35,7 @@ export function resultMeta(film: { runtimeMin: number | null; rating: string | n
   return [...known, ...formats, `${plural(cinemas, "cinema", "cinemas")} ${when}`].join(" · ");
 }
 
-/** "Next 18:00 · Grand Cinemas Lekki", or "Tomorrow 14:00 · …" when nothing is left tonight. */
+/** "Next 6:00 PM · Grand Cinemas Lekki", or "Tomorrow 2:00 PM · …" when nothing is left tonight. */
 export function resultNext(next: { at: string; cinema: string }, day: Day, now: string): string {
   const word = day === 1 ? (dayAfter(next.at, now) === "today" ? "Today" : "Tomorrow") : "Next";
   return `${word} ${formatLateTime(next.at)} · ${next.cinema}`;

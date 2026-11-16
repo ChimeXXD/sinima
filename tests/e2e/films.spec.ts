@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { dataFile, freeze, lagosClock, sampleTime, today } from "./helpers";
+import { dataFile, freeze, lagosClock, sampleTime, shownClock, today } from "./helpers";
 
 test("Films (the home page, D-55) lists every film still showing; typing narrows it; a film opens its page", async ({ page, request }) => {
   const all = await dataFile(request, "all");
@@ -63,6 +63,6 @@ test.describe("with the phone set to New York", () => {
     await freeze(page, now);
     await page.goto("/lagos/cinema/ebonylife-vi");
     expect(await page.evaluate(() => Intl.DateTimeFormat().resolvedOptions().timeZone)).toBe("America/New_York");
-    await expect(page.locator("[data-testid^='time.']").first()).toContainText(lagosClock(row.startsAt));
+    await expect(page.locator("[data-testid^='time.']").first()).toContainText(shownClock(row.startsAt));
   });
 });

@@ -4,7 +4,7 @@ import { formatDay, formatLateTime, formatTime, lateDay } from "@/lib/time/lagos
 // Sentences about one showing (D-05, DATA §Showing wording). Relative words come from `now`,
 // so these run in the browser.
 
-/** "19:30 · Starts in 1 h 20 min", or null once the showing has ended (it is hidden). */
+/** "7:30 PM · Starts in 1 h 20 min", or null once the showing has ended (it is hidden). */
 export function showingLine(startsAt: string, now: string): string | null {
   const when = countdown(startsAt, now);
   return when === null ? null : `${formatLateTime(startsAt)} · ${when}`;
@@ -25,7 +25,7 @@ export function spokenCountdown(startsAt: string, now: string): string | null {
 }
 
 /**
- * The whole row as one sentence (SPEC §7): "Sinners, Filmhouse Lekki, today at 19:30, starts in
+ * The whole row as one sentence (SPEC §7): "Sinners, Filmhouse Lekki, today at 7:30 PM, starts in
  * 45 minutes. Read from Filmhouse's site 2 hours ago." Null once the showing has ended.
  */
 export function showingSentence(row: { film: string; cinema: string; startsAt: string; freshness: string }, now: string): string | null {
@@ -42,12 +42,12 @@ export { countdownParts } from "@/lib/time/countdown";
 /** A cinema folder's count (Figma 10.3): "7 tonight". */
 export const showingsTonight = (count: number) => `${count} tonight`;
 
-/** Under a cinema folder: "Lekki · next 17:40", or the area alone when nothing is left to start. */
+/** Under a cinema folder: "Lekki · next 5:40 PM", or the area alone when nothing is left to start. */
 export const cinemaNextLine = (area: string, at: string | null) => (at === null ? area : `${area} · next ${formatLateTime(at)}`);
 
 const WEEKDAYS: Record<string, string> = { Mon: "Monday", Tue: "Tuesday", Wed: "Wednesday", Thu: "Thursday", Fri: "Friday", Sat: "Saturday", Sun: "Sunday" };
 
-/** A start time for screen readers: "19:30", or "00:30 on Saturday" after midnight. */
+/** A start time for screen readers: "7:30 PM", or "12:30 AM on Saturday" after midnight. */
 export function spokenTime(iso: string): string {
   const day = lateDay(iso);
   return day === null ? formatTime(iso) : `${formatTime(iso)} on ${WEEKDAYS[day] ?? day}`;

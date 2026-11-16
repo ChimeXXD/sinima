@@ -12,8 +12,8 @@ export const cinemaCount = (n: number) => plural(n, "cinema");
 export const cinemasTitleNote = (n: number) => `${n} of them!`;
 
 /**
- * A cinema row's second line, in pieces so the time can be a <time>: "Next at 18:00 · 3 films
- * tonight". `when` is null before the page knows the time (rule 3): "First at 18:00 · 3 films".
+ * A cinema row's second line, in pieces so the time can be a <time>: "Next at 6:00 PM · 3 films
+ * tonight". `when` is null before the page knows the time (rule 3): "First at 6:00 PM · 3 films".
  */
 export function cinemaLine(input: { next: string | null; films: number; listed: boolean; when: "tonight" | "today" | "tomorrow" | null }): { lead: string; time: string | null; rest: string } {
   const { next, films, listed, when } = input;

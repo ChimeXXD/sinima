@@ -32,8 +32,8 @@ export function dayOption(input: { day: 0 | 1; date: string; live: boolean }): s
 export const notListedYet = (chain: string, tomorrow: string) => `${chain} hasn't listed ${WEEKDAYS[toLagos(tomorrow).weekday] ?? formatDate(tomorrow)} yet.`;
 
 /**
- * On a film whose times have all started: "Started earlier today at 14:00 and 16:50. Tomorrow at
- * 14:00 and 16:50." After midnight the next day's times are "Later today" (nextDayName).
+ * On a film whose times have all started: "Started earlier today at 2:00 PM and 4:50 PM. Tomorrow at
+ * 2:00 PM and 4:50 PM." After midnight the next day's times are "Later today" (nextDayName).
  */
 export function earlierLine(started: string[], tomorrow: string[], next: "Tomorrow" | "Today" = "Tomorrow"): string {
   const times = (ats: string[]) => list(ats.map(formatLateTime));

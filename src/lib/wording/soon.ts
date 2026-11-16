@@ -13,7 +13,7 @@ const shortTitle = (title: string) => title.split(": ")[0]!;
 /** Under "Next 2 hours": "10 showings in Lekki · booking closes when a film starts". */
 export const soonNote = (input: { count: number; place: string }) => `${showings(input.count)} in ${input.place} · booking closes when a film starts`;
 
-/** Under "Later tonight": "14 more in Lekki until 22:45"; after midnight "until 00:30 Sat". */
+/** Under "Later tonight": "14 more in Lekki until 10:45 PM"; after midnight "until 12:30 AM Sat". */
 export const laterNote = (input: { count: number; place: string; last: string }) => `${input.count} more in ${input.place} ${input.count === 1 ? "at" : "until"} ${formatLateTime(input.last)}`;
 
 export const showMore = (n: number) => `Show ${n} more`;
@@ -31,7 +31,7 @@ export function showingMeta(film: { runtimeMin: number | null; rating: string | 
   return [film.runtimeMin ? runtimeText(film.runtimeMin) : null, formatLabel(format), film.rating].filter(Boolean).join(" · ") || "Runtime not listed";
 }
 
-/** A card's Book arrow, read as a sentence: "Book Clayface at 18:00 on Filmhouse's site"; after midnight with its day. */
+/** A card's Book arrow, read as a sentence: "Book Clayface at 6:00 PM on Filmhouse's site"; after midnight with its day. */
 export const bookLabel = (film: string, at: string, chain: string) => `Book ${film} at ${spokenTime(at)} on ${chain}'s site`;
 
 /** A row's line in the empty state: "Filmworld Cinemas Idimu · starts in 50 min". */

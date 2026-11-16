@@ -62,7 +62,7 @@ test("after the last showing has started, the page says so and offers tomorrow",
   await page.goto("/lagos");
   const empty = page.getByTestId("films.empty");
   await expect(empty.getByRole("heading", { level: 2 })).toHaveText("Nothing more starts today");
-  await expect(empty.locator("p")).toContainText(/The last showing in Lagos began at \d\d:\d\d\. Tomorrow's times are in: \d+ films? from \d\d:\d\d\./);
+  await expect(empty.locator("p")).toContainText(/The last showing in Lagos began at \d{1,2}:\d\d\s[AP]M\. Tomorrow's times are in: \d+ films? from \d{1,2}:\d\d\s[AP]M\./);
   await page.getByTestId("films.tomorrow").click();
   await expect(page.getByTestId("section.day").getByRole("heading", { level: 2 })).toHaveText("Tomorrow");
   await expect(page.getByRole("radio", { name: "Tomorrow" })).toHaveAttribute("aria-checked", "true");

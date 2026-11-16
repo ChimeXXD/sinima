@@ -38,7 +38,7 @@ Accounts, ticket sales, ads, push notifications (D-11), group plans, crowd confi
 
 ## 3. Time and state (`src/lib/time/`) (D-05, D-06)
 
-- `toLagos(iso)` → parts in Africa/Lagos; `formatTime(iso)` → "19:30"; `formatDay(iso, now)` → "Today", "Tomorrow", "Sun 8 Nov".
+- `toLagos(iso)` → parts in Africa/Lagos; `formatTime(iso)` → "7:30 PM" (D-114; `clock24` → "19:30" for keys and file names); `formatDay(iso, now)` → "Today", "Tomorrow", "Sun 8 Nov".
 - `showingState(startsAt, now)`: `upcoming` (> 10 min ahead), `starting` (0–10 min ahead), `started` (0–30 min after), `ended` (> 30 min after). Ended showings are hidden.
 - Bookable only when `upcoming` or `starting` **and** the row's freshness band is not Old or Sample (DATA §Freshness defines this, D-25).
 - `countdown(startsAt, now)`: "Starts in 1 h 20 min", "Starts in 45 min", "Starts in 3 min", "Starting now", "Started 5 min ago".

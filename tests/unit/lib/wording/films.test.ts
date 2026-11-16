@@ -32,14 +32,14 @@ describe("nothingMoreToday", () => {
   it("is Figma's empty state when tomorrow's times are in", () => {
     expect(nothingMoreToday({ city: "Lagos", last: "2026-11-13T22:40:00Z", tomorrowFilms: 30, tomorrowFirst: "2026-11-14T09:00:00Z" })).toEqual({
       title: "Nothing more starts today",
-      body: "The last showing in Lagos began at 23:40. Tomorrow's times are in: 30 films from 10:00.",
+      body: "The last showing in Lagos began at 11:40\u00a0PM. Tomorrow's times are in: 30 films from 10:00\u00a0AM.",
       action: "See tomorrow",
       note: "see you tomorrow!",
     });
   });
   it("does not offer tomorrow when its times are not in", () => {
     const words = nothingMoreToday({ city: "Lagos", last: "2026-11-13T22:40:00Z", tomorrowFilms: 0, tomorrowFirst: null });
-    expect(words.body).toBe("The last showing in Lagos began at 23:40. Tomorrow's times aren't in yet.");
+    expect(words.body).toBe("The last showing in Lagos began at 11:40\u00a0PM. Tomorrow's times aren't in yet.");
     expect(words.action).toBeNull();
   });
 });

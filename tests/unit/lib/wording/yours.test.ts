@@ -12,9 +12,9 @@ describe("savedCount", () => {
 });
 
 describe("folderLine", () => {
-  it("the area and the next time (Figma: Yaba · next 17:35)", () => {
-    expect(folderLine({ area: "Yaba", next: "2026-11-13T16:35:00Z", listed: true })).toBe("Yaba · next 17:35");
-    expect(folderLine({ area: "Yaba", next: "2026-11-13T23:30:00Z", listed: true })).toBe("Yaba · next 00:30 (Sat)");
+  it("the area and the next time (Figma: Yaba · next 5:35\u00a0PM)", () => {
+    expect(folderLine({ area: "Yaba", next: "2026-11-13T16:35:00Z", listed: true })).toBe("Yaba · next 5:35\u00a0PM");
+    expect(folderLine({ area: "Yaba", next: "2026-11-13T23:30:00Z", listed: true })).toBe("Yaba · next 12:30\u00a0AM (Sat)");
   });
   it("nothing more today, or times we can't read, in words (D-61, D-91)", () => {
     expect(folderLine({ area: "Lekki", next: null, listed: true })).toBe("Lekki · nothing more today");

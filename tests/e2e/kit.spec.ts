@@ -93,7 +93,7 @@ test("showing cards in a row are one height", async ({ page }) => {
 test("time chips: soonest counts down, a started one is struck through and not a button (11.3b)", async ({ page }) => {
   const chips = page.getByTestId("kit.timechips").getByTestId("time-chip");
   await expect(chips.nth(1)).toContainText("in 30 min");
-  await expect(chips.nth(1)).toHaveAccessibleName("18:00, IMAX, starts in 30 minutes");
+  await expect(chips.nth(1)).toHaveAccessibleName("6:00 PM, IMAX, starts in 30 minutes");
   await expect(chips.nth(2)).toContainText("Started 5 min ago");
   expect(await chips.nth(2).evaluate((el) => el.tagName)).toBe("SPAN");
   near((await box(chips.nth(0))).height, 44);
@@ -103,7 +103,7 @@ test("the sheet floats 8 px in on a phone and closes with Escape and the close b
   await page.getByTestId("kit.sheet.open").click();
   const sheet = page.getByTestId("kit.sheet");
   await expect(sheet).toBeVisible();
-  await expect(sheet).toHaveAccessibleName("17:40 · EbonyLife Cinemas");
+  await expect(sheet).toHaveAccessibleName("5:40 PM · EbonyLife Cinemas");
   await page.waitForTimeout(500); // the rise ends at 450 ms
   const b = await box(sheet);
   near(b.x, 8);
@@ -176,8 +176,8 @@ test("each segment of the day switch has a 44 px touch area", async ({ page }) =
 
 test("after midnight a time says its day in small type, and keeps the pill and chip shapes", async ({ page }) => {
   const chip = page.getByTestId("kit.timechips").getByTestId("time-chip").nth(3);
-  await expect(chip).toHaveText(/00:30\s*Sat\s*IMAX/);
-  await expect(chip).toHaveAccessibleName("00:30 on Saturday, IMAX, starts in 7 hours");
+  await expect(chip).toHaveText(/12:30\sAM\s*Sat\s*IMAX/);
+  await expect(chip).toHaveAccessibleName("12:30 AM on Saturday, IMAX, starts in 7 hours");
   near((await box(chip)).height, 44);
   const pill = page.getByTestId("kit.latepill").getByTestId("time-pill");
   await expect(pill.getByTestId("late-day")).toHaveText("Sat");

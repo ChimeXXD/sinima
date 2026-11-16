@@ -134,7 +134,7 @@ export function TimePill({ startsAt, now, bookUrl, bookLabel }: { startsAt: stri
 /**
  * 11.3b Time chip: a start time in the lists on Film and Cinema pages; it opens the showing sheet.
  * The soonest says "in 30 min" after its format; a started one is struck through, says "Started 5 min ago", and is
- * not a button (D-05). Read out as one sentence: "18:00, IMAX, starts in 30 minutes".
+ * not a button (D-05). Read out as one sentence: "6:00 PM, IMAX, starts in 30 minutes".
  */
 export function TimeChip({ startsAt, format, now, soonest = false, onOpen, testId = "time-chip" }: { startsAt: string; format: string | null; now: string | null; soonest?: boolean; onOpen: () => void; testId?: string }) {
   const just = useJustStarted(startsAt, now);
@@ -172,7 +172,7 @@ export function TimeChip({ startsAt, format, now, soonest = false, onOpen, testI
 }
 
 /**
- * After midnight, the day in small type right after the time ("00:30 Sat"), so the time keeps its
+ * After midnight, the day in small type right after the time ("12:30 AM Sat"), so the time keeps its
  * Figma style and width. Screen readers hear the full sentence from spokenTime instead.
  */
 function LateDay({ startsAt }: { startsAt: string }) {

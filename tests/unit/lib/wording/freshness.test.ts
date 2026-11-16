@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { freshness, rowWarning } from "@/lib/wording/freshness";
 
 const FILMHOUSE = { name: "Filmhouse's site", method: "public-page" } as const;
-const NOW = "2026-11-06T14:00:00Z"; // Fri 6 Nov, 15:00 in Lagos
+const NOW = "2026-11-06T14:00:00Z"; // Fri 6 Nov, 3:00 PM in Lagos
 /** A UTC time `seconds` before NOW. */
 const ago = (seconds: number) => new Date(Date.parse(NOW) - seconds * 1000).toISOString().replace(".000Z", "Z");
 const MIN = 60;
@@ -19,23 +19,23 @@ describe("freshness wording: every band at both edges (DATA §Freshness, D-04)",
     [2 * HOUR, "fresh", "Read from Filmhouse's site 2 hours ago"],
     [5 * HOUR + 30 * MIN, "fresh", "Read from Filmhouse's site 5 hours ago"], // D-25: under 6 h is still "hours"
     [6 * HOUR - 1, "fresh", "Read from Filmhouse's site 5 hours ago"],
-    [6 * HOUR, "today", "Read from Filmhouse's site today at 09:00"], // exactly 6 h
-    [5 * HOUR + 50 * MIN + 6 * HOUR, "today", "Read from Filmhouse's site today at 03:10"],
+    [6 * HOUR, "today", "Read from Filmhouse's site today at 9:00\u00a0AM"], // exactly 6 h
+    [5 * HOUR + 50 * MIN + 6 * HOUR, "today", "Read from Filmhouse's site today at 3:10\u00a0AM"],
   ] as const)("%i s old is %s: %s", (seconds, band, text) => {
     const f = freshness(FILMHOUSE, ago(seconds), NOW);
     expect(f).toEqual({ band, text, bookable: true });
   });
 
   it("uses the Lagos day for today, yesterday and older", () => {
-    // 00:00 Lagos on Fri 6 Nov is 23:00 UTC on Thu 5 Nov.
-    expect(freshness(FILMHOUSE, "2026-11-05T23:00:00Z", NOW)).toEqual({ band: "today", text: "Read from Filmhouse's site today at 00:00", bookable: true });
+    // 12:00 AM Lagos on Fri 6 Nov is 11:00 PM UTC on Thu 5 Nov.
+    expect(freshness(FILMHOUSE, "2026-11-05T23:00:00Z", NOW)).toEqual({ band: "today", text: "Read from Filmhouse's site today at 12:00\u00a0AM", bookable: true });
     expect(freshness(FILMHOUSE, "2026-11-05T22:59:59Z", NOW)).toEqual({
       band: "stale",
-      text: "Read from Filmhouse's site yesterday at 23:59 · check with the cinema",
+      text: "Read from Filmhouse's site yesterday at 11:59\u00a0PM · check with the cinema",
       bookable: true,
     });
-    expect(freshness(FILMHOUSE, "2026-11-05T14:06:00Z", NOW).text).toBe("Read from Filmhouse's site yesterday at 15:06 · check with the cinema");
-    // 00:00 Lagos on Thu 5 Nov is 23:00 UTC on Wed 4 Nov: the first second of "yesterday".
+    expect(freshness(FILMHOUSE, "2026-11-05T14:06:00Z", NOW).text).toBe("Read from Filmhouse's site yesterday at 3:06\u00a0PM · check with the cinema");
+    // 12:00 AM Lagos on Thu 5 Nov is 11:00 PM UTC on Wed 4 Nov: the first second of "yesterday".
     expect(freshness(FILMHOUSE, "2026-11-04T23:00:00Z", NOW).band).toBe("stale");
     expect(freshness(FILMHOUSE, "2026-11-04T22:59:59Z", NOW)).toEqual({
       band: "old",
@@ -46,7 +46,7 @@ describe("freshness wording: every band at both edges (DATA §Freshness, D-04)",
   });
 
   it("goes by age first: read 2 hours ago is fresh even across midnight", () => {
-    // Now 01:00 Lagos on Sat; read at 23:00 Lagos on Fri.
+    // Now 1:00 AM Lagos on Sat; read at 11:00 PM Lagos on Fri.
     expect(freshness(FILMHOUSE, "2026-11-06T22:00:00Z", "2026-11-07T00:00:00Z")).toEqual({
       band: "fresh",
       text: "Read from Filmhouse's site 2 hours ago",
@@ -79,7 +79,7 @@ describe("data that reached us through another listing (via)", () => {
   it.each([
     [30, "From Lagocine, which read EbonyLife's site just now"],
     [25 * MIN, "From Lagocine, which read EbonyLife's site 25 min ago"],
-    [7 * HOUR, "From Lagocine, which read EbonyLife's site today at 08:00"],
+    [7 * HOUR, "From Lagocine, which read EbonyLife's site today at 8:00\u00a0AM"],
   ] as const)("%i s old reads %s", (seconds, text) => {
     expect(freshness(LAGOCINE, ago(0), NOW, via(ago(seconds))).text).toBe(text);
   });
@@ -87,7 +87,7 @@ describe("data that reached us through another listing (via)", () => {
   it("carries the stale and old warnings", () => {
     expect(freshness(LAGOCINE, ago(0), NOW, via("2026-11-05T14:06:00Z"))).toEqual({
       band: "stale",
-      text: "From Lagocine, which read EbonyLife's site yesterday at 15:06 · check with the cinema",
+      text: "From Lagocine, which read EbonyLife's site yesterday at 3:06\u00a0PM · check with the cinema",
       bookable: true,
     });
     expect(freshness(LAGOCINE, ago(0), NOW, via("2026-11-03T09:00:00Z"))).toEqual({

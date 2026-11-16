@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { dataFile, freeze, lagosClock, sampleTime, today, type DataFile } from "./helpers";
+import { dataFile, freeze, sampleTime, shownClock, today, type DataFile } from "./helpers";
 
 // Starting soon as Figma draws it (Figma 204:7192 Default, 204:7931 Nothing in 2 hours, build unit
 // 9): in your area, the next 2 hours as cards that count down, then the rest of tonight as rows;
@@ -34,11 +34,11 @@ test("your area's next 2 hours as cards, soonest first, then the rest of tonight
   expect(new Set(cards)).toEqual(new Set(soon.map(key)));
   const first = page.getByTestId(`soon.${key(soon[0]!)}`);
   await expect(first.getByTestId("countdown-badge")).toContainText("Starts in");
-  await expect(first.getByTestId("time-pill")).toContainText(lagosClock(soon[0]!.startsAt));
+  await expect(first.getByTestId("time-pill")).toContainText(shownClock(soon[0]!.startsAt));
   await expect(first.getByTestId("time-pill.book")).toHaveCount(0); // sample times can't be booked (D-25)
 
   await expect(page.getByTestId("section.later").locator("h2")).toHaveText("Later tonight");
-  await expect(page.getByTestId("section.later").locator("h2 + p")).toHaveText(`${later.length} more in Lekki until ${lagosClock(later.at(-1)!.startsAt)}`);
+  await expect(page.getByTestId("section.later").locator("h2 + p")).toHaveText(`${later.length} more in Lekki until ${shownClock(later.at(-1)!.startsAt)}`);
   expect(await ids(page, "later.rows", "later")).toHaveLength(Math.min(6, later.length));
   await page.getByTestId("later.rows.more").click();
   expect((await ids(page, "later.rows", "later")).map((id) => id.slice(-20))).toEqual(later.map((s) => s.startsAt));
@@ -87,7 +87,7 @@ test("a card opens the showing sheet; Book is never on a sample time; Escape giv
   const card = page.getByTestId(`soon.${key(row)}`);
   await card.getByRole("button").click();
   const sheet = page.getByTestId("showing.sheet");
-  await expect(sheet).toHaveAccessibleName(`${lagosClock(row.startsAt)} · ${cinema.name}`);
+  await expect(sheet).toHaveAccessibleName(`${shownClock(row.startsAt)} · ${cinema.name}`);
   await expect(sheet.getByTestId("showing.book")).toContainText("Sample only");
   await page.keyboard.press("Escape");
   await expect(sheet).toBeHidden();
@@ -130,7 +130,7 @@ test("nothing in the next 2 hours: Figma's words, what's left in Lagos, and tomo
 
   const tomorrow = all.showings.filter((s) => areaOf(all, s.cinemaId) === "lekki" && Date.parse(s.startsAt) > now.getTime() + 6 * HOUR).sort((a, b) => a.startsAt.localeCompare(b.startsAt))[0]!;
   const film = all.films.find((f) => f.id === tomorrow.filmId)!.title.split(": ")[0];
-  await expect(quiet.locator("p").last()).toHaveText(`Tomorrow in Lekki starts at ${lagosClock(tomorrow.startsAt)} with ${film} at ${all.cinemas.find((c) => c.id === tomorrow.cinemaId)!.name}.`);
+  await expect(quiet.locator("p").last()).toHaveText(`Tomorrow in Lekki starts at ${shownClock(tomorrow.startsAt)} with ${film} at ${all.cinemas.find((c) => c.id === tomorrow.cinemaId)!.name}.`);
   await expect(page.getByTestId("soon.tomorrow")).toHaveText("See tomorrow in Lekki");
   await expect(page.getByTestId("soon.tomorrow")).toHaveAttribute("href", "/lagos/area/lekki");
   await expect(page.getByTestId("soon.tomorrow")).not.toHaveAttribute("target", "_blank"); // a page of this site opens in place

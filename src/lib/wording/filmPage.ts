@@ -52,7 +52,7 @@ export function earlierLine(started: { name: string; at: string }[], tomorrow: {
 /** Under the sheet's title: "Ramayana: Rise of a Legend · IMAX · Lekki". */
 export const showingSubtitle = (film: string, format: string | null, area: string) => [film, format, area].filter(Boolean).join(" · ");
 
-/** Add to calendar's line: "18:00 to 21:21, with an alert 30 min before." */
+/** Add to calendar's line: "6:00 PM to 9:21 PM, with an alert 30 min before." */
 export function calendarLine(at: string, runtimeMin: number | null): string {
   const span = runtimeMin ? `${formatTime(at)} to ${formatTime(utcString(utcMs(at) + runtimeMin * 60_000))}` : formatTime(at);
   return `${span}, with an alert 30 min before.`;
@@ -87,10 +87,11 @@ export function nextPlace(next: { same: boolean; area: string; format: string | 
   return next.format ? `This cinema, in ${next.format}` : "This cinema";
 }
 
-/** The text that goes with a shared link: "Sinners · Filmhouse Lekki · Fri 19:30" (UI brief §5), or a film's times. */
+/** The text that goes with a shared link: "Sinners · Filmhouse Lekki · Fri 7:30 PM" (UI brief §5), or a film's times. */
 export function shareText(what: { film: string; cinema: string; at: string } | { film: string; city: string }): string {
   if ("city" in what) return `${what.film} · times in ${what.city}`;
-  return `${what.film} · ${what.cinema} · ${toLagos(what.at).weekday} ${formatTime(what.at)}`;
+  // A plain space before PM: shared text is pasted into chats and searched, where a no-break space is not one.
+  return `${what.film} · ${what.cinema} · ${toLagos(what.at).weekday} ${formatTime(what.at).replace("\u00a0", " ")}`;
 }
 
 /** When a day has no cinema to list: nothing more today, or no times listed for that day yet. */

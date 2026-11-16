@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { dataFile, freeze, lagosClock, sampleTime, today } from "./helpers";
+import { dataFile, freeze, sampleTime, shownClock, today } from "./helpers";
 
 // A cinema's page, Your cinemas, and the rules every page keeps (rule 3, 44 px, no sideways scroll).
 
@@ -12,7 +12,7 @@ test("tapping a time opens that showing; sample data cannot be booked", async ({
   await page.getByTestId(`time.${row.filmId}.${row.startsAt}`).click();
 
   const sheet = page.getByTestId("showing.sheet"); // Figma's sheet since build unit 8
-  await expect(sheet).toHaveAccessibleName(`${lagosClock(row.startsAt)} · ${all.cinemas.find((c) => c.id === row.cinemaId)!.name}`);
+  await expect(sheet).toHaveAccessibleName(`${shownClock(row.startsAt)} · ${all.cinemas.find((c) => c.id === row.cinemaId)!.name}`);
   await expect(sheet.getByText(all.films.find((f) => f.id === row.filmId)!.title, { exact: false }).first()).toBeVisible();
   await expect(sheet.getByTestId("countdown-badge")).toHaveText(/^Starts in/);
   await expect(sheet.getByTestId("showing.book")).toContainText("Sample only");

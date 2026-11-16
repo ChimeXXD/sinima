@@ -48,22 +48,22 @@ describe("earlierLine", () => {
       { name: "EbonyLife Cinemas", at: "2026-11-13T10:10:00Z" },
       { name: "Sky Cinemas Sangotedo", at: "2026-11-13T12:00:00Z" },
     ];
-    expect(earlierLine(started, { showings: 7, cinemas: 4 })).toBe("Started earlier today: EbonyLife Cinemas at 11:10 and Sky Cinemas Sangotedo at 13:00. Tomorrow: 7 showings at 4 cinemas.");
-    expect(earlierLine([started[0]!], { showings: 1, cinemas: 1 })).toBe("Started earlier today: EbonyLife Cinemas at 11:10. Tomorrow: 1 showing at 1 cinema.");
+    expect(earlierLine(started, { showings: 7, cinemas: 4 })).toBe("Started earlier today: EbonyLife Cinemas at 11:10\u00a0AM and Sky Cinemas Sangotedo at 1:00\u00a0PM. Tomorrow: 7 showings at 4 cinemas.");
+    expect(earlierLine([started[0]!], { showings: 1, cinemas: 1 })).toBe("Started earlier today: EbonyLife Cinemas at 11:10\u00a0AM. Tomorrow: 1 showing at 1 cinema.");
     expect(earlierLine([], { showings: 0, cinemas: 0 })).toBeNull();
-    expect(earlierLine(started, { showings: 0, cinemas: 0 })).toBe("Started earlier today: EbonyLife Cinemas at 11:10 and Sky Cinemas Sangotedo at 13:00.");
+    expect(earlierLine(started, { showings: 0, cinemas: 0 })).toBe("Started earlier today: EbonyLife Cinemas at 11:10\u00a0AM and Sky Cinemas Sangotedo at 1:00\u00a0PM.");
   });
 });
 
 describe("the showing sheet", () => {
-  const at = "2026-11-13T17:00:00Z"; // 18:00
+  const at = "2026-11-13T17:00:00Z"; // 6:00 PM
   it("subtitles the showing with the film, its format and the area", () => {
     expect(showingSubtitle("Ramayana: Rise of a Legend", "IMAX", "Lekki")).toBe("Ramayana: Rise of a Legend · IMAX · Lekki");
     expect(showingSubtitle("Spider-Man: Brand New Day", null, "Lekki")).toBe("Spider-Man: Brand New Day · Lekki");
   });
   it("says when the calendar event runs, and the alert", () => {
-    expect(calendarLine(at, 201)).toBe("18:00 to 21:21, with an alert 30 min before.");
-    expect(calendarLine(at, null)).toBe("18:00, with an alert 30 min before.");
+    expect(calendarLine(at, 201)).toBe("6:00\u00a0PM to 9:21\u00a0PM, with an alert 30 min before.");
+    expect(calendarLine(at, null)).toBe("6:00\u00a0PM, with an alert 30 min before.");
   });
   it("offers booking only on the cinema's own site, and says why when it can't", () => {
     expect(bookOption({ kind: "book", chain: "Filmhouse" })).toEqual({ title: "Book on Filmhouse's site", desc: "Opens their booking page. We never sell tickets." });
@@ -73,9 +73,9 @@ describe("the showing sheet", () => {
     expect(bookOption({ kind: "door", chain: "Grand", address: "Lekki" })).toEqual({ title: "Tickets at the cinema", desc: "Lekki" });
   });
   it("explains a started showing and points to the next times", () => {
-    expect(startedNotice(at, "near")).toBe("This showing started at 18:00, so it can't be booked here. The next times nearby:");
-    expect(startedNotice(at, "city", "Lagos")).toBe("This showing started at 18:00, so it can't be booked here. The next times in Lagos:");
-    expect(startedNotice(at, "none")).toBe("This showing started at 18:00, so it can't be booked here. Nothing else starts today.");
+    expect(startedNotice(at, "near")).toBe("This showing started at 6:00\u00a0PM, so it can't be booked here. The next times nearby:");
+    expect(startedNotice(at, "city", "Lagos")).toBe("This showing started at 6:00\u00a0PM, so it can't be booked here. The next times in Lagos:");
+    expect(startedNotice(at, "none")).toBe("This showing started at 6:00\u00a0PM, so it can't be booked here. Nothing else starts today.");
   });
   it("places each next time: another cinema's area, or this cinema and its format", () => {
     expect(nextPlace({ same: false, area: "Victoria Island", format: null })).toBe("Victoria Island");
@@ -83,7 +83,7 @@ describe("the showing sheet", () => {
     expect(nextPlace({ same: true, area: "Lekki", format: null })).toBe("This cinema");
   });
   it("shares as the brief's line", () => {
-    expect(shareText({ film: "Sinners", cinema: "Filmhouse Lekki", at: "2026-11-13T18:30:00Z" })).toBe("Sinners · Filmhouse Lekki · Fri 19:30");
+    expect(shareText({ film: "Sinners", cinema: "Filmhouse Lekki", at: "2026-11-13T18:30:00Z" })).toBe("Sinners · Filmhouse Lekki · Fri 7:30 PM"); // a plain space: shared text gets pasted and searched
     expect(shareText({ film: "Sinners", city: "Lagos" })).toBe("Sinners · times in Lagos");
   });
 });

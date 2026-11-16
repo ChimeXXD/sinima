@@ -17,7 +17,7 @@ import s from "./cards.module.css";
 /**
  * 10.1 Film card. Poster 2:3 with the format badge top left and the countdown pill on its bottom
  * edge (only within the hour); then the title (2 lines at most), runtime · rating, and the stats
- * line "Next 17:40 · 4 cinemas".
+ * line "Next 5:40 PM · 4 cinemas".
  */
 export function FilmCard(props: { href: string; title: string; meta: string; poster: React.ReactNode; /** The film's id: its poster travels into the film page's hero (M11). */ film?: string; formats: string[]; next: string | null; cinemas: number; now: string | null; nextWord?: "Next" | "From"; testId?: string }) {
   const { href, title, meta, poster, film, formats, next, cinemas, now, nextWord, testId } = props;
@@ -125,9 +125,9 @@ export type FolderTint = "blue" | "violet" | "pink" | "green";
 /**
  * 10.3 Cinema folder (Keepsy): the cinema's next films as tilted poster stickers in a tinted
  * folder, a frosted front with the chain's logo sticker and tonight's count. Name and
- * "Lekki · next 17:40" sit under it.
+ * "Lekki · next 5:40 PM" sit under it.
  */
-export function CinemaFolder(props: { href: string; name: string; chain: string; area: string; next: string | null; tonight: number; posters: React.ReactNode[]; tint: FolderTint; testId?: string; /** The line under the name, in place of "Lekki · next 17:40". */ line?: string }) {
+export function CinemaFolder(props: { href: string; name: string; chain: string; area: string; next: string | null; tonight: number; posters: React.ReactNode[]; tint: FolderTint; testId?: string; /** The line under the name, in place of "Lekki · next 5:40 PM". */ line?: string }) {
   const { href, name, chain, area, next, tonight, posters, tint, testId } = props;
   const line = props.line ?? cinemaNextLine(area, next);
   // With nothing left tonight the count goes; the line under the name says why.

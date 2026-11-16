@@ -1,4 +1,4 @@
-import { formatTime, lagosDayKey, utcMs } from "@/lib/time/lagos";
+import { clock24, lagosDayKey, utcMs } from "@/lib/time/lagos";
 
 // The "Remind me" calendar file (RFC 5545). One event in UTC with one alert 30 minutes before.
 // It opens in whichever calendar the phone uses; nothing is sent anywhere.
@@ -93,5 +93,6 @@ function slug(value: string): string {
 
 /** "sinners-filmhouse-lekki-imax-2026-11-06-1930.ics": the Lagos day and time of the showing. */
 export function icsFileName(showing: Pick<IcsShowing, "film" | "cinema" | "startsAt">): string {
-  return `${slug(showing.film)}-${slug(showing.cinema)}-${lagosDayKey(showing.startsAt)}-${formatTime(showing.startsAt).replace(":", "")}.ics`;
+  // The file name keeps the 24-hour "1930": short, sortable, no space (the screen says 7:30 PM, D-114).
+  return `${slug(showing.film)}-${slug(showing.cinema)}-${lagosDayKey(showing.startsAt)}-${clock24(showing.startsAt).replace(":", "")}.ics`;
 }

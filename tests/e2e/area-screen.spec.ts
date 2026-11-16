@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { cinemasBySoonest, dataFile, freeze, lagosClock, sampleTime, today, type DataFile } from "./helpers";
+import { cinemasBySoonest, dataFile, freeze, sampleTime, shownClock, today, type DataFile } from "./helpers";
 
 // An area's page as Figma draws it (Figma Area 200:6420, build unit 7): the cinemas kept on this
 // phone, then the area's other cinemas soonest first with their next three times, then the areas
@@ -46,7 +46,7 @@ test("kept cinemas first, then the area's others soonest first, then the areas n
     const first = firstIn(area);
     const count = all.cinemas.filter((c) => c.area === area).length;
     const card = page.getByTestId(`next.card.${area}`);
-    await expect(card.getByTestId("next.line")).toHaveText(`${plural(count, "cinema")} · next ${lagosClock(first.startsAt)} at ${all.cinemas.find((c) => c.id === first.cinemaId)!.name}`);
+    await expect(card.getByTestId("next.line")).toHaveText(`${plural(count, "cinema")} · next ${shownClock(first.startsAt)} at ${all.cinemas.find((c) => c.id === first.cinemaId)!.name}`);
     await expect(card).toHaveAttribute("href", `/lagos/area/${area}`);
   }
 });
@@ -66,7 +66,7 @@ test("a cinema card shows its next three times with their films, the soonest mar
   const times = card.locator('[data-testid^="row."]');
   await expect(times).toHaveCount(Math.min(3, rows.length));
   for (const [i, row] of rows.slice(0, 3).entries()) {
-    await expect(times.nth(i).getByTestId(`time.${id}.${row.startsAt}`)).toContainText(lagosClock(row.startsAt));
+    await expect(times.nth(i).getByTestId(`time.${id}.${row.startsAt}`)).toContainText(shownClock(row.startsAt));
     await expect(times.nth(i).getByTestId("showing.film")).toHaveText(all.films.find((f) => f.id === row.filmId)!.title);
   }
   // Within the hour, every time at the first start is the soonest (Figma: both 18:00s).
@@ -89,7 +89,7 @@ test("a time opens the showing sheet; sample times can't be booked; Escape close
   const chip = page.getByTestId(`time.grand-lekki.${row.startsAt}`).first();
   await chip.click();
   const sheet = page.getByTestId("showing.sheet");
-  await expect(sheet).toHaveAccessibleName(`${lagosClock(row.startsAt)} · Grand Cinemas Lekki`);
+  await expect(sheet).toHaveAccessibleName(`${shownClock(row.startsAt)} · Grand Cinemas Lekki`);
   await expect(sheet.getByTestId("showing.book")).toContainText("Sample only");
   await page.keyboard.press("Escape");
   await expect(sheet).toBeHidden();
@@ -122,7 +122,7 @@ test("with nothing more tonight, it says whose showing was last and the areas ne
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Cinemas in Lagos Island");
   await expect(page.getByTestId("area.count")).toHaveText("1 cinema");
   await expect(page.getByTestId("area.empty").getByRole("heading")).toHaveText("Nothing more starts in Lagos Island tonight");
-  await expect(page.getByTestId("area.empty").locator("p")).toHaveText(`Blue Pictures Cinemas City Mall's last showing began at ${lagosClock(last)}. The areas next to it still have times tonight.`);
+  await expect(page.getByTestId("area.empty").locator("p")).toHaveText(`Blue Pictures Cinemas City Mall's last showing began at ${shownClock(last)}. The areas next to it still have times tonight.`);
   const groups = await page.locator('[data-testid^="group."]').evaluateAll((els) => els.map((el) => el.getAttribute("data-testid")));
   expect(groups).toEqual(["group.next", "group.area"]);
   await expect(page.getByTestId("group.next").locator("h2 + p")).toHaveText("Soonest first");

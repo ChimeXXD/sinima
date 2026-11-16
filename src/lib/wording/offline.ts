@@ -11,7 +11,7 @@ const ago = (savedAt: string, now: string): string | null => {
   return hours < 24 ? `${hours} ${hours === 1 ? "hour" : "hours"} ago` : null;
 };
 
-/** "You're offline. These are the times saved on this phone at 17:05, 25 min ago. Booking needs a connection." */
+/** "You're offline. These are the times saved on this phone at 5:05 PM, 25 min ago. Booking needs a connection." */
 export function offlineLine(savedAt: string | null, now: string): string {
   const when = savedAt === null ? "" : ((since) => (since ? ` at ${formatTime(savedAt)}, ${since}` : ` on ${formatDate(savedAt)} at ${formatTime(savedAt)}`))(ago(savedAt, now));
   return `You're offline. These are the times saved on this phone${when}. Booking needs a connection.`;

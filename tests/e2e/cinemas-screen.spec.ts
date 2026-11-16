@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { cinemasBySoonest, dataFile, freeze, lagosClock, sampleTime, today, type DataFile } from "./helpers";
+import { cinemasBySoonest, dataFile, freeze, sampleTime, shownClock, today, type DataFile } from "./helpers";
 
 // The Cinemas tab as Figma draws it (Figma Cinemas 200:6415, build unit 6): your area first, then
 // the areas next to it, then the rest; a picker row; every cinema in the city, at three widths.
@@ -54,7 +54,7 @@ test("a row gives the next time and the films left tonight, its area and formats
   const films = new Set(left.filter((s) => s.cinemaId === first).map((s) => s.filmId)).size;
   const card = page.getByTestId(`cinema.card.${first}`);
   await expect(card.getByTestId("cinema.name")).toHaveText(all.cinemas.find((c) => c.id === first)!.name);
-  await expect(card.getByTestId("cinema.next")).toHaveText(`Next at ${lagosClock(left[0]!.startsAt)} · ${films} ${films === 1 ? "film" : "films"} tonight`);
+  await expect(card.getByTestId("cinema.next")).toHaveText(`Next at ${shownClock(left[0]!.startsAt)} · ${films} ${films === 1 ? "film" : "films"} tonight`);
   await expect(card.getByTestId("logo-sticker")).toBeVisible();
 
   const imax = left.find((s) => /^IMAX/.test(s.format ?? ""))!.cinemaId;
@@ -155,7 +155,7 @@ test("the day picker shows tomorrow, and says so", async ({ page, request }) => 
   await page.getByTestId("day.option.tomorrow").click();
   await expect(page.getByTestId("sheet.day")).toBeHidden();
   await expect(page.getByTestId("pick.day")).toHaveText("DayTomorrow");
-  await expect(page.getByTestId("cinema.next").first()).toHaveText(/^First at \d\d:\d\d · \d+ films? tomorrow$/);
+  await expect(page.getByTestId("cinema.next").first()).toHaveText(/^First at \d{1,2}:\d\d\s[AP]M · \d+ films? tomorrow$/);
 });
 
 test("choosing IMAX leaves only cinemas showing in IMAX, and says which were left out", async ({ page, request }) => {

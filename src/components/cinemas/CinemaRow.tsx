@@ -10,7 +10,7 @@ import s from "./cinemas.module.css";
 
 /**
  * One cinema on the Cinemas tab (Figma Cinemas › Cinema · …): its chain's logo sticker, the name,
- * "Next at 18:00 · 3 films tonight", then its area and formats. The whole row opens the cinema; the
+ * "Next at 6:00 PM · 3 films tonight", then its area and formats. The whole row opens the cinema; the
  * heart beside the arrow keeps it on Your cinemas without opening it (D-106 f). A button can't sit
  * in a link, so the link is stretched over the row and the heart sits above it.
  *

@@ -6,7 +6,7 @@ import { cinemaNextLine, countdownParts, showingsTonight, spokenCountdown, spoke
 
 // The words the shared components (D-82, build unit 2) split over two type styles.
 
-const START = "2026-11-06T18:30:00Z"; // 19:30 in Lagos
+const START = "2026-11-06T18:30:00Z"; // 7:30 PM in Lagos
 
 describe("countdownParts: the countdown in two pieces, for the pill and the badge", () => {
   it.each([
@@ -57,16 +57,16 @@ describe("spokenCountdown: units spelled out for screen readers", () => {
 
 describe("filmNextLine: the stats line under a film card (Figma 10.1)", () => {
   it("names the next time and how many cinemas", () => {
-    expect(filmNextLine(START, 4)).toEqual({ next: "Next 19:30", where: "4 cinemas" });
+    expect(filmNextLine(START, 4)).toEqual({ next: "Next 7:30\u00a0PM", where: "4 cinemas" });
   });
   it("says one cinema, not one cinemas", () => {
-    expect(filmNextLine(START, 1)).toEqual({ next: "Next 19:30", where: "1 cinema" });
+    expect(filmNextLine(START, 1)).toEqual({ next: "Next 7:30\u00a0PM", where: "1 cinema" });
   });
   it("marks a showing after midnight with its day", () => {
-    expect(filmNextLine("2026-11-06T23:30:00Z", 2).next).toBe("Next 00:30 (Sat)");
+    expect(filmNextLine("2026-11-06T23:30:00Z", 2).next).toBe("Next 12:30\u00a0AM (Sat)");
   });
   it("says From in the page's own HTML, which cannot tell whether the showing has started (rule 3)", () => {
-    expect(filmNextLine(START, 4, "From").next).toBe("From 19:30");
+    expect(filmNextLine(START, 4, "From").next).toBe("From 7:30\u00a0PM");
   });
 });
 
@@ -75,7 +75,7 @@ describe("cinema folder lines (Figma 10.3)", () => {
     expect(showingsTonight(7)).toBe("7 tonight");
   });
   it("puts the area beside the next time", () => {
-    expect(cinemaNextLine("Lekki", START)).toBe("Lekki · next 19:30");
+    expect(cinemaNextLine("Lekki", START)).toBe("Lekki · next 7:30\u00a0PM");
   });
   it("leaves the time out when there is none", () => {
     expect(cinemaNextLine("Lekki", null)).toBe("Lekki");
@@ -83,16 +83,16 @@ describe("cinema folder lines (Figma 10.3)", () => {
 });
 
 describe("after midnight: the small day beside a time (TimePill, TimeChip)", () => {
-  it("names the day for a showing between 00:00 and 03:59, listed under the evening before", () => {
-    expect(lateDay("2026-11-06T23:30:00Z")).toBe("Sat"); // 00:30 Saturday
-    expect(lateDay("2026-11-07T02:59:00Z")).toBe("Sat"); // 03:59
+  it("names the day for a showing between 12:00\u00a0AM and 3:59\u00a0AM, listed under the evening before", () => {
+    expect(lateDay("2026-11-06T23:30:00Z")).toBe("Sat"); // 12:30 AM Saturday
+    expect(lateDay("2026-11-07T02:59:00Z")).toBe("Sat"); // 3:59 AM
   });
   it("is null for any other time", () => {
-    expect(lateDay("2026-11-06T18:30:00Z")).toBeNull(); // 19:30
+    expect(lateDay("2026-11-06T18:30:00Z")).toBeNull(); // 7:30 PM
     expect(lateDay("2026-11-07T03:00:00Z")).toBeNull(); // 04:00: a morning showing, not the evening before
   });
   it("is spoken in full", () => {
-    expect(spokenTime("2026-11-06T23:30:00Z")).toBe("00:30 on Saturday");
-    expect(spokenTime("2026-11-06T18:30:00Z")).toBe("19:30");
+    expect(spokenTime("2026-11-06T23:30:00Z")).toBe("12:30\u00a0AM on Saturday");
+    expect(spokenTime("2026-11-06T18:30:00Z")).toBe("7:30\u00a0PM");
   });
 });

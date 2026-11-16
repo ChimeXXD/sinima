@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { freeze, lagosClock, sampleTime } from "./helpers";
+import { freeze, sampleTime, shownClock } from "./helpers";
 
 // Offline (Figma Offline · Films 208:9731, build unit 11): with no connection the site still opens
 // on the copy saved on this phone, and says when those times were saved.
@@ -22,7 +22,7 @@ test("Films opens offline from the saved copy, and the banner says when it was s
   await page.clock.setFixedTime(new Date(savedAt.getTime() + 25 * 60_000));
   await page.reload();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("What's on in Lagos");
-  await expect(page.getByTestId("banner.offline")).toHaveText(`You're offline. These are the times saved on this phone at ${lagosClock(savedAt.toISOString())}, 25 min ago. Booking needs a connection.`);
+  await expect(page.getByTestId("banner.offline")).toHaveText(`You're offline. These are the times saved on this phone at ${shownClock(savedAt.toISOString())}, 25 min ago. Booking needs a connection.`);
   // Figma's offline banner leads; the sample note stays under it, since samples are never hidden (rule 8).
   await expect(page.getByTestId("banner.sample")).toBeVisible();
 

@@ -38,7 +38,7 @@ export function areaPage(input: { rows: ListRow[]; cinemas: number; areaOf: (cin
   return { saved: here.filter((entry) => saved(entry.cinema)), others: here.filter((entry) => !saved(entry.cinema)), next, quiet, last: today.at(-1) ?? null };
 }
 
-/** The times drawn as the soonest ("18:00 in 30 min"): every row at the first start, when it is within the hour. */
+/** The times drawn as the soonest ("6:00 PM in 30 min"): every row at the first start, when it is within the hour. */
 export function soonest(rows: ListRow[], now: string | null): Set<ListRow> {
   const first = now === null ? undefined : rows.find((row) => isBeforeStart(showingState(row.at, now)));
   if (!first || minutesFromStart(first.at, now!).minutes > 60) return new Set();

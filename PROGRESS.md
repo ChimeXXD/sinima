@@ -2,6 +2,15 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 16 Nov 2026 — 12-hour clock (D-114)
+
+- **Changed:** `formatTime` in `src/lib/time/lagos.ts` says "7:30 PM" (no leading zero, no-break space, "12:00 AM" midnight, "12:00 PM" noon); `formatLateTime` follows ("12:30 AM (Sat)"). Every on-screen and screen-reader time goes through it. `icsFileName` keeps "1930" from `toLagos`. Example times in the wording doc comments and the `/kit` labels moved to 12-hour; rule comments ("the evening ends at 04:00") stay. CLAUDE.md rule 1 updated.
+- **Tests:** red first in `tests/unit/lib/time/lagos.test.ts` (midnight, noon, 9:05 AM, 10:45 PM, 11:59 AM, late-night day); 13 wording test files' expected text moved to 12-hour; `refresh.test.ts` got its own 24-hour `clock` helper because it sorts times as text (7:30 PM would sort after 10:00 PM). e2e: `shownClock` in `tests/e2e/helpers.ts` for expected on-screen times; `lagosClock` stays 24-hour for finding a showing by its time.
+- **Checked:** 620/620 unit tests; e2e time files on a build with the 08:00 sample data; no time chip wraps or overflows and no side scroll on film, cinema, Starting soon and Films at 390 and 360 (Chromium, measured); worst case "Next 10:30 PM · 11 cinemas" stays one line at 360.
+- **Review:** code-review medium --fix found no bugs; it added `clock24` (for file names and sort keys, never the screen) and moved stale 24-hour examples in comments and SPEC. Shared text (`shareText`) now uses a plain space before PM, red then green. Full gate green: lint, 620 unit, typecheck, e2e, budget.
+- **Skills that ran:** proof:build, code-review (medium --fix).
+- **Not verified:** Chime's iPhone; Abuja pages by eye (same code).
+
 ## 16 Nov 2026 — posters through Sinima's own address (D-113)
 
 - **Bug:** on Chime's iPhone on MTN every poster showed Safari's broken-image icon; on Wi-Fi and on the PC they loaded. Chime confirmed: MTN can't reach `image.tmdb.org`, Wi-Fi can.

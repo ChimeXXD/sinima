@@ -36,12 +36,12 @@ test("your area first, then the areas next to it, then the rest soonest first (F
   // The soonest time within the hour is blue and counts down after its format.
   const first = page.getByTestId(`time.filmhouse-circle-mall.${await startOf(request, "filmhouse-circle-mall", "18:00")}`);
   await expect(first).toHaveAttribute("data-state", "soonest");
-  await expect(first).toHaveText("18:00IMAX · in 30 min");
-  await expect(first).toHaveAccessibleName("18:00, IMAX, starts in 30 minutes");
+  await expect(first).toHaveText("6:00 PMIMAX · in 30 min");
+  await expect(first).toHaveAccessibleName("6:00 PM, IMAX, starts in 30 minutes");
   await expect(page.getByTestId(`time.filmhouse-ikota.${await startOf(request, "filmhouse-ikota", "19:00")}`)).not.toHaveAttribute("data-state", "soonest");
 
   // Cinemas whose times have all started are named under the list, not listed.
-  await expect(page.getByTestId("film.earlier")).toHaveText("Started earlier today: Filmhouse Palms Mall Lekki at 14:00 and Genesis Deluxe Purple Mall at 16:50.");
+  await expect(page.getByTestId("film.earlier")).toHaveText("Started earlier today: Filmhouse Palms Mall Lekki at 2:00 PM and Genesis Deluxe Purple Mall at 4:50 PM.");
   await expect(page.getByTestId("venue.filmhouse-palms-lekki")).toHaveCount(0);
 });
 
@@ -69,7 +69,7 @@ test("a time opens its sheet: sample times can't be booked; calendar, countdown;
   await chip.click();
   const sheet = page.getByTestId("showing.sheet");
   await expect(sheet).toBeVisible();
-  await expect(sheet).toHaveAccessibleName("18:00 · Filmhouse Circle Mall");
+  await expect(sheet).toHaveAccessibleName("6:00 PM · Filmhouse Circle Mall");
   await expect(sheet.getByText("Ramayana · IMAX · Lekki")).toBeVisible();
   await expect(sheet.getByTestId("countdown-badge")).toHaveText("Starts in30 min");
   await expect(sheet.getByTestId("showing.book")).toContainText("Sample only");
@@ -79,7 +79,7 @@ test("a time opens its sheet: sample times can't be booked; calendar, countdown;
   const ics = readFileSync(await download.path(), "utf8");
   expect(ics).toContain(`DTSTART:${at.replace(/[-:]/g, "")}`);
   expect(ics).toContain("TRIGGER:-PT30M");
-  await expect(sheet.getByTestId("showing.calendar")).toContainText("18:00 to 21:21, with an alert 30 min before.");
+  await expect(sheet.getByTestId("showing.calendar")).toContainText("6:00 PM to 9:21 PM, with an alert 30 min before.");
 
   await sheet.getByTestId("showing.keep").click();
   await expect(sheet.getByTestId("showing.keep")).toHaveAttribute("aria-pressed", "true");
@@ -102,12 +102,12 @@ test("once the showing starts the sheet can't book it, and offers the next times
   await page.clock.runFor(6 * 60_000); // 18:05, as Figma
   await expect(sheet.getByTestId("countdown-badge")).toHaveText("Started5 min ago");
   await expect(sheet.getByTestId("showing.book")).toHaveCount(0);
-  await expect(sheet.getByTestId("showing.started")).toHaveText("This showing started at 18:00, so it can't be booked here. The next times nearby:");
-  await expect(sheet.getByTestId("showing.next").getByRole("listitem")).toHaveText(["18:15in 10 minFilmhouse OniruVictoria Island", "19:00Filmhouse IkotaLekki", "22:00Filmhouse Circle MallThis cinema, in IMAX"]);
+  await expect(sheet.getByTestId("showing.started")).toHaveText("This showing started at 6:00 PM, so it can't be booked here. The next times nearby:");
+  await expect(sheet.getByTestId("showing.next").getByRole("listitem")).toHaveText(["6:15 PMin 10 minFilmhouse OniruVictoria Island", "7:00 PMFilmhouse IkotaLekki", "10:00 PMFilmhouse Circle MallThis cinema, in IMAX"]);
   await expect(sheet.getByTestId("showing.share-film")).toContainText("A link to Ramayana's times in Lagos.");
 
   await sheet.getByTestId(`next.filmhouse-oniru.${await startOf(request, "filmhouse-oniru", "18:15")}`).click();
-  await expect(sheet).toHaveAccessibleName("18:15 · Filmhouse Oniru");
+  await expect(sheet).toHaveAccessibleName("6:15 PM · Filmhouse Oniru");
   await expect(sheet.getByTestId("showing.book")).toBeVisible();
 });
 
@@ -148,7 +148,7 @@ test("a shared link opens its showing, once", async ({ page, request }) => {
   const at = await startOf(request, "filmhouse-oniru", "18:15");
   await page.goto(`/lagos/film/ramayana#s=filmhouse-oniru@${at}`);
   const sheet = page.getByTestId("showing.sheet");
-  await expect(sheet).toHaveAccessibleName("18:15 · Filmhouse Oniru");
+  await expect(sheet).toHaveAccessibleName("6:15 PM · Filmhouse Oniru");
   await sheet.getByTestId("showing.sheet.close").click();
   await expect(sheet).toBeHidden();
 });

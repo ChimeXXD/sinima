@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { dataFile, freeze, lagosClock, sampleTime, today } from "./helpers";
+import { dataFile, freeze, sampleTime, shownClock, today } from "./helpers";
 
 // The showing sheet's own flows are in film-screen, cinema-screen and soon-screen specs (Figma, build
 // units 4, 8 and 9); the old panel and its share card went with build unit 9.
@@ -11,7 +11,7 @@ test("an old shared link to a showing on a cinema's page (#s=<film>@<start>) ope
   const cinema = all.cinemas.find((c) => c.id === row.cinemaId)!;
   await freeze(page, now);
   await page.goto(`/lagos/cinema/${cinema.id}#s=${row.filmId}@${row.startsAt}`);
-  await expect(page.getByTestId("showing.sheet")).toHaveAccessibleName(`${lagosClock(row.startsAt)} · ${cinema.name}`);
+  await expect(page.getByTestId("showing.sheet")).toHaveAccessibleName(`${shownClock(row.startsAt)} · ${cinema.name}`);
 });
 
 test("an address with a broken % after the # still opens the page", async ({ page }) => {

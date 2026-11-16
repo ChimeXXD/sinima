@@ -13,7 +13,7 @@ import { useNow } from "@/lib/time/useNow";
 import { freshness } from "@/lib/wording/freshness";
 import s from "./kit.module.css";
 
-// Figma's example values. The clock is fixed at 17:30 in Lagos, and, as on every page, relative
+// Figma's example values. The clock is fixed at 5:30 PM in Lagos, and, as on every page, relative
 // words appear only once the page is running (rule 3).
 const NOW = "2026-11-06T16:30:00Z";
 const at = (minutes: number) => new Date(Date.parse(NOW) + minutes * 60_000).toISOString().replace(".000Z", "Z");
@@ -92,7 +92,7 @@ export function KitDemo() {
           <FilmCard href="/film/ramayana-rise-of-a-legend" title={RAMAYANA.title} meta="3 h 21 min" poster={<NoPoster title={RAMAYANA.title} />} formats={["IMAX", "4D"]} next={at(5)} cinemas={4} now={now} testId="kit.filmcard" />
         </div>
         <div className={s.grid}>
-          <ShowingCard title={STREET.title} cinema="Filmhouse Surulere" meta="2 h 0 min · 15" poster={<NoPoster title={STREET.title} />} startsAt={at(10)} now={now} bookUrl="https://filmhouseng.com" bookLabel="Book Street Fighter at 17:40 on Filmhouse's site" testId="kit.showing.upcoming" />
+          <ShowingCard title={STREET.title} cinema="Filmhouse Surulere" meta="2 h 0 min · 15" poster={<NoPoster title={STREET.title} />} startsAt={at(10)} now={now} bookUrl="https://filmhouseng.com" bookLabel="Book Street Fighter at 5:40 PM on Filmhouse's site" testId="kit.showing.upcoming" />
           <ShowingCard title={CLAYFACE.title} cinema="Filmhouse Surulere" meta="1 h 49 min · 18" poster={<NoPoster title={CLAYFACE.title} />} startsAt={at(-3)} now={now} bookUrl="https://filmhouseng.com" bookLabel="Book Clayface on Filmhouse's site" testId="kit.showing.started" />
         </div>
         <div className={s.grid}>
@@ -118,10 +118,10 @@ export function KitDemo() {
         </div>
         <div className={s.row}>
           <span className={s.pillBox}>
-            <TimePill startsAt={at(70)} now={now} bookUrl="https://filmhouseng.com" bookLabel="Book 18:40 on Filmhouse's site" />
+            <TimePill startsAt={at(70)} now={now} bookUrl="https://filmhouseng.com" bookLabel="Book 6:40 PM on Filmhouse's site" />
           </span>
           <span className={s.pillBox} data-testid="kit.latepill">
-            <TimePill startsAt={at(420)} now={now} bookUrl="https://filmhouseng.com" bookLabel="Book 00:30 on Saturday on Filmhouse's site" />
+            <TimePill startsAt={at(420)} now={now} bookUrl="https://filmhouseng.com" bookLabel="Book 12:30 AM on Saturday on Filmhouse's site" />
           </span>
           <span className={s.pillBox}>
             <TimePill startsAt={at(-3)} now={now} bookUrl="https://filmhouseng.com" bookLabel="Book on Filmhouse's site" />
@@ -146,7 +146,7 @@ export function KitDemo() {
             Open the sheet
           </Button>
         </div>
-        <Sheet open={sheet} onClose={() => setSheet(false)} title="17:40 · EbonyLife Cinemas" subtitle={["Ramayana", "Lekki", now && countdown(at(10), now)].filter(Boolean).join(" · ")} testId="kit.sheet">
+        <Sheet open={sheet} onClose={() => setSheet(false)} title="5:40 PM · EbonyLife Cinemas" subtitle={["Ramayana", "Lekki", now && countdown(at(10), now)].filter(Boolean).join(" · ")} testId="kit.sheet">
           <OptionRow icon="external-link" title="Book on EbonyLife's site" desc="Opens their booking page." selected={picked === 0} onClick={() => setPicked(0)} testId="kit.option.book" />
           <OptionRow icon="calendar-plus" title="Remind me" desc="Adds it to your calendar." selected={picked === 1} onClick={() => setPicked(1)} testId="kit.option.remind" />
         </Sheet>

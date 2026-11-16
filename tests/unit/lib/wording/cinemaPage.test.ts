@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { SAVED_TOAST, dayOption, earlierLine, filmsNote, filmsTitle, noFilms, notListedYet, ticketsFooter } from "@/lib/wording/cinemaPage";
 
-// Words on a cinema's page (Figma Cinema 202:7192). The sample clock is 17:30 Fri 13 Nov.
+// Words on a cinema's page (Figma Cinema 202:7192). The sample clock is 5:30 PM Fri 13 Nov.
 
 const FRI = "2026-11-13T11:00:00Z";
 const SAT = "2026-11-14T11:00:00Z";
@@ -50,9 +50,9 @@ describe("notListedYet", () => {
 
 describe("earlierLine", () => {
   it("says when a film's times started today, and tomorrow's (Figma Agbara Nla)", () => {
-    expect(earlierLine(["2026-11-13T13:00:00Z", "2026-11-13T15:50:00Z"], ["2026-11-14T13:00:00Z", "2026-11-14T15:50:00Z"])).toBe("Started earlier today at 14:00 and 16:50. Tomorrow at 14:00 and 16:50.");
-    expect(earlierLine(["2026-11-13T13:00:00Z"], [])).toBe("Started earlier today at 14:00.");
-    expect(earlierLine(["2026-11-13T22:00:00Z"], ["2026-11-14T13:00:00Z"], "Today")).toBe("Started earlier today at 23:00. Later today at 14:00.");
+    expect(earlierLine(["2026-11-13T13:00:00Z", "2026-11-13T15:50:00Z"], ["2026-11-14T13:00:00Z", "2026-11-14T15:50:00Z"])).toBe("Started earlier today at 2:00\u00a0PM and 4:50\u00a0PM. Tomorrow at 2:00\u00a0PM and 4:50\u00a0PM.");
+    expect(earlierLine(["2026-11-13T13:00:00Z"], [])).toBe("Started earlier today at 2:00\u00a0PM.");
+    expect(earlierLine(["2026-11-13T22:00:00Z"], ["2026-11-14T13:00:00Z"], "Today")).toBe("Started earlier today at 11:00\u00a0PM. Later today at 2:00\u00a0PM.");
   });
 });
 

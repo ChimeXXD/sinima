@@ -1,5 +1,5 @@
 // UTC in, Africa/Lagos out (D-06). Every time in the data is a UTC string ending in Z; every time
-// on screen is Lagos time on a 24-hour clock, whatever zone the device is in.
+// on screen is Lagos time on a 12-hour clock (D-114), whatever zone the device is in.
 
 export const LAGOS = "Africa/Lagos";
 
@@ -56,10 +56,16 @@ export function toLagos(iso: string): LagosParts {
   return partsAt(utcMs(iso));
 }
 
-/** "19:30" */
-export function formatTime(iso: string): string {
+/** "19:30": the 24-hour wall clock, for sortable keys and file names, never for the screen (D-114). */
+export function clock24(iso: string): string {
   const p = toLagos(iso);
   return `${two(p.hour)}:${two(p.minute)}`;
+}
+
+/** "7:30 PM", the way Lagos cinemas write it (D-114). The space never breaks, so PM keeps to its time. */
+export function formatTime(iso: string): string {
+  const p = toLagos(iso);
+  return `${p.hour % 12 || 12}:${two(p.minute)}\u00a0${p.hour < 12 ? "AM" : "PM"}`;
 }
 
 /** "Fri 6 Nov" */
@@ -84,7 +90,7 @@ export function lateDay(iso: string): string | null {
   return p.hour < EVENING_ENDS_HOUR ? p.weekday : null;
 }
 
-/** "19:30", or "00:30 (Sat)" for a showing after midnight that is listed under the evening before. */
+/** "7:30 PM", or "12:30 AM (Sat)" for a showing after midnight that is listed under the evening before. */
 export function formatLateTime(iso: string): string {
   const day = lateDay(iso);
   return day === null ? formatTime(iso) : `${formatTime(iso)} (${day})`;

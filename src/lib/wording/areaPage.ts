@@ -33,7 +33,7 @@ export function locality(address: string | null, area: string): string {
 /**
  * The line under a cinema's name. With times: "3 films tonight · IMAX"; a kept cinema leads with
  * where it is instead of the formats ("Lekki Phase 1 · 3 films tonight", Figma). With none left:
- * where it is, and when tomorrow starts ("Lagos Island · tomorrow from 12:00").
+ * where it is, and when tomorrow starts ("Lagos Island · tomorrow from 12:00 PM").
  */
 export function cardLine(input: { films: number; formats: string[]; when: When; place: string | null; tomorrow: string | null; next?: NextDay }): string {
   const { when, place, next = "Tomorrow" } = input;
@@ -50,7 +50,7 @@ export function cardBody(input: { listed: boolean; when: When; tomorrow: { films
   return `Nothing more ${when}.${tomorrow ? ` ${next}: ${films(tomorrow.films)} from ${formatLateTime(tomorrow.from)}.` : ""}`;
 }
 
-/** A neighbouring area's line: "4 cinemas · next 17:40 at EbonyLife Cinemas". */
+/** A neighbouring area's line: "4 cinemas · next 5:40 PM at EbonyLife Cinemas". */
 export function nextAreaLine(input: { cinemas: number; next: { at: string; name: string } | null; listed: boolean; when: When }): string {
   const { next, when } = input;
   const count = cinemaCount(input.cinemas);

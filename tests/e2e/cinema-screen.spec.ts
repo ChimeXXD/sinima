@@ -1,5 +1,5 @@
 import { expect, test, type APIRequestContext, type Page } from "@playwright/test";
-import { dataFile, freeze, lagosClock, lagosDay, sampleTime, type DataFile } from "./helpers";
+import { dataFile, freeze, lagosDay, sampleTime, shownClock, type DataFile } from "./helpers";
 
 // A cinema's page as Figma draws it (Figma Cinema 202:7192, build unit 8): the logo, name, address,
 // tags, Save and Book; then its films on the day, soonest first, each with its times. The sample data
@@ -46,10 +46,10 @@ test("the cinema, then its films tonight soonest first, each with its times stil
     const card = page.getByTestId(`film.card.${film}`);
     await expect(card.getByRole("heading")).toHaveText(all.films.find((f) => f.id === film)!.title);
     const times = left.filter((s) => s.filmId === film);
-    if (times.length > 0) await expect(card.locator('[data-testid^="time."]')).toHaveText(times.map((s) => new RegExp(`^${lagosClock(s.startsAt)}`)));
+    if (times.length > 0) await expect(card.locator('[data-testid^="time."]')).toHaveText(times.map((s) => new RegExp(`^${shownClock(s.startsAt).replace(" ", "\\s")}`)));
   }
   // Agbara Nla's times have all started (Figma): when, and tomorrow's.
-  await expect(page.getByTestId("film.card.agbara-nla-the-return").getByTestId("film.earlier")).toHaveText("Started earlier today at 14:00 and 16:50. Tomorrow at 14:00 and 16:50.");
+  await expect(page.getByTestId("film.card.agbara-nla-the-return").getByTestId("film.earlier")).toHaveText("Started earlier today at 2:00 PM and 4:50 PM. Tomorrow at 2:00 PM and 4:50 PM.");
   await expect(page.getByTestId("film.card.street-fighter").getByTestId("credits.chip")).toHaveText("Stay a little: scene during the credits");
   await expect(page.getByTestId("film.card.ramayana").getByTestId("credits.chip")).toHaveCount(0); // not known: no chip on the card
   await expect(page.getByTestId("footer.tickets")).toHaveText("Filmhouse sells the tickets. Sinima only shows the times and sends you to their site.");
@@ -73,7 +73,7 @@ test("with nothing listed for tomorrow, today stands alone and says so; the star
   await expect(page.getByTestId("films.day")).toHaveCount(0);
   await expect(page.getByTestId("films.today")).toHaveText(/^Today · \w{3} \d+$/);
   await expect(page.getByTestId("films.not-listed")).toHaveText(/^Filmhouse hasn't listed (Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)day yet\.$/);
-  await expect(page.getByTestId("film.card.agbara-nla-the-return").getByTestId("film.earlier")).toHaveText("Started earlier today at 14:00 and 16:50.");
+  await expect(page.getByTestId("film.card.agbara-nla-the-return").getByTestId("film.earlier")).toHaveText("Started earlier today at 2:00 PM and 4:50 PM.");
 });
 
 test("Save keeps the cinema on this phone, says so in a toast, and Undo takes it back (Figma Saved)", async ({ page, request }) => {
@@ -112,7 +112,7 @@ test("a time opens the showing sheet; sample times can't be booked; Escape gives
   const chip = page.getByTestId(`time.${row.filmId}.${row.startsAt}`);
   await chip.click();
   const sheet = page.getByTestId("showing.sheet");
-  await expect(sheet).toHaveAccessibleName(`${lagosClock(row.startsAt)} · Filmhouse Lekki IMAX`);
+  await expect(sheet).toHaveAccessibleName(`${shownClock(row.startsAt)} · Filmhouse Lekki IMAX`);
   await expect(sheet.getByTestId("showing.book")).toContainText("Sample only");
   await page.keyboard.press("Escape");
   await expect(sheet).toBeHidden();

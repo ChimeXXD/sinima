@@ -32,5 +32,5 @@ test("late at night, with every time started, each film says when it showed", as
   await expect(page.locator('[data-testid^="time."]')).toHaveCount(0);
   const cards = page.locator('[data-testid^="film.card."]');
   expect(await cards.count()).toBeGreaterThan(0);
-  for (const card of await cards.all()) await expect(card.getByTestId("film.earlier")).toHaveText(/^Started earlier today at \d\d:\d\d/);
+  for (const card of await cards.all()) await expect(card.getByTestId("film.earlier")).toHaveText(/^Started earlier today at \d{1,2}:\d\d\s[AP]M/);
 });

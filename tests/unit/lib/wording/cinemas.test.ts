@@ -1,24 +1,24 @@
 import { describe, expect, it } from "vitest";
 import { PICKER_SHEETS, NO_TIMES_NOTE, cinemaCount, cinemaLine, cinemasHeading, cinemasTitleNote, pickerValue } from "@/lib/wording/cinemas";
 
-// Words on the Cinemas tab (Figma Cinemas 200:6415). The sample clock is 17:30 Fri 13 Nov.
+// Words on the Cinemas tab (Figma Cinemas 200:6415). The sample clock is 5:30 PM Fri 13 Nov.
 
-const AT = "2026-11-13T17:00:00Z"; // 18:00 in Lagos
+const AT = "2026-11-13T17:00:00Z"; // 6:00 PM in Lagos
 
 describe("cinemaLine", () => {
   it("says the next time and the films left tonight, once the page knows the time (Figma)", () => {
-    expect(cinemaLine({ next: AT, films: 3, listed: true, when: "tonight" })).toEqual({ lead: "Next at", time: "18:00", rest: " · 3 films tonight" });
+    expect(cinemaLine({ next: AT, films: 3, listed: true, when: "tonight" })).toEqual({ lead: "Next at", time: "6:00\u00a0PM", rest: " · 3 films tonight" });
     expect(cinemaLine({ next: AT, films: 1, listed: true, when: "tonight" }).rest).toBe(" · 1 film tonight");
   });
   it("says today in the daytime and tomorrow for tomorrow", () => {
     expect(cinemaLine({ next: AT, films: 2, listed: true, when: "today" }).rest).toBe(" · 2 films today");
-    expect(cinemaLine({ next: AT, films: 2, listed: true, when: "tomorrow" })).toEqual({ lead: "First at", time: "18:00", rest: " · 2 films tomorrow" });
+    expect(cinemaLine({ next: AT, films: 2, listed: true, when: "tomorrow" })).toEqual({ lead: "First at", time: "6:00\u00a0PM", rest: " · 2 films tomorrow" });
   });
   it("has no word that depends on the clock before the page knows the time (rule 3)", () => {
-    expect(cinemaLine({ next: AT, films: 4, listed: true, when: null })).toEqual({ lead: "First at", time: "18:00", rest: " · 4 films" });
+    expect(cinemaLine({ next: AT, films: 4, listed: true, when: null })).toEqual({ lead: "First at", time: "6:00\u00a0PM", rest: " · 4 films" });
   });
   it("shows a time after midnight with its day", () => {
-    expect(cinemaLine({ next: "2026-11-13T23:30:00Z", films: 1, listed: true, when: "tonight" }).time).toBe("00:30 (Sat)");
+    expect(cinemaLine({ next: "2026-11-13T23:30:00Z", films: 1, listed: true, when: "tonight" }).time).toBe("12:30\u00a0AM (Sat)");
   });
   it("says when there is nothing left, and when the cinema's times cannot be read (Figma Galleria)", () => {
     expect(cinemaLine({ next: null, films: 0, listed: true, when: "tonight" })).toEqual({ lead: "Nothing more today", time: null, rest: "" });

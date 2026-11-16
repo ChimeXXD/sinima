@@ -30,8 +30,13 @@ export async function freeze(page: Page, at: Date): Promise<void> {
   await page.clock.pauseAt(at);
 }
 
-/** "19:30" in Lagos for a UTC instant. */
+/** "19:30" in Lagos for a UTC instant: to find a showing by its clock time. */
 export const lagosClock = (iso: string) => new Date(Date.parse(iso) + HOUR).toISOString().slice(11, 16);
+/** "7:30 PM", as the screen shows a time (D-114). Playwright reads the no-break space as a space. */
+export const shownClock = (iso: string) => {
+  const [hour, minute] = lagosClock(iso).split(":").map(Number) as [number, number];
+  return `${hour % 12 || 12}:${String(minute).padStart(2, "0")} ${hour < 12 ? "AM" : "PM"}`;
+};
 /** The Lagos calendar day, "2026-11-12", of a UTC instant. */
 export const lagosDay = (iso: string) => new Date(Date.parse(iso) + HOUR).toISOString().slice(0, 10);
 

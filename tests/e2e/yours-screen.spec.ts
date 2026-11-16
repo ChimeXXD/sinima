@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { dataFile, freeze, lagosClock, sampleTime, today } from "./helpers";
+import { dataFile, freeze, sampleTime, shownClock, today } from "./helpers";
 
 // Your cinemas as Figma draws it (Figma 206:8570 Default, 206:8921 None saved, build unit 10): the
 // cinemas saved on this phone as folders, soonest first; with none, the way to keep one (D-61).
@@ -29,7 +29,7 @@ test("saved cinemas as folders, soonest first, each with its count and next time
     const count = left.filter((s) => s.cinemaId === id).length;
     await expect(folder).toHaveAttribute("href", `/lagos/cinema/${id}`);
     await expect(folder).toContainText(cinema.name);
-    await expect(folder).toContainText(`· next ${lagosClock(next(id).startsAt)}`);
+    await expect(folder).toContainText(`· next ${shownClock(next(id).startsAt)}`);
     await expect(folder).toContainText(`${count} tonight`);
     await expect(folder.getByTestId("logo-sticker")).toHaveCount(1);
   }

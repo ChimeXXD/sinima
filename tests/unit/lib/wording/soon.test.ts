@@ -2,21 +2,21 @@ import { describe, expect, it } from "vitest";
 import { KEPT, bookLabel, dayNote, dayTitle, laterNote, quietWords, rowLine, showMore, showingMeta, soonNote } from "@/lib/wording/soon";
 
 // Words on Starting soon (Figma 204:7192 Default, 204:7931 Nothing in 2 hours). The sample clock
-// is 17:30 Fri 13 Nov (Default) and 22:50 (Nothing in 2 hours).
+// is 5:30 PM Fri 13 Nov (Default) and 10:50 PM (Nothing in 2 hours).
 
-const NOW = "2026-11-13T21:50:00Z"; // 22:50
+const NOW = "2026-11-13T21:50:00Z"; // 10:50 PM
 
 describe("section notes", () => {
   it("counts the next 2 hours and says when booking closes (Figma)", () => {
     expect(soonNote({ count: 10, place: "Lekki" })).toBe("10 showings in Lekki · booking closes when a film starts");
     expect(soonNote({ count: 1, place: "Lagos" })).toBe("1 showing in Lagos · booking closes when a film starts");
   });
-  it("counts the rest of tonight up to the last start (Figma: 14 more in Lekki until 22:45)", () => {
-    expect(laterNote({ count: 14, place: "Lekki", last: "2026-11-13T21:45:00Z" })).toBe("14 more in Lekki until 22:45");
-    expect(laterNote({ count: 1, place: "Lekki", last: "2026-11-13T21:45:00Z" })).toBe("1 more in Lekki at 22:45");
+  it("counts the rest of tonight up to the last start (Figma: 14 more in Lekki until 10:45\u00a0PM)", () => {
+    expect(laterNote({ count: 14, place: "Lekki", last: "2026-11-13T21:45:00Z" })).toBe("14 more in Lekki until 10:45\u00a0PM");
+    expect(laterNote({ count: 1, place: "Lekki", last: "2026-11-13T21:45:00Z" })).toBe("1 more in Lekki at 10:45\u00a0PM");
   });
   it("after midnight the last time says its day", () => {
-    expect(laterNote({ count: 3, place: "Lekki", last: "2026-11-13T23:30:00Z" })).toBe("3 more in Lekki until 00:30 (Sat)");
+    expect(laterNote({ count: 3, place: "Lekki", last: "2026-11-13T23:30:00Z" })).toBe("3 more in Lekki until 12:30\u00a0AM (Sat)");
   });
   it("Show 8 more", () => expect(showMore(8)).toBe("Show 8 more"));
   it("before the time is known the list is the day, by its date (rule 3)", () => {
@@ -41,8 +41,8 @@ describe("showingMeta", () => {
 
 describe("bookLabel", () => {
   it("names the film, the time and whose site, with the day after midnight", () => {
-    expect(bookLabel("Clayface", "2026-11-13T17:00:00Z", "Filmhouse")).toBe("Book Clayface at 18:00 on Filmhouse's site");
-    expect(bookLabel("Clayface", "2026-11-13T23:30:00Z", "Filmhouse")).toBe("Book Clayface at 00:30 on Saturday on Filmhouse's site");
+    expect(bookLabel("Clayface", "2026-11-13T17:00:00Z", "Filmhouse")).toBe("Book Clayface at 6:00\u00a0PM on Filmhouse's site");
+    expect(bookLabel("Clayface", "2026-11-13T23:30:00Z", "Filmhouse")).toBe("Book Clayface at 12:30\u00a0AM on Saturday on Filmhouse's site");
   });
 });
 
@@ -60,7 +60,7 @@ describe("quietWords", () => {
     expect(words).toEqual({
       title: "Nothing starts in Lekki in the next 2 hours",
       body: "Nor in Victoria Island or Sangotedo. One showing is left in Lagos tonight:",
-      tomorrow: "Tomorrow in Lekki starts at 10:00 with Ramayana at Filmhouse Circle Mall.",
+      tomorrow: "Tomorrow in Lekki starts at 10:00\u00a0AM with Ramayana at Filmhouse Circle Mall.",
       action: "See tomorrow in Lekki",
       note: "early night?",
     });
@@ -74,11 +74,11 @@ describe("quietWords", () => {
   });
   it("all of the city: nothing more tonight, tomorrow's first, and no button", () => {
     const words = quietWords({ ...base, place: "Lagos", quiet: { kind: "city", areas: [], left: 0, tomorrow: { at: "2026-11-14T09:00:00Z", film: "Clayface", cinema: "Filmhouse Ikota" } } });
-    expect(words).toMatchObject({ title: "Nothing starts in Lagos in the next 2 hours", body: "Nothing more is showing in Lagos tonight.", tomorrow: "Tomorrow in Lagos starts at 10:00 with Clayface at Filmhouse Ikota.", action: null });
+    expect(words).toMatchObject({ title: "Nothing starts in Lagos in the next 2 hours", body: "Nothing more is showing in Lagos tonight.", tomorrow: "Tomorrow in Lagos starts at 10:00\u00a0AM with Clayface at Filmhouse Ikota.", action: null });
   });
   it("after midnight the next day is today", () => {
     const words = quietWords({ ...base, next: "Today", quiet: { kind: "city", areas: [], left: 0, tomorrow: { at: "2026-11-14T09:00:00Z", film: "Clayface", cinema: "Filmhouse Ikota" } } });
-    expect(words).toMatchObject({ tomorrow: "Later today in Lekki starts at 10:00 with Clayface at Filmhouse Ikota.", action: "See later today in Lekki" });
+    expect(words).toMatchObject({ tomorrow: "Later today in Lekki starts at 10:00\u00a0AM with Clayface at Filmhouse Ikota.", action: "See later today in Lekki" });
   });
   it("soon next door: names the areas and counts their showings", () => {
     expect(quietWords({ ...base, quiet: { kind: "nearby", areas: ["Victoria Island"], left: 1 } })).toMatchObject({ body: "But Victoria Island has one in the next 2 hours:", tomorrow: null, action: null, note: null });
@@ -87,7 +87,7 @@ describe("quietWords", () => {
   it("more later here: when the next one starts; the rest of tonight is listed below", () => {
     expect(quietWords({ ...base, quiet: { kind: "later", next: { at: "2026-11-13T18:31:00Z", film: "Clayface", cinema: "Filmhouse Ikota" } } })).toEqual({
       title: "Nothing starts in Lekki in the next 2 hours",
-      body: "The next one starts at 19:31: Clayface at Filmhouse Ikota.",
+      body: "The next one starts at 7:31\u00a0PM: Clayface at Filmhouse Ikota.",
       tomorrow: null,
       action: null,
       note: null,

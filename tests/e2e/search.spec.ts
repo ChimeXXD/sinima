@@ -36,7 +36,7 @@ test("on a phone, search opens over the page, finds films in Lagos and opens one
   // On a phone search covers the page, so it carries the page's sample-data banner (rule 8).
   await expect(page.getByTestId("search.panel").getByTestId("banner.sample")).toBeVisible();
   // Each result: title, what we know of it with how many cinemas, and the next showing with its cinema.
-  await expect(page.getByTestId("search.hit.spider-man-brand-new-day")).toContainText(/Spider-Man: Brand New Day.*cinemas? (tonight|today|tomorrow).*(Next|Tomorrow) \d\d:\d\d.* · /);
+  await expect(page.getByTestId("search.hit.spider-man-brand-new-day")).toContainText(/Spider-Man: Brand New Day.*cinemas? (tonight|today|tomorrow).*(Next|Tomorrow) \d{1,2}:\d\d\s[AP]M.* · /);
   await page.getByTestId("search.hit.spider-man-brand-new-day").click();
   await expect(page).toHaveURL(/\/film\/spider-man-brand-new-day$/);
 });

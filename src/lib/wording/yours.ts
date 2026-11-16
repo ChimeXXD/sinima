@@ -8,7 +8,7 @@ export const savedCount = (n: number) => (n === 0 ? "None saved yet" : `${n} sav
 /** The handwritten note beside it. */
 export const NOTE = "your usual spots";
 
-/** Under a folder: "Yaba · next 17:35"; with nothing left, or no times we can read, it says so (D-61, D-91). */
+/** Under a folder: "Yaba · next 5:35 PM"; with nothing left, or no times we can read, it says so (D-61, D-91). */
 export function folderLine(input: { area: string; next: string | null; listed: boolean }): string {
   if (input.next) return cinemaNextLine(input.area, input.next);
   return `${input.area} · ${input.listed ? "nothing more today" : "times not available yet"}`;

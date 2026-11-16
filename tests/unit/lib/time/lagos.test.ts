@@ -7,14 +7,17 @@ afterEach(() => {
 });
 
 describe("toLagos and formatTime: UTC in, Africa/Lagos out", () => {
-  it("shows a 18:30 UTC showing as 19:30 in Lagos", () => {
-    expect(formatTime("2026-11-06T18:30:00Z")).toBe("19:30");
+  it("shows a 18:30 UTC showing as 7:30 PM in Lagos", () => {
+    expect(formatTime("2026-11-06T18:30:00Z")).toBe("7:30\u00a0PM");
     expect(toLagos("2026-11-06T18:30:00Z")).toEqual({ year: 2026, month: 11, day: 6, hour: 19, minute: 30, weekday: "Fri" });
   });
 
-  it("uses a 24-hour clock with leading zeros", () => {
-    expect(formatTime("2026-11-06T08:05:00Z")).toBe("09:05");
-    expect(formatTime("2026-11-06T23:00:00Z")).toBe("00:00"); // midnight is 00:00, never 24:00
+  it("uses a 12-hour clock, AM and PM, no leading zero, a space that never breaks (D-114)", () => {
+    expect(formatTime("2026-11-06T08:05:00Z")).toBe("9:05\u00a0AM");
+    expect(formatTime("2026-11-06T23:00:00Z")).toBe("12:00\u00a0AM"); // midnight
+    expect(formatTime("2026-11-06T11:00:00Z")).toBe("12:00\u00a0PM"); // noon
+    expect(formatTime("2026-11-06T21:45:00Z")).toBe("10:45\u00a0PM");
+    expect(formatTime("2026-11-06T10:59:00Z")).toBe("11:59\u00a0AM");
   });
 
   it("rolls the Lagos date over an hour before UTC does", () => {
@@ -24,7 +27,7 @@ describe("toLagos and formatTime: UTC in, Africa/Lagos out", () => {
 
   it.each(["America/New_York", "Asia/Tokyo", "Pacific/Kiritimati", "UTC"])("ignores the device's zone (%s)", (zone) => {
     process.env.TZ = zone;
-    expect(formatTime("2026-11-06T18:30:00Z")).toBe("19:30");
+    expect(formatTime("2026-11-06T18:30:00Z")).toBe("7:30\u00a0PM");
     expect(lagosDayKey("2026-11-06T23:30:00Z")).toBe("2026-11-07");
     expect(lagosLocalToUtc({ year: 2026, month: 11, day: 6, hour: 19, minute: 30 })).toBe("2026-11-06T18:30:00Z");
     expect(formatDay("2026-11-07T18:30:00Z", "2026-11-06T12:00:00Z")).toBe("Tomorrow");
@@ -90,18 +93,18 @@ describe("the evening runs to 04:00 Lagos time (SPEC §3)", () => {
   it("keeps a 00:30 Saturday show on Friday's evening", () => {
     expect(eveningDayKey("2026-11-06T23:30:00Z")).toBe("2026-11-06"); // 00:30 Sat in Lagos
     expect(lagosDayKey("2026-11-06T23:30:00Z")).toBe("2026-11-07");
-    expect(formatLateTime("2026-11-06T23:30:00Z")).toBe("00:30 (Sat)");
+    expect(formatLateTime("2026-11-06T23:30:00Z")).toBe("12:30\u00a0AM (Sat)");
   });
 
   it("switches at exactly 04:00", () => {
     expect(eveningDayKey("2026-11-07T02:59:59Z")).toBe("2026-11-06"); // 03:59:59 Lagos
-    expect(formatLateTime("2026-11-07T02:59:00Z")).toBe("03:59 (Sat)");
+    expect(formatLateTime("2026-11-07T02:59:00Z")).toBe("3:59\u00a0AM (Sat)");
     expect(eveningDayKey("2026-11-07T03:00:00Z")).toBe("2026-11-07"); // 04:00:00 Lagos
-    expect(formatLateTime("2026-11-07T03:00:00Z")).toBe("04:00");
+    expect(formatLateTime("2026-11-07T03:00:00Z")).toBe("4:00\u00a0AM");
   });
 
   it("leaves ordinary evening times alone", () => {
-    expect(formatLateTime("2026-11-06T18:30:00Z")).toBe("19:30");
+    expect(formatLateTime("2026-11-06T18:30:00Z")).toBe("7:30\u00a0PM");
     expect(eveningDayKey("2026-11-06T18:30:00Z")).toBe("2026-11-06");
   });
 });

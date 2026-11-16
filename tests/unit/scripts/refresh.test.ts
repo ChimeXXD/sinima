@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest";
 import registry from "../../../data/cinemas.json";
 import { validateShowtimes } from "@/lib/data/validate";
 import type { CreditsInfo, ShowtimesFile } from "@/lib/data/types";
-import { formatTime, lagosDayKey } from "@/lib/time/lagos";
+import { clock24 as clock, lagosDayKey } from "@/lib/time/lagos";
 import { freshness } from "@/lib/wording/freshness";
 import { buildShowtimes, filmIdFromTitle, titleFormat, toSampleDays } from "../../../scripts/pipeline";
 import { DATA_FILE_LIMIT_KB, main, refreshFromFixtures, writeFiles } from "../../../scripts/refresh";
@@ -19,8 +19,9 @@ const dayFixture = parseLagocineDay(readFileSync(join(root, "tests/fixtures/lago
 const EARLY = "2026-11-19T23:30:00Z";
 // The same day at 19:00 in Lagos, when the day's earlier showings have ended.
 const EVENING = "2026-11-20T18:00:00Z";
+// The cinema's wall clock as "19:30" (clock), so the times sort as text (the screen's 7:30 PM would not, D-114).
 const times = (file: ShowtimesFile, cinemaId: string, day: string) =>
-  file.showings.filter((s) => s.cinemaId === cinemaId && lagosDayKey(s.startsAt) === day).map((s) => formatTime(s.startsAt)).sort();
+  file.showings.filter((s) => s.cinemaId === cinemaId && lagosDayKey(s.startsAt) === day).map((s) => clock(s.startsAt)).sort();
 
 describe("filmIdFromTitle", () => {
   it.each([
@@ -155,7 +156,7 @@ describe("refresh --fixtures", () => {
   it("keeps each cinema's wall-clock times from the fixture (D-20)", () => {
     for (const cinemaId of new Set(dayFixture.map((s) => s.cinemaId))) {
       // Lagocine lists some Genesis showings two or three times over; each is one showing here.
-      const saved = [...new Set(dayFixture.filter((s) => s.cinemaId === cinemaId).map((s) => `${s.filmTitle} ${formatTime(s.startsAt)}`))];
+      const saved = [...new Set(dayFixture.filter((s) => s.cinemaId === cinemaId).map((s) => `${s.filmTitle} ${clock(s.startsAt)}`))];
       expect(times(all, cinemaId, "2026-11-20"), cinemaId).toEqual(saved.map((s) => s.slice(-5)).sort());
     }
     expect(all.showings.filter((s) => lagosDayKey(s.startsAt) === "2026-11-20")).toHaveLength(294);
@@ -213,7 +214,7 @@ describe("refresh --fixtures", () => {
 
   it("leaves out showings that have ended by the time it runs", () => {
     const evening = refreshFromFixtures({ now: EVENING, root }).files.get("public/data/all.json") as ShowtimesFile;
-    const today = evening.showings.filter((s) => lagosDayKey(s.startsAt) === "2026-11-20").map((s) => formatTime(s.startsAt)).sort();
+    const today = evening.showings.filter((s) => lagosDayKey(s.startsAt) === "2026-11-20").map((s) => clock(s.startsAt)).sort();
     expect(today[0]! >= "17:30").toBe(true); // 19:00 less 90 min
     expect(evening.showings.length).toBeLessThan(588);
     expect(evening.showings.filter((s) => lagosDayKey(s.startsAt) === "2026-11-21")).toHaveLength(294);
