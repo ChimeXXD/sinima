@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AppFrame, LogoNote } from "@/components/ui/AppFrame";
-import { Notice } from "@/components/ui/Status";
+import { PageNotice } from "@/components/ui/Status";
 import { rememberArea } from "@/lib/area";
 import { useSavedArea } from "@/lib/browser";
 import { cinemaSections, type CinemaSection } from "@/lib/data/cinemas";
@@ -81,11 +81,7 @@ export function CinemasScreen({ data, areas, bg }: { data: ListData; areas: Area
         format={format}
         onFormat={setFormat}
       />
-      {banner && (
-        <div className={s.notice}>
-          <Notice kind={banner.kind} text={banner.text} />
-        </div>
-      )}
+      <PageNotice banner={banner} now={clock} className={s.notice} />
 
       {sections.map((section) => {
         const { title, note: line } = heading(section);

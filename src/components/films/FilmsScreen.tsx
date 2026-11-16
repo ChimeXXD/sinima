@@ -5,7 +5,7 @@ import { Poster } from "@/components/Poster";
 import { Button, Chip, Segmented } from "@/components/ui/Actions";
 import { AppFrame } from "@/components/ui/AppFrame";
 import { FilmCard, NoPoster } from "@/components/ui/Cards";
-import { Notice } from "@/components/ui/Status";
+import { PageNotice } from "@/components/ui/Status";
 import { TicketFaceSticker } from "@/components/ui/Stickers";
 import { filmSections, formatCoverage, lastStart, type FilmSection } from "@/lib/data/films";
 import type { FormatTag } from "@/lib/data/format";
@@ -72,11 +72,7 @@ export function FilmsScreen({ data, bg }: { data: ListData; bg: { light: string;
             </Chip>
           ))}
         </div>
-        {banner && (
-          <div className={s.notice}>
-            <Notice kind={banner.kind} text={banner.text} />
-          </div>
-        )}
+        <PageNotice banner={banner} now={clock} className={s.notice} />
       </div>
 
       {sections.map((section) => {

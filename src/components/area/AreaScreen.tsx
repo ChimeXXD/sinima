@@ -5,7 +5,7 @@ import { useRef, useState } from "react";
 import { IconButton } from "@/components/ui/Actions";
 import { useLazySheet } from "@/components/film/useLazySheet";
 import { AppFrame, BarBack, BarTitle, Crumb, LogoNote } from "@/components/ui/AppFrame";
-import { Notice } from "@/components/ui/Status";
+import { PageNotice } from "@/components/ui/Status";
 import { TicketFaceSticker } from "@/components/ui/Stickers";
 import { shareLink } from "@/lib/browser";
 import { areaPage, type AreaCinema } from "@/lib/data/areaPage";
@@ -131,11 +131,7 @@ export function AreaScreen({ data, areas, slug, bg }: { data: ListData; areas: A
     <AppFrame active="cinemas" search={{ value: typed, onChange: setTyped, onSubmit: () => router.push(`/?q=${encodeURIComponent(typed.trim())}`) }} bg={bg} bar={bar} footer={footer}>
       <Crumb href="/cinemas">All cinemas in {CITY}</Crumb>
       <AreaHero area={area.name} count={area.cinemas} />
-      {banner && (
-        <div className={s.notice}>
-          <Notice kind={banner.kind} text={banner.text} />
-        </div>
-      )}
+      <PageNotice banner={banner} now={clock} className={s.notice} />
       {page.quiet && when ? (
         <>
           <div className={s.empty} data-testid="area.empty">

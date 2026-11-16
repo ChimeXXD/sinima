@@ -240,6 +240,25 @@ button.chip:active {
 .bannerIcon {
   flex: none;
 }
+/* Offline with a sample or old-times banner as well: the two stack, 8 apart. */
+.stack {
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-8);
+}
+/* Offline (Figma 208:9731): the banner's shape on brand navy, white words; 600 wide at most on a computer. */
+.offline {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--space-10);
+  max-width: 600px;
+  padding: var(--space-12) var(--space-14);
+  border-radius: var(--radius-tile);
+  font: var(--type-body-m);
+  background: var(--brand-eyes);
+  color: var(--text-on-action);
+}
 .fresh {
   display: inline-flex;
   align-items: center;

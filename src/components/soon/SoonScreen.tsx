@@ -7,7 +7,7 @@ import { useLazySheet } from "@/components/film/useLazySheet";
 import { Button } from "@/components/ui/Actions";
 import { AppFrame } from "@/components/ui/AppFrame";
 import { NoPoster, ShowingCard } from "@/components/ui/Cards";
-import { Notice } from "@/components/ui/Status";
+import { PageNotice } from "@/components/ui/Status";
 import { TicketFaceSticker } from "@/components/ui/Stickers";
 import { useAreaChoice, useSavedArea } from "@/lib/browser";
 import { dayDates } from "@/lib/data/programme";
@@ -81,11 +81,7 @@ export function SoonScreen({ data, areas, bg }: { data: ListData; areas: SoonAre
     <AppFrame active="soon" search={{ value: typed, onChange: setTyped, onSubmit: () => router.push(`/?q=${encodeURIComponent(typed.trim())}`) }} bg={bg}>
       <SoonHero place={place} live={live} />
       <AreaChips chips={chips} allFirst={!areas.some((candidate) => candidate.slug === kept)} current={chosen} city={CITY} names={areaName} onPick={choose} />
-      {banner && (
-        <div className={s.notice}>
-          <Notice kind={banner.kind} text={banner.text} />
-        </div>
-      )}
+      <PageNotice banner={banner} now={clock} className={s.notice} />
 
       {yours.length > 0 && (
         <section className={s.section} aria-labelledby="soon.kept" data-testid="section.kept">

@@ -6,7 +6,7 @@ import { useLazySheet } from "@/components/film/useLazySheet";
 import { Button, IconButton, Segmented } from "@/components/ui/Actions";
 import { AppFrame, BarBack, BarTitle, Crumb, LogoNote } from "@/components/ui/AppFrame";
 import { Icon } from "@/components/ui/Icon";
-import { FormatBadge, Notice } from "@/components/ui/Status";
+import { FormatBadge, PageNotice } from "@/components/ui/Status";
 import { LogoSticker } from "@/components/ui/Stickers";
 import { Toast } from "@/components/ui/Toast";
 import { shareLink, useHash } from "@/lib/browser";
@@ -89,11 +89,7 @@ export function CinemaScreen({ data, id, area, bg }: { data: ListData; id: strin
   return (
     <AppFrame active="cinemas" search={{ value: typed, onChange: setTyped, onSubmit: () => router.push(`/?q=${encodeURIComponent(typed.trim())}`) }} bg={bg} bar={bar} footer={footer}>
       <Crumb href="/cinemas">All cinemas in {CITY}</Crumb>
-      {banner && (
-        <div className={s.notice}>
-          <Notice kind={banner.kind} text={banner.text} />
-        </div>
-      )}
+      <PageNotice banner={banner} now={clock} className={s.notice} />
       <div className={s.body}>
         <section className={s.info} aria-labelledby="cinema.title">
           <span className={s.logo}>

@@ -162,7 +162,7 @@ function Result({ result, now, onOpen }: { result: SearchResult; now: string; on
     <Link href={`/film/${film.id}`} className={s.result} onClick={onOpen} data-testid={`search.hit.${film.id}`}>
       {film.poster ? (
         // eslint-disable-next-line @next/next/no-img-element -- a static export has no image optimiser; TMDB serves sized files
-        <img className={s.poster} src={`${TMDB}w154${film.poster}`} srcSet={`${TMDB}w154${film.poster} 1x, ${TMDB}w342${film.poster} 2x`} alt="" width={52} height={78} loading="lazy" decoding="async" />
+        <img className={s.poster} src={`${TMDB}w154${film.poster}`} srcSet={`${TMDB}w154${film.poster} 1x, ${TMDB}w342${film.poster} 2x`} alt="" crossOrigin="anonymous" width={52} height={78} loading="lazy" decoding="async" />
       ) : (
         <span className={`${s.poster} ${s.noPoster}`}>
           <TicketFaceSticker height={25} />

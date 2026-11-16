@@ -40,9 +40,10 @@ export function DrinkSticker({ width = 55, className }: { width?: number; classN
 /** The 404 picture (D-75): the brand ticket torn into "40" and "4". The page says "not found" in words. */
 export function NotFoundTicket({ width = 282, className }: { width?: number; className?: string }) {
   return (
-    // The export is 284 × 204: the ticket's 282 plus its shadow.
+    // The export is 284 × 232: the ticket's 282 plus its shadow, and 28 below Figma's 204 frame for
+    // the left half's edge and shadow, which Figma draws past the frame. The margin gives the 28 back.
     // eslint-disable-next-line @next/next/no-img-element -- a static export has no image optimiser
-    <img className={className} src="/stickers/not-found.svg" alt="" width={(width * 284) / 282} height={(width * 204) / 282} decoding="async" />
+    <img className={className} src="/stickers/not-found.svg" alt="" width={(width * 284) / 282} height={(width * 232) / 282} decoding="async" style={{ marginBottom: -(width * 28) / 282 }} />
   );
 }
 

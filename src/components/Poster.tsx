@@ -1,7 +1,8 @@
 import type { ListFilm } from "@/lib/data/select";
 
 // A film's TMDB poster. A film with none shows `NoPoster` (components/ui/Cards) in its place, so
-// every caller checks `film.poster` first; this draws nothing without one.
+// every caller checks `film.poster` first; this draws nothing without one. Fetched with CORS (TMDB
+// allows it), so the service worker can keep it for offline at its real size.
 
 const TMDB_IMAGES = "https://image.tmdb.org/t/p/";
 
@@ -11,6 +12,6 @@ export function Poster({ film, small = false, eager = false }: { film: ListFilm;
   const [one, two] = small ? ["w154", "w342"] : ["w342", "w500"];
   return (
     // eslint-disable-next-line @next/next/no-img-element -- a static export has no image optimiser; TMDB serves sized files
-    <img src={`${TMDB_IMAGES}${one}${film.poster}`} srcSet={`${TMDB_IMAGES}${one}${film.poster} 1x, ${TMDB_IMAGES}${two}${film.poster} 2x`} alt="" loading={eager ? "eager" : "lazy"} decoding="async" width={342} height={513} />
+    <img src={`${TMDB_IMAGES}${one}${film.poster}`} srcSet={`${TMDB_IMAGES}${one}${film.poster} 1x, ${TMDB_IMAGES}${two}${film.poster} 2x`} alt="" crossOrigin="anonymous" loading={eager ? "eager" : "lazy"} decoding="async" width={342} height={513} />
   );
 }

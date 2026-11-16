@@ -6,7 +6,7 @@ import { useRef, useState } from "react";
 import { IconButton, Segmented } from "@/components/ui/Actions";
 import { AppFrame, BarBack, BarTitle } from "@/components/ui/AppFrame";
 import { Icon } from "@/components/ui/Icon";
-import { Notice, TimeChip } from "@/components/ui/Status";
+import { PageNotice, TimeChip } from "@/components/ui/Status";
 import { LogoSticker, TicketFaceSticker } from "@/components/ui/Stickers";
 import { shareLink, useHash, useSavedArea } from "@/lib/browser";
 import { areaGroups, cinemasOn, startedEarlier, type CinemaTimes } from "@/lib/data/filmPage";
@@ -117,7 +117,7 @@ export function FilmScreen({ data, areas, bg }: { data: ListData; areas: Area[];
             </div>
             <Segmented label="Day" options={names} value={names[day]!} onChange={(name) => setDay(names.indexOf(name) === 1 ? 1 : 0)} testId="film.day" />
           </div>
-          {banner && <Notice kind={banner.kind} text={banner.text} />}
+          <PageNotice banner={banner} now={clock} />
           {groups.length === 0 && (
             <p className={s.none} data-testid="film.none">
               {noTimes(film.title, on, live && day === 0 && today.showings > 0)}

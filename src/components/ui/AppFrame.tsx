@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { createContext, useEffect, useRef, useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { useServiceWorker } from "@/lib/offline";
 import { useSaved } from "@/lib/saved";
-import { FOOTER_NOTE, LOGO_NOTE } from "@/lib/wording/films";
+import { ABOUT_LINK, FOOTER_NOTE, LOGO_NOTE } from "@/lib/wording/films";
 import { Icon } from "./Icon";
 import { SearchBar, type CityChoice } from "./SearchBar";
 import { SectionNav, type SectionId } from "./SectionNav";
@@ -82,8 +83,9 @@ export function Crumb({ href, children }: { href: string; children: React.ReactN
  * A screen below the home screens (Figma Film) passes `bar`: on phones and iPads it takes the
  * header's place, a back button, the screen's name and a share button; the desktop navbar stays.
  */
-export function AppFrame({ active, search, city: cityChoice = "lagos", bg, bar, footer, children }: { active: SectionId; search: { value: string; onChange: (text: string) => void; onSubmit?: () => void }; city?: CityChoice; bg: { light: string; dark: string }; bar?: React.ReactNode; /** The page's own footer lines, in place of the note (Figma Cinemas). */ footer?: React.ReactNode; children: React.ReactNode }) {
+export function AppFrame({ active, search, city: cityChoice = "lagos", bg, bar, footer, onAbout = false, children }: { active: SectionId; search: { value: string; onChange: (text: string) => void; onSubmit?: () => void }; city?: CityChoice; bg: { light: string; dark: string }; bar?: React.ReactNode; /** The page's own footer lines, in place of the note (Figma Cinemas). */ footer?: React.ReactNode; /** About itself: no link to About in the footer. */ onAbout?: boolean; children: React.ReactNode }) {
   const saved = useSaved().length;
+  useServiceWorker();
   const [open, setOpen] = useState(false);
   const [city, setCity] = useState<boolean | null>(null); // null until first opened
   const [loaded, setLoaded] = useState<Parts | null>(null);
@@ -128,6 +130,13 @@ export function AppFrame({ active, search, city: cityChoice = "lagos", bg, bar, 
       <main className={s.main}>{children}</main>
       <footer className={s.footer} data-own={footer ? "" : undefined}>
         {footer ?? <p data-testid="footer.note">{FOOTER_NOTE}</p>}
+        {!onAbout && (
+          <p>
+            <Link href="/about" className={s.aboutLink} data-testid="footer.about">
+              {ABOUT_LINK}
+            </Link>
+          </p>
+        )}
       </footer>
       {city !== null && loaded && <loaded.City open={city} onClose={() => setCity(false)} />}
     </OpenCity>

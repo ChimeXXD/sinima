@@ -1,4 +1,5 @@
 import { bannerFor } from "@/lib/data/select";
+import { useOfflineNotice } from "@/lib/offline";
 import { countdown, countdownShare } from "@/lib/time/countdown";
 import { formatTime, lateDay } from "@/lib/time/lagos";
 import { isBeforeStart, showingState } from "@/lib/time/showingState";
@@ -154,6 +155,33 @@ export function Notice({ kind, text }: { kind: string; text: string }) {
   return (
     <p role="status" className={s.banner} data-testid={`banner.${kind}`}>
       <Icon name="alert" size={20} className={s.bannerIcon} />
+      {text}
+    </p>
+  );
+}
+
+/**
+ * The page's notice: offline, Figma's offline banner comes first (Offline · Films), and the sample
+ * or old-times banner stays under it: sample data and old times are never hidden (rules 2 and 8).
+ * `now` is the page's clock (null in the static HTML); `className` wraps the notices in the screen's box.
+ */
+export function PageNotice({ banner, now, className }: { banner: { kind: string; text: string } | null; now: string | null; className?: string }) {
+  const offline = useOfflineNotice(now);
+  if (!offline && !banner) return null;
+  const notices = (
+    <>
+      {offline && <OfflineNotice text={offline} />}
+      {banner && <Notice kind={banner.kind} text={banner.text} />}
+    </>
+  );
+  return className ? <div className={`${className} ${offline && banner ? s.stack : ""}`}>{notices}</div> : notices;
+}
+
+/** Offline (Figma 208:9731): navy, the wifi-off icon, when the times on screen were saved. */
+export function OfflineNotice({ text }: { text: string }) {
+  return (
+    <p role="status" className={s.offline} data-testid="banner.offline">
+      <Icon name="wifi-off" size={20} className={s.bannerIcon} />
       {text}
     </p>
   );

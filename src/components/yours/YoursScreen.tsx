@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/Actions";
 import { AppFrame, LogoNote } from "@/components/ui/AppFrame";
 import { CinemaFolder } from "@/components/ui/Cards";
 import { Icon } from "@/components/ui/Icon";
-import { Notice } from "@/components/ui/Status";
+import { PageNotice } from "@/components/ui/Status";
 import { LogoSticker, TicketFace, TicketFaceSticker } from "@/components/ui/Stickers";
 import { pageBanner, type ListData } from "@/lib/data/select";
 import { folderTint, yourCinemas } from "@/lib/data/yours";
@@ -62,11 +62,7 @@ export function YoursScreen({ data, areas, bg }: { data: ListData; areas: { slug
         )}
       </div>
 
-      {live && saved.length > 0 && banner && (
-        <div className={s.notice}>
-          <Notice kind={banner.kind} text={banner.text} />
-        </div>
-      )}
+      {live && saved.length > 0 && <PageNotice banner={banner} now={clock} className={s.notice} />}
 
       {cinemas.length > 0 && (
         <div className={s.folders} data-testid="yours.folders">

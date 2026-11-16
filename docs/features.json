@@ -496,7 +496,7 @@
       ],
       "verify": "npm run test:e2e -- offline",
       "passes": false,
-      "evidence": ""
+      "evidence": "16 Nov 2026, build unit 11 (D-99): `npx playwright test tests/e2e/offline.spec.ts` 2 pass: Films opens offline from the saved copy with 'You're offline. These are the times saved on this phone at 17:05, 25 min ago. Booking needs a connection.', and a page saved earlier opens too. Not yet checked: the manifest against an install prompt on a phone."
     },
     {
       "id": "D6-1",
@@ -534,8 +534,8 @@
         "TMDB notice text exact"
       ],
       "verify": "npm run test:e2e -- about",
-      "passes": false,
-      "evidence": ""
+      "passes": true,
+      "evidence": "16 Nov 2026, build unit 11 (D-99): `npx playwright test tests/e2e/about-screen.spec.ts` 6 pass: every source in data/sources.json that covers a cinema, most first, with its real status (Lagocine 20, Permission asked 11 Nov; none in use while the site runs on samples); the TMDB notice word for word; removal and code links; the Fluent credit; the 404. The 'TMDB logo' is Figma's TMDB text mark, not TMDB's artwork."
     },
     {
       "id": "D6-4",

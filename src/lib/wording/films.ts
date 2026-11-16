@@ -51,6 +51,9 @@ export function nothingMoreToday(input: { city: string; last: string | null; tom
 /** Under every rebuilt screen. */
 export const FOOTER_NOTE = "Times come from each cinema's own pages. Always book on the cinema's site.";
 
+/** In every footer: the way to About. */
+export const ABOUT_LINK = "About Sinima: sources and takedown";
+
 /** Under a screen that shows cinema logos (D-57): they only name each cinema, and come off the same day if asked. */
 export const LOGO_NOTE = {
   before: "Cinema logos belong to their owners and only name each cinema. A cinema that wants its logo removed can ",

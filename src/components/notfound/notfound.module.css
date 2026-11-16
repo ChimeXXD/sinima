@@ -1,0 +1,29 @@
+/* 404 (Figma 208:9467): centred, 56 down, 14 between. */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-14);
+  padding: 56px 0 var(--space-8);
+  text-align: center;
+}
+.ticket {
+  max-width: 100%;
+  height: auto;
+}
+.hand {
+  color: var(--text-accent);
+  font: var(--type-handwritten);
+  rotate: 4deg;
+  margin-bottom: 10px; /* Figma: the title 25 under the note */
+}
+.page h1 {
+  color: var(--text-primary);
+  font: var(--type-heading-m);
+}
+.page p {
+  max-width: 420px;
+  color: var(--text-secondary);
+  font: var(--type-body-m);
+}

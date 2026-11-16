@@ -99,6 +99,16 @@
     padding-bottom: 130px;
   }
 }
+/* The way to About: a quiet link, 44 tall to tap. */
+.aboutLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--text-secondary);
+  font: var(--type-label-strong);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 
 /* Desktop: one navbar, a hairline under it. */
 @media (min-width: 1200px) {
