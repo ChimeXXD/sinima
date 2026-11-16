@@ -7,6 +7,7 @@ import { AppFrame, BarBack, BarTitle } from "@/components/ui/AppFrame";
 import { Icon } from "@/components/ui/Icon";
 import { PageNotice, TimeChip } from "@/components/ui/Status";
 import { LogoSticker, TicketFaceSticker } from "@/components/ui/Stickers";
+import { useSwapIn } from "@/components/ui/useSwapIn";
 import { shareLink, useHash, useSavedArea } from "@/lib/browser";
 import { areaGroups, cinemasOn, startedEarlier, type CinemaTimes } from "@/lib/data/filmPage";
 import { formatLabel } from "@/lib/data/format";
@@ -34,6 +35,7 @@ export function FilmScreen({ data, areas, bg }: { data: ListData; areas: Area[];
   const now = clock ?? data.at;
   const router = useRouter();
   const [day, setDay] = useState<Day>(0);
+  const swap = useSwapIn(day);
   const [typed, setTyped] = useState("");
   const [copied, setCopied] = useState(false);
   const copiedTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -115,15 +117,21 @@ export function FilmScreen({ data, areas, bg }: { data: ListData; areas: Area[];
               <h2 id="film.times">Times in {CITY}</h2>
               <p>{timesSubtitle(dates[day], home !== null)}</p>
             </div>
-            <Segmented label="Day" options={names} value={names[day]!} onChange={(name) => setDay(names.indexOf(name) === 1 ? 1 : 0)} testId="film.day" />
+            <Segmented label="Day" options={names} value={names[day]!} onChange={(name, how) => {
+                const next = names.indexOf(name) === 1 ? 1 : 0;
+                if (next === day) return;
+                swap(next > day ? 1 : -1, how);
+                setDay(next);
+              }}
+              testId="film.day" />
           </div>
           <PageNotice banner={banner} now={clock} />
           {groups.length === 0 && (
-            <p className={s.none} data-testid="film.none">
+            <p className={s.none} data-testid="film.none" data-swap>
               {noTimes(film.title, on, live && day === 0 && today.showings > 0)}
             </p>
           )}
-          <div className={s.areas}>
+          <div className={s.areas} data-swap>
             {groups.map((group) => {
               const tag = areaTag(group.tag, home?.name ?? "");
               return (
@@ -147,7 +155,7 @@ export function FilmScreen({ data, areas, bg }: { data: ListData; areas: Area[];
             })}
           </div>
           {earlier && (
-            <p className={s.earlier} data-testid="film.earlier">
+            <p className={s.earlier} data-testid="film.earlier" data-swap>
               {earlier}
             </p>
           )}

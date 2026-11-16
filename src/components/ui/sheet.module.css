@@ -44,7 +44,12 @@
     overlay var(--dur-base) allow-discrete;
 }
 .sheet[open]::backdrop {
-  opacity: 1;
+  opacity: calc(1 - var(--pull, 0)); /* M10: the scrim lifts as the sheet is pulled down */
+}
+/* M10: while a finger pulls the sheet, it and its scrim follow the finger with no transition. */
+.sheet[data-pulling],
+.sheet[data-pulling]::backdrop {
+  transition: none;
 }
 @starting-style {
   .sheet[open]::backdrop {

@@ -9,6 +9,7 @@ import { ABOUT_LINK, FOOTER_NOTE, LOGO_NOTE } from "@/lib/wording/films";
 import { Icon } from "./Icon";
 import { SearchBar, type CityChoice } from "./SearchBar";
 import { SectionNav, type SectionId } from "./SectionNav";
+import { useTabSlide } from "./tabSlide";
 import { TicketFace } from "./Stickers";
 import { WORDMARK } from "./wordmark-paths";
 import s from "./frame.module.css";
@@ -93,6 +94,8 @@ export function AppFrame({ active, search, city: chosen, bg, bar, footer, onAbou
   const [loaded, setLoaded] = useState<Parts | null>(null);
   const field = useRef<HTMLInputElement>(null);
   const quiet = useRef(false);
+  const content = useRef<HTMLElement>(null);
+  useTabSlide(content);
   const load = () => void loadParts().then(setLoaded, () => {});
   useEffect(() => {
     const id = setTimeout(load, 2000);
@@ -129,7 +132,9 @@ export function AppFrame({ active, search, city: chosen, bg, bar, footer, onAbou
         </div>
         <ThemeToggle bg={bg} className={s.theme} icons={{ sun: <Icon name="sun" size={20} />, moon: <Icon name="moon" size={20} /> }} />
       </header>
-      <main className={s.main}>{children}</main>
+      <main className={s.main} ref={content}>
+        {children}
+      </main>
       <footer className={s.footer} data-own={footer ? "" : undefined}>
         {footer ?? <p data-testid="footer.note">{FOOTER_NOTE}</p>}
         {!onAbout && (

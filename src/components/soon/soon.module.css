@@ -84,6 +84,30 @@
   background: var(--bg-page);
   text-align: left;
 }
+/* M2 (D-103): the rows "Show N more" adds rise in one wave, so the eye lands on the first new one.
+   Only added rows carry it, never the page's first rows. The delay (--wave) is set per row. */
+.row[data-enter] {
+  animation: rowIn var(--dur-base) var(--ease-out) both;
+  animation-delay: var(--wave);
+}
+@keyframes rowIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+@keyframes rowFade {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .row[data-enter] {
+    animation-name: rowFade;
+    animation-duration: var(--dur-fast);
+    animation-delay: 0s;
+  }
+}
 .poster {
   flex: none;
   width: 44px;

@@ -2,6 +2,7 @@
 
 import { Link } from "@/components/ui/CityLink";
 import { useRef, useState } from "react";
+import type { ChangeHow } from "@/components/ui/useSwapIn";
 import { Icon, type IconName } from "./Icon";
 import s from "./actions.module.css";
 
@@ -72,7 +73,7 @@ export function Chip({ selected = false, disabled = false, onClick, children, te
  * 7.4 Segmented control, e.g. Today | Tomorrow. A radio group: arrow keys move the choice, and
  * only the picked segment is in the tab order.
  */
-export function Segmented<T extends string>({ options, value, onChange, label, testId }: { options: readonly T[]; value: T; onChange: (next: T) => void; label: string; testId?: string }) {
+export function Segmented<T extends string>({ options, value, onChange, label, testId }: { options: readonly T[]; value: T; onChange: (next: T, how: ChangeHow) => void; label: string; testId?: string }) {
   const [instant, setInstant] = useState(false);
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
   const index = Math.max(0, options.indexOf(value));
@@ -83,7 +84,7 @@ export function Segmented<T extends string>({ options, value, onChange, label, t
     event.preventDefault();
     const next = (index + step + options.length) % options.length;
     setInstant(true);
-    onChange(options[next]!);
+    onChange(options[next]!, "keys");
     refs.current[next]?.focus();
   }
 
@@ -101,9 +102,10 @@ export function Segmented<T extends string>({ options, value, onChange, label, t
           aria-checked={i === index}
           tabIndex={i === index ? 0 : -1}
           className={s.segment}
-          onClick={() => {
-            setInstant(false);
-            onChange(option);
+          onClick={(event) => {
+            setInstant(event.detail === 0);
+            // Enter or Space on a focused segment is a click with no pointer (detail 0): no motion.
+            onChange(option, event.detail === 0 ? "keys" : "tap");
           }}
         >
           {option}

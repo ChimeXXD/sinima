@@ -4,7 +4,8 @@ import { useCityPath } from "@/components/ui/CityLink";
 import { useState } from "react";
 import { OptionRow, Sheet } from "@/components/ui/Sheet";
 import { Icon } from "@/components/ui/Icon";
-import { CountdownBadge, TimeChip } from "@/components/ui/Status";
+import { CountdownBadge, TimeChip, useJustStarted } from "@/components/ui/Status";
+import m from "@/components/ui/started.module.css";
 import { shareLink } from "@/lib/browser";
 import { nextNearby } from "@/lib/data/filmPage";
 import { formatLabel } from "@/lib/data/format";
@@ -30,6 +31,8 @@ export function ShowingSheet({ data, row, open, now, areaName, near, city, onPic
   const cityHref = useCityPath();
   const kept = useCountdowns();
   const [copied, setCopied] = useState<string | null>(null);
+  // Closing the sheet resets it, so reopening a started showing doesn't replay its entrance.
+  const just = useJustStarted(open ? (row?.at ?? "") : "", now);
   if (!row) return <Sheet open={false} onClose={onClose} title="" testId="showing.sheet">{null}</Sheet>;
 
   const film = data.films[row.film]!;
@@ -71,8 +74,8 @@ export function ShowingSheet({ data, row, open, now, areaName, near, city, onPic
           <OptionRow icon="share-up" tone="soft" title="Share this showing" desc={was("showing") ? "Link copied." : "A link that opens on this exact time."} onClick={() => void share("showing")} testId="showing.share" />
         </>
       ) : (
-        <Started data={data} row={row} now={now} areaName={areaName} near={near} city={city} onPick={onPick}>
-          <OptionRow icon="share-up" tone="soft" title="Share this film" desc={was("film") ? "Link copied." : `A link to ${film.title}'s times in ${city}.`} onClick={() => void share("film")} testId="showing.share-film" />
+        <Started data={data} row={row} now={now} areaName={areaName} near={near} city={city} just={just} onPick={onPick}>
+          <OptionRow icon="share-up" tone="soft" title="Share this film" desc={was("film") ? "Link copied." : `A link to ${film.title}'s times in ${city}.`} onClick={() => void share("film")} className={just ? m.arrive : undefined} testId="showing.share-film" />
         </Started>
       )}
     </Sheet>
@@ -116,18 +119,18 @@ function addToCalendar(data: ListData, row: ListRow, now: string) {
 }
 
 /** A started showing: why it can't be booked, and the next times nearby, each opening its own sheet. */
-function Started({ data, row, now, areaName, near, city, onPick, children }: { data: ListData; row: ListRow; now: string; areaName: (slug: string) => string; near: (slug: string) => string[]; city: string; onPick: (row: ListRow) => void; children: React.ReactNode }) {
+function Started({ data, row, now, areaName, near, city, just, onPick, children }: { data: ListData; row: ListRow; now: string; areaName: (slug: string) => string; near: (slug: string) => string[]; city: string; /** It started while the sheet was open (M4): the notice and next times fade in. */ just: boolean; onPick: (row: ListRow) => void; children: React.ReactNode }) {
   const areaOf = (cinema: number) => data.cinemas[cinema]!.area;
   const next = nextNearby(data.rows, row, now, areaOf, near);
   const which = next.rows.length === 0 ? "none" : next.near ? "near" : "city";
   return (
     <>
-      <p className={s.startedNote} data-testid="showing.started">
+      <p className={just ? `${s.startedNote} ${m.arrive}` : s.startedNote} data-testid="showing.started">
         <Icon name="info" size={20} stroke={2} />
         {startedNotice(row.at, which, city)}
       </p>
       {next.rows.length > 0 && (
-        <ul className={s.nextList} data-testid="showing.next">
+        <ul className={just ? `${s.nextList} ${m.arrive}` : s.nextList} data-testid="showing.next">
           {next.rows.map((other, i) => {
             const cinema = data.cinemas[other.cinema]!;
             const format = formatLabel(other.format);

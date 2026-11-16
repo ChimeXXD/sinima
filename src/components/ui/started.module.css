@@ -1,0 +1,93 @@
+/* M4 (D-103): the moment a showing starts while it is on screen. Purpose: the row changes state
+   (it can't be booked any more), and in one frame that is easy to miss. Only rows that start
+   while watched carry these classes, never a page that opens on a started showing. */
+
+/* A positioned box for what draws on or over it. The strike is drawn across the time, left to
+   right, where the time chip otherwise has a plain line-through. */
+.anchor {
+  position: relative;
+}
+/* Repeated to outrank the started chip's own line-through (.chip[data-state="started"] .chipTime,
+   three classes deep, in another stylesheet that may load later). */
+.drawn.drawn.drawn.drawn {
+  position: relative;
+  text-decoration-line: none;
+}
+.line {
+  position: absolute;
+  top: 54%;
+  right: 0;
+  left: 0;
+  height: max(1px, 0.07em);
+  background: currentColor;
+  transform-origin: 0 50%;
+  animation: draw var(--dur-base) var(--ease-out) both;
+}
+@keyframes draw {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+/* What the start brings in ("Started just now", "No booking", the sheet's notice and next times)
+   fades in just after the old state goes. */
+.arrive {
+  animation: arrive var(--dur-fast) var(--ease-out) 60ms both;
+}
+@keyframes arrive {
+  from {
+    opacity: 0;
+  }
+}
+
+/* The badge: the full blue ring fades as the grey started dot grows in its place. */
+.arc {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--action-primary);
+  mask: radial-gradient(farthest-side, transparent 84%, var(--p-neutral-1000) calc(84% + 0.5px));
+  animation: arcOut var(--dur-base) var(--ease-out) forwards;
+}
+@keyframes arcOut {
+  to {
+    opacity: 0;
+  }
+}
+.dotIn {
+  animation: dotIn var(--dur-base) var(--ease-out) both;
+}
+@keyframes dotIn {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+
+/* The Book button that was there shrinks away (a copy, out of the tab order and hidden from
+   screen readers; the real link is gone at once, rule 4). */
+/* Doubled to outrank .book's own position (same weight, and its sheet may load later). */
+.bookGone.bookGone {
+  position: absolute;
+  top: 50%;
+  right: var(--space-6);
+  translate: 0 -50%;
+  pointer-events: none;
+  animation: bookGone var(--dur-base) var(--ease-out) forwards;
+}
+@keyframes bookGone {
+  to {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .line,
+  .dotIn {
+    animation-name: arrive;
+  }
+  .bookGone {
+    animation-name: arcOut;
+  }
+}

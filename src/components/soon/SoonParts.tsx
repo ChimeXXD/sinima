@@ -15,6 +15,8 @@ import s from "./soon.module.css";
 // a list of them that shows six and then "Show 8 more".
 
 const FIRST = 6;
+/** M2: the added rows' start times, gaps shrinking (30, 25, 20, 15, 10 ms) so the group reads as one wave; the seventh new row on arrives with the sixth. */
+const WAVE = [0, 30, 55, 75, 90, 100];
 
 /**
  * The area chips (Figma Area chips). With an area kept: it, the areas next to it, then All Lagos
@@ -55,11 +57,16 @@ export function AreaChips({ chips, allFirst, current, city, names, onPick }: { c
 }
 
 /** One showing as a row: poster, title (to the film's page), cinema, and its time, which opens the showing sheet. */
-export function LaterRow({ data, row, now, line, onOpen }: { data: ListData; row: ListRow; now: string | null; line?: string; onOpen: (row: ListRow) => void }) {
+export function LaterRow({ data, row, now, line, enter, onOpen }: { data: ListData; row: ListRow; now: string | null; line?: string; /** Its place among rows just added by Show more: it rises in (M2). */ enter?: number; onOpen: (row: ListRow) => void }) {
   const film = data.films[row.film]!;
   const cinema = data.cinemas[row.cinema]!;
   return (
-    <div className={s.row} data-testid={`later.${film.id}.${row.at}`}>
+    <div
+      className={s.row}
+      data-enter={enter === undefined ? undefined : ""}
+      style={enter === undefined ? undefined : ({ "--wave": `${WAVE[Math.min(enter, WAVE.length - 1)]}ms` } as React.CSSProperties)}
+      data-testid={`later.${film.id}.${row.at}`}
+    >
       <span className={s.poster}>
         {film.poster ? (
           <Poster film={film} small />
@@ -87,8 +94,8 @@ export function LaterList({ data, rows, now, onOpen, testId }: { data: ListData;
   return (
     <>
       <div className={s.rows} data-testid={testId}>
-        {shown.map((row) => (
-          <LaterRow key={`${row.cinema}-${row.film}-${row.at}`} data={data} row={row} now={now} onOpen={onOpen} />
+        {shown.map((row, i) => (
+          <LaterRow key={`${row.cinema}-${row.film}-${row.at}`} data={data} row={row} now={now} enter={i >= FIRST ? i - FIRST : undefined} onOpen={onOpen} />
         ))}
       </div>
       {!all && rows.length > FIRST && (

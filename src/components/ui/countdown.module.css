@@ -1,0 +1,40 @@
+/* M6 (D-103): the countdowns move with the clock. Chime asked for both (D-103), against the
+   find-animation-opportunities advice: it's a number being read, and the ring moves 1.5° a tick. */
+
+/* The ring glides to its new share on each 30 s tick instead of jumping: progress, so linear,
+   over a second. --share is registered so it can be interpolated; the arc inherits it. */
+@property --share {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+.glide {
+  transition: --share 1s linear;
+}
+
+/* The number rolls up when it changes while you watch ("45 min" → "44 min"): the new value
+   rises into place. Never on the page's first draw. */
+.roll {
+  display: inline-block;
+  animation: roll var(--dur-fast) var(--ease-out);
+}
+@keyframes roll {
+  from {
+    opacity: 0;
+    transform: translateY(0.35em);
+  }
+}
+@keyframes rollFade {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glide {
+    transition: none;
+  }
+  .roll {
+    animation-name: rollFade;
+  }
+}

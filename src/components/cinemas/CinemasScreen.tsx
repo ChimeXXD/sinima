@@ -4,6 +4,7 @@ import { useCityRouter as useRouter } from "@/components/ui/CityLink";
 import { useState } from "react";
 import { AppFrame, LogoNote } from "@/components/ui/AppFrame";
 import { PageNotice } from "@/components/ui/Status";
+import { useSwapIn } from "@/components/ui/useSwapIn";
 import { rememberArea } from "@/lib/area";
 import { useSavedArea } from "@/lib/browser";
 import { cinemaSections, type CinemaSection } from "@/lib/data/cinemas";
@@ -32,6 +33,7 @@ export function CinemasScreen({ data, areas, bg }: { data: ListData; areas: Area
   const live = clock !== null;
   const now = clock ?? data.at;
   const [day, setDay] = useState<Day>(0);
+  const swap = useSwapIn(day);
   const [format, setFormat] = useState<FormatTag | null>(null);
   const [search, setSearch] = useState("");
   const router = useRouter();
@@ -76,7 +78,11 @@ export function CinemasScreen({ data, areas, bg }: { data: ListData; areas: Area
         onArea={(slug) => (rememberArea(slug), setPicked(slug))}
         days={days}
         day={day}
-        onDay={setDay}
+        onDay={(next, how) => {
+          if (next === day) return;
+          swap(next > day ? 1 : -1, how);
+          setDay(next);
+        }}
         formats={formats}
         format={format}
         onFormat={setFormat}
@@ -86,7 +92,7 @@ export function CinemasScreen({ data, areas, bg }: { data: ListData; areas: Area
       {sections.map((section) => {
         const { title, note: line } = heading(section);
         return (
-          <section key={section.key} className={s.group} aria-labelledby={`cinemas.${section.key}`} data-testid={`group.${section.key}`}>
+          <section key={section.key} className={s.group} aria-labelledby={`cinemas.${section.key}`} data-testid={`group.${section.key}`} data-swap>
             <div className={s.heading}>
               <h2 id={`cinemas.${section.key}`}>{title}</h2>
               <p>{line}</p>
@@ -119,7 +125,7 @@ export function CinemasScreen({ data, areas, bg }: { data: ListData; areas: Area
         </p>
       )}
       {sections.length === 0 && (
-        <p className={s.none} data-testid="cinemas.none">
+        <p className={s.none} data-testid="cinemas.none" data-swap>
           {`No cinema is showing a film in ${format} ${dayWords(day, dates[day], live).on}.`}
         </p>
       )}

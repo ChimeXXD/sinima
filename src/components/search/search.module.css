@@ -134,6 +134,22 @@
 .result:active {
   transform: scale(0.98);
 }
+/* M8 (D-103): as you type, a film that joins the results fades in; the ones already there stay
+   still (they keep their rows), so the list never flickers between keystrokes. No movement, and
+   none with reduced motion: it runs on every key. */
+.result {
+  animation: resultIn var(--dur-fast) var(--ease-out);
+}
+@keyframes resultIn {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .result {
+    animation: none;
+  }
+}
 .poster {
   flex: none;
   width: 52px;

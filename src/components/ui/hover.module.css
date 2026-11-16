@@ -1,0 +1,25 @@
+/* M7 (D-103): on a computer, a card under the pointer lifts a little, so it reads as the thing a
+   click will open. Only with a real pointer (a touch screen fires a hover on tap), only on cards
+   that open something, and never while pressed (the press wins). Subtle on purpose: a visit
+   passes over dozens of cards. Reduced motion: no lift. */
+@media (hover: hover) and (pointer: fine) {
+  /* Doubled to outrank a card's own press transition (its sheet may load later); the press then
+     eases at this timing too. */
+  .lift.lift,
+  .poster {
+    transition: transform var(--dur-fast) ease;
+  }
+  .lift:hover:not(:active) {
+    transform: translateY(-2px);
+  }
+  /* A film card lifts its poster, not its words. */
+  .host:hover:not(:active) .poster {
+    transform: translateY(-4px);
+  }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: reduce) {
+  .lift:hover:not(:active),
+  .host:hover:not(:active) .poster {
+    transform: none;
+  }
+}

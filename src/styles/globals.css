@@ -36,3 +36,19 @@ a { color: inherit; text-decoration: none; }
   outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
+
+/* M11 (D-103, D-105 f, i): a film's poster travels from the Films grid into its page's hero, and
+   back (React's <ViewTransition>, the "poster" class); the rest of the page appears at once under
+   it. Moving on screen, so --ease-in-out, 300 ms both ways: a little over the UI budget for the
+   distance it covers. Reduced motion: no travel; the new page simply appears. */
+::view-transition-group(.poster) {
+  animation-duration: 300ms;
+  animation-timing-function: var(--ease-in-out);
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(.poster),
+  ::view-transition-old(.poster),
+  ::view-transition-new(.poster) {
+    animation: none;
+  }
+}

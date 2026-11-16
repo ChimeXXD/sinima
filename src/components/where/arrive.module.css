@@ -1,0 +1,78 @@
+/* M5 (D-103): Where are you watching? on a first visit, the one screen most people see once.
+   Delight is allowed here. The title, cards and buttons are there from the first frame; only
+   decoration and the answer move. */
+
+/* A spring with bounce 0.3 (damping ratio 0.7, 400 ms), sampled: one small overshoot, 4.6 %. */
+.page {
+  --spring: linear(0, 0.064 6.25%, 0.21 12.5%, 0.387 18.75%, 0.561 25%, 0.713 31.25%, 0.834 37.5%, 0.924 43.75%, 0.984 50%, 1.021 56.25%, 1.04 62.5%, 1.046 68.75%, 1.044 75%, 1.038 81.25%, 1.03 87.5%, 1.022 93.75%, 1);
+}
+
+/* The stickers press on one after another, the gaps shrinking (set per sticker as --at). A photo
+   sticker waits for its image, so it isn't over before the picture arrives. Only once the page's
+   script runs (`data-motion` on the stage): without it the stickers simply show. */
+[data-motion] .sticker {
+  animation: stick var(--dur-base) var(--ease-out) backwards;
+  animation-delay: var(--at, 0ms);
+}
+[data-motion] .sticker:not([data-ready]) {
+  animation-play-state: paused;
+}
+/* A sticker whose picture was in before the script ran has been on screen all along: no entrance. */
+[data-motion] .sticker[data-shown] {
+  animation: none;
+}
+.at1 {
+  --at: 40ms;
+}
+.at2 {
+  --at: 70ms;
+}
+.at3 {
+  --at: 90ms;
+}
+.at4 {
+  --at: 100ms;
+}
+@keyframes stick {
+  from {
+    opacity: 0;
+    scale: 0.85;
+  }
+}
+
+/* The answer: the picked card's check springs in, and "found you in Lagos!" writes itself in. */
+.check {
+  animation: checkIn 400ms var(--spring) both;
+}
+@keyframes checkIn {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+.write {
+  animation: write 450ms var(--ease-out) both;
+}
+@keyframes write {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-motion] .sticker,
+  .check,
+  .write {
+    animation-name: fade;
+    animation-duration: var(--dur-fast);
+    animation-timing-function: var(--ease-out);
+  }
+  [data-motion] .sticker {
+    animation-delay: 0ms;
+  }
+}

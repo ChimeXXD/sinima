@@ -1,6 +1,16 @@
 # Handoff: read this first when you pick the project back up
 
-## Now: building the Figma design into the site, all 13 units done (16 Nov 2026, latest)
+## Now: the motion pass, all 11 units built (16 Nov 2026, latest)
+
+**What happened:** Chime noticed little motion; build units 1–13 had never run the 18 design-engineering skills D-82 asked for (D-102). Step 1, `find-animation-opportunities`, gave seven proposals on `mockup/motion-picks/index.html` (live Now/Proposed demos). Chime kept all seven and added five of the six left-out ideas (D-103). Page limit raised to 225 KB (D-104). Where the build differs from the demos: D-105 (a)–(g).
+
+**Built (M1–M11, PLAN week 2):** M1 the day's list follows Today | Tomorrow (`ui/useSwapIn.ts`) · M2 Show N more wave (soon.module.css) · M3 Save pops the heart, letting go travels (`ui/motion.ts` pop, `ui/useFlip.ts`) · M4 a showing starts while watched (`useJustStarted`, `ui/started.module.css`) · M5 Where on a first visit (`where/arrive.module.css`) · M6 ring glides, number rolls (`ui/countdown.module.css`) · M7 cards lift under a pointer (`ui/hover.module.css`) · M8 search results fade in as they join · M9 tab tap slides the page (`ui/tabSlide.ts`) · M10 swipe a sheet down (`ui/useSwipeDown.ts`) · M11 the poster travels to the film page (`ui/PosterTravel.tsx`, React ViewTransition, globals.css). Tests: `tests/e2e/motion*.spec.ts`.
+
+**Waiting on Chime:** feel it on the phone (the swipe and the poster travel above all; iOS needs a real device), then send their own animation references (D-82). Still open from before: the TMDB logo (D-99 i), Abuja's cinemas, D-91–D-101 calls, focus dropping after "Show more" and after letting a cinema go (pre-existing).
+
+**Gotchas from this pass:** the build's CSS minifier writes `220ms` as `.22s` (read tokens through `ui/motion.ts`); CSS modules' load order is not fixed, so an override of another module's rule needs higher specificity (see started/hover modules); tests should check what is drawn (computed styles), not only animation names; review agents rebuild `out/` and hold port 4173, so wait for them before the gate; Chromium holds touch moves under ~15 px.
+
+## Earlier: building the Figma design into the site, all 13 units done (16 Nov 2026)
 
 **What Chime asked (D-82):** build the Figma design into the site, exactly, with motion, using the 18 design-engineering skills (routing in `~/.claude/CLAUDE.md`, detail in `~/.claude/design-skills-guide.md`). Chime reviews when the build is done, then adds their own animation references. **Take every value from Figma exactly (D-83)**: raise a concern once, then build what Figma says.
 

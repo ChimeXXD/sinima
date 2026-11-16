@@ -9,6 +9,8 @@ import { Icon } from "@/components/ui/Icon";
 import { FormatBadge, PageNotice } from "@/components/ui/Status";
 import { LogoSticker } from "@/components/ui/Stickers";
 import { Toast } from "@/components/ui/Toast";
+import { pop } from "@/components/ui/motion";
+import { useSwapIn } from "@/components/ui/useSwapIn";
 import { shareLink, useHash } from "@/lib/browser";
 import { cinemaFilms } from "@/lib/data/cinemaPage";
 import { dayDates, formatsOf, type Day } from "@/lib/data/programme";
@@ -36,6 +38,7 @@ export function CinemaScreen({ data, id, area, bg }: { data: ListData; id: strin
   const router = useRouter();
   const [typed, setTyped] = useState("");
   const [picked, setDay] = useState<Day>(0);
+  const swap = useSwapIn(picked);
   const [toast, setToast] = useState(false);
   const [copied, setCopied] = useState(false);
   const copiedTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -60,7 +63,8 @@ export function CinemaScreen({ data, id, area, bg }: { data: ListData; id: strin
   const warning = banner && banner.kind !== "sample" ? rowWarning(banner.kind) : null;
   const options = [dayOption({ day: 0, date: dates[0], live }), dayOption({ day: 1, date: dates[1], live })] as const;
 
-  function save() {
+  function save(event: React.MouseEvent<HTMLButtonElement>) {
+    if (!saved) pop(event.currentTarget.querySelector("svg"));
     toggleSaved(id);
     setToast(!saved); // only saving says so; letting go is quiet
   }
@@ -139,7 +143,13 @@ export function CinemaScreen({ data, id, area, bg }: { data: ListData; id: strin
                 <span data-testid="films.not-listed">{notListedYet(cinema.chain, dates[1])}</span>
               </p>
             ) : (
-              <Segmented label="Day" options={options} value={options[day]} onChange={(name) => setDay(name === options[1] ? 1 : 0)} testId="films.day" />
+              <Segmented label="Day" options={options} value={options[day]} onChange={(name, how) => {
+                  const next = name === options[1] ? 1 : 0;
+                  if (next === day) return;
+                  swap(next > day ? 1 : -1, how);
+                  setDay(next);
+                }}
+                testId="films.day" />
             )}
           </div>
           {warning && (
@@ -149,11 +159,11 @@ export function CinemaScreen({ data, id, area, bg }: { data: ListData; id: strin
             </p>
           )}
           {films.total === 0 && (
-            <p className={s.none} data-testid="films.none">
+            <p className={s.none} data-testid="films.none" data-swap>
               {noFilms({ day, live, date: dates[day] })}
             </p>
           )}
-          <div className={s.rows}>
+          <div className={s.rows} data-swap>
             {films.films.map((times) => (
               <FilmRow
                 key={times.film}

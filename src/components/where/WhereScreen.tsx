@@ -10,6 +10,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { CITY_KEY, isCity, type City } from "@/lib/city";
 import { cityFromPosition } from "@/lib/location";
 import { WHERE, continueLabel, foundNote } from "@/lib/wording/where";
+import a from "./arrive.module.css";
 import s from "./where.module.css";
 
 // Where are you watching? (Figma 162:215 Asking, 162:262 Found you in Abuja, 162:302 Elsewhere →
@@ -31,6 +32,20 @@ export function WhereScreen({ lagosLine, bg }: { lagosLine: string; bg: { light:
   const router = useRouter();
   const [state, setState] = useState<State>({ kind: "asking" });
   const city = picked(state);
+  // M5: each sticker presses on once its picture is in (they load late, at low priority).
+  const stage = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    stage.current?.setAttribute("data-motion", "");
+    for (const img of stage.current?.querySelectorAll<HTMLImageElement>(`img.${CSS.escape(a.sticker!)}`) ?? []) {
+      const ready = () => img.setAttribute("data-ready", "");
+      // Already in before the script ran: it has been showing, so it stays as it is.
+      if (img.complete) img.setAttribute("data-shown", "");
+      else {
+        img.addEventListener("load", ready, { once: true });
+        img.addEventListener("error", ready, { once: true });
+      }
+    }
+  }, []);
 
   // The answer comes back later; no answer, or a phone with no location, offers Lagos. Only the
   // latest ask is heard: a tap on a card, or a newer ask, makes an older answer stale.
@@ -87,7 +102,7 @@ export function WhereScreen({ lagosLine, bg }: { lagosLine: string; bg: { light:
       <CitySticker city={which} large />
       <span className={s.line}>{line}</span>
       {city === which && (
-        <span className={s.check} aria-hidden="true">
+        <span className={`${s.check} ${a.check}`} aria-hidden="true">
           <Icon name="check" size={16} stroke={2.4} />
         </span>
       )}
@@ -95,18 +110,18 @@ export function WhereScreen({ lagosLine, bg }: { lagosLine: string; bg: { light:
   );
 
   return (
-    <div className={s.page}>
+    <div className={`${s.page} ${a.page}`}>
       <header className={s.top}>
         <Lockup />
         <ThemeToggle bg={bg} className={s.theme} icons={{ sun: <Icon name="sun" size={20} />, moon: <Icon name="moon" size={20} /> }} />
       </header>
       <main className={s.main}>
-        <div className={s.stage}>
-          <Sticker name="clapper" className={s.clapper} />
-          <Sticker name="glasses" className={s.glasses} />
-          <Sticker name="popcorn" className={s.popcorn} />
-          <DrinkSticker width={83} className={`${s.sticker} ${s.drink}`} />
-          <TicketFaceSticker height={64} className={`${s.sticker} ${s.ticket}`} />
+        <div className={s.stage} ref={stage}>
+          <Sticker name="clapper" className={`${s.clapper} ${a.sticker}`} />
+          <Sticker name="glasses" className={`${s.glasses} ${a.sticker} ${a.at1}`} />
+          <Sticker name="popcorn" className={`${s.popcorn} ${a.sticker} ${a.at2}`} />
+          <DrinkSticker width={83} className={`${s.sticker} ${s.drink} ${a.sticker} ${a.at3}`} />
+          <TicketFaceSticker height={64} className={`${s.sticker} ${s.ticket} ${a.sticker} ${a.at4}`} />
           <h1 className={s.title}>{WHERE.title}</h1>
           <p className={s.lead}>{WHERE.lead}</p>
           <div className={s.cards} role="group" aria-label="City">
@@ -116,7 +131,7 @@ export function WhereScreen({ lagosLine, bg }: { lagosLine: string; bg: { light:
           <div className={s.status} aria-live="polite" data-testid="where.status">
             {state.kind === "asking" && <span className={s.hand}>{WHERE.asking}</span>}
             {state.kind === "found" && (
-              <span className={s.hand} data-city={state.city}>
+              <span className={`${s.hand} ${a.write}`} data-city={state.city}>
                 {foundNote(state.city)}
               </span>
             )}

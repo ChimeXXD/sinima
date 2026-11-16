@@ -7,6 +7,7 @@ import { AppFrame } from "@/components/ui/AppFrame";
 import { FilmCard, NoPoster } from "@/components/ui/Cards";
 import { PageNotice } from "@/components/ui/Status";
 import { TicketFaceSticker } from "@/components/ui/Stickers";
+import { useSwapIn, type ChangeHow } from "@/components/ui/useSwapIn";
 import { filmSections, formatCoverage, lastStart, type FilmSection } from "@/lib/data/films";
 import type { FormatTag } from "@/lib/data/format";
 import { dayDates, formatsOf, showingOn, type Day } from "@/lib/data/programme";
@@ -31,6 +32,12 @@ export function FilmsScreen({ data, bg }: { data: ListData; bg: { light: string;
   const live = clock !== null;
   const now = clock ?? data.at;
   const [day, setDay] = useState<Day>(0);
+  const swap = useSwapIn(day);
+  const changeDay = (next: Day, how: ChangeHow) => {
+    if (next === day) return;
+    swap(next > day ? 1 : -1, how);
+    setDay(next);
+  };
   const [format, setFormat] = useState<FormatTag | null>(null);
   // Search on another page sends its text here as ?q=; typing here takes over.
   const sent = useQuery("q");
@@ -61,7 +68,7 @@ export function FilmsScreen({ data, bg }: { data: ListData; bg: { light: string;
     <AppFrame active="films" search={{ value: query, onChange: setTyped }} bg={bg}>
       <FilmsHero city={CITY} live={live && day === 0 && sections.length > 0} />
       <div className={s.controls}>
-        <Segmented label="Day" options={names} value={names[day]!} onChange={(name) => setDay(names.indexOf(name) === 1 ? 1 : 0)} testId="films.day" />
+        <Segmented label="Day" options={names} value={names[day]!} onChange={(name, how) => changeDay(names.indexOf(name) === 1 ? 1 : 0, how)} testId="films.day" />
         <div className={s.chips} role="group" aria-label="Format">
           <Chip selected={format === null} onClick={() => setFormat(null)} testId="format.any">
             Any format
@@ -78,7 +85,7 @@ export function FilmsScreen({ data, bg }: { data: ListData; bg: { light: string;
       {sections.map((section) => {
         const { title, note: line } = words(section);
         return (
-          <section key={section.key} className={s.section} aria-labelledby={`films.${section.key}`} data-testid={`section.${section.key}`}>
+          <section key={section.key} className={s.section} aria-labelledby={`films.${section.key}`} data-testid={`section.${section.key}`} data-swap>
             <div className={s.heading}>
               <h2 id={`films.${section.key}`}>{title}</h2>
               <p>{line}</p>
@@ -88,6 +95,7 @@ export function FilmsScreen({ data, bg }: { data: ListData; bg: { light: string;
                 const film = data.films[entry.film]!;
                 return (
                   <FilmCard
+                    film={film.id}
                     key={film.id}
                     href={`/film/${film.id}`}
                     title={film.title}
@@ -108,7 +116,7 @@ export function FilmsScreen({ data, bg }: { data: ListData; bg: { light: string;
         );
       })}
 
-      {sections.length === 0 && <Empty data={data} day={day} now={now} live={live} format={format} query={query.trim()} on={on} onTomorrow={() => setDay(1)} />}
+      {sections.length === 0 && <Empty data={data} day={day} now={now} live={live} format={format} query={query.trim()} on={on} onTomorrow={() => changeDay(1, "tap")} />}
     </AppFrame>
   );
 }
@@ -117,7 +125,7 @@ function Empty({ data, day, now, live, format, query, on, onTomorrow }: { data: 
   if (query || format || day === 1 || !live) {
     const text = noFilms({ query, format, on });
     return (
-      <p className={s.none} data-testid="films.none">
+      <p className={s.none} data-testid="films.none" data-swap>
         {text}
       </p>
     );
@@ -125,7 +133,7 @@ function Empty({ data, day, now, live, format, query, on, onTomorrow }: { data: 
   const tomorrow = showingOn(data.rows, 1, now);
   const words = nothingMoreToday({ city: CITY, last: lastStart(data.rows, now), tomorrowFilms: new Set(tomorrow.map((row) => row.film)).size, tomorrowFirst: tomorrow[0]?.at ?? null });
   return (
-    <div className={s.empty} data-testid="films.empty">
+    <div className={s.empty} data-testid="films.empty" data-swap>
       <TicketFaceSticker height={74} />
       <h2>{words.title}</h2>
       <p>{words.body}</p>

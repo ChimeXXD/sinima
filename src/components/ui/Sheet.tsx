@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { onBackdrop } from "@/lib/browser";
 import { Icon, type IconName } from "./Icon";
+import { useSwipeDown } from "./useSwipeDown";
 import s from "./sheet.module.css";
 
 // 12 · Overlays (Figma 167:80): the Ghost pop-up. A sheet floating 8 px in from the screen's edges
@@ -15,6 +16,7 @@ import s from "./sheet.module.css";
 
 export function Sheet({ open, onClose, title, subtitle, children, className, testId = "sheet", picker }: { open: boolean; onClose: () => void; title: string; subtitle?: string; children: React.ReactNode; className?: string; testId?: string; /** The picker the sheet opens from. */ picker?: React.RefObject<HTMLElement | null> }) {
   const ref = useRef<HTMLDialogElement>(null);
+  useSwipeDown(ref, open);
   useEffect(() => {
     const dialog = ref.current;
     if (!dialog) return;
@@ -71,7 +73,7 @@ export function Sheet({ open, onClose, title, subtitle, children, className, tes
   );
 }
 
-type OptionRowProps = { icon: IconName; /** In place of the icon tile: the city sheet's sticker. */ lead?: React.ReactNode; title: string; desc?: string; selected?: boolean; tone?: "primary" | "soft"; testId?: string } & ({ href: string; onClick?: never } | { href?: never; onClick: () => void } | { href?: never; onClick?: never });
+type OptionRowProps = { icon: IconName; /** In place of the icon tile: the city sheet's sticker. */ lead?: React.ReactNode; title: string; desc?: string; selected?: boolean; tone?: "primary" | "soft"; /** Extra classes, e.g. a one-off entrance. */ className?: string; testId?: string } & ({ href: string; onClick?: never } | { href?: never; onClick: () => void } | { href?: never; onClick?: never });
 
 /**
  * 12.1 Option row: an icon tile, a title and a line under it. A link (to another site, in a new
@@ -79,7 +81,8 @@ type OptionRowProps = { icon: IconName; /** In place of the icon tile: the city 
  * tile is the action colour, or the soft tint for the quieter rows of a sheet (Figma Film). Only a
  * row given `selected` is a toggle (aria-pressed); the others are plain buttons.
  */
-export function OptionRow({ icon, lead, title, desc, selected, tone = "primary", testId, href, onClick }: OptionRowProps) {
+export function OptionRow({ icon, lead, title, desc, selected, tone = "primary", className, testId, href, onClick }: OptionRowProps) {
+  const box = className ? `${s.option} ${className}` : s.option;
   const inner = (
     <>
       {lead ?? (
@@ -100,17 +103,17 @@ export function OptionRow({ icon, lead, title, desc, selected, tone = "primary",
   );
   if (href === undefined && onClick === undefined) {
     return (
-      <div className={s.option} data-testid={testId}>
+      <div className={box} data-testid={testId}>
         {inner}
       </div>
     );
   }
   return href !== undefined ? (
-    <a className={s.option} href={href} target="_blank" rel="noopener" data-selected={selected || undefined} data-testid={testId}>
+    <a className={box} href={href} target="_blank" rel="noopener" data-selected={selected || undefined} data-testid={testId}>
       {inner}
     </a>
   ) : (
-    <button type="button" className={s.option} aria-pressed={selected} data-selected={selected || undefined} onClick={onClick} data-testid={testId}>
+    <button type="button" className={box} aria-pressed={selected} data-selected={selected || undefined} onClick={onClick} data-testid={testId}>
       {inner}
     </button>
   );

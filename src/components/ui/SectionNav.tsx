@@ -1,5 +1,6 @@
 import { Link } from "@/components/ui/CityLink";
 import { Icon, type IconName } from "./Icon";
+import { tabTapped } from "./tabSlide";
 import s from "./nav.module.css";
 
 // 9 · Navigation (Figma 167:68, D-64): one nav. On a phone or iPad it is the floating tab bar at
@@ -21,13 +22,14 @@ export type SectionId = (typeof SECTIONS)[number]["id"];
  * its tabs on itself).
  */
 export function SectionNav({ active, saved = 0, hrefs = {} }: { active: SectionId; saved?: number; hrefs?: Partial<Record<SectionId, string>> }) {
+  const from = SECTIONS.findIndex(({ id }) => id === active);
   return (
     <nav className={s.nav} aria-label="Sections" data-testid="nav">
-      {SECTIONS.map(({ id, label, href, icon }) => {
+      {SECTIONS.map(({ id, label, href, icon }, to) => {
         const on = id === active;
         const count = id === "yours" && !on && saved > 0 ? saved : null;
         return (
-          <Link key={id} href={hrefs[id] ?? href} className={s.tab} aria-current={on ? "page" : undefined} aria-label={count === null ? undefined : `${label}, ${count} saved`} data-testid={`tab.${id}`}>
+          <Link key={id} href={hrefs[id] ?? href} className={s.tab} aria-current={on ? "page" : undefined} aria-label={count === null ? undefined : `${label}, ${count} saved`} onClick={(event) => tabTapped(from, to, event)} data-testid={`tab.${id}`}>
             <Icon name={icon} size={22} className={s.icon} />
             <span className={s.label}>{label}</span>
             {count !== null && (

@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { Sheet } from "@/components/ui/Sheet";
+import type { ChangeHow } from "@/components/ui/useSwapIn";
 import type { FormatTag } from "@/lib/data/format";
 import type { Day } from "@/lib/data/programme";
 import { PICKER_SHEETS, cinemaCount, pickerValue } from "@/lib/wording/cinemas";
@@ -16,7 +17,7 @@ type Which = "area" | "day" | "format";
 export type AreaChoice = { slug: string; name: string; cinemas: number };
 
 /** A choice in a picker's sheet: the picked one tinted and ticked. */
-function Option({ icon, label, count, selected, onPick, testId }: { icon?: IconName; label: string; count?: string; selected: boolean; onPick: () => void; testId: string }) {
+function Option({ icon, label, count, selected, onPick, testId }: { icon?: IconName; label: string; count?: string; selected: boolean; onPick: (event: React.MouseEvent) => void; testId: string }) {
   return (
     <button type="button" className={s.option} aria-pressed={selected} data-selected={selected || undefined} onClick={onPick} data-testid={testId}>
       {icon && <Icon name={icon} size={18} className={s.optionIcon} />}
@@ -27,14 +28,15 @@ function Option({ icon, label, count, selected, onPick, testId }: { icon?: IconN
   );
 }
 
-export function Pickers(props: { areas: AreaChoice[]; area: string | null; onArea: (slug: string) => void; days: [string, string]; day: Day; onDay: (day: Day) => void; formats: { tag: FormatTag; cinemas: number }[]; format: FormatTag | null; onFormat: (tag: FormatTag | null) => void }) {
+export function Pickers(props: { areas: AreaChoice[]; area: string | null; onArea: (slug: string) => void; days: [string, string]; day: Day; onDay: (day: Day, how: ChangeHow) => void; formats: { tag: FormatTag; cinemas: number }[]; format: FormatTag | null; onFormat: (tag: FormatTag | null) => void }) {
   const { areas, area, onArea, days, day, onDay, formats, format, onFormat } = props;
   const [open, setOpen] = useState<Which | null>(null);
   const refs = { area: useRef<HTMLButtonElement>(null), day: useRef<HTMLButtonElement>(null), format: useRef<HTMLButtonElement>(null) };
   const name = areas.find((candidate) => candidate.slug === area)?.name ?? null;
   const values: Record<Which, string> = { area: pickerValue.area(name), day: days[day], format: pickerValue.format(format) };
   const labels: Record<Which, string> = { area: "Area", day: "Day", format: "Format" };
-  const pick = (choose: () => void) => () => (choose(), setOpen(null));
+  // Enter or Space on an option is a click with no pointer (detail 0): the change it makes doesn't animate.
+  const pick = (choose: (how: ChangeHow) => void) => (event: React.MouseEvent) => (choose(event.detail === 0 ? "keys" : "tap"), setOpen(null));
 
   const sheet = (which: Which, children: React.ReactNode) => (
     <Sheet open={open === which} onClose={() => setOpen(null)} title={PICKER_SHEETS[which].title} subtitle={PICKER_SHEETS[which].subtitle} picker={refs[which]} testId={`sheet.${which}`}>
@@ -63,7 +65,7 @@ export function Pickers(props: { areas: AreaChoice[]; area: string | null; onAre
       )}
       {sheet(
         "day",
-        ([0, 1] as const).map((option) => <Option key={option} label={days[option]} selected={day === option} onPick={pick(() => onDay(option))} testId={`day.option.${option === 0 ? "today" : "tomorrow"}`} />),
+        ([0, 1] as const).map((option) => <Option key={option} label={days[option]} selected={day === option} onPick={pick((how) => onDay(option, how))} testId={`day.option.${option === 0 ? "today" : "tomorrow"}`} />),
       )}
       {sheet(
         "format",

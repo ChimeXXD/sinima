@@ -7,6 +7,8 @@ import { cinemaNextLine, showingsTonight } from "@/lib/wording/showing";
 import { Icon } from "./Icon";
 import { CountdownBadge, CountdownPill, FormatBadge, TimePill } from "./Status";
 import { LogoSticker, TicketFaceSticker } from "./Stickers";
+import { PosterTravel } from "./PosterTravel";
+import h from "./hover.module.css";
 import s from "./cards.module.css";
 
 // 10 · Cards (Figma 167:72): films, showings and saved cinemas. Posters come in as `poster`, so
@@ -17,14 +19,16 @@ import s from "./cards.module.css";
  * edge (only within the hour); then the title (2 lines at most), runtime · rating, and the stats
  * line "Next 17:40 · 4 cinemas".
  */
-export function FilmCard(props: { href: string; title: string; meta: string; poster: React.ReactNode; formats: string[]; next: string | null; cinemas: number; now: string | null; nextWord?: "Next" | "From"; testId?: string }) {
-  const { href, title, meta, poster, formats, next, cinemas, now, nextWord, testId } = props;
+export function FilmCard(props: { href: string; title: string; meta: string; poster: React.ReactNode; /** The film's id: its poster travels into the film page's hero (M11). */ film?: string; formats: string[]; next: string | null; cinemas: number; now: string | null; nextWord?: "Next" | "From"; testId?: string }) {
+  const { href, title, meta, poster, film, formats, next, cinemas, now, nextWord, testId } = props;
   const soon = next !== null && now !== null && isBeforeStart(showingState(next, now)) && minutesFromStart(next, now).minutes <= 60; // as the old card
   const stats = next === null ? null : filmNextLine(next, cinemas, nextWord);
   return (
-    <article className={s.film} data-testid={testId}>
+    <article className={`${s.film} ${h.host}`} data-testid={testId}>
       <Link href={href} className={s.posterArea} aria-label={title} tabIndex={-1}>
-        <span className={s.poster}>{poster}</span>
+        <PosterTravel film={film}>
+          <span className={`${s.poster} ${h.poster}`}>{poster}</span>
+        </PosterTravel>
         <span className={s.formatAt}>
           <FormatBadge formats={formats} />
         </span>
@@ -62,7 +66,7 @@ export function ShowingCard(props: { title: string; cinema: string; meta: string
   const { title, cinema, meta, poster, startsAt, now, bookUrl, bookLabel, testId, onOpen, oneLine } = props;
   const started = now !== null && !isBeforeStart(showingState(startsAt, now));
   return (
-    <article className={s.showing} data-started={started || undefined} data-one-line={oneLine || undefined} data-testid={testId}>
+    <article className={onOpen ? `${s.showing} ${h.lift}` : s.showing} data-started={started || undefined} data-one-line={oneLine || undefined} data-testid={testId}>
       <div className={s.showingPoster}>
         <span className={s.poster}>{poster}</span>
         <span className={s.badgeAt}>
@@ -122,7 +126,7 @@ export function CinemaFolder(props: { href: string; name: string; chain: string;
   // With nothing left tonight the count goes; the line under the name says why.
   const count = tonight > 0 ? showingsTonight(tonight) : null;
   return (
-    <Link href={href} className={s.folderCard} aria-label={[name, line, count].filter(Boolean).join(", ")} style={{ "--tint": `var(--p-folder-${tint})` } as React.CSSProperties} data-testid={testId}>
+    <Link href={href} className={`${s.folderCard} ${h.lift}`} aria-label={[name, line, count].filter(Boolean).join(", ")} style={{ "--tint": `var(--p-folder-${tint})` } as React.CSSProperties} data-testid={testId}>
       <span className={s.folder} aria-hidden="true">
         <span className={s.back} />
         <span className={s.tab} />

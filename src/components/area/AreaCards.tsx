@@ -5,7 +5,7 @@ import { LogoSticker } from "@/components/ui/Stickers";
 import { soonest, type AreaCinema } from "@/lib/data/areaPage";
 import { formatLabel } from "@/lib/data/format";
 import type { ListCinema, ListFilm, ListRow } from "@/lib/data/select";
-import { toggleSaved } from "@/lib/saved";
+import h from "@/components/ui/hover.module.css";
 import s from "./area.module.css";
 
 // Area › Cinema card (Figma 198:6073) and Area · <neighbour> (198:6319).
@@ -25,15 +25,17 @@ type CardProps = {
   /** In place of the times, when there are none to show. */
   body: string;
   saved: boolean;
+  /** The filled heart lets the cinema go (kept cards only). */
+  onLetGo?: () => void;
   onOpen: (row: ListRow) => void;
 };
 
 /** One cinema: its logo, name and line, its next three times with their films, and a link to all of them. */
-export function CinemaCard({ cinema, entry, films, now, line, body, saved, onOpen }: CardProps) {
+export function CinemaCard({ cinema, entry, films, now, line, body, saved, onLetGo, onOpen }: CardProps) {
   const rows = entry.rows.slice(0, SHOWN);
   const first = soonest(entry.rows, now);
   return (
-    <article className={s.card} aria-labelledby={`cinema.${cinema.id}`} data-testid={`cinema.card.${cinema.id}`}>
+    <article className={s.card} aria-labelledby={`cinema.${cinema.id}`} data-testid={`cinema.card.${cinema.id}`} data-flip={cinema.id}>
       <div className={s.head}>
         <span className={s.logo}>
           <LogoSticker chain={cinema.chain} scale={0.8} />
@@ -47,7 +49,7 @@ export function CinemaCard({ cinema, entry, films, now, line, body, saved, onOpe
           </p>
         </div>
         {saved && (
-          <button type="button" className={s.heart} aria-pressed="true" aria-label={`Remove ${cinema.name} from your cinemas`} onClick={() => toggleSaved(cinema.id)} data-testid="cinema.save">
+          <button type="button" className={s.heart} aria-pressed="true" aria-label={`Remove ${cinema.name} from your cinemas`} onClick={onLetGo} data-testid="cinema.save">
             <Icon name="heart" size={18} />
           </button>
         )}
@@ -82,7 +84,7 @@ export function CinemaCard({ cinema, entry, films, now, line, body, saved, onOpe
 /** A neighbouring area: up to three chains' logos, its name and line; the whole card opens the area. */
 export function NextAreaCard({ slug, name, line, chains }: { slug: string; name: string; line: string; chains: string[] }) {
   return (
-    <Link href={`/area/${slug}`} className={s.nextCard} data-testid={`next.card.${slug}`}>
+    <Link href={`/area/${slug}`} className={`${s.nextCard} ${h.lift}`} data-testid={`next.card.${slug}`} data-flip={`next.${slug}`}>
       <span className={s.logos} aria-hidden="true">
         {chains.map((chain, i) => (
           <span key={chain} className={s.stacked}>

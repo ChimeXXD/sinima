@@ -7,13 +7,14 @@ import { useLazySheet } from "@/components/film/useLazySheet";
 import { AppFrame, BarBack, BarTitle, Crumb, LogoNote } from "@/components/ui/AppFrame";
 import { PageNotice } from "@/components/ui/Status";
 import { TicketFaceSticker } from "@/components/ui/Stickers";
+import { useFlip } from "@/components/ui/useFlip";
 import { shareLink } from "@/lib/browser";
 import { areaPage, type AreaCinema } from "@/lib/data/areaPage";
 import { byFilm, dayDates, formatsOf } from "@/lib/data/programme";
 import type { Area } from "@/lib/data/load";
 import { laterName, nextDayName, pageBanner, type ListData } from "@/lib/data/select";
 import { formatDate } from "@/lib/time/lagos";
-import { useSaved } from "@/lib/saved";
+import { toggleSaved, useSaved } from "@/lib/saved";
 import { useNow } from "@/lib/time/useNow";
 import { areaHeading, areaShareText, cardBody, cardLine, locality, nextAreaLine, quietTitle, quietWhy } from "@/lib/wording/areaPage";
 import { NO_TIMES_NOTE } from "@/lib/wording/cinemas";
@@ -39,6 +40,7 @@ export function AreaScreen({ data, areas, slug, bg }: { data: ListData; areas: A
   const [copied, setCopied] = useState(false);
   const copiedTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const kept = useSaved();
+  const flip = useFlip(kept);
 
   const area = areas.find((candidate) => candidate.slug === slug)!;
   const areaName = (other: string) => areas.find((candidate) => candidate.slug === other)?.name ?? other;
@@ -84,6 +86,10 @@ export function AreaScreen({ data, areas, slug, bg }: { data: ListData; areas: A
         line={entry.listed ? cardLine({ films, formats: formatsOf(entry.rows), when, place, tomorrow: tomorrow?.from ?? null, next: nextDay }) : (place ?? "")}
         body={cardBody({ listed: entry.listed, when, tomorrow, date, next: nextDay })}
         saved={saved}
+        onLetGo={() => {
+          flip(cinema.id);
+          toggleSaved(cinema.id);
+        }}
         onOpen={sheet.openRow}
       />
     );
@@ -91,7 +97,7 @@ export function AreaScreen({ data, areas, slug, bg }: { data: ListData; areas: A
 
   const group = (key: string, heading: { title: string; note: string | null }, children: React.ReactNode, wide = false) => (
     <section key={key} className={s.group} aria-labelledby={`area.${key}`} data-testid={`group.${key}`}>
-      <div className={s.heading}>
+      <div className={s.heading} data-flip={`heading.${key}`}>
         <h2 id={`area.${key}`}>{heading.title}</h2>
         {heading.note && <p>{heading.note}</p>}
       </div>

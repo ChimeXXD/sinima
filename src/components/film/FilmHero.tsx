@@ -1,5 +1,6 @@
 import { Poster } from "@/components/Poster";
 import { NoPoster } from "@/components/ui/Cards";
+import { PosterTravel } from "@/components/ui/PosterTravel";
 import type { ListFilm } from "@/lib/data/select";
 import s from "./hero.module.css";
 
@@ -14,7 +15,9 @@ const Sticker = ({ name, className }: { name: "glasses" | "popcorn"; className?:
 export function FilmHero({ film, note }: { film: ListFilm; note: string | null }) {
   return (
     <div className={s.hero} aria-hidden="true" data-testid="film.hero">
-      <div className={s.poster}>{film.poster ? <Poster film={film} eager /> : <NoPoster title={film.title} />}</div>
+      <PosterTravel film={film.id}>
+        <div className={s.poster}>{film.poster ? <Poster film={film} eager /> : <NoPoster title={film.title} />}</div>
+      </PosterTravel>
       <Sticker name="glasses" className={s.glasses} />
       <Sticker name="popcorn" className={s.popcorn} />
       {note && (
