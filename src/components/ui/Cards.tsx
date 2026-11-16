@@ -116,10 +116,13 @@ export type FolderTint = "blue" | "violet" | "pink" | "green";
  * folder, a frosted front with the chain's logo sticker and tonight's count. Name and
  * "Lekki · next 17:40" sit under it.
  */
-export function CinemaFolder(props: { href: string; name: string; chain: string; area: string; next: string | null; tonight: number; posters: React.ReactNode[]; tint: FolderTint; testId?: string }) {
+export function CinemaFolder(props: { href: string; name: string; chain: string; area: string; next: string | null; tonight: number; posters: React.ReactNode[]; tint: FolderTint; testId?: string; /** The line under the name, in place of "Lekki · next 17:40". */ line?: string }) {
   const { href, name, chain, area, next, tonight, posters, tint, testId } = props;
+  const line = props.line ?? cinemaNextLine(area, next);
+  // With nothing left tonight the count goes; the line under the name says why.
+  const count = tonight > 0 ? showingsTonight(tonight) : null;
   return (
-    <Link href={href} className={s.folderCard} aria-label={`${name}, ${cinemaNextLine(area, next)}, ${showingsTonight(tonight)}`} style={{ "--tint": `var(--p-folder-${tint})` } as React.CSSProperties} data-testid={testId}>
+    <Link href={href} className={s.folderCard} aria-label={[name, line, count].filter(Boolean).join(", ")} style={{ "--tint": `var(--p-folder-${tint})` } as React.CSSProperties} data-testid={testId}>
       <span className={s.folder} aria-hidden="true">
         <span className={s.back} />
         <span className={s.tab} />
@@ -132,11 +135,11 @@ export function CinemaFolder(props: { href: string; name: string; chain: string;
           <span className={s.logoAt}>
             <LogoSticker chain={chain} scale={0.78} />
           </span>
-          <span className={s.count}>{showingsTonight(tonight)}</span>
+          {count && <span className={s.count}>{count}</span>}
         </span>
       </span>
       <span className={s.folderName}>{name}</span>
-      <span className={s.folderMeta}>{cinemaNextLine(area, next)}</span>
+      <span className={s.folderMeta}>{line}</span>
     </Link>
   );
 }

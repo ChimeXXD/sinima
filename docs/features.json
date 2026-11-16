@@ -324,11 +324,11 @@
       "criteria": [
         "the site opens on Films and every page's tabs read Films, Cinemas, Starting soon",
         "a saved area sends the Cinemas tab to that area (superseded by D-91: the Cinemas tab keeps the saved area on its own page, first)",
-        "on a phone the search button opens a search box on the same page; typing lists matching films; a match opens its film; no match says so; Escape closes it",
+        "on a phone the search button opens a search box on the same page; typing lists matching films; a match opens its film; no match says so; Escape closes it (since D-89 the search bar opens over the page: tests/e2e/search.spec.ts)",
         "every area chip is whole on screen at 390, 360 and 320 px (since D-96 the Starting soon chips scroll sideways under a fade; each scrolls whole into view, clear of the screen edge)",
         "each tab name stays on one line at 360 and 320 px"
       ],
-      "verify": "npm run test:e2e -- nav",
+      "verify": "npm run test:e2e -- nav search",
       "passes": true,
       "evidence": "12 Nov 2026: `npx playwright test tests/e2e/nav.spec.ts` 9 pass. Red first on the old code: the tab and search tests failed (no Films home, no search.open), the chip test listed area.chip.ikeja and area.chip.all cut off at 390 px, and the one-line test listed 'Starting soon' at 360 and 320 px."
     },
@@ -375,9 +375,9 @@
         "with none kept the page says how to keep one and links to the cinemas",
         "the Cinemas tab no longer has a Your cinemas block"
       ],
-      "verify": "npm run test:e2e -- cinemas nav",
+      "verify": "npm run test:e2e -- yours-screen cinemas nav",
       "passes": true,
-      "evidence": "13 Nov 2026: `npx playwright test tests/e2e/cinemas.spec.ts tests/e2e/nav.spec.ts` 33 pass (6 new). Screenshots at 390, 360, 320 and 1440 px in light and dark."
+      "evidence": "13 Nov 2026: `npx playwright test tests/e2e/cinemas.spec.ts tests/e2e/nav.spec.ts` 33 pass (6 new). Screenshots at 390, 360, 320 and 1440 px in light and dark. 16 Nov 2026, Figma's Your cinemas (D-97, build unit 10): the saved, reload, nothing-more-today and none-kept checks moved to tests/e2e/yours-screen.spec.ts (folders soonest first, count and next time, None saved and Browse, layout at 390/834/1440)."
     },
     {
       "id": "D3-3",

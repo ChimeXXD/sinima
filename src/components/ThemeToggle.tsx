@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useSyncExternalStore } from "react";
-import { Icon } from "@/components/Icons";
 import { THEME_KEY } from "@/lib/area";
 
 type Theme = "light" | "dark";
@@ -34,13 +33,10 @@ function paintBar(theme: Theme | null, bg: { light: string; dark: string }) {
 /**
  * The light and dark switch in the header (D-58). It follows the phone until tapped, then keeps the
  * choice on this device; layout.tsx applies a kept choice before the page is drawn. The page changes
- * at once and only the icon moves (D-60).
+ * at once and only the icon moves (D-60). `icons`: the sun and moon to draw (AppFrame passes
+ * Figma's Lucide pair).
  */
-/**
- * `icons` replaces the sun and moon: the rebuilt frame passes Figma's Lucide pair, so pages still on
- * the old frame do not load the new icon set (the page budget, D-21).
- */
-export function ThemeToggle({ bg, className, icons }: { bg: { light: string; dark: string }; className?: string; icons?: { sun: React.ReactNode; moon: React.ReactNode } }) {
+export function ThemeToggle({ bg, className, icons }: { bg: { light: string; dark: string }; className?: string; icons: { sun: React.ReactNode; moon: React.ReactNode } }) {
   const theme = useSyncExternalStore(subscribe, current, () => null);
   useEffect(() => {
     const chosen = document.documentElement.dataset.theme;
@@ -77,10 +73,10 @@ export function ThemeToggle({ bg, className, icons }: { bg: { light: string; dar
     >
       {/* Both icons are drawn; the stylesheet shows the one for the theme on screen (theme-switch.css). */}
       <span className="sun">
-        {icons?.sun ?? <Icon name="sun" />}
+        {icons.sun}
       </span>
       <span className="moon">
-        {icons?.moon ?? <Icon name="moon" />}
+        {icons.moon}
       </span>
     </button>
   );

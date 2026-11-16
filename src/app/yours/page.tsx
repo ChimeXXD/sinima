@@ -1,16 +1,12 @@
 import type { Metadata } from "next";
-import { Shell } from "@/components/Shell";
-import { YoursBoard } from "@/components/YoursBoard";
+import { YoursScreen } from "@/components/yours/YoursScreen";
 import { areas, loadAll } from "@/lib/data/load";
 import { toListData } from "@/lib/data/select";
+import { pageColours } from "@/lib/theme/pageColours";
 
 export const metadata: Metadata = { title: "Your cinemas · Sinima" };
 
-/** The Your cinemas tab (D-61): the cinemas this visitor has hearted, kept on their phone only. */
+/** The Your cinemas tab: the cinemas saved on this phone, soonest first (Figma Your cinemas, build unit 10). */
 export default function YoursPage() {
-  return (
-    <Shell tab="yours">
-      <YoursBoard data={toListData(loadAll())} areas={areas} />
-    </Shell>
-  );
+  return <YoursScreen data={toListData(loadAll())} areas={areas.map(({ slug, name }) => ({ slug, name }))} bg={pageColours()} />;
 }

@@ -51,6 +51,14 @@ export function nothingMoreToday(input: { city: string; last: string | null; tom
 /** Under every rebuilt screen. */
 export const FOOTER_NOTE = "Times come from each cinema's own pages. Always book on the cinema's site.";
 
+/** Under a screen that shows cinema logos (D-57): they only name each cinema, and come off the same day if asked. */
+export const LOGO_NOTE = {
+  before: "Cinema logos belong to their owners and only name each cinema. A cinema that wants its logo removed can ",
+  link: "ask here",
+  href: "https://github.com/ChimeXXD/sinima/issues",
+  after: "; it goes the same day.",
+} as const;
+
 /** On a film with no artwork yet, in two lines. */
 export const NO_POSTER = ["Poster not", "listed yet"] as const;
 

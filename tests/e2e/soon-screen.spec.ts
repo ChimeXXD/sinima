@@ -133,6 +133,7 @@ test("nothing in the next 2 hours: Figma's words, what's left in Lagos, and tomo
   await expect(quiet.locator("p").last()).toHaveText(`Tomorrow in Lekki starts at ${lagosClock(tomorrow.startsAt)} with ${film} at ${all.cinemas.find((c) => c.id === tomorrow.cinemaId)!.name}.`);
   await expect(page.getByTestId("soon.tomorrow")).toHaveText("See tomorrow in Lekki");
   await expect(page.getByTestId("soon.tomorrow")).toHaveAttribute("href", "/area/lekki");
+  await expect(page.getByTestId("soon.tomorrow")).not.toHaveAttribute("target", "_blank"); // a page of this site opens in place
   await expect(quiet).toContainText("early night?");
   await expect(page.getByTestId("section.soon")).toHaveCount(0);
   await expect(page.getByTestId("section.later")).toHaveCount(0);

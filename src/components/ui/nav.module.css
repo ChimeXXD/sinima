@@ -63,6 +63,25 @@
   white-space: nowrap;
 }
 
+/* Below 360 (Figma draws 390 up) the bar is 296 at most: the tabs keep a 44 target with 12
+   padding, and the current tab's name drops to 14, so "Your cinemas" and "Starting soon" fit. */
+@media (max-width: 359px) {
+  .tab {
+    gap: var(--space-6);
+    padding: var(--space-12);
+  }
+  .tab[aria-current] {
+    padding: var(--space-12) var(--space-14) var(--space-12) var(--space-12);
+  }
+  .label {
+    font-size: 14px;
+  }
+  .tab .count {
+    top: 5px;
+    left: 25px;
+  }
+}
+
 /* Count sticker: 16 round, tilted, die-cut white edge, on the heart's top right. */
 .count {
   position: absolute;

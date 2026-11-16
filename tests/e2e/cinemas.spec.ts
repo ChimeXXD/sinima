@@ -50,49 +50,20 @@ test("Tomorrow shows the whole of the next day", async ({ page, request }) => {
 // Picking an area: the Cinemas tab's sheet, tests/e2e/cinemas-screen.spec.ts. An area's own page
 // (Figma Area, build unit 7): tests/e2e/area-screen.spec.ts.
 
-// D-61 (Chime, 13 Nov 2026): hearted cinemas live on their own tab, Your cinemas, not in a block on the Cinemas tab.
-test("the heart keeps a cinema on the Your cinemas tab, on this phone", async ({ page, request }) => {
-  await freeze(page, await sampleTime(request, "18:00"));
-  await page.goto("/cinema/grand-lekki"); // kept from its own page since build unit 7 (Figma Area has no heart on every card)
-  await page.getByTestId("cinema.save").click();
-  await expect(page.getByTestId("cinema.save")).toHaveAttribute("aria-pressed", "true");
-  await page.getByTestId("tab.yours").click();
-  await expect(page).toHaveURL(/\/yours$/);
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Your cinemas");
-  await expect(page.getByTestId("tab.yours")).toHaveAttribute("aria-current", "page");
-  await expect(page.getByTestId("saved.row.grand-lekki")).toContainText("Grand Cinemas Lekki");
-  await expect(page.locator('[data-testid^="saved.row."]')).toHaveCount(1);
-  await page.reload();
-  await expect(page.getByTestId("saved.row.grand-lekki")).toBeVisible();
-  await page.getByTestId("saved.row.grand-lekki").getByTestId("cinema.save").click();
-  await expect(page.locator('[data-testid^="saved.row."]')).toHaveCount(0);
-  await expect(page.getByTestId("yours.empty")).toContainText("Tap the heart on a cinema to keep it here.");
-});
+// D-61: hearted cinemas live on their own tab, Your cinemas (Figma, build unit 10):
+// tests/e2e/yours-screen.spec.ts.
 
-test("Your cinemas with nothing kept says how to keep one, and leads to the cinemas", async ({ page }) => {
-  await page.goto("/yours");
-  await expect(page.getByTestId("yours.empty")).toContainText("Tap the heart on a cinema to keep it here.");
-  await page.getByTestId("yours.browse").click();
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Cinemas in Lagos");
-});
-
-test("a kept cinema with nothing more today still shows on Your cinemas, and says so", async ({ page, request }) => {
-  await page.addInitScript(() => localStorage.setItem("ls.cinemas", JSON.stringify(["grand-lekki"])));
-  await freeze(page, await sampleTime(request, "23:58"));
-  await page.goto("/yours");
-  const row = page.getByTestId("saved.row.grand-lekki");
-  await expect(row).toContainText("Grand Cinemas Lekki");
-  await expect(row).toContainText("Nothing more today");
-});
-
+// Each page with its own tab current: the current tab shows its name, so the longest names count.
 for (const width of [390, 360, 320]) {
   test(`at ${width} px the four tabs fit, each whole on screen`, async ({ page }) => {
     await page.setViewportSize({ width, height: 800 });
-    await page.goto("/yours");
-    const tabs = page.locator('[data-testid^="tab."]');
-    await expect(tabs).toHaveCount(4);
-    expect(await tabs.evaluateAll((els) => els.filter((el) => { const box = el.getBoundingClientRect(); return box.left < 0 || box.right > window.innerWidth || el.scrollWidth > el.clientWidth; }).length)).toBe(0);
-    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+    for (const path of ["/yours", "/soon", "/cinemas", "/"]) {
+      await page.goto(path);
+      const tabs = page.locator('[data-testid^="tab."]');
+      await expect(tabs).toHaveCount(4);
+      expect(await tabs.evaluateAll((els) => els.filter((el) => { const box = el.getBoundingClientRect(); return box.left < 0 || box.right > window.innerWidth || el.scrollWidth > el.clientWidth; }).map((el) => el.getAttribute("data-testid"))), path).toEqual([]);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+    }
   });
 }
 

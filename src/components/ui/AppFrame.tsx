@@ -4,7 +4,7 @@ import Link from "next/link";
 import { createContext, useEffect, useRef, useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useSaved } from "@/lib/saved";
-import { FOOTER_NOTE } from "@/lib/wording/films";
+import { FOOTER_NOTE, LOGO_NOTE } from "@/lib/wording/films";
 import { Icon } from "./Icon";
 import { SearchBar, type CityChoice } from "./SearchBar";
 import { SectionNav, type SectionId } from "./SectionNav";
@@ -56,6 +56,17 @@ export function BarBack({ href, label, testId }: { href: string; label: string; 
 
 /** The screen's name in the top bar: "Area", "Cinema". */
 export const BarTitle = ({ children }: { children: React.ReactNode }) => <span className={s.barTitle}>{children}</span>;
+
+/** The footer line under a screen that shows cinema logos (D-57). */
+export function LogoNote() {
+  return (
+    <p data-testid="footer.logos">
+      {LOGO_NOTE.before}
+      <a href={LOGO_NOTE.href}>{LOGO_NOTE.link}</a>
+      {LOGO_NOTE.after}
+    </p>
+  );
+}
 
 /** The desktop's way back, above the title (Figma Area and Cinema: "All cinemas in Lagos"). */
 export function Crumb({ href, children }: { href: string; children: React.ReactNode }) {

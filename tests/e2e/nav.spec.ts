@@ -1,5 +1,4 @@
 import { expect, test } from "@playwright/test";
-import { freeze, sampleTime } from "./helpers";
 
 // Chime's review, 12 Nov 2026 (D-55): Films comes first. A visitor has a film in mind, picks it, then
 // sees every cinema showing it.
@@ -29,36 +28,8 @@ test("a saved area puts its cinemas first on the Cinemas tab", async ({ page }) 
   await expect(page.getByTestId("group.area").getByRole("heading", { level: 2 })).toHaveText("In Ikeja");
 });
 
-test("on a phone, the search button opens a search box on the page it is on, and a match opens the film", async ({ page, request }) => {
-  await freeze(page, await sampleTime(request, "18:00"));
-  await page.goto("/yours"); // the old search, until build unit 10
-  const box = page.getByTestId("search.input");
-  await expect(box).toBeHidden();
-  await page.getByTestId("search.open").click();
-  await expect(page).toHaveURL(/\/yours$/); // it does not jump to another page
-  await expect(box).toBeVisible();
-  await expect(box).toBeFocused();
-  await box.fill("spider");
-  const hits = page.getByTestId("search.results").getByRole("link");
-  await expect(hits).toHaveText(["Spider-Man: Brand New Day"]);
-  await hits.first().click();
-  await expect(page).toHaveURL(/\/film\/spider-man-brand-new-day$/);
-});
-
-test("search says so when no film matches, and Escape closes it", async ({ page }) => {
-  await page.goto("/yours"); // the old search, until build unit 10
-  await page.getByTestId("search.open").click();
-  await page.getByTestId("search.input").fill("zzz");
-  await expect(page.getByTestId("search.none")).toHaveText('No film showing matches "zzz".');
-  await page.keyboard.press("Escape");
-  await expect(page.getByTestId("search.input")).toBeHidden();
-  await expect(page.getByTestId("search.open")).toBeFocused();
-  // The search button opens and closes it.
-  await page.getByTestId("search.open").click();
-  await expect(page.getByTestId("search.input")).toBeVisible();
-  await page.getByTestId("search.open").click();
-  await expect(page.getByTestId("search.input")).toBeHidden();
-});
+// The phone's search (open over the page, matches, no match, Escape): tests/e2e/search.spec.ts. The
+// old search box went with the old frame in build unit 10.
 
 for (const width of [390, 360, 320]) {
   test(`at ${width} px every area chip is whole on screen, none cut off or covered`, async ({ page }) => {

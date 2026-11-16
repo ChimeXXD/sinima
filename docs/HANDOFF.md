@@ -1,10 +1,10 @@
 # Handoff: read this first when you pick the project back up
 
-## Now: building the Figma design into the site, units 1–9 done (16 Nov 2026, latest)
+## Now: building the Figma design into the site, units 1–10 done (16 Nov 2026, latest)
 
 **What Chime asked (D-82):** build the Figma design into the site, exactly, with motion, using the 18 design-engineering skills (routing in `~/.claude/CLAUDE.md`, detail in `~/.claude/design-skills-guide.md`). Chime reviews when the build is done, then adds their own animation references. **Take every value from Figma exactly (D-83)**: raise a concern once, then build what Figma says.
 
-**Units (PLAN week 2):** 1 foundation ✅ (`07cd9a0`) · 2 shared components ✅ · 3 Films ✅ · 4 Film + showing sheet ✅ · 5 Search and city ✅ · 6 Cinemas ✅ · 7 Area ✅ · 8 Cinema ✅ · 9 Starting soon ✅ · **10 Your cinemas (next)** · 11 About, 404, Offline · 12 Where are you watching? · 13 city layer (needs O-16). One unit per fresh session.
+**Units (PLAN week 2):** 1 foundation ✅ (`07cd9a0`) · 2 shared components ✅ · 3 Films ✅ · 4 Film + showing sheet ✅ · 5 Search and city ✅ · 6 Cinemas ✅ · 7 Area ✅ · 8 Cinema ✅ · 9 Starting soon ✅ · 10 Your cinemas ✅ · **11 About, 404, Offline (next)** · 12 Where are you watching? · 13 city layer (needs O-16). One unit per fresh session.
 
 **Unit 1 (done):** `src/styles/tokens.css` holds Figma's tokens under Figma's CSS names (`--p-*`, `--bg-page`, `--text-primary`, `--space-16`, `--radius-card`, `--type-*` font shorthands, `--fx-*` effects, `--ease-out/-in-out/-drawer`, `--dur-*`); old names (`--color-*`, `--s*`, `--r-*`) point at them until each component is rebuilt, then go. `docs/design/figma-tokens.json` + `tests/unit/tokens.test.ts` hold the two together. Fonts: Urbanist (22 KB, wght 300–800) and Story Script (6 KB: a–z, 0–9, A I L M X and ! ? . , ' ’ … -; re-cut with fontTools if a note needs another character). Dark mode is a stand-in (not designed).
 
@@ -24,6 +24,9 @@
 
 
 **Unit 9 (done, D-96):** `/soon` is `components/soon/SoonScreen` (SoonHero, SoonParts: AreaChips, LaterRow, LaterList, QuietRows); logic `lib/data/soonPage.ts`, words `lib/wording/soon.ts`. Kept countdowns (`ls.countdowns`) lead the page as "Your countdowns". ShowingCard has `onOpen` and `oneLine` (Figma's 405 card on this screen). The old `Showing.tsx` panel, `Share.tsx` and `SoonBoard.tsx` are gone; `/yours` is the last page on the old Shell (old `Cards.tsx` now only Banner and sourceLine, `Filters.tsx` only the AreaInfo type): **unit 10 deletes Shell, Search, Tabs, Cards, Filters, CinemaRow, Icons and the old stylesheets**, and nav.spec's two old-search tests (now on /yours) go with them. Open for Chime: D-96 (a)–(k). Budget: Starting soon 214.7 of 217.
+
+
+**Unit 10 (done, D-97):** `/yours` is `components/yours/YoursScreen` (CinemaFolder per saved cinema, the dashed add card, None saved); logic `lib/data/yours.ts`, words `lib/wording/yours.ts`. **Every page is on Figma's frame now:** the old Shell, Search, Tabs, Logo, Icons, Cards, Filters, CinemaRow, YoursBoard and `sinima.css`/`cinemas.css` are deleted, the old token names with them (only `--color-focus` and `--color-stale` remain, no Figma token yet). `Poster` draws the TMDB image only (callers use `NoPoster` without one). `Button` with an href inside the site opens it in place (it used to open every link in a new tab). CinemaFolder takes `line` and hides a zero count. The D-57 logo line is `LogoNote` in AppFrame. Below 360 px the tab bar is tighter (D-97 i). Open for Chime: D-97 (a)–(j), and the desktop header ends at the content edge (1340) where Figma's navbar runs to 1372 (Figma's navbar overflows its own padding; unchanged since unit 3). Known gap: the tab bar's count includes saved ids no longer in the data.
 
 **How to build each unit:**
 - Read the frame in Figma (file `2WxAK7rxGC6t4Wkd5IQ6p2`; Design System page `155:1349`, Design screens `143:1349`) with `use_figma`; works without the desktop app. Component build notes are in each Doc frame (Actions `167:60`, Inputs `167:64`, Navigation `167:68`, Cards `167:72`, Status `167:76`, Overlays `167:80`, Stickers `167:84`, Layout `158:260`, Icons `158:162`: Lucide, inline SVG).

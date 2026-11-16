@@ -152,58 +152,15 @@
   --dur-fast: 160ms;
   --dur-base: 220ms;
   --dur-sheet: 450ms;
-
-  /* Old spacing and shape names, kept until each component is rebuilt from the new tokens. */
-  --s1: var(--space-4);
-  --s2: var(--space-8);
-  --s3: var(--space-12);
-  --s4: var(--space-16);
-  --s5: var(--space-20);
-  --s6: var(--space-24);
-  --s8: var(--space-32);
-  --s10: var(--space-40);
-  --r-chip: var(--radius-full);
-  --r-poster: var(--radius-poster);
-  --r-card: var(--radius-card);
-  --r-sheet: var(--radius-sheet);
-  --shadow: var(--fx-shadow-floating);
 }
 
 @theme {
   --color-*: initial;
 
-  /* Old colour roles, pointed at the new tokens until each component is rebuilt (D-82). */
-  --color-bg: var(--bg-page);
-  --color-surface: var(--bg-surface);
-  --color-soft: light-dark(#e4e4e7, #27272a);
-  /* A step past soft, so the item under the pointer stands apart from the current one (.menu a.on). */
-  --color-hover: light-dark(#d4d4d8, #3f3f46);
-  --color-text: var(--text-primary);
-  --color-text-muted: var(--text-secondary);
-  --color-accent: var(--action-primary);
-  --color-accent-text: var(--text-on-action);
-  --color-book: var(--action-primary);
-  --color-book-text: var(--text-on-action);
+  /* The focus ring and the old-data warning colour: no Figma token yet (D-82). Tailwind's own
+     palette is off, so these are the only --color-* names. */
   --color-stale: light-dark(#7c2d12, #fdba4d);
   --color-focus: light-dark(#2563eb, #5b8def);
-  --color-line: var(--border-hairline);
-  --color-scrim: light-dark(#00000066, #000000a8);
-  --color-shade: light-dark(#18181b1f, #00000080);
-  --color-shade-strong: light-dark(#18181b3d, #00000099);
-  /* The header ticket is the text colour, not --brand-ticket, so --brand-eyes (navy) would vanish on it. */
-  --color-logo-dot: var(--brand-ticket);
-  /* Logo tiles (D-56): each chain's logo reads best on white or on near-black. */
-  --color-tile-light: #ffffff;
-  --color-tile-dark: #181818;
-  --color-tile-edge: light-dark(transparent, #3f3f46);
-  /* Title posters, for films with no artwork, until the no-poster card is rebuilt. */
-  --color-tp-teal: #2563eb; /* blue-600: tp-foam on it is 4.65:1; blue-500 was 3.3:1 */
-  --color-tp-foam: #eef3ff;
-  --color-tp-lagoon: #0b1b3f;
-  --color-tp-aqua: #5b8def;
-  --color-tp-coral: #7c2d12; /* amber-900: tp-foam on it is 8.4:1; amber-700 was 3.3:1 */
-  --color-tp-deep: #0b1b3f;
-  --color-tp-mist: #f4f4f5;
 
   --font-display: var(--font-sans);
 }

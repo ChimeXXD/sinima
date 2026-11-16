@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRef, useState } from "react";
 import { Icon, type IconName } from "./Icon";
 import s from "./actions.module.css";
@@ -15,8 +16,9 @@ type ButtonProps = {
 } & ({ href: string; onClick?: never } | { href?: never; onClick?: () => void });
 
 /**
- * 7.1 Button. With `href` it is a link that opens the other site in a new tab (booking always
- * goes to the cinema's own site, rule 5). A disabled link loses its href, so it cannot be followed.
+ * 7.1 Button. With `href` it is a link: a page of this site opens in place; another site (booking
+ * always goes to the cinema's own site, rule 5) opens in a new tab. A disabled link loses its
+ * href, so it cannot be followed.
  */
 export function Button({ kind = "primary", icon, disabled = false, children, testId, href, onClick }: ButtonProps) {
   const className = `${s.button} ${s[kind]}`;
@@ -31,6 +33,10 @@ export function Button({ kind = "primary", icon, disabled = false, children, tes
       <a className={className} aria-disabled="true" role="link" data-testid={testId}>
         {inner}
       </a>
+    ) : /^\/(?!\/)/.test(href) ? (
+      <Link className={className} href={href} data-testid={testId}>
+        {inner}
+      </Link>
     ) : (
       <a className={className} href={href} target="_blank" rel="noopener" data-testid={testId}>
         {inner}

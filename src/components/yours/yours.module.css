@@ -1,0 +1,178 @@
+/* Your cinemas (Figma 206:8570 Default, 206:8921 None saved): the title row with its + button, the
+   folders (2 to a row on a phone, then 165 wide in a row), the dashed add card and the empty state. */
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+  padding: 18px 0 var(--space-4);
+}
+.title {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.title h1 {
+  color: var(--text-primary);
+  font: var(--type-display-l);
+}
+.sub {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--space-10);
+  min-height: 32px;
+  color: var(--text-secondary);
+  font: var(--type-body-m);
+}
+.hand {
+  color: var(--text-accent);
+  font: var(--type-handwritten);
+  rotate: 4deg;
+}
+.add {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  transition: transform var(--dur-press) var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+}
+.add:active {
+  transform: scale(0.95);
+}
+.notice {
+  display: flex;
+  padding-top: var(--space-8);
+}
+
+.folders {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+  align-items: start;
+  padding-top: var(--space-24);
+}
+
+/* A folder's film with no artwork. */
+.noPoster {
+  display: grid;
+  place-items: center;
+  background: var(--bg-accent-soft);
+}
+
+/* The dashed card: 1.5 px, 6 on 6 off (Figma), drawn inside its edge. */
+.addCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-10);
+  grid-column: 1 / -1;
+  margin-top: -4px; /* Figma: 24 under the folders, 4 less than between them */
+  padding: 22px var(--space-16);
+  border-radius: var(--radius-card);
+  text-align: center;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.addCard b {
+  color: var(--text-primary);
+  font: 600 15px/1.2 var(--font-sans);
+}
+.addCard span {
+  color: var(--text-secondary);
+  font: 500 13px/1.2 var(--font-sans);
+}
+/* The svg sits 0.75 in, so the 1.5 stroke centred on the rect's edge lands just inside the card;
+   plain attributes on the rect, no CSS geometry, so Safari draws it the same. */
+.dash {
+  position: absolute;
+  inset: 0.75px;
+  width: calc(100% - 1.5px);
+  height: calc(100% - 1.5px);
+  overflow: visible;
+  pointer-events: none;
+}
+.dash rect {
+  fill: none;
+  stroke: var(--border-divider);
+  stroke-width: 1.5px;
+  stroke-dasharray: 6 6;
+}
+
+/* None saved: three logo stickers overlapping, the words, Browse, the note. */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-14);
+  padding: 36px 0 var(--space-8);
+  text-align: center;
+}
+/* Figma lays the tilted stickers out by their turned boxes (a 226 × 61 row, 14 over each other);
+   CSS turns them in place, so the spacing and drop are set from Figma's centres: 63 then 73
+   apart, Genesis 5 lower (as Figma renders it). */
+.stickers {
+  display: flex;
+  align-items: center;
+  min-height: 61.4px;
+}
+.stickers > :nth-child(2) {
+  margin-left: -15.8px;
+  translate: 0 5px;
+}
+.stickers > :nth-child(3) {
+  margin-left: -6.1px;
+}
+.empty h2 {
+  color: var(--text-primary);
+  font: var(--type-heading-s);
+}
+.empty > p {
+  max-width: 420px;
+  color: var(--text-secondary);
+  font: var(--type-body-m);
+}
+.empty > .small {
+  font: var(--type-meta);
+}
+
+@media (min-width: 768px) {
+  .title h1 {
+    font: var(--type-display-xl);
+  }
+  .folders {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px 24px;
+  }
+  .folders > :not(.addCard) {
+    width: 165px;
+  }
+  .addCard {
+    flex-basis: 100%;
+  }
+}
+@media (min-width: 1200px) {
+  .folders {
+    column-gap: 44px;
+  }
+  /* Desktop: the card sits in the row, 200 wide and as tall as the tallest folder. */
+  .addCard {
+    flex-basis: 200px;
+    align-self: stretch;
+    justify-content: center;
+    margin-top: 0;
+  }
+  .addCard b,
+  .addCard span {
+    max-width: 165px;
+  }
+}

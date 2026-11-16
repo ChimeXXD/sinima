@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { AppFrame } from "@/components/ui/AppFrame";
+import { AppFrame, LogoNote } from "@/components/ui/AppFrame";
 import { Notice } from "@/components/ui/Status";
 import { rememberArea } from "@/lib/area";
 import { useSavedArea } from "@/lib/browser";
@@ -63,10 +63,7 @@ export function CinemasScreen({ data, areas, bg }: { data: ListData; areas: Area
   const footer = (
     <>
       {unread && <p data-testid="cinemas.no-times">{NO_TIMES_NOTE}</p>}
-      {/* D-57: the logos only name each cinema, and come off the same day if asked. */}
-      <p data-testid="footer.logos">
-        Cinema logos belong to their owners and only name each cinema. A cinema that wants its logo removed can <a href="https://github.com/ChimeXXD/sinima/issues">ask here</a>; it goes the same day.
-      </p>
+      <LogoNote />
     </>
   );
 
