@@ -20,7 +20,9 @@ export function SearchBar({ city, value, onChange, onSubmit, onCity, cityOpen = 
     <>
       <Icon name={city === "both" ? "globe" : "map-pin"} size={14} />
       <span>{CITY_NAMES[city]}</span>
-      <Icon name="chevron-down" size={14} stroke={2.4} />
+      <span className={s.chev}>
+        <Icon name="chevron-down" size={14} stroke={2.4} />
+      </span>
     </>
   );
   return (

@@ -1,8 +1,9 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef, useSyncExternalStore } from "react";
 import { Link } from "@/components/ui/CityLink";
 import { Icon, type IconName } from "./Icon";
+import { bump } from "./motion";
 import { tabTapped } from "./tabSlide";
 import s from "./nav.module.css";
 
@@ -31,9 +32,20 @@ export type SectionId = (typeof SECTIONS)[number]["id"];
  * that tab itself and when there are none. `hrefs` replaces a tab's link (the /kit page keeps
  * its tabs on itself).
  */
+const noSubscribe = () => () => {};
+
 export function SectionNav({ active, saved = 0, hrefs = {}, live = true }: { active: SectionId; saved?: number; hrefs?: Partial<Record<SectionId, string>>; /** The springs (R9); off on /kit, where the tabs don't go anywhere. */ live?: boolean }) {
   const from = SECTIONS.findIndex(({ id }) => id === active);
   const nav = useRef<HTMLElement>(null);
+  // D-112 N1: the count answers a save (never a page arriving with it, nor letting go). A page
+  // drawn from its HTML first shows no saved cinemas, then catches up: that isn't a save.
+  const hydrated = useSyncExternalStore(noSubscribe, () => true, () => false);
+  const was = useRef({ saved, hydrated });
+  useLayoutEffect(() => {
+    const before = was.current;
+    was.current = { saved, hydrated };
+    if (before.hydrated && saved > before.saved) bump(nav.current?.querySelector('[data-testid="nav.count"]') ?? null, before.saved === 0);
+  }, [saved, hydrated]);
   useLayoutEffect(() => {
     const el = nav.current;
     if (!live || !el) return;

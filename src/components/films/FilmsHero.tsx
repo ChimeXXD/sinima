@@ -44,9 +44,11 @@ export function FilmsHero({ city, live }: { city: string; live: boolean }) {
           <svg className={s.circle} viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
             <ellipse cx="50" cy="50" rx="48.5" ry="47" fill="none" stroke="currentColor" vectorEffect="non-scaling-stroke" />
           </svg>
-          <svg className={s.chevron} viewBox="0 0 22 22" fill="none" aria-hidden="true">
-            <path d="M5.5 8.25L11 13.75L16.5 8.25" stroke="currentColor" strokeWidth="2.38333" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+          <span className={s.chevron} aria-hidden="true">
+            <svg viewBox="0 0 22 22" fill="none">
+              <path d="M5.5 8.25L11 13.75L16.5 8.25" stroke="currentColor" strokeWidth="2.38333" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
         </button>
       </h1>
     </div>

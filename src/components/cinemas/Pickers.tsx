@@ -95,7 +95,10 @@ export function Pickers(props: PickersProps) {
               <span key={values[which]} className={s.value} data-roll={rolled === which || undefined}>
                 {values[which]}
               </span>
-              <Icon name="chevron-down" size={16} className={s.down} />
+              {/* Turned on a wrapper, not the svg, so the graphics chip can do it (D-112 F13). */}
+              <span className={s.down}>
+                <Icon name="chevron-down" size={16} />
+              </span>
             </button>
           ))}
         </div>

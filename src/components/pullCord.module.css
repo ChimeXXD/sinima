@@ -11,6 +11,7 @@
   left: 0;
   overflow: visible;
   pointer-events: none;
+  will-change: transform; /* its own layer: the swinging cord repaints only itself (D-112 F13) */
 }
 .line {
   fill: none;

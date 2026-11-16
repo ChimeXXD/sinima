@@ -93,3 +93,7 @@
   color: var(--text-secondary);
   font: var(--type-meta);
 }
+/* D-112 F13: its own layer, so its springs repaint only the menu, not the page under it. */
+.menu {
+  will-change: transform, opacity;
+}

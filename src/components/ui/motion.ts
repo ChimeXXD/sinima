@@ -44,3 +44,18 @@ export function afterPaint(work: () => void): void {
   if (scheduler?.postTask) void scheduler.postTask(work, { priority: "background" }).catch(() => {});
   else requestAnimationFrame(() => setTimeout(work, 0));
 }
+
+/**
+ * D-112 N1: the Your cinemas count answers a save, 60 ms after the heart's pop, so the eye follows
+ * the cinema to where it went: it pops in when it first appears, or swells when it goes up. Its
+ * own `scale`, so the sticker keeps its tilt. Not from the keyboard; reduced motion: a fade.
+ */
+export function bump(el: Element | null, appeared: boolean): void {
+  if (!el || byKeys()) return;
+  const m = motion();
+  if (m.reduce) return void el.animate([{ opacity: 0.4 }, { opacity: 1 }], { id: "bump", duration: m.fast });
+  const frames: Keyframe[] = appeared
+    ? [{ opacity: 0, scale: 0.5, easing: m.easeOut }, { opacity: 1, scale: 1.15, offset: 0.6, easing: m.easeInOut }, { scale: 1 }]
+    : [{ scale: 1, easing: m.easeOut }, { scale: 1.3, offset: 0.4, easing: m.easeInOut }, { scale: 1 }];
+  el.animate(frames, { id: "bump", duration: m.base, delay: 60, fill: "backwards" });
+}

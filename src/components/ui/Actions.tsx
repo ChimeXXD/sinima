@@ -56,7 +56,8 @@ export function Button({ kind = "primary", icon, disabled = false, children, tes
 export function IconButton({ icon, label, onClick, testId }: { icon: IconName; label: string; onClick?: () => void; testId?: string }) {
   return (
     <button type="button" className={s.iconButton} aria-label={label} onClick={onClick} data-testid={testId}>
-      <Icon name={icon} size={20} stroke={2} />
+      {/* D-112 N2: a ✓ that takes its place (a link copied) swaps in; going back is quiet. */}
+      <Icon key={icon} name={icon} size={20} stroke={2} className={icon === "check" ? s.swapIn : undefined} />
     </button>
   );
 }

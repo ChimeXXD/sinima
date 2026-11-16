@@ -60,6 +60,7 @@
   font: var(--type-label-strong);
 }
 .down {
+  display: inline-flex;
   color: var(--text-secondary);
 }
 

@@ -8,8 +8,10 @@
   inherits: true;
   initial-value: 0;
 }
+/* D-112 F13: in 12 steps, not every frame. The ring moves about 1.5° a tick, so a step is an eighth
+   of a degree (it looks the same) and the 50-odd rings on Starting soon repaint 5 times less. */
 .glide {
-  transition: --share 1s linear;
+  transition: --share 1s steps(12, jump-end);
 }
 
 /* The number rolls up when it changes while you watch ("45 min" → "44 min"): the new value

@@ -184,7 +184,7 @@ test.describe("M6: the countdowns move with the clock", () => {
     await page.clock.runFor(60_000);
     expect(await rolling()).toBe(true);
     const ring = await badge.locator("span").first().evaluate((el) => getComputedStyle(el).transition);
-    expect(ring).toContain("--share 1s linear");
+    expect(ring).toContain("--share 1s steps(12"); // D-112 F13: 12 steps of an eighth of a degree, not every frame
   });
 
   test("with reduced motion the ring steps and the number only fades", async ({ page, request }) => {

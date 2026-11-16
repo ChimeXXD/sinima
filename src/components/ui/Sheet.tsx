@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { onBackdrop } from "@/lib/browser";
 import { Icon, type IconName } from "./Icon";
 import { useSwipeDown } from "./useSwipeDown";
@@ -66,6 +66,9 @@ type OptionRowProps = { icon: IconName; /** In place of the icon tile: the city 
  * row given `selected` is a toggle (aria-pressed); the others are plain buttons.
  */
 export function OptionRow({ icon, lead, title, desc, selected, tone = "primary", className, testId, href, onClick }: OptionRowProps) {
+  // D-112 N3: a tick added by a tap pops in; ticks already there, or brought by the saved list
+  // arriving, don't.
+  const [tapped, setTapped] = useState(false);
   const box = className ? `${s.option} ${className}` : s.option;
   const inner = (
     <>
@@ -79,7 +82,7 @@ export function OptionRow({ icon, lead, title, desc, selected, tone = "primary",
         {desc && <span className={s.desc}>{desc}</span>}
       </span>
       {selected && (
-        <span className={s.check} aria-hidden="true">
+        <span className={tapped ? `${s.check} ${s.checkIn}` : s.check} aria-hidden="true">
           <Icon name="check" size={14} stroke={3} />
         </span>
       )}
@@ -97,7 +100,7 @@ export function OptionRow({ icon, lead, title, desc, selected, tone = "primary",
       {inner}
     </a>
   ) : (
-    <button type="button" className={box} aria-pressed={selected} data-selected={selected || undefined} onClick={onClick} data-testid={testId}>
+    <button type="button" className={box} aria-pressed={selected} data-selected={selected || undefined} onClick={() => (setTapped(!selected), onClick())} data-testid={testId}>
       {inner}
     </button>
   );

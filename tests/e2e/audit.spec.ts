@@ -194,3 +194,39 @@ test.describe("F3: taps answer before the list redraws", () => {
     expect(await day.evaluate((el) => getComputedStyle(el).getPropertyValue("--i").trim())).toBe("1");
   });
 });
+
+test.describe("unit 8: what's added", () => {
+  test("N1: saving makes the Your cinemas count pop in; arriving with one doesn't", async ({ page }) => {
+    await page.goto("/lagos/cinemas");
+    await page.getByTestId("cinema.keep").first().click();
+    const count = page.getByTestId("nav.count");
+    await expect(count).toHaveText("1");
+    await expect.poll(() => count.evaluate((el) => el.getAnimations().some((a) => a.id === "bump"))).toBe(true);
+    await page.goto("/lagos/soon");
+    await expect(page.getByTestId("nav.count")).toHaveText("1");
+    expect(await page.getByTestId("nav.count").evaluate((el) => el.getAnimations().some((a) => a.id === "bump"))).toBe(false);
+  });
+
+  test("N2: when a link is copied, the ✓ swaps in", async ({ page }) => {
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, "share", { value: undefined });
+      Object.defineProperty(navigator, "clipboard", { value: { writeText: () => Promise.resolve() } });
+    });
+    await page.goto("/lagos/cinema/filmhouse-lekki-imax");
+    await page.getByTestId("cinema.share").click();
+    await expect.poll(() => page.getByTestId("cinema.share").locator("svg").evaluate((el) => getComputedStyle(el).animationName)).toContain("swapIn");
+  });
+
+  test("N3: a cinema ticked in the list pops its tick; ticks there when it opened don't", async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem("ls.cinemas", JSON.stringify(["grand-lekki"])));
+    await page.goto("/lagos/yours");
+    await page.getByTestId("yours.add").click();
+    const sheet = page.getByTestId("yours.pick");
+    await expect(sheet).toBeVisible();
+    const tick = (id: string) => sheet.getByTestId(`pick.${id}`).locator('span[class*="_check"]');
+    expect(await tick("grand-lekki").evaluate((el) => getComputedStyle(el).animationName)).toBe("none");
+    await sheet.getByTestId("pick.ebonylife-vi").click();
+    await expect(sheet.getByTestId("pick.ebonylife-vi")).toHaveAttribute("aria-pressed", "true");
+    expect(await tick("ebonylife-vi").evaluate((el) => getComputedStyle(el).animationName)).toContain("checkIn");
+  });
+});

@@ -209,3 +209,29 @@
     color: var(--text-primary);
   }
 }
+
+/* D-112 N2: the icon button's ✓ (a link copied) swaps in: fade, scale and a touch of blur, so the
+   change is seen. Not from the keyboard; reduced motion: a fade. */
+.swapIn {
+  animation: swapIn var(--dur-base) var(--ease-out);
+}
+@keyframes swapIn {
+  from {
+    opacity: 0;
+    scale: 0.5;
+    filter: blur(2px);
+  }
+}
+@keyframes swapFade {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .swapIn {
+    animation-name: swapFade;
+  }
+}
+:global(html[data-input="keys"]) .swapIn {
+  animation: none;
+}

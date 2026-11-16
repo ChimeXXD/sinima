@@ -25,7 +25,7 @@ test("the day menu: under the picker, chevron up, the highlight follows the poin
   const at = (await picker.boundingBox())!;
   expect(await page.evaluate(([x, y]) => document.elementFromPoint(x!, y!)?.closest("[data-testid]")?.getAttribute("data-testid"), [at.x + at.width / 2, at.y + at.height / 2])).toBe("pick.day");
   await expect(picker).toHaveAttribute("aria-expanded", "true");
-  await expect.poll(() => rotation(page, '[data-testid="pick.day"] svg')).toBe("180deg");
+  await expect.poll(() => rotation(page, '[data-testid="pick.day"] span:has(> svg)')).toBe("180deg");
 
   // The highlight starts on the picked day and moves to the hovered one.
   const today = (await page.getByTestId("day.option.today").boundingBox())!;
@@ -38,7 +38,7 @@ test("the day menu: under the picker, chevron up, the highlight follows the poin
   await expect(menu).toHaveAttribute("data-state", "closed");
   await expect(picker).toHaveAttribute("aria-expanded", "false");
   await expect(picker.locator("[data-roll]")).toHaveText("Tomorrow");
-  await expect.poll(() => rotation(page, '[data-testid="pick.day"] svg')).toBe("none");
+  await expect.poll(() => rotation(page, '[data-testid="pick.day"] span:has(> svg)')).toBe("none");
 });
 
 test("keys: Enter opens the menu at once, arrows move, Enter picks, Escape closes and gives focus back", async ({ page }) => {
@@ -48,7 +48,7 @@ test("keys: Enter opens the menu at once, arrows move, Enter picks, Escape close
   const menu = page.getByTestId("sheet.format");
   await expect(menu).toHaveAttribute("data-state", "open"); // no motion on a key press
   await expect(menu).toBeFocused();
-  expect(await rotation(page, '[data-testid="pick.format"] svg')).toBe("180deg"); // the chevron too, at once
+  expect(await rotation(page, '[data-testid="pick.format"] span:has(> svg)')).toBe("180deg"); // the chevron too, at once
   expect(await page.getByTestId("sheet.format").locator("[data-hl]").evaluate((el) => getComputedStyle(el).outlineStyle)).toBe("solid"); // the focus ring
   await page.keyboard.press("ArrowDown");
   const second = await menu.getByRole("option").nth(1).getAttribute("id");
@@ -100,7 +100,7 @@ test("on a phone the pickers still open a sheet, and the chevron turns while it 
   await page.goto("/lagos/cinemas");
   await page.getByTestId("pick.day").click();
   await expect(page.getByTestId("sheet.day")).toBeVisible();
-  await expect.poll(() => rotation(page, '[data-testid="pick.day"] svg')).toBe("180deg");
+  await expect.poll(() => rotation(page, '[data-testid="pick.day"] span:has(> svg)')).toBe("180deg");
 });
 
 test("the toast is the lighter blue; an error tone is a deep red, not pure red", async ({ page }) => {

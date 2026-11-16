@@ -258,3 +258,28 @@ div.option:active {
     background: color-mix(in srgb, var(--tint-close), var(--text-primary) 3%);
   }
 }
+
+/* D-112 N3: a newly ticked option's tick pops in (never from nothing: from half size). Not from
+   the keyboard; reduced motion: a fade. */
+.checkIn {
+  animation: checkIn var(--dur-fast) var(--ease-out);
+}
+@keyframes checkIn {
+  from {
+    opacity: 0;
+    scale: 0.5;
+  }
+}
+@keyframes checkFade {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .checkIn {
+    animation-name: checkFade;
+  }
+}
+:global(html[data-input="keys"]) .checkIn {
+  animation: none;
+}
