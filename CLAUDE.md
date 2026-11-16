@@ -97,6 +97,7 @@ Run `npm run lint`, `npm run typecheck`, `npm test` and `npm run build` before s
 - **Playwright e2e** for the core flows (SPEC §Acceptance) against the built static site, at a phone viewport, with the clock frozen.
 - Commit after each green step with a conventional message (`feat:`, `fix:`, `test:`, `chore:`, `docs:`). **Push to GitHub after every commit** (the repo is public, D-30).
 - After UI work: build, screenshot at 390×844 and 360×800, and compare with the approved direction before calling the step done. Check on Chime's phone before a gate passes.
+- For UI units, run the motion skills (find-animation-opportunities, then animate / choreograph / gestures) and list the skills that ran in the unit's PROGRESS entry (D-102).
 - Update the checkbox in `docs/PLAN.md` and the matching item in `docs/features.json` (with evidence) when a task is complete. Log each session in `PROGRESS.md` (newest first) and rewrite `docs/HANDOFF.md` at the end of each session.
 - New product or architecture choices get a numbered entry in `docs/DECISIONS.md` (supersede, never edit, old entries).
 - Never send emails or contact cinemas yourself. Chime sends `docs/OUTREACH.md` drafts and tells you the replies.
