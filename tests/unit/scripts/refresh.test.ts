@@ -160,8 +160,9 @@ describe("refresh --fixtures", () => {
       expect(times(all, cinemaId, "2026-11-20"), cinemaId).toEqual(saved.map((s) => s.slice(-5)).sort());
     }
     expect(all.showings.filter((s) => lagosDayKey(s.startsAt) === "2026-11-20")).toHaveLength(294);
+    // Lagocine writes Ramayana two ways; data/film-aliases.json keeps it one film at /film/ramayana (D-119).
     // 59 repeats on the day page, the same 59 again tomorrow, and Silverbird's 28 on both pages.
-    expect(early.log).toEqual(["lagocine: 146 showings were listed more than once; kept one of each"]);
+    expect(early.log).toEqual(['films: "Ramayana: Rise of a Legend" is shown as "Ramayana"', "lagocine: 146 showings were listed more than once; kept one of each"]);
   });
 
   it("uses Silverbird Ikeja's own saved tomorrow, and repeats the saved day for the other cinemas", () => {
@@ -189,7 +190,8 @@ describe("refresh --fixtures", () => {
     expect(all.showings.find((s) => s.cinemaId === "magnificent-ikorodu-road")).toMatchObject({
       via: { name: "Magnificent's site", url: "https://magnificentcinemas.com/" },
     });
-    expect(all.films).toHaveLength(31);
+    // 31 titles, 30 films: "Ramayana" and "Ramayana: Rise of a Legend" are one (D-119).
+    expect(all.films).toHaveLength(30);
   });
 
   it("holds only one area's cinemas, showings, films and sources in an area file", () => {

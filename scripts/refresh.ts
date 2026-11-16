@@ -14,7 +14,8 @@ import { assemble, readJson, SAMPLE_PATHS } from "./assemble.ts";
 import { LIVE_DIR, liveBuildFiles, refreshLive } from "./live.ts";
 import { toSampleDays, type Batch } from "./pipeline.ts";
 import { parseLagocineCinema, parseLagocineDay } from "./sources/lagocine.ts";
-import { politeFetcher } from "./sources/polite.ts";
+import { politeBrowser } from "./sources/browser.ts";
+import { politeFetcher, politeRules } from "./sources/polite.ts";
 import type { ParsedPage } from "./sources/raw.ts";
 
 /**
@@ -111,14 +112,19 @@ export function main(argv: string[]): number | Promise<number> {
   const root = join(dirname(fileURLToPath(import.meta.url)), "..");
   if (argv.includes("--live")) {
     const now = new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
-    const fetchText = politeFetcher({ userAgent: process.env.FETCH_USER_AGENT || USER_AGENT, minGapMs: 5000 });
-    return refreshLive({ now, root, fetchText }).then(
-      ({ files, log }) => writeChecked(files, log, root, `live data read at ${now}`),
-      (error: unknown) => {
-        console.error(`refresh --live: ${error instanceof Error ? error.message : String(error)} Nothing was written; the last good data stays.`);
-        return 1;
-      },
-    );
+    // One set of rules for both readers, so the 5 s gap to a host holds whichever one asks.
+    const rules = politeRules({ userAgent: process.env.FETCH_USER_AGENT || USER_AGENT, minGapMs: 5000 });
+    // The browser starts only if a reader needs it, and is always closed (memory is tight).
+    const renderText = politeBrowser({ rules });
+    return refreshLive({ now, root, fetchText: politeFetcher({ rules }), renderText })
+      .then(
+        ({ files, log }) => writeChecked(files, log, root, `live data read at ${now}`),
+        (error: unknown) => {
+          console.error(`refresh --live: ${error instanceof Error ? error.message : String(error)} Nothing was written; the last good data stays.`);
+          return 1;
+        },
+      )
+      .finally(() => renderText.close());
   }
   if (!argv.includes("--fixtures") && !argv.includes("--build")) {
     console.error("refresh: say --fixtures (sample data), --live (read the cleared sources) or --build (live data if it is there, else sample). Nothing was read or written.");

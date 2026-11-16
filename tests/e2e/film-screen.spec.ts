@@ -1,9 +1,10 @@
 import { readFileSync } from "node:fs";
 import { expect, test, type Page } from "./test";
-import { dataFile, freeze, lagosClock, sampleTime, shownClock } from "./helpers";
+import { dataFile, freeze, lagosClock, lagosDay, sampleTime, shownClock } from "./helpers";
 
 // Film (Figma 185:3558, build unit 4). The sample data holds Figma's own example: Ramayana at
-// 17:30, Lekki saved as the visitor's area.
+// 17:30, Lekki saved as the visitor's area. Lagocine writes it "Ramayana" (Filmhouse) and
+// "Ramayana: Rise of a Legend" (the rest); since D-119 both are this one film.
 
 const keepArea = (page: Page, slug: string) => page.addInitScript((area) => localStorage.setItem("ls.area", area), slug);
 const ids = (page: Page, prefix: string) => page.locator(`[data-testid^="${prefix}"]`).evaluateAll((els) => els.map((el) => el.getAttribute("data-testid")!));
@@ -23,15 +24,22 @@ test("your area first, then the areas next to it, then the rest soonest first (F
   await page.goto("/lagos/film/ramayana");
   await expect(page.getByTestId("film.title")).toHaveText("Ramayana");
   // The runtime is TMDB's, which TMDB can correct (201 → 195 min on 16 Nov), so it comes from the data.
-  const runtime = (await dataFile(request, "all")).films.find((f) => f.id === "ramayana") as unknown as { runtimeMin: number };
-  await expect(page.getByTestId("film.facts")).toHaveText(`${Math.floor(runtime.runtimeMin / 60)} h ${runtime.runtimeMin % 60} min·IMAX·MX4D·at 10 cinemas in Lagos today`);
+  const all = await dataFile(request, "all");
+  const runtime = all.films.find((f) => f.id === "ramayana") as unknown as { runtimeMin: number };
+  // So is the number of cinemas showing it today, which grows as sources merge spellings (D-119).
+  const today = lagosDay((await sampleTime(request, "12:00")).toISOString());
+  const cinemas = new Set(all.showings.filter((s) => s.filmId === "ramayana" && lagosDay(s.startsAt) === today).map((s) => s.cinemaId)).size;
+  expect(cinemas).toBeGreaterThan(10);
+  await expect(page.getByTestId("film.facts")).toHaveText(`${Math.floor(runtime.runtimeMin / 60)} h ${runtime.runtimeMin % 60} min·IMAX·MX4D·at ${cinemas} cinemas in Lagos today`);
   await expect(page.getByTestId("credits.chip")).toHaveText("Credits scene: not known yet");
   await expect(page.getByTestId("film.note")).toHaveText("in IMAX!");
   await expect(page.getByText(`${await sampleDay(request)} · your area first`)).toBeVisible();
 
-  expect(await ids(page, "area.")).toEqual(["area.lekki", "area.victoria-island", "area.maryland", "area.festac", "area.surulere"]);
+  // Lekki, then its neighbours, then the rest by their soonest time (18:45, 18:50, 19:05, 19:10, 19:50).
+  expect(await ids(page, "area.")).toEqual(["area.lekki", "area.victoria-island", "area.sangotedo", "area.maryland", "area.festac", "area.agege", "area.yaba", "area.surulere"]);
   await expect(page.getByTestId("area.lekki").getByRole("heading")).toHaveText("Lekkiyour area");
   await expect(page.getByTestId("area.victoria-island").getByRole("heading")).toHaveText("Victoria Islandnext to Lekki");
+  await expect(page.getByTestId("area.sangotedo").getByRole("heading")).toHaveText("Sangotedonext to Lekki");
   await expect(page.getByTestId("area.maryland").getByRole("heading")).toHaveText("Maryland");
   expect(await page.getByTestId("area.lekki").locator('[data-testid^="venue."]').evaluateAll((els) => els.map((el) => el.getAttribute("data-testid")))).toEqual(["venue.filmhouse-circle-mall", "venue.filmhouse-ikota", "venue.filmhouse-lekki-imax"]);
 
@@ -43,7 +51,7 @@ test("your area first, then the areas next to it, then the rest soonest first (F
   await expect(page.getByTestId(`time.filmhouse-ikota.${await startOf(request, "filmhouse-ikota", "19:00")}`)).not.toHaveAttribute("data-state", "soonest");
 
   // Cinemas whose times have all started are named under the list, not listed.
-  await expect(page.getByTestId("film.earlier")).toHaveText("Started earlier today: Filmhouse Palms Mall Lekki at 2:00 PM and Genesis Deluxe Purple Mall at 4:50 PM.");
+  await expect(page.getByTestId("film.earlier")).toHaveText("Started earlier today: Viva Cinemas Ikeja at 11:40 AM, Filmhouse Palms Mall Lekki at 2:00 PM, Genesis Deluxe Purple Mall at 4:50 PM and Filmworld Cinemas Idimu at 5:00 PM.");
   await expect(page.getByTestId("venue.filmhouse-palms-lekki")).toHaveCount(0);
 });
 
@@ -51,7 +59,8 @@ test("with no area kept, every area is in order of its soonest time, with no tag
   await freeze(page, await sampleTime(request, "17:30"));
   await page.goto("/lagos/film/ramayana");
   await expect(page.getByText(`${await sampleDay(request)} · soonest first`)).toBeVisible();
-  expect(await ids(page, "area.")).toEqual(["area.lekki", "area.victoria-island", "area.maryland", "area.festac", "area.surulere"]);
+  // EbonyLife VI at 5:40 PM, then Lekki 6:00, Maryland 6:45, Festac 6:50, Agege 7:05, Yaba 7:10, Sangotedo 7:40, Surulere 7:50.
+  expect(await ids(page, "area.")).toEqual(["area.victoria-island", "area.lekki", "area.maryland", "area.festac", "area.agege", "area.yaba", "area.sangotedo", "area.surulere"]);
   await expect(page.getByTestId("area.victoria-island").getByRole("heading")).toHaveText("Victoria Island");
 });
 
@@ -178,10 +187,10 @@ test("phone: a top bar with back and share instead of the header; desktop: the f
   await expect(page.getByTestId("wordmark")).toBeHidden();
 
   await page.setViewportSize({ width: 834, height: 1194 });
+  const sangotedo = (await page.getByTestId("area.sangotedo").boundingBox())!;
   const maryland = (await page.getByTestId("area.maryland").boundingBox())!;
-  const festac = (await page.getByTestId("area.festac").boundingBox())!;
-  expect(Math.abs(maryland.y - festac.y)).toBeLessThan(1); // two areas to a row
-  expect(festac.x).toBeGreaterThan(maryland.x + maryland.width);
+  expect(Math.abs(sangotedo.y - maryland.y)).toBeLessThan(1); // two areas to a row
+  expect(maryland.x).toBeGreaterThan(sangotedo.x + sangotedo.width);
 
   await page.setViewportSize({ width: 1440, height: 900 });
   await expect(page.getByTestId("film.back")).toBeHidden();

@@ -76,6 +76,20 @@ describe("scripts/tmdb.ts", () => {
     expect(printed()).toContain("1 of 4 films have a credits answer (25%)");
   });
 
+  it("uses a match by hand or a saved answer under a shorter spelling of a merged film (D-119)", async () => {
+    const merged = [{ id: "agbara-nla-the-return", title: "Agbara Nla: The Return" }, { id: "avatar-fire-and-ash", title: "Avatar: Fire and Ash" }, { id: "avatar-the-way-of-water", title: "Avatar: The Way of Water" }];
+    const root = project({ "data/showtimes.json": { films: merged }, "data/tmdb-overrides.json": { films: { "agbara-nla": 1792115, avatar: 19995 } } });
+    expect(await main(["--dry-run"], deps(root))).toBe(0);
+    expect(printed()).toContain('would look up "Agbara Nla: The Return" as TMDB 1792115 (by hand)');
+    // Two films start with "Avatar", so neither takes its match.
+    expect(printed()).toContain('would look up "Avatar: Fire and Ash"\n');
+    const saved = { tmdbId: 1792115, runtimeMin: 155, posterPath: "/a.jpg", trailerKey: "abcdefghijk", keywordIds: [], checkedAt: NOW };
+    const cached = project({ "data/showtimes.json": { films: merged.slice(0, 1) }, "data/credits.json": { schemaVersion: 1, about: "", tmdb: { "agbara-nla": saved } } });
+    expect(await main([], deps(cached, { env: { TMDB_READ_TOKEN: "secret-token" }, fetchFn: fakeTmdb as unknown as typeof fetch }))).toBe(0);
+    expect(fakeTmdb).not.toHaveBeenCalled();
+    expect((JSON.parse(readFileSync(join(cached, "data/credits.json"), "utf8")) as CreditsFile).tmdb).toEqual({ "agbara-nla-the-return": saved });
+  });
+
   it("never prints or writes the token", async () => {
     const root = project();
     await main([], deps(root, { env: { TMDB_READ_TOKEN: "secret-token" }, fetchFn: fakeTmdb as unknown as typeof fetch }));

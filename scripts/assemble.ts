@@ -16,13 +16,21 @@ export const readSources = (root: string) => readJson<{ sources: RegistrySource[
 export type Paths = { main: string; part: (slug: string) => string };
 export const SAMPLE_PATHS: Paths = { main: "data/showtimes.json", part: (slug) => (slug === "all" ? "public/data/all.json" : `public/data/area/${slug}.json`) };
 
-/** What scripts/tmdb.ts last wrote (if it has run) for a film, with Chime's own entries on top (D-19). */
-export function creditsLookup(root: string): (filmId: string) => FilmCredits | undefined {
+/**
+ * What scripts/tmdb.ts last wrote (if it has run) for a film, with Chime's own entries on top (D-19).
+ * A merged film (D-119) is looked up under its own id first, then under each spelling's id, so it
+ * keeps a poster or answer saved under the way one source writes it.
+ */
+export function creditsLookup(root: string): (filmId: string, spellings?: string[]) => FilmCredits | undefined {
   const creditsPath = join(root, "data/credits.json");
   const tmdb = existsSync(creditsPath) ? readJson<{ tmdb: Record<string, TmdbFilm> }>(creditsPath).tmdb : {};
   const manualPath = join(root, "data/credits-manual.json");
   const manual = existsSync(manualPath) ? readJson<{ films: Record<string, ManualEntry> }>(manualPath).films : {};
-  return (filmId) => mergeCredits({ filmIds: [filmId], tmdb, manual })[filmId];
+  return (filmId, spellings = []) => {
+    const saved = (id: string) => Object.hasOwn(tmdb, id) || Object.hasOwn(manual, id);
+    const id = [filmId, ...spellings].find(saved) ?? filmId;
+    return mergeCredits({ filmIds: [id], tmdb, manual })[id];
+  };
 }
 
 export function assemble(input: { now: string; root: string; batches: Batch[]; method: Source["method"]; paths: Paths }): { files: Map<string, ShowtimesFile>; log: string[] } {
@@ -33,7 +41,7 @@ export function assemble(input: { now: string; root: string; batches: Batch[]; m
   const sources: Source[] = batches.map((batch) => {
     const entry = sourceRegistry.find((source) => source.id === batch.sourceId);
     if (!entry) throw new Error(`The source "${batch.sourceId}" is not in data/sources.json`);
-    return { id: entry.id, name: entry.name, url: entry.homepage, method, status: entry.status, fetchedAt: batch.fetchedAt, lastOkAt: batch.fetchedAt, health: "ok" };
+    return { id: entry.id, name: entry.name, url: entry.homepage, method, status: entry.status, fetchedAt: batch.fetchedAt, lastOkAt: batch.lastOkAt === undefined ? batch.fetchedAt : batch.lastOkAt, health: batch.health ?? "ok" };
   });
   const cinemas: Cinema[] = registry.cinemas.map((cinema) => ({
     id: cinema.id, name: cinema.name, chain: cinema.chain, area: cinema.area, address: cinema.address ?? null, geo: cinema.geo ?? null,
@@ -41,7 +49,10 @@ export function assemble(input: { now: string; root: string; batches: Batch[]; m
     sourceIds: sources.filter((source) => sourceRegistry.find((entry) => entry.id === source.id)?.cinemaIds.includes(cinema.id)).map((source) => source.id),
   }));
 
-  const { file, log } = buildShowtimes({ generatedAt: now, sources, cinemas, batches, creditsFor: creditsLookup(root) });
+  // Chime's film aliases (D-119), when the file is there.
+  const aliasPath = join(root, "data/film-aliases.json");
+  const aliases = existsSync(aliasPath) ? readJson<{ aliases: Record<string, string> }>(aliasPath).aliases : {};
+  const { file, log } = buildShowtimes({ generatedAt: now, sources, cinemas, batches, aliases, creditsFor: creditsLookup(root) });
   const files = new Map<string, ShowtimesFile>([[paths.main, file]]);
   for (const [slug, part] of splitByArea(file, registry.areas.map((area) => area.slug), now)) files.set(paths.part(slug), part);
   return { files, log };

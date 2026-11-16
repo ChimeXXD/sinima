@@ -14,6 +14,7 @@ import { fileURLToPath } from "node:url";
 import type { Film } from "../src/lib/data/types.ts";
 import { lagosDayKey } from "../src/lib/time/lagos.ts";
 import { answerShare, mergeCredits, pickMatch, pickTrailer, type ManualEntry, type TmdbFilm, type TmdbResult, type TmdbVideo } from "./credits.ts";
+import { subtitleHeadIds } from "./pipeline.ts";
 import { refreshFromFixtures } from "./refresh.ts";
 
 const API = "https://api.themoviedb.org/3";
@@ -34,6 +35,21 @@ function filmsShowing(root: string, now: string): Film[] {
   const byId = new Map<string, Film>();
   for (const film of [...liveFilms, ...sampleFilms]) if (!byId.has(film.id)) byId.set(film.id, film);
   return [...byId.values()];
+}
+
+/**
+ * Where `record` (tmdb-overrides.json or credits.json) keeps a film: under its own id, else under a
+ * shorter spelling's id when the film was merged from it (D-119), "agbara-nla" for "Agbara Nla:
+ * The Return". Only when no other film showing starts with that spelling, so one Avatar's match
+ * never lands on another. Null when it holds nothing for the film.
+ */
+function keyFor(film: Film, films: Film[], record: Record<string, unknown>): string | null {
+  if (Object.hasOwn(record, film.id)) return film.id;
+  for (const head of subtitleHeadIds(film.title)) {
+    if (!Object.hasOwn(record, head) || films.some((other) => other.id === head)) continue;
+    if (films.filter((other) => subtitleHeadIds(other.title).includes(head)).length === 1) return head;
+  }
+  return null;
 }
 
 async function ask<T>(path: string, deps: Deps, token: string): Promise<T> {
@@ -57,15 +73,27 @@ export async function main(argv: string[], deps: Deps): Promise<number> {
   const cachePath = join(root, "data/credits.json");
   const cache = readJson<CreditsFile | null>(cachePath, null)?.tmdb ?? {};
   // An answer saved before posters or trailers were kept lacks that field: ask again.
-  const fresh = (filmId: string) => Object.hasOwn(cache, filmId) && (cache[filmId] as TmdbFilm).posterPath !== undefined && (cache[filmId] as TmdbFilm).trailerKey !== undefined && Date.parse(now) - Date.parse((cache[filmId] as TmdbFilm).checkedAt) < WEEK_MS;
+  // A film's saved answer and match by hand, under its id or a merged spelling's (D-119).
+  const savedFor = (film: Film) => {
+    const key = keyFor(film, films, cache);
+    return key === null ? undefined : (cache[key] as TmdbFilm);
+  };
+  const byHandFor = (film: Film) => {
+    const key = keyFor(film, films, overrides);
+    return key === null ? undefined : overrides[key];
+  };
+  const fresh = (film: Film) => {
+    const saved = savedFor(film);
+    return saved !== undefined && saved.posterPath !== undefined && saved.trailerKey !== undefined && Date.parse(now) - Date.parse(saved.checkedAt) < WEEK_MS;
+  };
   const report = (tmdb: Record<string, TmdbFilm>) => console.log(`tmdb: ${answerShare(mergeCredits({ filmIds: films.map((film) => film.id), tmdb, manual })).text}`);
 
-  const noMatch = films.filter((film) => Object.hasOwn(overrides, film.id) && overrides[film.id] === null);
-  const toAsk = films.filter((film) => !noMatch.includes(film) && !fresh(film.id));
+  const noMatch = films.filter((film) => byHandFor(film) === null);
+  const toAsk = films.filter((film) => !noMatch.includes(film) && !fresh(film));
   console.log(`tmdb: ${films.length} films showing; ${films.length - toAsk.length - noMatch.length} answered in the last week, ${noMatch.length} marked "no match" by hand, ${toAsk.length} to look up.`);
 
   if (dryRun) {
-    for (const film of toAsk) console.log(`tmdb: would look up "${film.title}"${typeof overrides[film.id] === "number" ? ` as TMDB ${overrides[film.id]} (by hand)` : ""}`);
+    for (const film of toAsk) console.log(`tmdb: would look up "${film.title}"${typeof byHandFor(film) === "number" ? ` as TMDB ${byHandFor(film)} (by hand)` : ""}`);
     report(cache);
     console.log(`tmdb: dry run. Nothing was asked of TMDB and nothing was written. Token ${deps.env.TMDB_READ_TOKEN ? "is" : "is not"} set.`);
     return 0;
@@ -79,9 +107,9 @@ export async function main(argv: string[], deps: Deps): Promise<number> {
   }
 
   const tmdb: CreditsFile["tmdb"] = {};
-  for (const film of films) if (fresh(film.id) && !noMatch.includes(film)) tmdb[film.id] = cache[film.id] as TmdbFilm;
+  for (const film of films) if (fresh(film) && !noMatch.includes(film)) tmdb[film.id] = savedFor(film) as TmdbFilm;
   for (const film of toAsk) {
-    const byHand = overrides[film.id];
+    const byHand = byHandFor(film);
     let tmdbId = typeof byHand === "number" ? byHand : null;
     if (tmdbId === null) {
       const found = await ask<{ results: TmdbResult[] }>(`/search/movie?query=${encodeURIComponent(film.title)}&include_adult=false`, deps, token);

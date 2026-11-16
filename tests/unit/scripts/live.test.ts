@@ -2,7 +2,7 @@ import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { LIVE_DIR, liveBuildFiles, refreshLive } from "../../../scripts/live.ts";
+import { LIVE_DIR, liveBuildFiles, READERS, refreshLive } from "../../../scripts/live.ts";
 import type { ShowtimesFile } from "@/lib/data/types";
 
 // Live data (D-116): the cleared sources that have a reader, read today, written to data/live/ for
@@ -68,6 +68,91 @@ describe("refreshLive", () => {
       throw new Error("lagocine.com answered 503");
     };
     await expect(refreshLive({ now: NOW, root, fetchText: failing })).rejects.toThrow(/503/);
+  });
+});
+
+describe("refreshLive when one source fails (D-119)", () => {
+  // Two sources, as when each cinema has its own reader: Lagocine (no longer feeding Genesis) and
+  // Genesis's own site, faked here with one showing at Festac.
+  const GENESIS_ROW = { cinemaId: "genesis-festac", filmTitle: "Whalefall", rating: null, startsAt: "2026-11-11T18:30:00Z", format: null, bookingUrl: null };
+  const readers = { ...READERS, genesis: async () => [{ showings: [GENESIS_ROW], builtAt: null }] };
+  const failing = async (url: string) => {
+    throw new Error(`${new URL(url).host} answered 503`);
+  };
+  const setup = () => {
+    const dir = mkdtempSync(join(tmpdir(), "sinima-kept-"));
+    mkdirSync(join(dir, "data"));
+    for (const name of ["cinemas.json", "credits.json", "credits-manual.json", "film-aliases.json"]) writeFileSync(join(dir, "data", name), readFileSync(join(root, "data", name)));
+    const registry = JSON.parse(readFileSync(join(root, "data/sources.json"), "utf8")) as { sources: { id: string; cinemaIds: string[] }[] };
+    const lagocine = registry.sources.find((s) => s.id === "lagocine")!;
+    lagocine.cinemaIds = lagocine.cinemaIds.filter((id) => !id.startsWith("genesis-"));
+    writeFileSync(join(dir, "data/sources.json"), JSON.stringify(registry));
+    return dir;
+  };
+  const save = (dir: string, file: ShowtimesFile) => {
+    mkdirSync(join(dir, LIVE_DIR), { recursive: true });
+    writeFileSync(join(dir, LIVE_DIR, "showtimes.json"), JSON.stringify(file));
+  };
+  const main = (files: Map<string, ShowtimesFile>) => files.get(`${LIVE_DIR}/showtimes.json`) as ShowtimesFile;
+  const LATER = "2026-11-11T15:00:00Z"; // 16:00 in Lagos, the same day
+
+  it("keeps the failing source's last good showings, with the time they were read, beside the others' new ones", async () => {
+    const dir = setup();
+    const before = main((await refreshLive({ now: NOW, root: dir, fetchText: fakeLagocine().fetchText, readers })).files);
+    save(dir, before);
+    const { files, log } = await refreshLive({ now: LATER, root: dir, fetchText: failing, readers });
+    const after = main(files);
+    expect(log).toContain(`lagocine: could not be read (lagocine.com answered 503); kept its last good showings from ${NOW}`);
+    // The same showings a good read at this hour would give (the validator drops the ones that have ended).
+    const fresh = main((await refreshLive({ now: LATER, root: dir, fetchText: fakeLagocine().fetchText, readers })).files);
+    const kept = after.showings.filter((s) => s.sourceId === "lagocine");
+    expect(kept.length).toBeGreaterThan(100);
+    expect(kept.map((s) => s.id)).toEqual(fresh.showings.filter((s) => s.sourceId === "lagocine").map((s) => s.id));
+    expect(kept.every((s) => s.fetchedAt === NOW)).toBe(true);
+    const viaBefore = new Map(before.showings.map((s) => [s.id, s.via]));
+    expect(kept.every((s) => s.via === undefined || s.via?.fetchedAt === viaBefore.get(s.id)?.fetchedAt)).toBe(true);
+    expect(kept.some((s) => s.via)).toBe(true);
+    expect(after.sources.find((s) => s.id === "lagocine")).toMatchObject({ health: "failing", fetchedAt: NOW, lastOkAt: NOW });
+    expect(after.sources.find((s) => s.id === "genesis")).toMatchObject({ health: "ok", fetchedAt: LATER });
+    expect(after.showings.find((s) => s.sourceId === "genesis")).toMatchObject({ cinemaId: "genesis-festac", fetchedAt: LATER });
+
+    // Failing again keeps the same showings and still says when they were read.
+    save(dir, after);
+    const EVEN_LATER = "2026-11-11T17:00:00Z";
+    const again = main((await refreshLive({ now: EVEN_LATER, root: dir, fetchText: failing, readers })).files);
+    const freshAgain = main((await refreshLive({ now: EVEN_LATER, root: setup(), fetchText: fakeLagocine().fetchText, readers })).files);
+    const keptAgain = again.showings.filter((s) => s.sourceId === "lagocine");
+    expect(keptAgain.map((s) => s.id)).toEqual(freshAgain.showings.filter((s) => s.sourceId === "lagocine").map((s) => s.id));
+    expect(keptAgain.every((s) => s.fetchedAt === NOW)).toBe(true);
+    expect(again.sources.find((s) => s.id === "lagocine")).toMatchObject({ health: "failing", fetchedAt: NOW, lastOkAt: NOW });
+  });
+
+  it("keeps only the cinemas the source still feeds, and drops days that are over", async () => {
+    const dir = setup();
+    save(dir, main((await refreshLive({ now: NOW, root: dir, fetchText: fakeLagocine().fetchText, readers })).files));
+    const registry = JSON.parse(readFileSync(join(dir, "data/sources.json"), "utf8")) as { sources: { id: string; cinemaIds: string[] }[] };
+    registry.sources.find((s) => s.id === "lagocine")!.cinemaIds = ["ebonylife-vi"];
+    writeFileSync(join(dir, "data/sources.json"), JSON.stringify(registry));
+    const same = main((await refreshLive({ now: LATER, root: dir, fetchText: failing, readers })).files);
+    expect(new Set(same.showings.filter((s) => s.sourceId === "lagocine").map((s) => s.cinemaId))).toEqual(new Set(["ebonylife-vi"]));
+    // Two days on, the saved day page's showings have all started: nothing of Lagocine's is left.
+    const { files, log } = await refreshLive({ now: "2026-11-13T07:00:00Z", root: dir, fetchText: failing, readers });
+    expect(main(files).showings.some((s) => s.sourceId === "lagocine")).toBe(false);
+    expect(log).toContain("lagocine: could not be read (lagocine.com answered 503); no earlier showings to keep");
+  });
+
+  it("gives a failing source's cinemas no showings when there is no earlier data, and still writes the rest", async () => {
+    const dir = setup();
+    const { files, log } = await refreshLive({ now: LATER, root: dir, fetchText: failing, readers });
+    expect(main(files).showings.map((s) => s.sourceId)).toEqual(["genesis"]);
+    expect(log).toContain("lagocine: could not be read (lagocine.com answered 503); no earlier showings to keep");
+  });
+
+  it("fails as a whole when every source fails, even with earlier data to keep", async () => {
+    const dir = setup();
+    save(dir, main((await refreshLive({ now: NOW, root: dir, fetchText: fakeLagocine().fetchText, readers })).files));
+    const broken = { ...readers, genesis: async () => failing("https://genesiscinemas.com/") };
+    await expect(refreshLive({ now: LATER, root: dir, fetchText: failing, readers: broken })).rejects.toThrow(/lagocine\.com answered 503.*genesiscinemas\.com answered 503/s);
   });
 });
 

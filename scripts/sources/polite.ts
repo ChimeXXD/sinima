@@ -5,7 +5,9 @@
 export type FetchText = (url: string) => Promise<string>;
 
 /** A listing that moves once or twice is normal; more is a loop. */
-const MAX_REDIRECTS = 3;
+export const MAX_REDIRECTS = 3;
+/** How long a page may take to answer (and, in the browser, to render) before the read fails. */
+export const PAGE_TIMEOUT_MS = 30_000;
 
 type Rule = { allow: boolean; pattern: string };
 type Group = { agents: string[]; rules: Rule[] };
@@ -61,26 +63,41 @@ export function robotsAllows(robotsTxt: string, userAgent: string, path: string)
   return best?.allow ?? true;
 }
 
-/** A reader for one run. Calls are expected one after another, as refresh makes them. */
-export function politeFetcher(options: {
+export type PoliteOptions = {
   userAgent: string;
   minGapMs: number;
   fetch?: typeof globalThis.fetch;
   wait?: (ms: number) => Promise<void>;
   now?: () => number;
-}): FetchText {
+};
+
+/** The rules one run shares between its readers, so the gap to a host holds whichever reader asks. */
+export type PoliteRules = {
+  userAgent: string;
+  /** Waits until `minGapMs` has passed since the last request to `host`, then counts this one. */
+  pace: (host: string) => Promise<void>;
+  /** One paced request with our name, no redirect followed, 30 s to answer. */
+  request: (url: string) => Promise<Response>;
+  /** Throws unless `url` is on the same site as `from` and robots.txt lets us read its path. */
+  check: (url: string, from: string) => Promise<void>;
+};
+
+export function politeRules(options: PoliteOptions): PoliteRules {
   const { userAgent, minGapMs, fetch = globalThis.fetch, wait = (ms) => new Promise((done) => setTimeout(done, ms)), now = Date.now } = options;
   const lastAt = new Map<string, number>();
   const robots = new Map<string, Promise<string>>();
 
-  async function request(url: string): Promise<Response> {
-    const host = new URL(url).host;
+  async function pace(host: string): Promise<void> {
     const last = lastAt.get(host);
     if (last !== undefined && last + minGapMs > now()) await wait(last + minGapMs - now());
     lastAt.set(host, now());
+  }
+
+  async function request(url: string): Promise<Response> {
+    await pace(new URL(url).host);
     // A server that never answers fails the run in 30 s, not at the job's 15-minute limit.
     // Redirects are followed by hand, so each hop is checked before it is requested (below).
-    return fetch(url, { headers: { "user-agent": userAgent }, redirect: "manual", signal: AbortSignal.timeout(30_000) });
+    return fetch(url, { headers: { "user-agent": userAgent }, redirect: "manual", signal: AbortSignal.timeout(PAGE_TIMEOUT_MS) });
   }
 
   function robotsFor(origin: string): Promise<string> {
@@ -96,13 +113,25 @@ export function politeFetcher(options: {
     return text;
   }
 
-  /** A redirect's target, checked before it is requested: the same site, and a path robots.txt allows. */
+  /** A page or a redirect's target, checked before it is requested: the same site, and a path robots.txt allows. */
   async function check(url: string, from: string): Promise<void> {
     const { origin, pathname, search } = new URL(url);
     if (origin !== new URL(from).origin) throw new Error(`${from} redirected to another site (${origin}). Not read.`);
     if (!robotsAllows(await robotsFor(origin), userAgent, pathname + search)) throw new Error(`${url}: robots.txt asks bots not to read this path. Not read.`);
   }
 
+  return { userAgent, pace, request, check };
+}
+
+/** The rules given, or new ones for this reader alone. */
+export const rulesFrom = (options: PoliteOptions | { rules: PoliteRules }): PoliteRules => ("rules" in options ? options.rules : politeRules(options));
+
+/** The error for a page that answered with anything but success: a refusal is final (D-77). */
+export const refusal = (url: string, status: number) => new Error(`${url} answered ${status}. A refusal is final: not retried (D-77).`);
+
+/** A reader for one run. Calls are expected one after another, as refresh makes them. */
+export function politeFetcher(options: PoliteOptions | { rules: PoliteRules }): FetchText {
+  const { request, check } = rulesFrom(options);
   return async (start) => {
     let url = start;
     await check(url, url);
@@ -110,7 +139,7 @@ export function politeFetcher(options: {
       const response = await request(url);
       const location = response.status >= 300 && response.status < 400 ? response.headers.get("location") : null;
       if (location === null) {
-        if (!response.ok) throw new Error(`${url} answered ${response.status}. A refusal is final: not retried (D-77).`);
+        if (!response.ok) throw refusal(url, response.status);
         return response.text();
       }
       if (hop === MAX_REDIRECTS) throw new Error(`${start} redirected more than ${MAX_REDIRECTS} times. Not read.`);

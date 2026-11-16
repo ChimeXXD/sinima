@@ -3,8 +3,9 @@
 # Lagocine for the cinemas data/sources.json gives it), writes data/live/, and commits it; Vercel
 # deploys the commit, and the build's `refresh --build` puts that data where the pages read it.
 #
-# A source that can't be read fails the run, so nothing is committed and the site keeps the last
-# good data; its pages then say how old the times are (DATA §Freshness).
+# A source that can't be read keeps its last good showings, marked failing and dated when they
+# were read, so its pages say how old the times are (DATA §Freshness, D-119). Only when every source
+# fails does the run fail, and then nothing is committed.
 #
 # Times are UTC: 05:17, 11:17, 15:17 UTC = 06:17, 12:17, 16:17 in Lagos. Odd minutes avoid the
 # top-of-hour queue. Three runs a day is the most data/sources.json allows a source (rateLimit).
@@ -41,6 +42,11 @@ jobs:
           cache: npm
 
       - run: npm ci
+
+      # Readers of listings built by script open them in a headless Chromium (D-119). The browser
+      # starts only when such a reader runs, and closes at the end of the read.
+      - name: Install the headless browser
+        run: npx playwright install --with-deps chromium
 
       - name: Read the cleared sources, validate, write data/live/
         run: npm run refresh -- --live

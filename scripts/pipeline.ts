@@ -1,6 +1,6 @@
 // The pure steps between a parser's rows and the data files: film ids, sample dates (D-20),
 // building and validating schema v1, and the per-area split (D-18). No file or network access.
-import type { Cinema, Film, Showing, ShowtimesFile, Source } from "../src/lib/data/types.ts";
+import type { Cinema, Film, Showing, ShowtimesFile, Source, SourceHealth } from "../src/lib/data/types.ts";
 import { validateShowtimes } from "../src/lib/data/validate.ts";
 import { EVENING_ENDS_HOUR, lagosDaysFrom, lagosLocalToUtc, toLagos } from "../src/lib/time/lagos.ts";
 import type { RawShowing } from "./sources/raw.ts";
@@ -15,6 +15,10 @@ export type Batch = {
   /** True for a listing that compiles other sites (Lagocine): its rows then say which site it read. */
   through: boolean;
   showings: RawShowing[];
+  /** "failing" for a source that could not be read this time, whose last good rows are kept (D-119). */
+  health?: SourceHealth;
+  /** When the source was last read without a problem, if not `fetchedAt`. */
+  lastOkAt?: string | null;
 };
 
 // "(IMAX)", "[3D]", "(IMAX 2D)" at the end of a title: a format, not part of the film's name.
@@ -44,6 +48,71 @@ export function filmIdFromTitle(title: string): string {
     .replace(/^-+|-+$/g, "");
   if (id === "") throw new Error(`Cannot make a film id from the title "${title}"`);
   return id;
+}
+
+/** Where a subtitle starts: ":" or a dash with a space each side ("Spider-Man" has none). */
+const SUBTITLE_SEPARATOR = /:\s*|\s+[-–—]\s+/g;
+
+/**
+ * Every source's title to one film (D-119), so "AGBARA NLA" (Veezi) and "Agbara Nla: The Return"
+ * (Lagocine) are one film. Titles that make the same id are one film. A short title joins a longer
+ * one only when the longer is the short one followed by a subtitle separator, never on a bare prefix
+ * ("Ikenga" is not "Ikenga 2"), and only when exactly one longer film starts that way. Chime's
+ * aliases (data/film-aliases.json, by the source's title or by the id it makes) settle the rest.
+ * The id is the longer title's, so data/credits.json keeps lining up; the title shown is that
+ * film's own, as a source writes it in mixed case if any does.
+ */
+/** The ids of a title's shorter spellings: what comes before each subtitle separator ("agbara-nla" for "Agbara Nla: The Return"). */
+export function subtitleHeadIds(title: string): string[] {
+  const shown = filmTitle(title);
+  const heads = [...shown.matchAll(SUBTITLE_SEPARATOR)].map((found) => shown.slice(0, found.index)).filter((head) => /[a-z0-9]/i.test(head));
+  return [...new Set(heads.map(filmIdFromTitle))].filter((id) => id !== filmIdFromTitle(title));
+}
+
+export function matchFilms(titles: string[], aliases: Record<string, string>): { films: Map<string, { id: string; title: string }>; log: string[] } {
+  const log: string[] = [];
+  const distinct = [...new Set(titles)];
+  const ownId = new Map(distinct.map((title) => [title, filmIdFromTitle(title)]));
+  const ids = new Set(ownId.values());
+
+  // For each id, the longer films whose title is it plus a subtitle.
+  const longer = new Map<string, Set<string>>();
+  for (const [title, id] of ownId) {
+    for (const headId of subtitleHeadIds(title)) if (ids.has(headId)) longer.set(headId, (longer.get(headId) ?? new Set()).add(id));
+  }
+  // "Mission: Impossible" and "Mission: Impossible - The Final Reckoning" both lead to one film; two
+  // different films (two Avatar sequels) mean the short title can't be placed, so it stays itself.
+  const roots = new Map<string, string>();
+  const root = (id: string): string => {
+    let found = roots.get(id);
+    if (found === undefined) {
+      const ends = new Set([...(longer.get(id) ?? [])].map(root));
+      found = ends.size === 1 ? ([...ends][0] as string) : id;
+      if (ends.size > 1) log.push(`films: "${distinct.find((title) => ownId.get(title) === id)}" could be ${[...ends].join(" or ")}; kept apart (add it to data/film-aliases.json)`);
+      roots.set(id, found);
+    }
+    return found;
+  };
+
+  // Own keys only: a film called "Constructor" must not find Object's.
+  const alias = (key: string) => (Object.hasOwn(aliases, key) ? aliases[key] : undefined);
+  const idOf = new Map(distinct.map((title) => {
+    const id = ownId.get(title) as string;
+    return [title, alias(title.trim()) ?? alias(filmTitle(title)) ?? alias(id) ?? alias(root(id)) ?? root(id)];
+  }));
+  const films = new Map<string, { id: string; title: string }>();
+  for (const id of new Set(idOf.values())) {
+    const members = distinct.filter((title) => idOf.get(title) === id);
+    const own = members.filter((title) => ownId.get(title) === id);
+    const pool = (own.length > 0 ? own : members).map(filmTitle);
+    const mixed = pool.filter((title) => /[a-z]/.test(title));
+    const title = (mixed.length > 0 ? mixed : pool).reduce((best, next) => (next.length > best.length ? next : best));
+    for (const member of members) {
+      films.set(member, { id, title });
+      if (filmTitle(member) !== title) log.push(`films: "${filmTitle(member)}" is shown as "${title}"`);
+    }
+  }
+  return { films, log };
 }
 
 /** The Lagos calendar date `days` after today. */
@@ -80,8 +149,13 @@ export function buildShowtimes(input: {
   sources: Source[];
   cinemas: Cinema[];
   batches: Batch[];
-  /** What data/credits.json and Chime's own entries say about a film, if anything. */
-  creditsFor?: (filmId: string) => Pick<Film, "tmdbId" | "runtimeMin" | "credits" | "posterPath" | "trailerKey"> | undefined;
+  /** Chime's film aliases (data/film-aliases.json): a source's title or id to a film id (D-119). */
+  aliases?: Record<string, string>;
+  /**
+   * What data/credits.json and Chime's own entries say about a film, if anything: under its id
+   * first, then under the ids of the other spellings merged into it (D-119).
+   */
+  creditsFor?: (filmId: string, spellings?: string[]) => Pick<Film, "tmdbId" | "runtimeMin" | "credits" | "posterPath" | "trailerKey"> | undefined;
 }): {
   file: ShowtimesFile;
   log: string[];
@@ -90,6 +164,18 @@ export function buildShowtimes(input: {
   const cinemaById = new Map(input.cinemas.map((cinema) => [cinema.id, cinema]));
   const films = new Map<string, Film>();
   const showings: Showing[] = [];
+  // Films are matched across every source before ids are made (D-119).
+  const titles = input.batches.flatMap((batch) => batch.showings.filter((row) => cinemaById.has(row.cinemaId)).map((row) => row.filmTitle));
+  const matched = matchFilms(titles, input.aliases ?? {});
+  log.push(...matched.log);
+  // Each film's other spellings, in the order first seen, for its credits.
+  const spellings = new Map<string, string[]>();
+  for (const [title, { id }] of matched.films) {
+    const own = filmIdFromTitle(title);
+    const list = spellings.get(id) ?? [];
+    if (own !== id && !list.includes(own)) list.push(own);
+    spellings.set(id, list);
+  }
 
   for (const batch of input.batches) {
     const seen = new Set<string>();
@@ -101,13 +187,13 @@ export function buildShowtimes(input: {
         unknown.set(row.cinemaId, (unknown.get(row.cinemaId) ?? 0) + 1);
         continue;
       }
-      const filmId = filmIdFromTitle(row.filmTitle);
+      const { id: filmId, title } = matched.films.get(row.filmTitle) as { id: string; title: string };
       const film = films.get(filmId);
       if (!film) {
         films.set(filmId, {
-          id: filmId, title: filmTitle(row.filmTitle), runtimeMin: null, rating: row.rating, origin: null, tmdbId: null,
+          id: filmId, title, runtimeMin: null, rating: row.rating, origin: null, tmdbId: null,
           credits: { ...UNKNOWN_CREDITS, sources: [] },
-          ...input.creditsFor?.(filmId),
+          ...input.creditsFor?.(filmId, spellings.get(filmId) ?? []),
         });
       } else if (film.rating === null) {
         film.rating = row.rating;
