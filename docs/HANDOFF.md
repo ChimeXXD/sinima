@@ -1,14 +1,63 @@
 # Handoff: read this first when you pick the project back up
 
-## Now: motion audit built (16 Nov 2026, latest)
+## Now: session of 16 Nov 2026 (afternoon), round 2, lighter hovers and the motion audit (latest)
 
-**What Chime asked (D-112):** audit every animation with the design-engineering skills in a sensible order, then build every recommendation. All 22 are built (PROGRESS's top entry lists them, with the measurements).
+Everything below is committed and pushed (last commit `fc3bcdc`); the full gate passed on it.
 
-**New pieces to know:** `ui/inputMode.ts` (html[data-input] = keys | pointer, and `byKeys()`), `html[data-arrived]` set by `tabSlide.ts` after the first move inside the site, `afterPaint()` and `bump()` in `ui/motion.ts`, `onShare` in `PosterTravel.tsx`, `public/brand/wordmark.svg`.
+### What Chime asked, in order, and what was done
 
-**Waiting on Chime:** the phone check; still: Figma's toast colours, D-108, TMDB logo, Abuja cinemas.
+1. **Review round 2 (D-109)** from a screen recording (BetterShot_2026-11-16-14-37-16.mov):
+   - Cinemas page with hearts: approved.
+   - Tab change looked instant: page slide 12 px / 220 ms → 40 px / 300 ms (`--dur-page`).
+   - Pickers (Area, Day, Format) and "Lagos ⌄" covered their own button: on a computer they are now Design Bookmark's **Spring dropdown** (`ui/SpringMenu.tsx`, their springs as-is), 8 px under the trigger, no scrim, chevron turns up (`--spring-chevron`), picked value rolls in (`--spring-roll`), press spring (`--spring-press`). Phones keep sheets. The computer menus load lazily (`cinemas/PickerMenus.tsx`).
+   - Toast too dark: `--toast-info` blue-600, `--toast-error` (Figma red/500 deepened); `tone` prop. Chime will send Figma's own toast colours later.
+   - Pull cord: bulb drawn before the shade, so it is half hidden, like the reference.
+   - Chime's call on the city tip: "just do your suggestion": the computer city menu shows "To see both cities at once, search: results are grouped by city."
+2. **Hovers too dark (D-110, then D-111):** one token for every grey hover: `--hover-fill` (surface + 2 % text colour), `--hover-fill-raised` (chips, 2 %), `--hover-fill-page` (rows on the page, 1 %), sheet close 3 %. `tests/unit/hover-fill.test.ts` fails if a stylesheet mixes its own grey again.
+3. **Motion audit (D-112):** Chime asked to use the 18 skills in the right order to check every animation, 60 fps, what to cut, what to add. Order used: improve-animations → review-animations (by hand) → animation-performance → remove-animations (report only) → find-animation-opportunities → animation-vocabulary. Pick page: `mockup/motion-audit/index.html`. Audit files (scratchpad, not in the repo): 1-survey-review.md, 2-performance.md, 3-cut-add.md, results-*.json, results-latency.txt. Chime: "do all your recommendations": 22 built in 8 units (F1–F13, C4–C9, N1–N3); kept as they were: 40 px page slide, nav icon pop, card lift. Full list and numbers in PROGRESS's top entry.
 
-**Gotchas:** before a commit, build with the sample data at 08:00 (`node scripts/refresh.ts --fixtures --now $(TZ=Africa/Lagos date +%F)T07:00:00Z && npx next build`): the gate serves the existing out/ (CI=true), and `npm run build` late in the day drops the day's earlier showings, failing cinema-screen's first test. Tests with a paused clock (freeze) can't run rAF or setTimeout: deferred work uses scheduler.postTask where it exists.
+### Measured results (Chromium, phone at 4x/8x CPU)
+
+- Every animation itself holds 60 fps; dropped frames are React drawing a new page or list.
+- Tab switch: forced layouts 354 → 28 (34 → 11 ms) at 4x; at 8x still 6–10 missed frames (11 before).
+- Tap to first frame at 8x: heart 122–137 → 7–12 ms; Today/Tomorrow 91–95 → 7–9 ms.
+- Budget: the wordmark moved out of every page's script into `public/brand/wordmark.svg` (CSS mask; forced-colours fallback; cached by the service worker on install): about 2.6 KB JS and 2.4 KB HTML less per page. Heaviest page 163.5 of 165 KB JS.
+
+### Partly done, on purpose (told Chime)
+
+- F2: the nav pill still moves on the page's thread (it pauses with its tab names while React draws a new page); only the forced layouts were removed.
+- F3: only the heart and Today/Tomorrow defer their work; a poster's press is already instant CSS.
+- F7's aside: the browser's own Back button makes no poster travel (the in-app back does).
+
+### New pieces to know
+
+- `ui/inputMode.ts`: `html[data-input="keys" | "pointer"]` and `byKeys()`. CSS turns motion off under keys (sheets, search panel, chevrons, tick, share ✓); scripts ask `byKeys()` (pop, bump, let go, Show more).
+- `html[data-arrived]` (set in `tabSlide.ts` on every page after the first): hero stickers and the film poster press on only on a fresh page.
+- `ui/motion.ts`: `afterPaint()` (scheduler.postTask background, else rAF + setTimeout), `bump()` (the Your cinemas count), `pop()` (per-keyframe easing).
+- `PosterTravel.tsx` `onShare`: rewrites the view-transition group's keyframes into one transform.
+- `Toast` `stamp` prop restarts its time without remounting; it leaves with `data-leaving`.
+- `SpringMenu` exposes `data-state` (open, closed, moving) for tests.
+
+### Waiting on Chime
+
+- Phone check of rounds 1–2 and the audit (iPhone Safari and one Android): the swipe and catch, nav springs, pull cord, poster travel, hearts.
+- Figma's toast colours (info, error, maybe success).
+- Their own run of `/review-animations` (final strict pass) and `/learn-taste` (save this session's corrections): only Chime can start those.
+- Still open from before: D-108 (late-loaded code and the page limit), TMDB logo (D-99 i), Abuja's cinemas, focus after Show more / letting go.
+
+### Next steps (offered, not started)
+
+- Run **mobile-native** (phone details: touch, Safari, 100vh, notch) and **break-ui** (worst-case data) over the new motion: the last two steps of the order given to Chime.
+- Fix the real GitHub CI the same way as below (it builds at the real hour, so cinema-screen's first test would fail there late in the day).
+
+### Gotchas
+
+- **Before committing, build with the sample data at 08:00:** `node scripts/refresh.ts --fixtures --now "$(TZ=Africa/Lagos date +%F)T07:00:00Z" && npx --no-install next build`. The proof gate runs Playwright with CI=true, which serves the existing out/; a plain `npm run build` late in the day drops the day's earlier showings and fails `cinema-screen.spec.ts:23`. It is not flaky.
+- Tests that freeze the clock (paused) can't run rAF or setTimeout; deferred work uses `scheduler.postTask` where it exists, so Chromium tests still see it.
+- Poster-travel tests need the 1.5 s wait after `goto` (prefetch), or the click is a plain navigation with no transition.
+- Touch-drag tests: a fast pull is a flick and closes the sheet; pull slowly to test a snap-back.
+- Memory: Figma and Dia open together leave too little room for a build; one dev server at a time.
+- The JS budget has about 1.5 KB left on the heaviest page: anything for one screen should load late.
 
 ## Earlier: review round 2 built (16 Nov 2026)
 
