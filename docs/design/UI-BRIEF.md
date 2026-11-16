@@ -57,7 +57,7 @@ Live in code; this table is a copy for reading. `tests/unit/tokens.test.ts` chec
 - Nothing needs motion to be understood.
 - Press feedback on buttons: 120 ms, `cubic-bezier(0.2, 0, 0, 1)` (`--motion-fast`, `--motion-ease`).
 - The countdown changes its text without animation.
-- Optional later: banner slide-in, chip appear. With `prefers-reduced-motion`: none of it.
+- Optional later: banner slide-in, chip appear. With `prefers-reduced-motion`: gentler, not none (fades stay, movement goes); the motion that was built since is in `DESIGN.md` › Motion and D-102 to D-112.
 
 ## 4. Pages
 
