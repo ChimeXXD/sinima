@@ -48,11 +48,11 @@
   --bg-surface: light-dark(#f4f4f5, #18181b);
   --bg-raised: light-dark(#ffffff, #18181b);
   --bg-accent-soft: light-dark(#eef3ff, #0b1b3f);
-  /* The one hover fill (D-110): the Spring dropdown's highlight, half as dark as round 2's, mixed
+  /* The one hover fill (D-110): the Spring dropdown's highlight, a third lighter again (D-111), mixed
      with the text colour so it shows in both themes. Rows that sit on the page take half again. */
-  --hover-fill: color-mix(in srgb, var(--bg-surface), var(--text-primary) 3%);
-  --hover-fill-page: color-mix(in srgb, var(--bg-page), var(--text-primary) 1.5%);
-  --hover-fill-raised: color-mix(in srgb, var(--bg-raised), var(--text-primary) 3%); /* chips on the raised colour */
+  --hover-fill: color-mix(in srgb, var(--bg-surface), var(--text-primary) 2%);
+  --hover-fill-page: color-mix(in srgb, var(--bg-page), var(--text-primary) 1%);
+  --hover-fill-raised: color-mix(in srgb, var(--bg-raised), var(--text-primary) 2%); /* chips on the raised colour */
   /* Toasts by context (D-109 d): a lighter blue than the navy, the lightest that keeps white words
      readable (5.2:1); an error in Sinima's red, deepened for the same reason, never pure red. */
   --toast-info: var(--p-blue-600);

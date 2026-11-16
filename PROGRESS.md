@@ -2,6 +2,12 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 16 Nov 2026 — hovers lighter again (D-111)
+
+- **Changed:** `--hover-fill` and `--hover-fill-raised` 3 % → 2 %, `--hover-fill-page` 1.5 % → 1 %, sheet close 4 % → 3 %.
+- **Checked:** unit test (values), round2 and states e2e, build, budget, screenshots light and dark. Code review skipped: token values only, no behaviour.
+- **Not verified:** whether 2 % still reads in dark mode on Chime's screen.
+
 ## 16 Nov 2026 — lighter hovers, city tip (D-110)
 
 - **Changed:** every grey hover is one token, half as dark: `--hover-fill` (surface + 3 % text colour, was 5–8 % per element), `--hover-fill-page` for rows on the page (1.5 %, was 3 %), `--hover-fill-raised` for chips (3 %, was 6 %), the sheet's close button 4 % (was 8 %). The computer's city menu shows the sheet's tip under the cities (described to screen readers through `aria-describedby`).
