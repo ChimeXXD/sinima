@@ -3,6 +3,7 @@
 import { Link, useCity } from "@/components/ui/CityLink";
 import { createContext, useEffect, useRef, useState } from "react";
 import { useDesktop } from "./useDesktop";
+import "./inputMode"; // which input came last, for no motion on keys (D-112)
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useServiceWorker } from "@/lib/offline";
 import { useSaved } from "@/lib/saved";
@@ -12,7 +13,6 @@ import { SearchBar, type CityChoice } from "./SearchBar";
 import { SectionNav, type SectionId } from "./SectionNav";
 import { useTabSlide } from "./tabSlide";
 import { TicketFace } from "./Stickers";
-import { WORDMARK } from "./wordmark-paths";
 import s from "./frame.module.css";
 
 // The frame every rebuilt screen shares (Figma Design screens): on phones and iPads the lockup and
@@ -41,11 +41,9 @@ export function Lockup() {
     <Link href="/" className={s.lockup} data-testid="wordmark">
       <TicketFace height={30} />
       <span className={s.hidden}>Sinima</span>
-      <svg viewBox={WORDMARK.viewBox} width={53.5} height={13.3} aria-hidden="true" focusable="false">
-        {WORDMARK.paths.map((d) => (
-          <path key={d} d={d} fill="currentColor" />
-        ))}
-      </svg>
+      {/* The wordmark (Figma 112:1291) is a static file painted in the text colour, not paths in
+          the page's script: 2.4 KB less on every page (D-112). */}
+      <span className={s.wordmark} aria-hidden="true" />
     </Link>
   );
 }

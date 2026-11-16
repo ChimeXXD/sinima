@@ -8,7 +8,8 @@ import s from "./springMenu.module.css";
 // D-109 c: Design Bookmark's Spring dropdown (designbookmark.com/motion#db-spring-dropdown), in
 // Sinima's look, for the pickers and "Lagos ⌄" on a computer. It opens under its trigger, which
 // stays in view (no scrim): the menu's height is a spring (300/23), so it drops with a little
-// overshoot as it widens from 90 %; the rows fall in 45 ms apart (300/24); the hover highlight has a
+// overshoot as it widens from 90 %; the rows fall in 45 ms apart (300/24), the sixth
+// onward together, so the last starts by 275 ms (D-112 C4); the hover highlight has a
 // stiff leading edge (620/36) and a soft trailing one (200/20), so it stretches between rows; a pick
 // draws its tick (260/26) and the menu folds away 0.24 s later. Keys: arrows move the highlight at
 // once (no motion on keyboard actions), Enter picks, Escape closes; so does a press outside it.
@@ -148,7 +149,7 @@ export function SpringMenu({ open, anchor, instant = false, options, columns = 1
       rows.forEach((row, i) => {
         const go = () => (row.s.t = isOpen ? 1 : 0);
         if (keys || reduce) go();
-        else timers.push(setTimeout(go, next ? 50 + Math.min(i, 8) * 45 : (n - 1 - i) * 20));
+        else timers.push(setTimeout(go, next ? 50 + Math.min(i, 5) * 45 : (n - 1 - i) * 20));
       });
       if (next) {
         // The tick starts where the selection is now: it may have changed while the menu was closed.

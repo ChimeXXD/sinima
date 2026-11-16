@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Icon, type IconName } from "@/components/ui/Icon";
-import { markKeys } from "@/components/ui/motion";
 import { Sheet } from "@/components/ui/Sheet";
 import { useDesktop } from "@/components/ui/useDesktop";
 import type { ChangeHow } from "@/components/ui/useSwapIn";
@@ -87,7 +86,6 @@ export function Pickers(props: PickersProps) {
                 if (desktop && !Menus) fetchMenus();
                 setRolled(null); // the last pick's roll is spent: a later change from elsewhere doesn't roll
                 setKeys(event.detail === 0);
-                markKeys(event);
                 setOpen((now) => (now === which && desktop ? null : which));
               }}
               data-testid={`pick.${which}`}

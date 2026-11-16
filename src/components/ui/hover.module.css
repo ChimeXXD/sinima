@@ -4,10 +4,16 @@
    passes over dozens of cards. Reduced motion: no lift. */
 @media (hover: hover) and (pointer: fine) {
   /* Doubled to outrank a card's own press transition (its sheet may load later); the press then
-     eases at this timing too. */
+     eases at this timing too. It lists the cards' fill fades as well, or it would cancel them
+     (D-112 F10). */
   .lift.lift,
   .poster {
-    transition: transform var(--dur-fast) ease;
+    transition:
+      transform var(--dur-fast) ease,
+      background-color var(--dur-fast) ease,
+      border-color var(--dur-fast) ease,
+      box-shadow var(--dur-fast) ease,
+      color var(--dur-fast) ease;
   }
   .lift:hover:not(:active) {
     transform: translateY(-2px);

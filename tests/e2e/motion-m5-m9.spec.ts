@@ -97,7 +97,8 @@ test.describe("M7: cards lift under a pointer", () => {
     const next = page.locator('[data-testid^="next.card."]').first();
     await next.hover();
     await expect.poll(() => next.evaluate((el) => getComputedStyle(el).transform)).toBe("matrix(1, 0, 0, 1, 0, -2)");
-    expect(await next.evaluate((el) => getComputedStyle(el).transitionDuration)).toBe("0.16s");
+    // The lift and, since D-112 F10, the card's fill fades, all at 0.16 s.
+    expect((await next.evaluate((el) => getComputedStyle(el).transitionDuration)).split(", ").every((d) => d === "0.16s")).toBe(true);
   });
 });
 
@@ -108,27 +109,23 @@ test("M7: on a touch screen (the phone project) nothing lifts", async ({ page })
   expect(await card.locator("span").first().evaluate((el) => getComputedStyle(el).transitionProperty)).not.toContain("transform");
 });
 
-test.describe("M8: search results as you type", () => {
+test.describe("M8, D-112 C5: search results as you type", () => {
   /** The search hits with a running fade, and those without. */
   const hits = (page: Page) =>
     page.locator('[data-testid^="search.hit."]').evaluateAll((els) =>
       els.map((el) => ({ id: el.getAttribute("data-testid")!, fading: el.getAnimations().some((a) => /resultIn/.test((a as CSSAnimation).animationName)) })),
     );
 
-  test("a film that joins the results fades in; the ones already there stay still", async ({ page }) => {
+  // D-112 C5 supersedes M8: typing is a keyboard action, so no result fades in.
+  test("results appear as you type with no fade", async ({ page }) => {
     await page.goto("/lagos");
     await page.getByTestId("search.field").click();
     await page.getByTestId("search.query").fill("the c");
-    const narrow = await hits(page);
-    expect(narrow.length).toBeGreaterThan(0);
-    await page.waitForTimeout(400); // their own fade is over
     await page.getByTestId("search.query").fill("the");
     const wide = await hits(page);
-    const before = new Set(narrow.map((hit) => hit.id));
-    expect(wide.filter((hit) => before.has(hit.id)).every((hit) => !hit.fading)).toBe(true);
-    const joined = wide.filter((hit) => !before.has(hit.id));
-    expect(joined.length).toBeGreaterThan(0);
-    expect(joined.every((hit) => hit.fading)).toBe(true);
+    expect(wide.length).toBeGreaterThan(0);
+    expect(wide.some((hit) => hit.fading)).toBe(false);
+    expect(await page.locator('[data-testid^="search.hit."]').first().evaluate((el) => getComputedStyle(el).animationName)).toBe("none");
   });
 
   test("with reduced motion nothing fades", async ({ page }) => {

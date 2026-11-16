@@ -1,5 +1,6 @@
 "use client";
 
+import { byKeys } from "@/components/ui/inputMode";
 import { Link } from "@/components/ui/CityLink";
 import { useEffect, useRef, useState } from "react";
 import { Poster } from "@/components/Poster";
@@ -90,16 +91,18 @@ export function LaterRow({ data, row, now, line, enter, onOpen }: { data: ListDa
 /** Rows, six at first, then "Show 8 more" shows the rest. */
 export function LaterList({ data, rows, now, onOpen, testId }: { data: ListData; rows: ListRow[]; now: string | null; onOpen: (row: ListRow) => void; testId: string }) {
   const [all, setAll] = useState(false);
+  /** Shown with a key: the rows are there at once, no wave (D-112 F5). */
+  const [keys, setKeys] = useState(false);
   const shown = all ? rows : rows.slice(0, FIRST);
   return (
     <>
       <div className={s.rows} data-testid={testId}>
         {shown.map((row, i) => (
-          <LaterRow key={`${row.cinema}-${row.film}-${row.at}`} data={data} row={row} now={now} enter={i >= FIRST ? i - FIRST : undefined} onOpen={onOpen} />
+          <LaterRow key={`${row.cinema}-${row.film}-${row.at}`} data={data} row={row} now={now} enter={i >= FIRST && !keys ? i - FIRST : undefined} onOpen={onOpen} />
         ))}
       </div>
       {!all && rows.length > FIRST && (
-        <button type="button" className={s.more} onClick={() => setAll(true)} data-testid={`${testId}.more`}>
+        <button type="button" className={s.more} onClick={() => (setKeys(byKeys()), setAll(true))} data-testid={`${testId}.more`}>
           {showMore(rows.length - FIRST)}
         </button>
       )}

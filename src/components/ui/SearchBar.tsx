@@ -1,7 +1,6 @@
 "use client";
 
 import { Icon } from "./Icon";
-import { markKeys } from "./motion";
 import { useDesktop } from "./useDesktop";
 import s from "./inputs.module.css";
 
@@ -29,7 +28,7 @@ export function SearchBar({ city, value, onChange, onSubmit, onCity, cityOpen = 
       <Icon name="search" size={18} className={s.searchIcon} />
       <input ref={inputRef} onFocus={onFocus} className={s.field} type="search" placeholder="Find a film" aria-label="Find a film" value={value} onChange={(event) => onChange(event.target.value)} onKeyDown={(event) => event.key === "Enter" && !event.nativeEvent.isComposing && onSubmit?.()} autoComplete="off" enterKeyHint="search" data-testid={`${testId}.field`} />
       {onCity ? (
-        <button type="button" className={s.city} aria-haspopup={desktop ? "listbox" : "dialog"} aria-expanded={cityOpen} aria-label={`City: ${CITY_NAMES[city]}. Change city`} onClick={(event) => (markKeys(event), onCity(event))} data-testid={`${testId}.city`}>
+        <button type="button" className={s.city} aria-haspopup={desktop ? "listbox" : "dialog"} aria-expanded={cityOpen} aria-label={`City: ${CITY_NAMES[city]}. Change city`} onClick={onCity} data-testid={`${testId}.city`}>
           {pill}
         </button>
       ) : (

@@ -51,6 +51,12 @@
 .sheet[data-pulling]::backdrop {
   transition: none;
 }
+/* D-112 F4: opened with Enter or closed with Escape (or a key on its buttons), it appears and goes
+   at once: no motion on keyboard actions. */
+:global(html[data-input="keys"]) .sheet,
+:global(html[data-input="keys"]) .sheet::backdrop {
+  transition: none;
+}
 @starting-style {
   .sheet[open]::backdrop {
     opacity: 0;

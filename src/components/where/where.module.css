@@ -316,12 +316,6 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .card {
-    transition: none;
-  }
-}
-
 /* D-106 c, d: a picked state fades in (fill, edge, colour, shadow, on `ease`), and on a pointer
    device a hover answers with a quiet tint; the press keeps its own quick timing. */
 .card {
@@ -333,5 +327,12 @@
 @media (hover: hover) and (pointer: fine) {
   .card:hover:not(:active, [aria-pressed="true"]) {
     box-shadow: inset 0 0 0 2.5px var(--border-divider);
+  }
+}
+/* Reduced motion: no press scale; the colour fades stay (gentler, not none). After the rules above,
+   or they win (D-112 F11). */
+@media (prefers-reduced-motion: reduce) {
+  .card:active {
+    transform: none;
   }
 }

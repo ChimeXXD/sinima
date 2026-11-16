@@ -1,17 +1,21 @@
 import { expect, test } from "@playwright/test";
 
 // The Ticket S logo (D-42) in the header, the browser tab, the home screen and the manifest.
-test("the header shows the Ticket S mark beside the name", async ({ page }) => {
+test("the header shows the Ticket S mark beside the name", async ({ page, request }) => {
   await page.goto("/lagos");
   const brand = page.getByTestId("wordmark");
   await expect(brand).toHaveText("Sinima");
-  // Figma's lockup (D-82): the ticket face, then the wordmark drawn as a second svg.
+  // Figma's lockup (D-82): the ticket face, then the wordmark (since D-112 a static svg painted
+  // through a mask, so its paths aren't in every page's script).
   const mark = brand.locator("svg").first();
   await expect(mark).toBeVisible();
   await expect(mark).toHaveAttribute("aria-hidden", "true"); // the name beside it is the label
   // The ticket is one cut shape: the notches and tear-line dots are holes, not painted circles.
   await expect(mark.locator("path").first()).toHaveAttribute("fill-rule", "evenodd");
-  await expect(brand.locator("svg").last()).toHaveAttribute("aria-hidden", "true");
+  const word = brand.locator("span[aria-hidden]").first();
+  await expect(word).toBeVisible();
+  expect(await word.evaluate((el) => getComputedStyle(el).maskImage)).toContain("/brand/wordmark.svg");
+  expect((await request.get("/brand/wordmark.svg")).ok()).toBe(true);
 });
 
 test("the tab icon, home-screen icon and manifest icons all load", async ({ page, request }) => {

@@ -13,11 +13,10 @@
   font: var(--type-caption);
 }
 
-/* Countdowns arrive after the page is drawn (rule 3): they fade up into place. */
+/* Countdowns arrive after the page is drawn (rule 3): they fade in, with no move (D-112 C9). */
 @keyframes arrive {
   from {
     opacity: 0;
-    transform: translateY(4px);
   }
 }
 
@@ -32,7 +31,7 @@
   background: var(--bg-raised);
   box-shadow: var(--fx-shadow-pill);
   white-space: nowrap;
-  animation: arrive var(--dur-base) var(--ease-out);
+  animation: arrive var(--dur-fast) var(--ease-out);
 }
 .lead {
   color: var(--text-secondary);
@@ -53,7 +52,7 @@
   background: var(--bg-raised);
   box-shadow: var(--fx-shadow-pill);
   white-space: nowrap;
-  animation: arrive var(--dur-base) var(--ease-out);
+  animation: arrive var(--dur-fast) var(--ease-out);
 }
 .ring {
   position: relative;
@@ -268,18 +267,9 @@ button.chip:active {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pill,
-  .badge {
-    animation-name: fade;
-  }
   .book:active,
   button.chip:active {
     transform: none;
-  }
-}
-@keyframes fade {
-  from {
-    opacity: 0;
   }
 }
 

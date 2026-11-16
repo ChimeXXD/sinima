@@ -114,8 +114,8 @@ self.addEventListener("fetch", (event) => {
     return;
   }
   // Pages (and the page data Next fetches when you move between them), the times files, and the
-  // files whose names stay the same when they change (fonts, stickers, logos, icons).
-  if (request.mode === "navigate" || url.searchParams.has("_rsc") || /^\/(data|fonts|stickers|logos|icons)\//.test(url.pathname) || request.headers.get("accept")?.includes("text/html")) {
+  // files whose names stay the same when they change (fonts, stickers, logos, icons, the wordmark).
+  if (request.mode === "navigate" || url.searchParams.has("_rsc") || /^\/(data|fonts|stickers|logos|icons|brand)\//.test(url.pathname) || request.headers.get("accept")?.includes("text/html")) {
     event.respondWith(networkFirst(event));
   }
 });

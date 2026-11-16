@@ -1,5 +1,6 @@
 "use client";
 
+import { byKeys } from "@/components/ui/inputMode";
 import { useCityRouter as useRouter, useCityPath } from "@/components/ui/CityLink";
 import { useRef, useState } from "react";
 import { IconButton } from "@/components/ui/Actions";
@@ -87,7 +88,7 @@ export function AreaScreen({ data, areas, slug, bg }: { data: ListData; areas: A
         body={cardBody({ listed: entry.listed, when, tomorrow, date, next: nextDay })}
         saved={saved}
         onLetGo={() => {
-          flip(cinema.id);
+          if (!byKeys()) flip(cinema.id); // a key press: the cards move at once (D-112 F5)
           toggleSaved(cinema.id);
         }}
         onOpen={sheet.openRow}

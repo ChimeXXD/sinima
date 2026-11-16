@@ -81,9 +81,9 @@
   }
 }
 
-/* D-109: no chevron motion when opened by a key; the press is the Spring dropdown's (500/18):
+/* D-109, D-112 F5: no chevron motion after a key (opening or closing); the press is the Spring dropdown's (500/18):
    in at once, back on the spring. */
-.city[data-keys] > svg:last-child {
+:global(html[data-input="keys"]) .city > svg:last-child {
   transition: none;
 }
 .city {

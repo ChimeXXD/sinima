@@ -20,12 +20,12 @@
   left: 0;
   height: max(1px, 0.07em);
   background: currentColor;
-  transform-origin: 0 50%;
   animation: draw var(--dur-base) var(--ease-out) both;
 }
+/* Drawn left to right with a clip, like the handwritten line, not grown from nothing (D-112 F12). */
 @keyframes draw {
   from {
-    transform: scaleX(0);
+    clip-path: inset(0 100% 0 0);
   }
 }
 

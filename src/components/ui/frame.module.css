@@ -37,6 +37,14 @@
   min-height: 44px; /* the 30 px lockup, with a 44 px touch area */
   color: var(--text-primary);
 }
+/* public/brand/wordmark.svg, made from Figma's paths (scripts in PROGRESS, D-112), as a mask. */
+.wordmark {
+  flex: none;
+  width: 53.5px;
+  height: 13.3px;
+  background: currentColor;
+  mask: url("/brand/wordmark.svg") center / contain no-repeat;
+}
 .search {
   position: relative; /* the search panel opens over it */
   grid-area: search;
