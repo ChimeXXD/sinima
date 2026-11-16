@@ -149,6 +149,7 @@ test.describe("unit 4: arrivals and the poster's travel", () => {
 
   test("F6, F7: the poster travels by transform alone, and the film page's poster doesn't press on again", async ({ page }) => {
     await page.goto("/lagos");
+    await page.waitForTimeout(1500); // as in motion-poster.spec: the film page prefetched, so the navigation is one transition
     await page.evaluate(() => {
       const w = window as unknown as { frames0: { pe: string; props: string[] }[] };
       w.frames0 = [];
@@ -171,5 +172,25 @@ test.describe("unit 4: arrivals and the poster's travel", () => {
     expect(frames.length).toBe(1);
     expect(frames[0]!.props).toEqual(["transform"]);
     expect((await animationNames(page, '[data-testid="film.poster"], [class*="hero"] [class*="poster"]')).every((name) => name === "none")).toBe(true);
+  });
+});
+
+test.describe("F3: taps answer before the list redraws", () => {
+  test("the Cinemas heart fills at once and the cinema is kept just after", async ({ page }) => {
+    await page.goto("/lagos/cinemas");
+    const heart = page.getByTestId("cinema.keep").first();
+    // Pressed in the same task as the tap: read before the browser gets a frame to save it.
+    const pressedAtOnce = await heart.evaluate((el) => (el.dispatchEvent(new MouseEvent("click", { bubbles: true, detail: 1 })), new Promise<string | null>((done) => queueMicrotask(() => done(el.getAttribute("aria-pressed"))))));
+    expect(pressedAtOnce).toBe("true");
+    await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("ls.cinemas") ?? "[]").length)).toBe(1);
+    await expect(page.getByTestId("toast")).toBeVisible();
+  });
+
+  test("Today/Tomorrow: the thumb moves at once, the list follows", async ({ page }) => {
+    await page.goto("/lagos");
+    const day = page.getByTestId("films.day");
+    await day.getByRole("radio").nth(1).click();
+    await expect(day.getByRole("radio").nth(1)).toHaveAttribute("aria-checked", "true");
+    expect(await day.evaluate((el) => getComputedStyle(el).getPropertyValue("--i").trim())).toBe("1");
   });
 });

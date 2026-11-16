@@ -21,6 +21,14 @@ const swaps = (page: Page) =>
     ),
   ) as Promise<Swap[]>;
 
+/** The swaps once the new day's list has drawn: since D-112 F3 it follows the tap in a transition, a moment after the thumb. */
+const swapsSoon = async (page: Page) => {
+  await expect.poll(async () => (await swaps(page)).length, { timeout: 3000 }).toBeGreaterThan(0);
+  return swaps(page);
+};
+/** A key's change has drawn (real time: the page's clock may be paused). */
+const drawn = (page: Page) => page.waitForTimeout(200);
+
 const firstDay = async (request: Parameters<typeof dataFile>[0]) => new Date((await dataFile(request, "all")).generatedAt);
 
 test.describe("M1: the day's list follows Today | Tomorrow", () => {
@@ -29,7 +37,7 @@ test.describe("M1: the day's list follows Today | Tomorrow", () => {
     await page.goto("/lagos");
     const day = page.getByTestId("films.day");
     await day.getByRole("radio", { name: "Tomorrow" }).click();
-    const forward = await swaps(page);
+    const forward = await swapsSoon(page);
     expect(forward.length).toBeGreaterThan(0);
     for (const swap of forward) {
       expect(swap.first).toEqual({ opacity: "0", transform: "translateX(8px)" });
@@ -37,7 +45,7 @@ test.describe("M1: the day's list follows Today | Tomorrow", () => {
       expect(swap.easing).toBe("cubic-bezier(0.23, 1, 0.32, 1)");
     }
     await day.getByRole("radio", { name: "Today" }).click();
-    expect((await swaps(page)).map((s) => s.first.transform)).toContain("translateX(-8px)");
+    await expect.poll(async () => (await swaps(page)).map((s) => s.first.transform)).toContain("translateX(-8px)");
   });
 
   test("the arrow keys change the day at once (no motion on keyboard actions)", async ({ page, request }) => {
@@ -46,6 +54,7 @@ test.describe("M1: the day's list follows Today | Tomorrow", () => {
     await page.getByTestId("films.day").getByRole("radio", { name: "Today" }).focus();
     await page.keyboard.press("ArrowRight");
     await expect(page.getByTestId("films.day").getByRole("radio", { name: "Tomorrow" })).toBeChecked();
+    await drawn(page);
     expect(await swaps(page)).toEqual([]);
   });
 
@@ -54,7 +63,7 @@ test.describe("M1: the day's list follows Today | Tomorrow", () => {
     await freeze(page, await firstDay(request));
     await page.goto("/lagos");
     await page.getByTestId("films.day").getByRole("radio", { name: "Tomorrow" }).click();
-    const fades = await swaps(page);
+    const fades = await swapsSoon(page);
     expect(fades.length).toBeGreaterThan(0);
     for (const swap of fades) {
       expect(swap.first).toEqual({ opacity: "0", transform: undefined });
@@ -79,16 +88,16 @@ test.describe("M1: the day's list follows Today | Tomorrow", () => {
     await freeze(page, await firstDay(request));
     await page.goto("/lagos/film/ramayana");
     await page.getByTestId("film.day").getByRole("radio", { name: "Tomorrow" }).click();
-    expect((await swaps(page)).length).toBeGreaterThan(0);
+    expect((await swapsSoon(page)).length).toBeGreaterThan(0);
 
     await page.goto("/lagos/cinema/ebonylife-vi");
     await page.getByTestId("films.day").getByRole("radio", { name: /^Tomorrow/ }).click();
-    expect((await swaps(page)).length).toBeGreaterThan(0);
+    expect((await swapsSoon(page)).length).toBeGreaterThan(0);
 
     await page.goto("/lagos/cinemas");
     await page.getByTestId("pick.day").click();
     await page.getByTestId("day.option.tomorrow").click();
-    expect((await swaps(page)).length).toBeGreaterThan(0);
+    expect((await swapsSoon(page)).length).toBeGreaterThan(0);
   });
 });
 
@@ -244,6 +253,7 @@ test("M1: Enter on a segment, or on the Cinemas day option, changes the day with
   await page.getByTestId("films.day").getByRole("radio", { name: "Tomorrow" }).focus();
   await page.keyboard.press("Enter");
   await expect(page.getByTestId("films.day").getByRole("radio", { name: "Tomorrow" })).toBeChecked();
+  await drawn(page);
   expect(await swaps(page)).toEqual([]);
 
   await page.goto("/lagos/cinemas");
@@ -251,5 +261,6 @@ test("M1: Enter on a segment, or on the Cinemas day option, changes the day with
   await page.getByTestId("day.option.tomorrow").focus();
   await page.keyboard.press("Enter");
   await expect(page.getByTestId("pick.day")).toHaveText("DayTomorrow");
+  await drawn(page);
   expect(await swaps(page)).toEqual([]);
 });

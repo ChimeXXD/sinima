@@ -8,6 +8,10 @@
 // page draws its own nav, so the springs live here, in the page's script, and the next page's nav
 // carries on from where the last one was. Reduced motion: the same moves, critically damped (no
 // overshoot). Nothing here blocks a tap: a new pick just moves the springs' targets.
+//
+// D-112 F2: each frame reads first (the tabs' boxes, as the browser last laid them out) and then
+// only writes, and each name's open width is read once per pick, so a frame never makes the browser
+// lay the bar out again mid-script (up to five times a frame on a slow phone before).
 
 import { critical, spring, step, type Spring } from "./spring";
 
@@ -29,6 +33,11 @@ const state = {
 let parts: NavParts | null = null;
 let frame = 0;
 let last = 0;
+/** Each name's open width, read once when the springs are aimed (it doesn't change while they move). */
+const fulls = new Map<string, number>();
+/** The tabs' boxes and the pill's height and top, as last laid out: read at the start of a frame. */
+let boxes: { left: number; width: number }[] = [];
+let band = { top: 0, height: 0 };
 
 function tune(s: Spring, reduce: boolean) {
   if (reduce) critical(s);
@@ -45,7 +54,7 @@ function render() {
     if (tab.icon && pop) tab.icon.style.transform = `scale(${pop.x.toFixed(4)})`;
     if (!bar) continue;
     const name = state.names.get(tab.id)!;
-    const full = fullName(tab.label);
+    const full = fulls.get(tab.id) || 1;
     const w = Math.max(0, name.x);
     const open = Math.min(1, Math.max(0, w / full));
     tab.label.style.width = `${w.toFixed(2)}px`;
@@ -56,13 +65,17 @@ function render() {
   }
   parts.hl.style.transform = `translateX(${state.X.x.toFixed(2)}px)`;
   parts.hl.style.width = `${state.W.x.toFixed(2)}px`;
+  parts.hl.style.top = `${band.top}px`;
+  parts.hl.style.height = `${band.height}px`;
   // Each tab's words are white exactly as far as the pill is over them, so the picked tab never
   // shows white on the bar before the pill arrives, nor the old one grey on the pill as it leaves.
-  for (const tab of parts.tabs) {
-    const left = tab.el.offsetLeft;
-    const over = Math.max(0, Math.min(state.X.x + state.W.x, left + tab.el.offsetWidth) - Math.max(state.X.x, left)) / tab.el.offsetWidth;
+  // The boxes are this frame's start, a frame behind the names: too little to see.
+  parts.tabs.forEach((tab, i) => {
+    const box = boxes[i];
+    if (!box?.width) return;
+    const over = Math.max(0, Math.min(state.X.x + state.W.x, box.left + box.width) - Math.max(state.X.x, box.left)) / box.width;
     tab.el.style.color = `color-mix(in srgb, var(--text-on-action) ${Math.round(over * 100)}%, var(--text-secondary))`;
-  }
+  });
 }
 
 /** Settled: the tabs' colours go back to the stylesheet (hover and all). */
@@ -70,25 +83,26 @@ function settle() {
   for (const tab of parts?.tabs ?? []) tab.el.style.removeProperty("color");
 }
 
+/** Reads only: where the picked tab stands (the pill's target) and every tab's box. */
 function measure() {
   if (!parts) return;
-  const tab = parts.tabs.find((candidate) => candidate.id === state.active);
-  if (!tab) return;
   // Sub-pixel: the tabs' widths are fractional, and whole pixels leave the pill a pixel off.
   const nav = parts.nav.getBoundingClientRect();
-  const at = tab.el.getBoundingClientRect();
-  state.X.t = at.left - nav.left - parts.nav.clientLeft;
+  const rects = parts.tabs.map((tab) => tab.el.getBoundingClientRect());
+  const offset = nav.left + parts.nav.clientLeft;
+  boxes = rects.map((rect) => ({ left: rect.left - offset, width: rect.width }));
+  const at = rects[parts.tabs.findIndex((candidate) => candidate.id === state.active)];
+  if (!at) return;
+  state.X.t = at.left - offset;
   state.W.t = at.width;
-  parts.hl.style.top = `${at.top - nav.top - parts.nav.clientTop}px`;
-  parts.hl.style.height = `${at.height}px`;
+  band = { top: at.top - nav.top - parts.nav.clientTop, height: at.height };
 }
 
 function loop(now: number) {
   const dt = Math.min((now - last) / 1000, 1 / 30);
   last = now;
   const springs = [state.X, state.W, ...state.names.values(), ...state.pops.values()];
-  // Measured once a frame: measure() writes the pill's top and height, so measuring in every
-  // sub-step would force a layout four times a frame.
+  // Read, then step, then write: nothing written before the reads, so they force no layout.
   measure();
   for (let i = 0; i < 4; i++) for (const s of springs) step(s, dt / 4);
   const done = springs.every(still);
@@ -112,7 +126,8 @@ function aim(id: string) {
     if (!state.names.has(tab.id)) state.names.set(tab.id, spring(0, 300, 26));
     if (!state.pops.has(tab.id)) state.pops.set(tab.id, spring(1, 520, 14));
     const name = state.names.get(tab.id)!;
-    name.t = tab.id === id ? fullName(tab.label) : 0;
+    fulls.set(tab.id, fullName(tab.label));
+    name.t = tab.id === id ? fulls.get(tab.id)! : 0;
     tune(name, reduce);
     tune(state.pops.get(tab.id)!, reduce);
   }

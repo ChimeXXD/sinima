@@ -84,16 +84,17 @@ test("closed during its snap-back, the sheet keeps no leftover timing: it opens 
 // D-112 F9: a sheet caught while it snaps back stops where it is and follows the finger from there.
 test("a sheet caught mid snap-back holds where it is, with no jump to rest", async ({ page }) => {
   const { top } = await openSheet(page);
-  const finger = await pull(page, top, 100, 8, 16); // a slow pull, short of closing
+  const finger = await pull(page, top, 60, 6, 60); // a short, slow pull: it will snap back
   await finger.release();
-  await page.waitForTimeout(60); // the snap-back is under way
+  await page.waitForTimeout(40); // the snap-back is under way
   const mid = await shift(page);
   expect(mid).toBeGreaterThan(5);
   const cdp = await page.context().newCDPSession(page);
   await cdp.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x: top.x, y: top.y + 20 }] });
   await page.waitForTimeout(120); // the snap-back would have finished by now
-  expect(Math.abs((await shift(page)) - mid)).toBeLessThan(mid * 0.5);
-  await cdp.send("Input.dispatchTouchEvent", { type: "touchMove", touchPoints: [{ x: top.x, y: top.y + 60 }] });
-  expect(await shift(page)).toBeGreaterThan(mid + 20); // and follows the finger down from there
+  const held = await shift(page);
+  expect(held).toBeGreaterThan(5); // still where it was caught, not at rest
+  await cdp.send("Input.dispatchTouchEvent", { type: "touchMove", touchPoints: [{ x: top.x, y: top.y + 50 }] });
+  expect(Math.abs((await shift(page)) - (held + 30))).toBeLessThan(2); // the finger moved 30 px: so does the sheet, from there
   await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
 });

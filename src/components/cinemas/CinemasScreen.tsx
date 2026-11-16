@@ -3,7 +3,6 @@
 import { useCityRouter as useRouter } from "@/components/ui/CityLink";
 import { useCallback, useState } from "react";
 import { AppFrame, LogoNote } from "@/components/ui/AppFrame";
-import { pop } from "@/components/ui/motion";
 import { PageNotice } from "@/components/ui/Status";
 import { Toast } from "@/components/ui/Toast";
 import { useSwapIn } from "@/components/ui/useSwapIn";
@@ -48,9 +47,9 @@ export function CinemasScreen({ data, areas, bg }: { data: ListData; areas: Area
   const kept = useSaved();
   const [toast, setToast] = useState<string | null>(null);
   const hideToast = useCallback(() => setToast(null), []);
-  const keep = (id: string, icon: SVGSVGElement | null) => {
+  // The row's heart has already filled and popped (D-112 F3): this keeps it.
+  const keep = (id: string) => {
     const saving = !kept.includes(id);
-    if (saving) pop(icon);
     toggleSaved(id);
     setToast(saving ? id : null);
   };
@@ -126,7 +125,7 @@ export function CinemasScreen({ data, areas, bg }: { data: ListData; areas: Area
                     at={next}
                     formats={formatsOf(entry.rows)}
                     saved={kept.includes(cinema.id)}
-                    onSave={(icon) => keep(cinema.id, icon)}
+                    onSave={() => keep(cinema.id)}
                     testId={`cinema.card.${cinema.id}`}
                   />
                 );

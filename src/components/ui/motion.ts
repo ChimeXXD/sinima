@@ -33,3 +33,14 @@ export function pop(el: Element | null | undefined): void {
   // the peak in about 22 ms, a one-frame jump (D-112 F1). Now it swells, then settles.
   el.animate([{ transform: "scale(1)", easing: m.easeOut }, { transform: "scale(1.25)", offset: 0.4, easing: m.easeInOut }, { transform: "scale(1)" }], { id: "pop", duration: m.base });
 }
+
+/**
+ * D-112 F3: runs `work` once the browser has drawn what a tap just changed, so a heavy redraw (a
+ * list) never holds back the tapped control's own answer. Background priority runs after rendering;
+ * where the scheduler is missing (Safari), the next frame and then a task.
+ */
+export function afterPaint(work: () => void): void {
+  const scheduler = (globalThis as { scheduler?: { postTask?: (task: () => void, options: { priority: string }) => Promise<unknown> } }).scheduler;
+  if (scheduler?.postTask) void scheduler.postTask(work, { priority: "background" }).catch(() => {});
+  else requestAnimationFrame(() => setTimeout(work, 0));
+}
