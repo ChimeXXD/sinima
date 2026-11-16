@@ -59,7 +59,7 @@ Dates are a target. If a week slips, cut its Should items first; never cut the c
 - [x] Phantom-style tab bar on every screen and desktop, count sticker made smaller (D-64)
 - [x] Home title: "What's on in Lagos", city tappable; first visit picks the city from location, Lagos as fallback (D-65)
 - [x] City picker designed (Lagos ↔ Abuja): first visit, switch from the search bar, search across both cities, one address per city (proposals A to D, D-64)
-- [ ] Chime decides the two-city proposals and O-16
+- [ ] Chime decides the two-city proposals (O-16 decided 16 Nov: city first in the address, D-98)
 - [x] Design System page: tokens as variables, text and effect styles, components with states and build notes (D-66)
 - [x] Your cinemas folders show each chain's logo sticker (D-67)
 - [x] Figma pages organised with dividers; Round 10 renamed Design screens (D-66); then reorganised like Odin, with a cover thumbnail (D-68)
@@ -84,7 +84,7 @@ Dates are a target. If a week slips, cut its Should items first; never cut the c
 ## Week 2: build the design and the city layer (23–29 Nov)
 
 - [ ] Data: a `city` above areas in `cinemas.json` and the schema; Abuja fixtures; validator and tests updated
-- [ ] Routes for two cities (O-16); the saved city on the phone, like the saved area (D-18)
+- [ ] Routes for two cities, `/lagos/…` and `/abuja/…` (D-98); today's addresses forward to Lagos; the saved city on the phone, like the saved area (D-18)
 - [ ] Build the Figma design with motion (D-82), unit by unit: 1 foundation (tokens, fonts, motion tokens) ✅ · 2 shared components ✅ (D-84) · 3 Films ✅ · 4 Film + showing sheet ✅ (D-88) · 5 Search and city ✅ (D-89) · 6 Cinemas ✅ (D-91) · 7 Area ✅ (D-92) · 8 Cinema ✅ (D-93) · 9 Starting soon ✅ (D-96) · 10 Your cinemas ✅ (D-97) · 11 About, 404, Offline · 12 Where are you watching? · 13 city layer. Each checked at 390, 834 and 1440 against the Figma frames
 - [ ] Stickers: ship `docs/design/stickers/drink.png` as `public/stickers/drink.png`; credit Fluent Emoji (MIT) on `/about` (D-74)
 - [ ] Drop the per-showing source line from the built components (D-72); keep the stale-time warnings and the About credit; update `freshness.ts` tests to match

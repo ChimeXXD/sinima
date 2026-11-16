@@ -4,7 +4,7 @@
 
 **What Chime asked (D-82):** build the Figma design into the site, exactly, with motion, using the 18 design-engineering skills (routing in `~/.claude/CLAUDE.md`, detail in `~/.claude/design-skills-guide.md`). Chime reviews when the build is done, then adds their own animation references. **Take every value from Figma exactly (D-83)**: raise a concern once, then build what Figma says.
 
-**Units (PLAN week 2):** 1 foundation ✅ (`07cd9a0`) · 2 shared components ✅ · 3 Films ✅ · 4 Film + showing sheet ✅ · 5 Search and city ✅ · 6 Cinemas ✅ · 7 Area ✅ · 8 Cinema ✅ · 9 Starting soon ✅ · 10 Your cinemas ✅ · **11 About, 404, Offline (next)** · 12 Where are you watching? · 13 city layer (needs O-16). One unit per fresh session.
+**Units (PLAN week 2):** 1 foundation ✅ (`07cd9a0`) · 2 shared components ✅ · 3 Films ✅ · 4 Film + showing sheet ✅ · 5 Search and city ✅ · 6 Cinemas ✅ · 7 Area ✅ · 8 Cinema ✅ · 9 Starting soon ✅ · 10 Your cinemas ✅ · **11 About, 404, Offline (next)** · 12 Where are you watching? · 13 city layer (`/lagos/…`, `/abuja/…`, D-98). One unit per fresh session.
 
 **Unit 1 (done):** `src/styles/tokens.css` holds Figma's tokens under Figma's CSS names (`--p-*`, `--bg-page`, `--text-primary`, `--space-16`, `--radius-card`, `--type-*` font shorthands, `--fx-*` effects, `--ease-out/-in-out/-drawer`, `--dur-*`); old names (`--color-*`, `--s*`, `--r-*`) point at them until each component is rebuilt, then go. `docs/design/figma-tokens.json` + `tests/unit/tokens.test.ts` hold the two together. Fonts: Urbanist (22 KB, wght 300–800) and Story Script (6 KB: a–z, 0–9, A I L M X and ! ? . , ' ’ … -; re-cut with fontTools if a note needs another character). Dark mode is a stand-in (not designed).
 
