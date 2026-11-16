@@ -24,8 +24,18 @@ const posterTravels = (from: string, to: string) => (isFilm(to) && isFilmsHome(f
 /** A key press, or a click that opens a new browser tab and leaves this page as it is. */
 const notATap = (event: React.MouseEvent) => event.detail === 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0;
 
+/**
+ * D-112 C8, F6: after the first move inside the site, hero stickers and the film poster no longer
+ * press on as each page arrives (html[data-arrived]): the page's slide, or the poster's travel, is
+ * the one move. A page opened fresh still gets them.
+ */
+const arrived = () => {
+  document.documentElement.dataset.arrived = "";
+};
+
 if (typeof window !== "undefined") {
   window.addEventListener("popstate", () => {
+    arrived();
     const to = window.location.pathname;
     pending = current && current !== to && !posterTravels(current, to) ? { direction: depth(to) > depth(current) ? 1 : -1, at: Date.now() } : null;
   });
@@ -35,6 +45,8 @@ if (typeof window !== "undefined") {
 export function linkTapped(to: string, event: React.MouseEvent): void {
   const from = window.location.pathname;
   const path = to.split(/[?#]/)[0]!;
+  // A new browser tab (a modifier click) leaves this page as it is.
+  if (path !== from && !(event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0)) arrived();
   pending = notATap(event) || path === from || posterTravels(from, path) ? null : { direction: depth(path) >= depth(from) ? 1 : -1, at: Date.now() };
 }
 

@@ -96,6 +96,7 @@ test("Save keeps the cinema on this phone, says so in a toast, and Undo takes it
   await save.click();
   await expect(page.getByTestId("toast")).toBeVisible();
   await page.clock.runFor(6_000); // it goes by itself
+  await page.clock.runFor(300); // after slipping away (D-112 F8), timed once it starts to leave
   await expect(page.getByTestId("toast")).toHaveCount(0);
   await save.click(); // a saved cinema lets go without a toast
   await expect(save).toHaveText(/^Save /);

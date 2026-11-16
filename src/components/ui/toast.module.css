@@ -14,14 +14,22 @@
   background: var(--toast-info);
   color: var(--text-on-action);
   translate: -50% 0;
-  /* Purpose: it arrives from where the eye already is, the bottom of the screen. */
-  animation: rise var(--dur-base) var(--ease-out);
+  /* Purpose: it arrives from where the eye already is, the bottom of the screen, and leaves the
+     same way, quicker (D-112 F8). Transitions, not keyframes, so nothing restarts mid-way. */
+  transition:
+    opacity var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-out);
 }
-@keyframes rise {
-  from {
+@starting-style {
+  .toast {
     opacity: 0;
     transform: translateY(12px);
   }
+}
+.toast[data-leaving] {
+  opacity: 0;
+  transform: translateY(6px);
+  transition-duration: var(--dur-fast);
 }
 .icon {
   flex: none;
@@ -55,13 +63,9 @@
     bottom: 32px;
   }
 }
+/* Reduced motion: it fades in and out where it stands. */
 @media (prefers-reduced-motion: reduce) {
   .toast {
-    animation-name: fade;
-  }
-}
-@keyframes fade {
-  from {
-    opacity: 0;
+    transition-property: opacity;
   }
 }

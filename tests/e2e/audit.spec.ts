@@ -103,3 +103,73 @@ test.describe("no motion on keyboard actions (F4, F5, C7)", () => {
     await context.close();
   });
 });
+
+test.describe("F8: the toast", () => {
+  test("it slips away before it goes", async ({ page }) => {
+    await page.goto("/lagos/cinema/filmhouse-lekki-imax");
+    await page.getByTestId("cinema.save").click();
+    const toast = page.getByTestId("toast");
+    await expect(toast).toBeVisible();
+    // Note how it left: marked leaving, with its 160 ms exit, before it was taken away.
+    await toast.evaluate((el) => {
+      new MutationObserver(() => {
+        if (el.hasAttribute("data-leaving")) (window as unknown as { left: string }).left = getComputedStyle(el).transitionDuration;
+      }).observe(el, { attributes: true });
+    });
+    await expect(toast).toHaveCount(0, { timeout: 6000 });
+    expect(await page.evaluate(() => (window as unknown as { left?: string }).left)).toContain("0.16s");
+  });
+
+  test("saving a second cinema keeps the same toast and starts its time again", async ({ page }) => {
+    await page.clock.install();
+    await page.goto("/lagos/cinemas");
+    await page.getByTestId("cinema.keep").nth(0).click();
+    const toast = page.getByTestId("toast");
+    await expect(toast).toBeVisible();
+    await toast.evaluate((el) => el.setAttribute("data-same", ""));
+    await page.clock.runFor(3000);
+    await page.getByTestId("cinema.keep").nth(1).click();
+    await page.clock.runFor(3000); // 6 s after the first save, 3 s after the second
+    await expect(toast).toHaveAttribute("data-same", "");
+    await expect(toast).not.toHaveAttribute("data-leaving", "");
+  });
+});
+
+test.describe("unit 4: arrivals and the poster's travel", () => {
+  const animationNames = (page: Page, selector: string) => page.locator(selector).evaluateAll((els) => els.map((el) => getComputedStyle(el).animationName));
+
+  test("C8: hero stickers press on when a page opens fresh, not after a tab move", async ({ page }) => {
+    await page.goto("/lagos/cinemas");
+    const stickers = 'h1 ~ * img, [class*="hero"] [class*="sticker"]';
+    expect((await animationNames(page, stickers)).some((name) => name !== "none")).toBe(true);
+    await page.getByTestId("tab.films").click();
+    await expect(page).toHaveURL(/\/lagos$/);
+    expect((await animationNames(page, stickers)).every((name) => name === "none")).toBe(true);
+  });
+
+  test("F6, F7: the poster travels by transform alone, and the film page's poster doesn't press on again", async ({ page }) => {
+    await page.goto("/lagos");
+    await page.evaluate(() => {
+      const w = window as unknown as { frames0: { pe: string; props: string[] }[] };
+      w.frames0 = [];
+      const start = document.startViewTransition.bind(document);
+      document.startViewTransition = ((update: () => void) => {
+        const t = start(update);
+        t.ready.then(() => requestAnimationFrame(() => {
+          for (const a of document.getAnimations()) {
+            const e = a.effect as KeyframeEffect;
+            if (e.pseudoElement?.includes("group(poster-")) w.frames0.push({ pe: e.pseudoElement, props: Object.keys(e.getKeyframes()[0]!).filter((k) => !["offset", "computedOffset", "easing", "composite"].includes(k)) });
+          }
+        }));
+        return t;
+      }) as typeof document.startViewTransition;
+    });
+    await page.locator('[data-testid^="film.card."]').first().click();
+    await expect(page).toHaveURL(/\/film\//);
+    await page.waitForTimeout(400);
+    const frames = await page.evaluate(() => (window as unknown as { frames0: { pe: string; props: string[] }[] }).frames0);
+    expect(frames.length).toBe(1);
+    expect(frames[0]!.props).toEqual(["transform"]);
+    expect((await animationNames(page, '[data-testid="film.poster"], [class*="hero"] [class*="poster"]')).every((name) => name === "none")).toBe(true);
+  });
+});

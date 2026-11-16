@@ -145,7 +145,7 @@ export function CinemasScreen({ data, areas, bg }: { data: ListData; areas: Area
           {`No cinema is showing a film in ${format} ${dayWords(day, dates[day], live).on}.`}
         </p>
       )}
-      {toast && <Toast key={toast} icon="heart" text={SAVED_TOAST} onUndo={() => (toggleSaved(toast), setToast(null))} onDone={hideToast} />}
+      {toast && <Toast stamp={toast} icon="heart" text={SAVED_TOAST} onUndo={() => (toggleSaved(toast), setToast(null))} onDone={hideToast} />}
     </AppFrame>
   );
 }

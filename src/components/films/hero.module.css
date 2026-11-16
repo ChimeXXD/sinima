@@ -269,3 +269,8 @@
     transform: none;
   }
 }
+
+/* D-112 C8, F6: after a move inside the site, these press on only on a fresh page (tabSlide.ts). */
+:global(html[data-arrived]) .sticker {
+  animation: none;
+}

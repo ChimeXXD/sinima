@@ -38,7 +38,18 @@ export function useSwipeDown(ref: React.RefObject<HTMLDialogElement | null>, ope
     };
     const onStart = (event: TouchEvent) => {
       if (event.touches.length !== 1 || matchMedia("(min-width: 1200px)").matches) return;
-      pull = { from: event.touches[0]!.clientY, pulling: false, samples: [] };
+      const y = event.touches[0]!.clientY;
+      // Caught while still moving (snapping back, or rising open): it stops where it is on screen
+      // and follows the finger from there, with no jump to rest first (D-112 F9).
+      const at = new DOMMatrix(getComputedStyle(sheet).transform).m42;
+      if (at > 0.5) {
+        pull = { from: y - at, pulling: true, samples: [] };
+        sheet.style.removeProperty("transition");
+        sheet.setAttribute("data-pulling", "");
+        place(at);
+        return;
+      }
+      pull = { from: y, pulling: false, samples: [] };
     };
     const onMove = (event: TouchEvent) => {
       if (!pull) return;
