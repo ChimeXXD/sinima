@@ -76,7 +76,9 @@ async function networkFirst(event) {
     const saved = (await cache.match(key(request))) ?? (await cache.match(request, { ignoreSearch: true }));
     if (saved) return saved;
     if (request.mode === "navigate") {
-      const home = await cache.match("/");
+      // The page's own city's Films first; "/" asks Where are you watching? when no city is kept.
+      const city = new URL(request.url).pathname.match(/^\/(lagos|abuja)(\/|$)/)?.[1];
+      const home = (city && (await cache.match(`/${city}`))) || (await cache.match("/"));
       if (home) return home;
     }
     throw error;

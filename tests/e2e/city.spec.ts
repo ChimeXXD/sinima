@@ -15,7 +15,11 @@ test("old addresses forward to their Lagos page, keeping a shared showing after 
   await expect(page).toHaveURL(/\/lagos\/area\/lekki$/);
 });
 
-test('"/" opens the city kept on this phone, and Lagos when none is kept', async ({ page }) => {
+// With none kept, "/" asks Where are you watching? (build unit 12, tests/e2e/where.spec.ts).
+test('"/" opens the city kept on this phone', async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Where are you watching?");
+  await page.evaluate(() => localStorage.setItem("ls.city", "lagos"));
   await page.goto("/");
   await expect(page).toHaveURL(/\/lagos$/);
   await page.evaluate(() => localStorage.setItem("ls.city", "abuja"));

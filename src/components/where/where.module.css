@@ -1,0 +1,329 @@
+/* Where are you watching? (Figma 162:262 phone 390, 172:661 iPad 834, 172:720 desktop 1440). Phone:
+   20 in from each side, the cards stacked. iPad and desktop: centred, the cards side by side, film
+   stickers round the edges. Figma's rotations, as CSS turns them, are the other way round. */
+
+.page {
+  min-height: 100dvh;
+  overflow-x: clip;
+  background: var(--bg-page);
+}
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-16) var(--space-16) 0;
+}
+.theme {
+  display: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+}
+/* The space above the title is on .main, so the stickers are placed from the title's top. */
+.main {
+  padding: 46px 20px 40px;
+}
+.stage {
+  position: relative;
+}
+
+.title {
+  max-width: 260px; /* "Where are you" / "watching?" */
+  color: var(--text-primary);
+  font: 300 38px/46px var(--font-sans);
+}
+.lead {
+  display: none;
+  color: var(--text-secondary);
+  font: var(--type-body-l);
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-20);
+  margin-top: var(--space-24);
+}
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  height: 170px;
+  padding: 26px 22px 30px;
+  border: 0;
+  border-radius: 28px;
+  background: var(--bg-accent-soft);
+  color: var(--text-body-strong);
+  text-align: left;
+  cursor: pointer;
+  transition: transform var(--dur-press) var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+}
+.card[data-city="abuja"] {
+  background: var(--city-abuja-soft);
+}
+.card:active {
+  transform: scale(0.98);
+}
+.card[aria-pressed="true"] {
+  box-shadow: inset 0 0 0 2.5px var(--action-primary);
+}
+/* The card's city sticker (Figma 162:262): 22 px type, padding 7 13 7 10, a 3.5 die-cut edge. Set
+   here, so the other pages' sticker styles don't carry it. */
+.card > :first-child {
+  gap: var(--space-6);
+  padding: 7px 13px 7px 10px;
+  box-shadow: 0 0 0 3.5px var(--sticker-outline);
+  font-size: 22px;
+}
+.line {
+  margin-top: 32px; /* Figma: the line 98 down the card */
+  font: var(--type-body-m);
+}
+.check {
+  position: absolute;
+  top: 20px;
+  right: 16px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  background: var(--action-primary);
+  color: var(--text-on-action);
+}
+
+/* The note under the cards keeps one height, so the buttons never move. */
+.status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 84px;
+}
+.hand {
+  margin-top: 18px;
+  color: var(--text-accent);
+  font: var(--type-handwritten);
+  font-size: 18px;
+  rotate: 3deg;
+}
+.hand[data-city="abuja"] {
+  color: var(--city-abuja);
+}
+.hand[data-city="lagos"] {
+  color: var(--city-lagos);
+}
+.note {
+  width: 100%;
+  margin-top: var(--space-12);
+  padding: var(--space-10) var(--space-12);
+  border-radius: var(--radius-button);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  font: var(--type-meta);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+}
+.actions > * {
+  width: 100%;
+}
+.foot {
+  margin-top: 30px;
+  color: var(--text-secondary);
+  font: var(--type-meta);
+  text-align: center;
+}
+.wideOnly {
+  display: none;
+}
+
+.sticker {
+  position: absolute;
+  width: auto;
+  pointer-events: none;
+  filter: drop-shadow(var(--fx-sticker-large));
+}
+.clapper {
+  top: -6px;
+  right: 4px;
+  height: 60px;
+  rotate: -10deg;
+}
+.glasses,
+.popcorn,
+.drink,
+.ticket {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  /* The frame's margins: 32 on an iPad, 100 at Figma's 1440. */
+  .top {
+    padding: var(--space-16) max(var(--space-32), (100% - 1240px) / 2) 0;
+  }
+  .theme {
+    display: grid;
+  }
+  .main {
+    padding: 140px var(--space-32) 64px; /* Figma iPad: the title 209 down the page */
+  }
+  .stage {
+    max-width: 864px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .title {
+    max-width: none;
+    font: var(--type-display-xl);
+  }
+  .lead {
+    display: block;
+    margin-top: var(--space-12);
+  }
+  .cards {
+    flex-direction: row;
+    gap: var(--space-24);
+    margin-top: 76px;
+  }
+  .card {
+    flex: 1;
+    height: 230px;
+    padding: 30px 28px 38px;
+  }
+  .line {
+    margin-top: 77px; /* Figma: the line 148 down the card */
+    font: var(--type-body-l);
+  }
+  .check {
+    top: 22px;
+    right: 20px;
+    width: 30px;
+    height: 30px;
+  }
+  .status {
+    height: 100px;
+  }
+  .hand {
+    margin-top: 30px;
+    font-size: 24px;
+  }
+  .note {
+    width: auto;
+    max-width: 420px;
+    margin-top: var(--space-24);
+  }
+  .actions {
+    align-items: center;
+  }
+  .actions > * {
+    width: 380px;
+  }
+  .foot {
+    margin-top: 28px;
+  }
+  .phoneOnly {
+    display: none;
+  }
+  .wideOnly {
+    display: inline;
+  }
+  .glasses,
+  .popcorn,
+  .drink,
+  .ticket {
+    display: block;
+  }
+  /* iPad: the stickers sit inside the screen's edges (Figma 172:661): two above the title, two
+     under the cards, the ticket lower right. */
+  .clapper {
+    top: -72px;
+    right: auto;
+    left: 40px;
+    height: 76px;
+  }
+  .glasses {
+    top: -60px;
+    right: 40px;
+    height: 64px;
+    rotate: 10deg;
+  }
+  .popcorn {
+    top: 490px;
+    left: 16px;
+    height: 70px;
+    rotate: 8deg;
+  }
+  .drink {
+    top: 456px;
+    right: 24px;
+    height: 100px;
+    rotate: -10deg;
+  }
+  .ticket {
+    top: 790px;
+    right: 40px;
+    height: 48px;
+    rotate: 10deg;
+  }
+}
+
+@media (min-width: 1200px) {
+  .main {
+    padding-top: 84px;
+  }
+  .card {
+    max-width: 420px;
+  }
+  .actions {
+    flex-direction: row;
+    justify-content: center;
+    gap: var(--space-12);
+  }
+  .actions > :first-child {
+    width: 260px;
+  }
+  .actions > :last-child {
+    width: 220px;
+  }
+  /* Desktop: round the cards, from Figma 172:720's places. */
+  .clapper {
+    top: -30px;
+    left: -98px;
+    height: 104px;
+  }
+  .glasses {
+    top: -40px;
+    right: -106px;
+    height: 108px;
+  }
+  .popcorn {
+    top: 370px;
+    left: -128px;
+    height: 88px;
+  }
+  .drink {
+    top: 354px;
+    right: -104px;
+    height: 122px;
+  }
+  .ticket {
+    top: 580px;
+    right: -156px;
+    height: 64px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+}

@@ -31,8 +31,9 @@ test("Films opens offline from the saved copy, and the banner says when it was s
   await expect(page.getByTestId("banner.sample")).toBeVisible();
 });
 
-test("a page saved earlier opens offline too; one never opened falls back to Films", async ({ page, context }) => {
+test("a page saved earlier opens offline too; one never opened falls back to the kept city's Films", async ({ page, context }) => {
   await saveForOffline(page, "/lagos/cinemas");
+  await page.evaluate(() => localStorage.setItem("ls.city", "lagos")); // chosen on Where are you watching? (unit 12)
   await page.goto("/lagos"); // Films, saved through the service worker
   await context.setOffline(true);
   await page.goto("/lagos/cinemas");
@@ -61,4 +62,13 @@ test("a page opened just once, on the first visit, opens offline too", async ({ 
   await page.goto("/lagos/film/ramayana");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Ramayana");
   await expect(page.getByTestId("banner.offline")).toBeVisible();
+});
+
+test("offline, a city page never opened falls back to that city's Films", async ({ page, context }) => {
+  await saveForOffline(page, "/lagos/cinemas"); // the worker also saves /lagos and /abuja as it installs
+  await context.setOffline(true);
+  await page.goto("/abuja/soon");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("What's on in Abuja");
+  await page.goto("/lagos/soon");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("What's on in Lagos");
 });

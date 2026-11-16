@@ -52,10 +52,11 @@ const PIN =
   "M7.00065 1.16669C5.76297 1.16669 4.57599 1.65835 3.70082 2.53352C2.82565 3.40869 2.33398 4.59568 2.33398 5.83335C2.33398 8.75002 5.95065 12.1917 6.65065 12.7167C6.75162 12.7924 6.87443 12.8334 7.00065 12.8334C7.12687 12.8334 7.24968 12.7924 7.35065 12.7167C8.05065 12.1917 11.6673 8.75002 11.6673 5.83335C11.6673 4.59568 11.1757 3.40869 10.3005 2.53352C9.42531 1.65835 8.23833 1.16669 7.00065 1.16669ZM7.00065 7.58335C6.53652 7.58335 6.0914 7.39898 5.76321 7.07079C5.43503 6.7426 5.25065 6.29748 5.25065 5.83335C5.25065 5.36922 5.43503 4.92411 5.76321 4.59592C6.0914 4.26773 6.53652 4.08335 7.00065 4.08335C7.46478 4.08335 7.9099 4.26773 8.23809 4.59592C8.56628 4.92411 8.75065 5.36922 8.75065 5.83335C8.75065 6.29748 8.56628 6.7426 8.23809 7.07079C7.9099 7.39898 7.46478 7.58335 7.00065 7.58335Z";
 
 /** A die-cut city tag. It shows the city's name, so it is read out. Tilted ±5°. */
-export function CitySticker({ city, tilt = city === "lagos" ? -5 : 5 }: { city: "lagos" | "abuja"; tilt?: number }) {
+export function CitySticker({ city, tilt = city === "lagos" ? -5 : 5, large = false }: { city: "lagos" | "abuja"; tilt?: number; /** Where are you watching?'s card size: a 22 px pin; the page's own styles set the rest. */ large?: boolean }) {
+  const pin = large ? 22 : 14;
   return (
     <span className={`${s.city} ${s[city]}`} style={{ rotate: `${tilt}deg` }} data-testid={`city-sticker.${city}`}>
-      <svg viewBox="0 0 14 14" width={14} height={14} aria-hidden="true" focusable="false">
+      <svg viewBox="0 0 14 14" width={pin} height={pin} aria-hidden="true" focusable="false">
         <path fill="currentColor" fillRule="evenodd" d={PIN} />
       </svg>
       {city === "lagos" ? "Lagos" : "Abuja"}

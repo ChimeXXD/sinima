@@ -2,6 +2,16 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 16 Nov 2026 — build unit 12, Where are you watching? (D-101)
+
+- **Red:** tests/unit/lib/location.test.ts and wording/where.test.ts: `Cannot find package '@/lib/location'` / `'@/lib/wording/where'`; then "elsewhere is neither": Ibadan came out as Lagos at 120 km (it is 114 km in a straight line), so the radius is per city (80, 100). Budget: `/` 256.5 KB (the hidden desktop stickers were preloaded) and Starting soon 217.0 (the large city sticker's style in the shared sticker sheet).
+- **Changed:** `/` is `components/where/WhereScreen` with a script that opens a kept city before the page is drawn; `lib/location.ts` (`cityFromPosition`), `lib/wording/where.ts`; CitySticker `large` (22 px pin; the card's sticker style lives in where.module.css); the `/` forwarder from unit 13 is gone.
+- **Checked:** unit location 3, where wording 4 (613 total); e2e where.spec 5 (found in Abuja: picked, note, Continue keeps `ls.city` and opens `/abuja`, the next `/` opens Abuja at once; found in Lagos; London offers Lagos and a tap picks Abuja; no permission offers Lagos; the page's own HTML with nothing picked), city.spec, offline.spec; screenshots at 390, 834 and 1440 (found in Abuja) compared with Figma 162:262, 172:661, 172:720.
+- **Tests changed:** city.spec's "/" test expects the question with no city kept (D-65); offline.spec's fallback test keeps a city first (an unsaved page falls back to `/`, which opens the kept city).
+- **Reviewed:** `/code-review medium --fix` (8 found, 5 fixed): a late location answer overrode a tapped card (only the latest ask counts now); an unanswered prompt waited forever (Lagos after 15 s, D-65); offline, an unsaved city page falls back to that city's Films before `/`; the redirect script reads `CITIES`; a stray line. proof:verifier PASS 6 of 6, with one risk fixed: a returning visitor could be asked for location in the moment before the kept city opened (the page now never asks when a city is kept); and a test added that offline an unsaved city page opens that city's Films. Left: a possible offline loop if both city pages failed to save at install (before this unit too); where.module.css is 329 lines (Figma's values; "about 300"); the logo on `/` goes to Lagos.
+- **Budget:** `/` 200.4; Lagos Films 216.9, Starting soon 217.0, Cinemas 215.6 of 217.
+- **Not verified:** the location prompt on Chime's iPhone (Safari asks once per site); Figma's iPad sticker places were read from a screenshot.
+
 ## 16 Nov 2026 — build unit 13, the city layer (D-98, D-100)
 
 Done before unit 12: Where are you watching? sits at `/` and leads to `/lagos` or `/abuja`, which this unit makes.

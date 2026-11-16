@@ -1,9 +1,22 @@
 import type { Metadata } from "next";
-import { ForwardToCity } from "@/components/city/Forward";
+import { WhereScreen } from "@/components/where/WhereScreen";
+import { CITIES, CITY_KEY } from "@/lib/city";
+import { areas } from "@/lib/data/load";
+import { pageColours } from "@/lib/theme/pageColours";
+import { areasLine } from "@/lib/wording/where";
 
-export const metadata: Metadata = { title: "Sinima" };
+export const metadata: Metadata = { title: "Where are you watching? · Sinima" };
 
-/** "/": the city kept on this phone, or Lagos (D-98). */
+// A city kept on this phone opens at once, before this page is drawn (D-98); only a first visit
+// sees the question.
+const kept = `try{var c=localStorage.getItem(${JSON.stringify(CITY_KEY)});if(${JSON.stringify(CITIES)}.indexOf(c)>=0)location.replace("/"+c+location.search+location.hash)}catch(e){}`;
+
+/** "/": the city kept on this phone, or Where are you watching? on a first visit (Figma, build unit 12, D-65). */
 export default function Home() {
-  return <ForwardToCity />;
+  return (
+    <>
+      <script dangerouslySetInnerHTML={{ __html: kept }} />
+      <WhereScreen lagosLine={areasLine(areas.map((area) => area.name))} bg={pageColours()} />
+    </>
+  );
 }
