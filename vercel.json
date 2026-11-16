@@ -1,0 +1,5 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [{ "source": "/poster/:size(w154|w342|w500)/:file", "destination": "https://image.tmdb.org/t/p/:size/:file" }],
+  "headers": [{ "source": "/poster/:path*", "headers": [{ "key": "x-vercel-enable-rewrite-caching", "value": "1" }] }]
+}

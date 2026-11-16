@@ -1,8 +1,9 @@
 // Sinima's service worker: the last copy of each page and its data stays on the phone, so the site
 // still opens with no connection and says how old the times are (Figma Offline, build unit 11).
 // Pages, page data, the times files, fonts, stickers, logos and icons: the network first, the saved
-// copy when it fails. Next's hashed build files and TMDB posters: the saved copy first (posters
-// are fetched with CORS, so only ones that loaded are saved, at their real size). Each city's Films
+// copy when it fails. Next's hashed build files and TMDB posters (/poster/ on Vercel): the saved
+// copy first (posters are fetched with CORS, so only ones that loaded are saved, at their real
+// size). Each city's Films
 // is saved when the worker installs and each page when it is first shown, so a page opened once opens
 // offline. Nothing is sent anywhere; the caches live on this phone only.
 
@@ -103,7 +104,8 @@ self.addEventListener("fetch", (event) => {
   const { request } = event;
   if (request.method !== "GET") return;
   const url = new URL(request.url);
-  if (url.hostname === "image.tmdb.org") {
+  // Posters come through the site's own /poster/ on Vercel (D-113), straight from TMDB elsewhere.
+  if (url.hostname === "image.tmdb.org" || (url.origin === self.location.origin && url.pathname.startsWith("/poster/"))) {
     event.respondWith(cacheFirst(request, POSTERS, MAX_POSTERS));
     return;
   }

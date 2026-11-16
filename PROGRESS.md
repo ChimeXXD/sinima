@@ -2,6 +2,16 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 16 Nov 2026 — posters through Sinima's own address (D-113)
+
+- **Bug:** on Chime's iPhone on MTN every poster showed Safari's broken-image icon; on Wi-Fi and on the PC they loaded. Chime confirmed: MTN can't reach `image.tmdb.org`, Wi-Fi can.
+- **Diagnosis:** live markup fine, TMDB sends `access-control-allow-origin: *`, Playwright WebKit at iPhone size loads 8/8 posters from the live site with and without the service worker. So the code was fine; the network blocks TMDB's image CDN (a known ISP pattern).
+- **Changed:** `vercel.json` rewrites `/poster/:size(w154|w342|w500)/:file` to TMDB (only those sizes) with rewrite caching on; `src/lib/data/posters.ts` (`posterSrc`, `posterSrcSet`) gives `/poster/` on Vercel builds (`VERCEL` set → `POSTER_BASE` in `next.config.ts`) and TMDB directly elsewhere; `Poster.tsx` and `SearchOverlay.tsx` use it; `sw.js` keeps `/poster/` copies in the posters cache.
+- **Test fixed:** `tests/e2e/states.spec.ts` "films without a poster…" ran on the real clock and failed after about 21:00 Lagos (8 films, 2 without posters, against 29 and 15 at noon); it now freezes the clock at the sample day's 12:00 like the other e2e tests. Flagged to Chime.
+- **Checked:** red then green `tests/unit/lib/data/posters.test.ts` (4 tests); `VERCEL=1 next build` has no `image.tmdb.org` left in `out/` except `sw.js`; e2e on a build made with the 08:00 sample data; code-review medium --fix (no bugs; fixed a duplicated srcSet and a long comment); proof:verifier 6/6.
+- **Not verified yet:** `/poster/` on the live deploy and Chime's iPhone on MTN after the deploy.
+- **Skills that ran:** proof:build, code-review (medium --fix), proof:verifier.
+
 ## 16 Nov 2026 — motion audit and its 22 picks (D-112)
 
 - **Audit (read-only, one pick page):** skills in order: improve-animations (32 animations), review-animations by hand (block on small fixes only), animation-performance (Chromium at 4x and 8x CPU, WebKit, desktop; rAF deltas, long frames, traces), remove-animations (report only), find-animation-opportunities (3 of 17 kept), animation-vocabulary. Pick page `mockup/motion-audit/index.html`; Chime took every recommendation.

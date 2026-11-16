@@ -8,6 +8,7 @@ import { Notice } from "@/components/ui/Status";
 import { CitySticker, TicketFaceSticker } from "@/components/ui/Stickers";
 import { hasCinemas, searchFilms, type Scope, type SearchIndex, type SearchResult } from "@/lib/data/search";
 import type { City } from "@/lib/city";
+import { posterSrc, posterSrcSet } from "@/lib/data/posters";
 import { pageBanner } from "@/lib/data/select";
 import { useNow } from "@/lib/time/useNow";
 import { ABUJA_SOON, CITY_NAME, enterHint, matchCount, noMatch, resultMeta, resultNext, SEARCH_FAILED } from "@/lib/wording/search";
@@ -28,7 +29,6 @@ function loadIndex(): Promise<SearchIndex> {
   return loading;
 }
 
-const TMDB = "https://image.tmdb.org/t/p/";
 const SCOPES: { id: Scope; name: string }[] = [
   { id: "both", name: "Both cities" },
   { id: "lagos", name: "Lagos" },
@@ -164,7 +164,7 @@ function Result({ city, result, now, onOpen }: { city: City; result: SearchResul
     <Link href={`/${city}/film/${film.id}`} className={s.result} onClick={onOpen} data-testid={`search.hit.${film.id}`}>
       {film.poster ? (
         // eslint-disable-next-line @next/next/no-img-element -- a static export has no image optimiser; TMDB serves sized files
-        <img className={s.poster} src={`${TMDB}w154${film.poster}`} srcSet={`${TMDB}w154${film.poster} 1x, ${TMDB}w342${film.poster} 2x`} alt="" crossOrigin="anonymous" width={52} height={78} loading="lazy" decoding="async" />
+        <img className={s.poster} src={posterSrc("w154", film.poster)} srcSet={posterSrcSet("w154", "w342", film.poster)} alt="" crossOrigin="anonymous" width={52} height={78} loading="lazy" decoding="async" />
       ) : (
         <span className={`${s.poster} ${s.noPoster}`}>
           <TicketFaceSticker height={25} />
