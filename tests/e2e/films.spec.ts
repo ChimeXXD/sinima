@@ -48,9 +48,10 @@ test("Starting soon lists only what starts in the next 2 hours, soonest first", 
   await freeze(page, now);
   await page.goto("/soon");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Starting soon in Lagos");
-  const times = await page.getByTestId("section.soon").locator("[data-testid^='time.']").allTextContents();
-  expect(times.map((t) => t.slice(0, 5))).toEqual(soon.map((s) => lagosClock(s.startsAt)));
-  await expect(page.getByTestId("section.soon").getByTestId("soon.countdown").first()).toHaveText(/^Starts in /);
+  // Each card's test id ends with its start (Figma Starting soon, build unit 9).
+  const starts = await page.getByTestId("section.soon").locator("[data-testid^='soon.']").evaluateAll((els) => els.map((el) => el.getAttribute("data-testid")!.slice(-20)));
+  expect(starts.map(lagosClock)).toEqual(soon.map((s) => lagosClock(s.startsAt)));
+  await expect(page.getByTestId("section.soon").getByTestId("countdown-badge").first()).toContainText("Starts in");
 });
 
 test.describe("with the phone set to New York", () => {

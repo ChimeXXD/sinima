@@ -325,7 +325,7 @@
         "the site opens on Films and every page's tabs read Films, Cinemas, Starting soon",
         "a saved area sends the Cinemas tab to that area (superseded by D-91: the Cinemas tab keeps the saved area on its own page, first)",
         "on a phone the search button opens a search box on the same page; typing lists matching films; a match opens its film; no match says so; Escape closes it",
-        "every area chip is whole on screen at 390, 360 and 320 px",
+        "every area chip is whole on screen at 390, 360 and 320 px (since D-96 the Starting soon chips scroll sideways under a fade; each scrolls whole into view, clear of the screen edge)",
         "each tab name stays on one line at 360 and 320 px"
       ],
       "verify": "npm run test:e2e -- nav",
@@ -469,7 +469,7 @@
       ],
       "verify": "manual on both phones + npm run test:e2e -- remind",
       "passes": false,
-      "evidence": "12 Nov 2026, not passing: Remind me downloads the .ics from the showing panel (`npm run test:e2e -- showing` checks the file name, DTSTART and the 30-minute alarm) and the panel shows a live countdown. Still to do: open the file on an iPhone and an Android phone."
+      "evidence": "12 Nov 2026, not passing: Remind me downloads the .ics from the showing panel (`npm run test:e2e -- showing` checks the file name, DTSTART and the 30-minute alarm) and the panel shows a live countdown. Since build unit 9 (D-96) the old panel is gone: the showing sheet's Add to calendar is checked in tests/e2e/film-screen.spec.ts (DTSTART, TRIGGER:-PT30M) and a kept countdown leads Starting soon until it starts (tests/e2e/soon-screen.spec.ts). Still to do: open the file on an iPhone and an Android phone."
     },
     {
       "id": "D5-2",

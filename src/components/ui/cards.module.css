@@ -121,12 +121,73 @@
 .showing[data-started] .showingTitle {
   color: var(--state-started);
 }
+/* Opening the sheet: the title is the button, its hit area the whole card; Book stays on top. */
+.open {
+  max-width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.open::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+.open:focus-visible {
+  outline: none;
+}
+.showing:has(.open) {
+  position: relative;
+}
+.showing:has(.open:focus-visible) {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+.showing:has(.open) a {
+  position: relative;
+  z-index: 1;
+}
+/* Starting soon's cards (Figma): the title, cinema and meta each keep to one line. */
+.showing[data-one-line] .showingTitle,
+.showing[data-one-line] .open,
+.showing[data-one-line] .cinemaName,
+.showing[data-one-line] .meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.showing[data-one-line] .open {
+  display: block;
+}
+/* Starting soon's cards are 405 tall in Figma: the info block keeps its 80 so the time pill sits
+   level across a row, and from an iPad the poster stays 223 tall as the card widens. */
+.showing[data-one-line] .info {
+  min-height: 80px;
+}
+.showing[data-one-line] .showingPoster .poster {
+  aspect-ratio: 155 / 223; /* Figma's phone poster, 155 × 223 */
+}
+@media (min-width: 768px) {
+  .showing[data-one-line] .showingPoster .poster {
+    aspect-ratio: auto;
+    height: 223px;
+  }
+}
 .cinema {
   display: flex;
   align-items: flex-start; /* a name on two lines keeps the pin on the first */
   gap: var(--space-4);
   color: var(--text-primary);
   font: var(--type-meta);
+}
+.cinemaName {
+  min-width: 0;
 }
 .cinema svg {
   flex: none;

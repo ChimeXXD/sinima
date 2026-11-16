@@ -1,0 +1,202 @@
+/* Starting soon (Figma 204:7192 Default, 204:7931 Nothing in 2 hours): area chips, the cards for
+   the next 2 hours at 2, 4 and 6 columns, the later rows at 1 and 2 columns, and the empty state. */
+
+/* Area chips: padding 4 / 8 so their shadows are never clipped. A phone's row scrolls under a 56 px
+   fade (Figma Fade · scroll edge) while there is more; from an iPad they wrap. */
+.chipsWrap {
+  position: relative;
+  margin-inline: calc(-1 * var(--gutter));
+}
+.chips {
+  display: flex;
+  gap: var(--space-8);
+  padding: var(--space-4) var(--gutter) var(--space-8);
+  overflow-x: auto;
+  scroll-padding-inline: var(--gutter); /* a chip scrolled into view keeps the margin */
+  scrollbar-width: none;
+}
+.chips::-webkit-scrollbar {
+  display: none;
+}
+.chips > * {
+  flex: none;
+}
+.chipsWrap::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: 56px;
+  background: linear-gradient(to right, transparent, var(--bg-page));
+  pointer-events: none;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.chipsWrap[data-end]::after {
+  opacity: 0;
+}
+.notice {
+  display: flex;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-14);
+  padding: 22px 0 var(--space-4);
+}
+.section[aria-labelledby="soon.later"],
+.section[aria-labelledby="soon.day"] {
+  gap: var(--space-10);
+  padding-top: 26px;
+}
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.heading h2 {
+  color: var(--text-primary);
+  font: var(--type-heading-s);
+}
+.heading p {
+  color: var(--text-secondary);
+  font: var(--type-meta);
+}
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-12);
+}
+
+/* Later · 20:00 Agbara Nla: page-coloured, hairline, radius 20, padding 10, gap 12. */
+.rows,
+.quietRows {
+  display: grid;
+  gap: var(--space-10);
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  min-width: 0;
+  padding: var(--space-10);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-row);
+  background: var(--bg-page);
+  text-align: left;
+}
+.poster {
+  flex: none;
+  width: 44px;
+  height: 64px;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+}
+.poster > img,
+.poster > div {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.noPoster {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  background: var(--bg-accent-soft);
+}
+.noPoster img {
+  rotate: 8deg;
+}
+.text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.rowTitle {
+  color: var(--text-primary);
+  font: var(--type-title);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.rowLine {
+  color: var(--text-secondary);
+  font: var(--type-meta);
+  overflow-wrap: anywhere;
+}
+.more {
+  display: flex;
+  align-items: flex-start; /* the words sit 12 under the rows (Figma), the target runs to 44 below */
+  align-self: flex-start;
+  min-height: 44px;
+  padding: 12px 0 0;
+  border: 0;
+  background: none;
+  color: var(--text-accent);
+  font: var(--type-label-strong);
+  text-align: left;
+  cursor: pointer;
+}
+
+/* Nothing in 2 hours: centred, gap 12. */
+.quiet {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-12);
+  padding: var(--space-32) 0 var(--space-8);
+  text-align: center;
+}
+.quietTicket {
+  rotate: 8deg;
+  margin-top: 10px; /* Figma's ticket art sits 10 low in its 83 × 69 box, 23 above the title */
+}
+.quiet h2 {
+  color: var(--text-primary);
+  font: var(--type-heading-s);
+}
+.quiet > p {
+  color: var(--text-secondary);
+  font: var(--type-body-m);
+}
+.quiet > .tomorrow {
+  color: var(--text-body-strong);
+}
+.quietRows {
+  width: 100%;
+}
+.hand {
+  color: var(--text-accent);
+  font: var(--type-handwritten);
+  rotate: 4deg;
+}
+
+@media (min-width: 768px) {
+  .chips {
+    flex-wrap: wrap;
+    overflow: visible;
+  }
+  .chipsWrap::after {
+    content: none;
+  }
+  .cards {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-14);
+  }
+  .rows {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--space-14);
+  }
+  .quiet > *:not(.quietTicket, .hand, a) {
+    width: min(440px, 100%);
+  }
+}
+
+@media (min-width: 1200px) {
+  .cards {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: var(--space-16);
+  }
+}

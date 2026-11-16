@@ -31,11 +31,11 @@ test("a saved area puts its cinemas first on the Cinemas tab", async ({ page }) 
 
 test("on a phone, the search button opens a search box on the page it is on, and a match opens the film", async ({ page, request }) => {
   await freeze(page, await sampleTime(request, "18:00"));
-  await page.goto("/soon");
+  await page.goto("/yours"); // the old search, until build unit 10
   const box = page.getByTestId("search.input");
   await expect(box).toBeHidden();
   await page.getByTestId("search.open").click();
-  await expect(page).toHaveURL(/\/soon$/); // it does not jump to another page
+  await expect(page).toHaveURL(/\/yours$/); // it does not jump to another page
   await expect(box).toBeVisible();
   await expect(box).toBeFocused();
   await box.fill("spider");
@@ -46,7 +46,7 @@ test("on a phone, the search button opens a search box on the page it is on, and
 });
 
 test("search says so when no film matches, and Escape closes it", async ({ page }) => {
-  await page.goto("/soon"); // the old search, until build unit 9
+  await page.goto("/yours"); // the old search, until build unit 10
   await page.getByTestId("search.open").click();
   await page.getByTestId("search.input").fill("zzz");
   await expect(page.getByTestId("search.none")).toHaveText('No film showing matches "zzz".');
@@ -64,8 +64,9 @@ for (const width of [390, 360, 320]) {
   test(`at ${width} px every area chip is whole on screen, none cut off or covered`, async ({ page }) => {
     await page.setViewportSize({ width, height: 800 });
     await page.goto("/soon"); // the Cinemas tab uses pickers on a phone since D-56, and a film's page has no chips since D-88; Starting soon still has them
-    const chips = page.locator('[data-testid^="area.chip."], [data-testid="area.more"]');
-    await expect(chips).toHaveCount(5); // three areas, All Lagos, More areas
+    // With no area kept: All Lagos and every area, in a row that scrolls sideways (Figma, build unit 9).
+    const chips = page.locator('[data-testid^="area.chip."]');
+    await expect(chips).toHaveCount(13); // All Lagos and 12 areas
     const cut = await chips.evaluateAll((els) =>
       els.filter((el) => {
         // The chips can sit low on a page; bring each into view first, or a point below the

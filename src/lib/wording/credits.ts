@@ -11,9 +11,9 @@ const NOT_KNOWN: CreditsWording = { verdict: "unknown", chip: "Credits scene: no
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 const names = (sources: CreditsSource[]) => sources.map((s) => s.name);
-/** "TMDB", "TMDB and RunPee", "TMDB, RunPee and aftercredits.com" */
-export function list(items: string[]): string {
-  return items.length <= 1 ? items.join("") : `${items.slice(0, -1).join(", ")} and ${items.at(-1)}`;
+/** "TMDB", "TMDB and RunPee", "TMDB, RunPee and aftercredits.com"; with "or", "Victoria Island or Sangotedo". */
+export function list(items: string[], last: "and" | "or" = "and"): string {
+  return items.length <= 1 ? items.join("") : `${items.slice(0, -1).join(", ")} ${last} ${items.at(-1)}`;
 }
 /** A source we can point to: a name, an https link and the day it was checked. */
 function citable(s: CreditsSource): boolean {

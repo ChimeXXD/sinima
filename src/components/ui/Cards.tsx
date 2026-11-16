@@ -58,11 +58,11 @@ export function FilmCard(props: { href: string; title: string; meta: string; pos
  * pill sits at the bottom. Once started the poster dims, the badge says so, and there is no
  * booking (D-05).
  */
-export function ShowingCard(props: { title: string; cinema: string; meta: string; poster: React.ReactNode; startsAt: string; now: string | null; bookUrl: string | null; bookLabel: string; testId?: string }) {
-  const { title, cinema, meta, poster, startsAt, now, bookUrl, bookLabel, testId } = props;
+export function ShowingCard(props: { title: string; cinema: string; meta: string; poster: React.ReactNode; startsAt: string; now: string | null; bookUrl: string | null; bookLabel: string; testId?: string; /** Opens the showing sheet: a tap anywhere on the card but Book. */ onOpen?: () => void; /** One line each for the title, cinema and meta, as on the Starting soon screen. */ oneLine?: boolean }) {
+  const { title, cinema, meta, poster, startsAt, now, bookUrl, bookLabel, testId, onOpen, oneLine } = props;
   const started = now !== null && !isBeforeStart(showingState(startsAt, now));
   return (
-    <article className={s.showing} data-started={started || undefined} data-testid={testId}>
+    <article className={s.showing} data-started={started || undefined} data-one-line={oneLine || undefined} data-testid={testId}>
       <div className={s.showingPoster}>
         <span className={s.poster}>{poster}</span>
         <span className={s.badgeAt}>
@@ -70,10 +70,18 @@ export function ShowingCard(props: { title: string; cinema: string; meta: string
         </span>
       </div>
       <div className={s.info}>
-        <h3 className={s.showingTitle}>{title}</h3>
+        <h3 className={s.showingTitle}>
+          {onOpen ? (
+            <button type="button" className={s.open} onClick={onOpen}>
+              {title}
+            </button>
+          ) : (
+            title
+          )}
+        </h3>
         <p className={s.cinema}>
           <Icon name="map-pin" size={14} />
-          {cinema}
+          <span className={s.cinemaName}>{cinema}</span>
         </p>
         <p className={s.meta}>{meta}</p>
       </div>
