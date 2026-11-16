@@ -2,6 +2,18 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 16 Nov 2026 — live data, Lagos through Lagocine (D-116)
+
+- **Why the site was still a demo:** every source but Filmhouse's own was cleared on 15 Nov, but `refresh` could only read saved pages, only 2 readers existed (Lagocine, Veezi), the scheduled job was off, and Abuja has no cinemas in the data yet.
+- **Changed:** `scripts/sources/polite.ts` (our bot name, robots.txt per path including after a redirect, 5 s per host, 30 s timeout, a refusal is final); `scripts/live.ts` (`refresh --live`: Lagocine's day pages for today and tomorrow, only its `cinemaIds`, into `data/live/`; any failure writes nothing); `scripts/assemble.ts` (the step sample and live data share, moved out of `refresh.ts`); `refresh --build` as `prebuild` (live data split again for the build's areas, else sample data); `refresh-showtimes.yml` on at 06:17, 12:17, 16:17 Lagos, commits `data/live/`, rebases before pushing. DATA.md §Live data, D-116.
+- **First live run:** 16 Nov 22:10 UTC, 260 showings (today's remaining and tomorrow's), 33 films, all.json 8.9 KB gzipped; a build on it has no Sample banner and the cinema page's Book goes to Genesis's own site.
+- **Checked:** unit tests for polite.ts (robots rules, gap, UA, 403, redirects, empty agent) and live.ts (pages read, real links, cinema filter, failure, build step); 636 unit tests; e2e on a sample build. The red run was not seen: proof's memory guard blocked it (the tests failed at import before the modules existed). code-review high --fix: 9 findings, 5 fixed (above), 3 skipped (gap from sources.json, maxRunsPerDay enforcement, one UA string).
+- **Verifier (fresh context):** 6 of 8 passed at first. Fixed both gaps: redirects are now followed by hand, each hop checked against robots.txt and the site before it is requested, with the 5 s gap and at most 3 hops (two tests, red then green); the cinema-filter test now drops EbonyLife from Lagocine's list in a copy of the registry and checks its rows go (shown to fail with the filter switched off).
+- **Filmhouse in the first run:** only 2 rows, because the run was at 23:10 Lagos, when today's had ended and Lagocine had not yet listed Filmhouse's tomorrow. Today's saved page has 15 Filmhouse rows across 5 cinemas, so the reader handles them. 15 Lagos cinemas had times in that run; check Filmhouse after the 06:17 run.
+- **Found:** a build made with live data fails sample-data e2e tests (About says "In use"; no IMAX left late at night). Rebuild with `refresh --fixtures --now <today>T07:00:00Z && next build` before the gate.
+- **Not verified:** the scheduled job on GitHub (first run after the push); films new to live data have no TMDB match (no poster, runtime or credits) until the TMDB unit.
+- **Next:** TMDB matching in the job and trailers; Abuja (cinemas, Veezi live for Silverbird SEC and Jabi, then Genesis and Nova); each Lagos cinema's own reader.
+
 ## 16 Nov 2026 — security patch: Next.js 16.4.6 (D-115)
 
 - **Why:** `next build` printed a security notice. `npm audit`: 8 moderate, from two advisories: GHSA-mfr8-8qww-v76h (Next.js 16.3.0–16.4.4, `'use cache'` through `unstable_cache()` on a running server) and GHSA-g3hv-75wg-m249 (minimatch under typescript-eslint, dev only). Neither reached the live site (static export, neither feature in `src/`, minimatch not shipped); Chime chose to patch.

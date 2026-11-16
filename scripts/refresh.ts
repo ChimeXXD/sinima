@@ -1,19 +1,20 @@
 // Refresh showtimes: read sources -> normalise -> validate -> write data/showtimes.json and the
 // per-area files (SPEC §4, DATA §Per-area files).
 //
-//   node scripts/refresh.ts --fixtures [--now 2026-11-20T18:00:00Z]
-//
-// Only --fixtures is built: it turns the saved pages in tests/fixtures/ into sample data on
-// today's and tomorrow's dates (D-20). Reading a live site waits for a cleared source (D-08, D-33).
+//   node scripts/refresh.ts --fixtures [--now 2026-11-20T18:00:00Z]   sample data from tests/fixtures/ (D-20)
+//   node scripts/refresh.ts --live                                     the cleared sources, read now, into data/live/ (D-116)
+//   node scripts/refresh.ts --build                                    before a build: data/live/ if it is there, else sample data
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { gzipSync } from "node:zlib";
-import type { Cinema, ShowtimesFile, Source } from "../src/lib/data/types.ts";
+import type { ShowtimesFile } from "../src/lib/data/types.ts";
 import { lagosDayKey } from "../src/lib/time/lagos.ts";
-import { mergeCredits, type ManualEntry, type TmdbFilm } from "./credits.ts";
-import { buildShowtimes, splitByArea, toSampleDays, type Batch } from "./pipeline.ts";
+import { assemble, readJson, SAMPLE_PATHS } from "./assemble.ts";
+import { LIVE_DIR, liveBuildFiles, refreshLive } from "./live.ts";
+import { toSampleDays, type Batch } from "./pipeline.ts";
 import { parseLagocineCinema, parseLagocineDay } from "./sources/lagocine.ts";
+import { politeFetcher } from "./sources/polite.ts";
 import type { ParsedPage } from "./sources/raw.ts";
 
 /**
@@ -25,10 +26,9 @@ import type { ParsedPage } from "./sources/raw.ts";
 export const DATA_FILE_LIMIT_KB = 20;
 
 type FixtureEntry = { file: string; sourceId: string; page: string; cinemaId?: string; savedAt: string; sample: boolean };
-type RegistryCinema = Omit<Cinema, "sourceIds"> & Record<string, unknown>;
-type RegistrySource = { id: string; name: string; homepage: string; status: Source["status"]; cinemaIds: string[] };
 
-const readJson = <T>(path: string) => JSON.parse(readFileSync(path, "utf8")) as T;
+/** Our bot's name and contact page, on every request (D-77). */
+const USER_AGENT = "SinimaBot/0.1 (+https://github.com/ChimeXXD/sinima)";
 
 function parseFixture(entry: FixtureEntry, html: string): ParsedPage {
   if (entry.page === "lagocine-day") return parseLagocineDay(html);
@@ -39,8 +39,6 @@ function parseFixture(entry: FixtureEntry, html: string): ParsedPage {
 /** Sample data from the saved fixtures, as the files to write (path under the repo root -> file). */
 export function refreshFromFixtures(options: { now: string; root: string }): { files: Map<string, ShowtimesFile>; log: string[] } {
   const { now, root } = options;
-  const registry = readJson<{ areas: { slug: string }[]; cinemas: RegistryCinema[] }>(join(root, "data/cinemas.json"));
-  const sourceRegistry = readJson<{ sources: RegistrySource[] }>(join(root, "data/sources.json")).sources;
   const entries = readJson<{ fixtures: FixtureEntry[] }>(join(root, "tests/fixtures/index.json")).fixtures.filter((entry) => entry.sample);
 
   // One batch per source: its pages were saved in one sitting, and a cinema's tomorrow may be on
@@ -58,36 +56,14 @@ export function refreshFromFixtures(options: { now: string; root: string }): { f
       showings: toSampleDays(parsed.flatMap((page) => page.showings), lagosDayKey(savedAt), now),
     });
   }
-
-  const sources: Source[] = batches.map((batch) => {
-    const entry = sourceRegistry.find((source) => source.id === batch.sourceId);
-    if (!entry) throw new Error(`The fixture source "${batch.sourceId}" is not in data/sources.json`);
-    return { id: entry.id, name: entry.name, url: entry.homepage, method: "fixture", status: entry.status, fetchedAt: batch.fetchedAt, lastOkAt: batch.fetchedAt, health: "ok" };
-  });
-  const cinemas: Cinema[] = registry.cinemas.map((cinema) => ({
-    id: cinema.id, name: cinema.name, chain: cinema.chain, area: cinema.area, address: cinema.address ?? null, geo: cinema.geo ?? null,
-    website: cinema.website ?? null, bookingHost: cinema.bookingHost ?? null,
-    sourceIds: sources.filter((source) => sourceRegistry.find((entry) => entry.id === source.id)?.cinemaIds.includes(cinema.id)).map((source) => source.id),
-  }));
-
-  // Credits: what scripts/tmdb.ts last wrote (if it has run) with Chime's own entries on top (D-19).
-  const creditsPath = join(root, "data/credits.json");
-  const tmdb = existsSync(creditsPath) ? readJson<{ tmdb: Record<string, TmdbFilm> }>(creditsPath).tmdb : {};
-  const manual = readJson<{ films: Record<string, ManualEntry> }>(join(root, "data/credits-manual.json")).films;
-  const creditsFor = (filmId: string) => mergeCredits({ filmIds: [filmId], tmdb, manual })[filmId];
-
-  const { file, log } = buildShowtimes({ generatedAt: now, sources, cinemas, batches, creditsFor });
-  const files = new Map<string, ShowtimesFile>([["data/showtimes.json", file]]);
-  for (const [slug, part] of splitByArea(file, registry.areas.map((area) => area.slug), now)) {
-    files.set(slug === "all" ? "public/data/all.json" : `public/data/area/${slug}.json`, part);
-  }
-  return { files, log };
+  return assemble({ now, root, batches, method: "fixture", paths: SAMPLE_PATHS });
 }
 
 const UTC_SECONDS = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/;
 const gzipKb = (text: string) => gzipSync(text, { level: 9 }).length / 1024;
-/** data/showtimes.json is kept readable for diffs; the files a page loads are compact. */
-const serialise = (path: string, file: ShowtimesFile) => (path.startsWith("public/") ? JSON.stringify(file) : `${JSON.stringify(file, null, 2)}\n`);
+/** The files a page loads (all.json and each area's), compact and under the budget; showtimes.json is the whole set, kept readable for diffs. */
+const pageLoads = (path: string) => !path.endsWith("showtimes.json");
+const serialise = (path: string, file: ShowtimesFile) => (pageLoads(path) ? JSON.stringify(file) : `${JSON.stringify(file, null, 2)}\n`);
 const withoutStamp = (file: ShowtimesFile) => JSON.stringify({ ...file, generatedAt: null });
 
 /** Writes each file under `root`, skipping one whose content is the same apart from generatedAt. */
@@ -111,10 +87,41 @@ export function writeFiles(files: Map<string, ShowtimesFile>, root: string): { w
   return { written, unchanged: files.size - written.length };
 }
 
-/** Runs the command line; returns the exit code. */
-export function main(argv: string[]): number {
-  if (!argv.includes("--fixtures")) {
-    console.error("refresh: only --fixtures is built. Reading a live site waits for a cleared source (D-08, D-33). Nothing was read or written.");
+/** Checks each file a page loads against the budget, then writes them all; returns the exit code. */
+function writeChecked(files: Map<string, ShowtimesFile>, log: string[], root: string, what: string): number {
+  for (const line of log) console.log(`refresh: ${line}`);
+  let overBudget = false;
+  for (const [path, file] of files) {
+    const size = gzipKb(serialise(path, file));
+    const over = pageLoads(path) && size > DATA_FILE_LIMIT_KB;
+    if (over) overBudget = true;
+    console.log(`refresh: ${path}: ${file.showings.length} showings, ${file.films.length} films, ${size.toFixed(1)} KB gzipped${over ? ` (over the ${DATA_FILE_LIMIT_KB} KB limit)` : ""}`);
+  }
+  if (overBudget) {
+    console.error("refresh: a data file is over the budget (D-21). Nothing was written.");
+    return 1;
+  }
+  const { written, unchanged } = writeFiles(files, root);
+  console.log(`refresh: ${what}. Wrote ${written.length} files, ${unchanged} unchanged.`);
+  return 0;
+}
+
+/** Runs the command line; returns the exit code (a promise for --live, which reads the web). */
+export function main(argv: string[]): number | Promise<number> {
+  const root = join(dirname(fileURLToPath(import.meta.url)), "..");
+  if (argv.includes("--live")) {
+    const now = new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
+    const fetchText = politeFetcher({ userAgent: process.env.FETCH_USER_AGENT || USER_AGENT, minGapMs: 5000 });
+    return refreshLive({ now, root, fetchText }).then(
+      ({ files, log }) => writeChecked(files, log, root, `live data read at ${now}`),
+      (error: unknown) => {
+        console.error(`refresh --live: ${error instanceof Error ? error.message : String(error)} Nothing was written; the last good data stays.`);
+        return 1;
+      },
+    );
+  }
+  if (!argv.includes("--fixtures") && !argv.includes("--build")) {
+    console.error("refresh: say --fixtures (sample data), --live (read the cleared sources) or --build (live data if it is there, else sample). Nothing was read or written.");
     return 1;
   }
   const nowFlag = argv.indexOf("--now");
@@ -123,25 +130,10 @@ export function main(argv: string[]): number {
     console.error(`refresh: --now needs a UTC time like 2026-11-20T18:00:00Z, got "${now}". Nothing was read or written.`);
     return 1;
   }
-  const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-
+  const live = argv.includes("--build") ? liveBuildFiles(root, now) : null;
+  if (live) return writeChecked(live, [], root, `the live data in ${LIVE_DIR}/, read at ${live.get(SAMPLE_PATHS.main)?.generatedAt}`);
   const { files, log } = refreshFromFixtures({ now, root });
-  for (const line of log) console.log(`refresh: ${line}`);
-
-  let overBudget = false;
-  for (const [path, file] of files) {
-    const size = gzipKb(serialise(path, file));
-    const isPublic = path.startsWith("public/");
-    if (isPublic && size > DATA_FILE_LIMIT_KB) overBudget = true;
-    console.log(`refresh: ${path}: ${file.showings.length} showings, ${file.films.length} films, ${size.toFixed(1)} KB gzipped${isPublic && size > DATA_FILE_LIMIT_KB ? ` (over the ${DATA_FILE_LIMIT_KB} KB limit)` : ""}`);
-  }
-  if (overBudget) {
-    console.error("refresh: a data file is over the budget (D-21). Nothing was written.");
-    return 1;
-  }
-  const { written, unchanged } = writeFiles(files, root);
-  console.log(`refresh: sample data for ${lagosDayKey(now)} and the day after (Lagos). Wrote ${written.length} files, ${unchanged} unchanged.`);
-  return 0;
+  return writeChecked(files, log, root, `sample data for ${lagosDayKey(now)} and the day after (Lagos)`);
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) process.exit(main(process.argv.slice(2)));
+if (process.argv[1] === fileURLToPath(import.meta.url)) process.exit(await main(process.argv.slice(2)));

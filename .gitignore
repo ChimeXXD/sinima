@@ -44,7 +44,8 @@ tmp/
 docs/design/logo/mascots/*.png
 
 # Sample data written by `npm run refresh -- --fixtures`: dated today and tomorrow, so it is made
-# fresh for each build, not committed (D-45). Live data will be committed when a source is cleared.
+# fresh for each build, not committed (D-45). Live data is committed in data/live/ and copied
+# here by `refresh --build` before a build (D-116).
 data/showtimes.json
 public/data/
 

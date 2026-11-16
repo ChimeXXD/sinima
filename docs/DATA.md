@@ -234,6 +234,12 @@ The chip never says "Go" without a source that says so.
 
 `refresh` also writes one file per area, `public/data/area/<slug>.json`, and `public/data/all.json`, in the same v1 shape but holding only that area's cinemas, their showings for today and tomorrow, and the films and sources those showings use. Pages load only their own file. The size budget (D-21) applies per file: at most 20 KB gzipped each (D-45). "Tomorrow" runs to 04:00 the morning after, so a 00:30 show stays with its evening.
 
+## Live data (D-116)
+
+`npm run refresh -- --live` reads every source in `data/sources.json` that is `cleared` and has a reader in `scripts/live.ts`, through `scripts/sources/polite.ts` (our bot name and contact link, robots.txt checked for each path, at most one request per 5 s per host, a refusal is final). Each source feeds only the cinemas in its `cinemaIds`. Rows carry the source's real booking links (the validator's host rule above), every source's `method` is `public-page`, `fetchedAt` is the time of the run, and `sample` is `false`. The files go to `data/live/` (`showtimes.json`, `all.json`, `area/<slug>.json`), which is committed by the scheduled job. If any source can't be read, nothing is written.
+
+Before a build, `npm run build` runs `refresh --build`: it copies `data/live/showtimes.json` to `data/showtimes.json` and splits it again into `public/data/` against the current `data/cinemas.json` (so an area added since the last live run still gets its file), or makes sample data when `data/live/` is missing. Tests and CI call `refresh --fixtures` themselves, so they always run on sample data.
+
 ## Sample data (D-20, D-45)
 
 `npm run refresh -- --fixtures` builds these files from the saved pages listed in `tests/fixtures/index.json` (the entries marked `sample`). Rows from the day the pages were saved move onto today and rows from the day after onto tomorrow, both in Lagos, keeping their wall-clock times; later days are dropped. A cinema with no saved tomorrow gets its saved day again. Sample rows have no booking link, every source's `method` is `fixture`, and `sample` is `true`. The files are dated today, so they are made by the command and not committed.

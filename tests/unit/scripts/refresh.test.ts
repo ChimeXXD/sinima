@@ -238,7 +238,7 @@ describe("refresh --fixtures", () => {
     expect(writeFiles(later.files, out)).toEqual({ written: [], unchanged: 14 });
   });
 
-  it("does not read a live site yet: without --fixtures it stops with an error", () => {
+  it("needs a mode: with none (--fixtures, --live or --build) it stops with an error", () => {
     expect(main([])).toBe(1);
   });
 
