@@ -2,6 +2,20 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 16 Nov 2026 — review round 2 (D-109)
+
+- **From:** Chime's screen recording (BetterShot_2026-11-16-14-37-16.mov), every frame read at 2 s; Design Bookmark's Spring dropdown source (index.html, dropdown.css, dropdown.js, shared motion.js) read in full.
+- **Skills run:** animate (chevron, value roll, page slide), choreograph (menu rows falling in 45 ms apart, exits together and quicker), apple-design (springs from the live value, interruptible, critical damping for reduced motion), emil-design-eng (no motion on keyboard opens, origin at the trigger), code-review high --fix.
+- **Page slide:** 40 px over 300 ms (was 12 px over 220 ms, over before the eye saw it).
+- **Spring dropdown** (`ui/SpringMenu.tsx`, `springMenu.module.css`): their springs as they are: menu height 300/23 widening from 90 %, rows 300/24, highlight 620/36 leading and 200/20 trailing (it stretches between rows), tick 260/26, chevron 300/18 and value 340/26 sampled into CSS `linear()` tokens. Not taken: their whole control lifting to stay centred (ours sits in the page). On a computer it drops 8 px under Area, Day, Format (`cinemas/PickerMenus.tsx`, loaded only at a computer's width) and "Lagos ⌄" (`search/CitySheet.tsx`); the trigger stays in view and a second click closes it; Enter opens it at once, arrows move, Enter picks, Escape closes and gives focus back. Phones keep the sheets. Chevrons turn up on every picker and both city triggers. A value picked by tap rolls into its picker.
+- **Toast:** `--toast-info` blue-600 (white text 5.2:1) and `--toast-error` (Figma red/500 deepened), picked by `tone`; an error is `role=alert`. Figma's own toast colours still to come from Chime.
+- **Pull cord:** the bulb drawn before the shade, so the shade hides its top half.
+- **Checked:** lint, typecheck, 613 unit tests, round2.spec.ts 7/7, cinemas-screen, motion-m5-m9, search, theme, states, yours-screen 66/66; budget: every page under (heaviest a film page, JS 164.9 of 165 KB) after moving the computer menus out of the page's first load; screenshots at 1440 (light, dark, mid-open, mid-hover), 390 and 360.
+- **Review and verifier:** code-review high fixed 6 of 9 (the menu re-opening on every frame redraw, a stale fold timer closing the next menu, ticks not following a change made elsewhere, Tab leaving focus past the end of the page, a failed menus load never retried, a spent roll replaying; the computer popover code removed from Sheet; `--dur-page` token). proof:verifier then caught the highlight invisible in dark (raised and surface are one colour there: now the pickers' hover tint, with a focus ring when the arrows move it), chevrons turning on a key open (now `data-keys`, no transition), and the press spring (500/18) not built (now `--spring-press` on the pickers, the search pill and the title's "Lagos ⌄").
+- **Kept on purpose:** the row stagger stops growing after the ninth row (the Area menu's last rows would wait over half a second); the city menu has no value roll, since picking a city opens that city's page; the computer city menu leaves out the sheet's footer tip (Chime to say).
+- **Not verified:** Chime's phone and Safari; whether the menu's fade-in (see-through for its first ~0.1 s, as in the reference) reads well over busy rows.
+- **Next:** Chime's review; Figma toast colours.
+
 ## 16 Nov 2026 — review round 1: R1–R10 (D-106, D-107)
 
 - **From:** Chime's screen recording of the built site (desktop and phone) and two Design Bookmark references; every frame read at 4 s; their pull-cord and bottom-bar source read (springs from their tokens.css).

@@ -15,7 +15,16 @@ export function motion() {
     easeInOut: root.getPropertyValue("--ease-in-out").trim(),
     fast: ms(root, "--dur-fast"),
     base: ms(root, "--dur-base"),
+    page: ms(root, "--dur-page"),
   };
+}
+
+/**
+ * D-109: a trigger opened with Enter or Space (a click with no pointer, detail 0) is marked, so its
+ * chevron turns at once: no motion on keyboard actions.
+ */
+export function markKeys(event: React.MouseEvent<HTMLElement>): void {
+  event.currentTarget.toggleAttribute("data-keys", event.detail === 0);
 }
 
 /**

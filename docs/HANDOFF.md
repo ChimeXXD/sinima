@@ -1,6 +1,16 @@
 # Handoff: read this first when you pick the project back up
 
-## Now: review round 1 built (16 Nov 2026, latest)
+## Now: review round 2 built (16 Nov 2026, latest)
+
+**What Chime asked (D-109):** the Cinemas page is approved; the tab change still looked instant; the pickers and "Lagos ⌄" covered their own button: drop them under it as Design Bookmark's Spring dropdown, with the chevron turning up; a lighter toast, coloured by context (error: a soft red); the bulb half hidden in its shade like the reference.
+
+**Built:** see PROGRESS's top entry. New: `ui/SpringMenu.tsx` (+ `springMenu.module.css`), `ui/useDesktop.ts`, `cinemas/PickerMenus.tsx` (lazy, computer only); `--spring-chevron`, `--spring-roll`, `--toast-info`, `--toast-error` in tokens.css. Tests wait on the menu's `data-state` ("open", "closed", "moving"): it moves on rAF springs, not web animations.
+
+**Waiting on Chime:** the review of round 2; Figma's toast colours (info, error, maybe success); everything listed under round 1 below.
+
+**Gotchas:** the JS budget is nearly full (164.9 of 165 KB on film pages): anything new for one screen loads late. Figma and Dia open leave too little memory for a build.
+
+## Earlier: review round 1 built (16 Nov 2026)
 
 **What Chime asked (D-106):** after reviewing the site on desktop and phone (screen recording) with two Design Bookmark references: new favicon; the ticket sticker's outline cut off in dark mode; state changes and hovers animated everywhere; Figma's Cinemas tab icon; quick saving (heart on Cinemas rows, + on Your cinemas opens a list to tick); motion between pages; the nav moving like Design Bookmark's Bottom bar; the theme switch as their Pull cord (D-107: the new theme floods out of the bulb); posterless films in several colours.
 

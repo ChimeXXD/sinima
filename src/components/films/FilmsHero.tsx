@@ -2,6 +2,8 @@
 
 import { useContext } from "react";
 import { OpenCity } from "@/components/ui/AppFrame";
+import { markKeys } from "@/components/ui/motion";
+import { useDesktop } from "@/components/ui/useDesktop";
 import { DrinkSticker, TicketFaceSticker } from "@/components/ui/Stickers";
 import s from "./hero.module.css";
 
@@ -15,7 +17,8 @@ const Sticker = ({ name, className }: { name: "clapper" | "popcorn" | "glasses";
 );
 
 export function FilmsHero({ city, live }: { city: string; live: boolean }) {
-  const openCity = useContext(OpenCity);
+  const picker = useContext(OpenCity);
+  const desktop = useDesktop();
   return (
     <div className={s.hero}>
       <div className={s.art} aria-hidden="true">
@@ -37,7 +40,7 @@ export function FilmsHero({ city, live }: { city: string; live: boolean }) {
       <h1 className={s.title} data-testid="films.title">
         <span>What&apos;s on in</span>{" "}
         {/* "Lagos ⌄" opens the city sheet (Figma Search and city). */}
-        <button type="button" className={s.city} aria-haspopup="dialog" onClick={openCity} data-testid="films.city">
+        <button type="button" className={s.city} aria-haspopup={desktop ? "listbox" : "dialog"} aria-expanded={picker.from === "title"} onClick={(event) => (markKeys(event), picker.open(event, "title"))} data-testid="films.city">
           {city}
           <svg className={s.circle} viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
             <ellipse cx="50" cy="50" rx="48.5" ry="47" fill="none" stroke="currentColor" vectorEffect="non-scaling-stroke" />

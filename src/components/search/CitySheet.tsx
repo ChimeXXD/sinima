@@ -4,6 +4,8 @@ import registry from "../../../data/cinemas.json";
 import { usePathname, useRouter } from "next/navigation";
 import { useCity } from "@/components/ui/CityLink";
 import { OptionRow, Sheet } from "@/components/ui/Sheet";
+import { SpringMenu } from "@/components/ui/SpringMenu";
+import { useDesktop } from "@/components/ui/useDesktop";
 import { CitySticker } from "@/components/ui/Stickers";
 import { CITY_KEY, cityOfPath, type City } from "@/lib/city";
 import { ABUJA_SOON, CITY_SHEET, cityLine } from "@/lib/wording/search";
@@ -12,7 +14,8 @@ import s from "./city.module.css";
 // City sheet (Figma Search and city › City sheet): opens from "Lagos ⌄" in the search bar and in
 // the Films title. Picking a city keeps it on this phone and opens the same tab there, or its Films
 // for a page that city doesn't have (D-98). Abuja has no cinemas in the data yet, so its line says
-// they are being added: nothing invented stands in for them. Loaded only when first opened.
+// they are being added: nothing invented stands in for them. Loaded only when first opened. On a
+// computer it is the Spring dropdown under the trigger, which stays in view (D-109 c).
 
 const LAGOS = cityLine(
   registry.cinemas.length,
@@ -30,23 +33,55 @@ export function switchPath(pathname: string, city: City): string {
 export default function CitySheet({
   open,
   onClose,
+  anchor,
+  instant,
 }: {
   open: boolean;
-  onClose: () => void;
+  onClose: (refocus?: boolean) => void;
+  /** The trigger, for the computer's menu. */
+  anchor: React.RefObject<HTMLElement | null>;
+  /** Opened with a key: the menu appears at once. */
+  instant: boolean;
 }) {
   const current = useCity();
   const pathname = usePathname() ?? "/";
   const router = useRouter();
-  const pick = (city: City) => {
+  const desktop = useDesktop();
+  const keep = (city: City) => {
     try {
       localStorage.setItem(CITY_KEY, city);
     } catch {
       // not kept: the address still carries the city
     }
-    onClose();
     const next = switchPath(pathname, city);
     if (next !== pathname) router.push(next);
   };
+  const pick = (city: City) => (onClose(), keep(city));
+  if (desktop)
+    return (
+      <SpringMenu
+        open={open}
+        anchor={anchor}
+        instant={instant}
+        width={340}
+        label={CITY_SHEET.title}
+        options={(["lagos", "abuja"] as const).map((city) => ({
+          id: city,
+          label: city === "lagos" ? "Lagos" : "Abuja",
+          desc: city === "lagos" ? LAGOS : ABUJA_SOON,
+          lead: (
+            <span aria-hidden="true">
+              <CitySticker city={city} />
+            </span>
+          ),
+          selected: current === city,
+          testId: `city.${city}`,
+        }))}
+        onPick={(id) => id !== current && keep(id as City)}
+        onClose={onClose}
+        testId="city"
+      />
+    );
   return (
     <Sheet
       open={open}

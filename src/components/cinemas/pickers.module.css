@@ -141,3 +141,58 @@
     background: color-mix(in srgb, var(--bg-surface), var(--text-primary) 6%);
   }
 }
+
+/* D-109 c: the chevron turns up while its menu or sheet is open, on the Spring dropdown's chevron
+   spring (300/18, sampled in tokens.css), and back down when it closes. A value picked by tap
+   rolls up into the picker on the value spring (340/26). */
+.picker {
+  overflow: clip; /* the rolling value comes up from its bottom edge */
+}
+.down {
+  transition: rotate var(--spring-chevron-ms) var(--spring-chevron);
+}
+.picker[aria-expanded="true"] .down {
+  rotate: 180deg;
+}
+.value[data-roll] {
+  animation: roll var(--spring-roll-ms) var(--spring-roll);
+}
+@keyframes roll {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .down {
+    transition: rotate var(--dur-fast) var(--ease-out);
+  }
+  .value[data-roll] {
+    animation: fade var(--dur-fast) var(--ease-out);
+  }
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+/* D-109: no chevron motion when opened by a key; the press is the Spring dropdown's (500/18):
+   in at once, back on the spring. */
+.picker[data-keys] .down {
+  transition: none;
+}
+.picker {
+  transition:
+    transform var(--spring-press-ms) var(--spring-press),
+    background-color var(--dur-fast) ease;
+}
+.picker:active {
+  transform: scale(0.965);
+  transition: background-color var(--dur-fast) ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .picker:active {
+    transform: none;
+  }
+}

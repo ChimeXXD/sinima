@@ -208,16 +208,6 @@ div.option:active {
     margin-inline: auto;
   }
 }
-/* Desktop: a popover over its picker, growing from the picker's corner. */
-@media (min-width: 1200px) {
-  .picker {
-    inset: var(--at-top, 0) auto auto var(--at-left, 0);
-    width: 640px;
-    max-height: calc(100dvh - var(--at-top, 0px) - var(--space-8));
-    margin: 0;
-    transform-origin: top left;
-  }
-}
 
 /* Reduced motion: it fades instead of moving. */
 @media (prefers-reduced-motion: reduce) {

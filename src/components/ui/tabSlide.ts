@@ -3,7 +3,7 @@
 import { useLayoutEffect } from "react";
 import { motion } from "@/components/ui/motion";
 
-// M9 (D-103) and D-106 g: moving from page to page, the new page's content slides 12 px in and
+// M9 (D-103), D-106 g and D-109 b: moving from page to page, the new page's content slides 40 px in and
 // fades up, so pages read as places with a direction. Between the four tabs it comes from the side
 // of the tab that was tapped (Cinemas is to the right of Films); going deeper (into a cinema, an
 // area, a film) from the right; going back up (the back button, a crumb, the browser's back) from
@@ -54,6 +54,8 @@ export function useTabSlide(content: React.RefObject<HTMLElement | null>): void 
     if (!move || Date.now() - move.at > 3000 || !content.current) return;
     const m = motion();
     if (m.reduce) return;
-    content.current.animate([{ opacity: 0, transform: `translateX(${12 * move.direction}px)` }, { opacity: 1, transform: "none" }], { id: "tab", duration: m.base, easing: m.easeOut });
+    // A page is a large surface, like a sheet: 40 px over 300 ms, so the move reads (12 px over 220 ms
+    // was over before the eye saw it, D-109 b). Still under the sheet's 450.
+    content.current.animate([{ opacity: 0, transform: `translateX(${40 * move.direction}px)` }, { opacity: 1, transform: "none" }], { id: "tab", duration: m.page, easing: m.easeOut });
   }, [content]);
 }

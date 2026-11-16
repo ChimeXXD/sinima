@@ -155,10 +155,10 @@ test.describe("M9: moving between tabs", () => {
     expect(await slide(page)).toEqual([]); // not on a page load
     await page.getByTestId("tab.cinemas").click();
     await expect(page).toHaveURL(/\/lagos\/cinemas$/);
-    expect(await slide(page)).toEqual(["translateX(12px)"]);
+    expect(await slide(page)).toEqual(["translateX(40px)"]);
     await page.getByTestId("tab.films").click();
     await expect(page).toHaveURL(/\/lagos$/);
-    expect(await slide(page)).toEqual(["translateX(-12px)"]);
+    expect(await slide(page)).toEqual(["translateX(-40px)"]);
   });
 
   test("a key press opens the tab without motion, and so does reduced motion", async ({ page }) => {
@@ -212,17 +212,17 @@ test.describe("D-106 g: every move between pages slides", () => {
     await page.goto("/lagos/cinemas");
     await page.getByTestId("cinema.card.grand-lekki").getByTestId("cinema.name").click();
     await expect(page).toHaveURL(/\/lagos\/cinema\/grand-lekki$/);
-    expect(await slide(page)).toEqual(["translateX(12px)"]);
+    expect(await slide(page)).toEqual(["translateX(40px)"]);
     await page.getByTestId("cinema.back").click();
     await expect(page).toHaveURL(/\/lagos\/cinemas$/);
-    expect(await slide(page)).toEqual(["translateX(-12px)"]);
+    expect(await slide(page)).toEqual(["translateX(-40px)"]);
     // The back button added a step; the browser's back walks the history: into the cinema, then out.
     await page.goBack();
     await expect(page).toHaveURL(/\/lagos\/cinema\/grand-lekki$/);
-    expect(await slide(page)).toEqual(["translateX(12px)"]);
+    expect(await slide(page)).toEqual(["translateX(40px)"]);
     await page.goBack();
     await expect(page).toHaveURL(/\/lagos\/cinemas$/);
-    expect(await slide(page)).toEqual(["translateX(-12px)"]);
+    expect(await slide(page)).toEqual(["translateX(-40px)"]);
   });
 
   test("Films to a film's page is left to the poster travelling (no slide)", async ({ page }) => {

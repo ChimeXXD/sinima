@@ -123,28 +123,29 @@ for (const [name, viewport] of [["phone", { width: 390, height: 844 }], ["iPad",
   });
 }
 
-test("on a computer the area picker opens a popover from the picker, two areas to a row", async ({ page }) => {
+// D-109 c supersedes Figma's popover over the picker: on a computer the menu hangs 8 px under it,
+// so the picker stays in view.
+test("on a computer the area picker drops a menu under the picker, two areas to a row", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/lagos/cinemas");
   const picker = (await page.getByTestId("pick.area").boundingBox())!;
   await page.getByTestId("pick.area").click();
-  await settle(page);
+  await expect(page.getByTestId("sheet.area")).toHaveAttribute("data-state", "open");
   const box = (await page.getByTestId("sheet.area").boundingBox())!;
   expect(Math.round(box.x)).toBe(Math.round(picker.x));
-  expect(Math.round(box.y - picker.y)).toBe(10);
+  expect(Math.round(box.y - (picker.y + picker.height))).toBe(8);
   expect(Math.round(box.width)).toBe(640);
   const lekki = (await page.getByTestId("sheet.area.lekki").boundingBox())!;
   const vi = (await page.getByTestId("sheet.area.victoria-island").boundingBox())!;
   expect(Math.round(vi.y)).toBe(Math.round(lekki.y));
-  expect(Math.round(lekki.width)).toBe(304);
 
-  // It stays over its picker when the page scrolls under it.
+  // It stays under its picker when the page scrolls.
   await page.evaluate(() => window.scrollBy(0, 120));
   await page.evaluate(() => new Promise(requestAnimationFrame));
   const moved = (await page.getByTestId("pick.area").boundingBox())!;
   const after = (await page.getByTestId("sheet.area").boundingBox())!;
   expect(Math.round(moved.y)).toBe(Math.round(picker.y) - 120);
-  expect(Math.round(after.y - moved.y)).toBe(10);
+  expect(Math.round(after.y - (moved.y + moved.height))).toBe(8);
 });
 
 test("the day picker shows tomorrow, and says so", async ({ page, request }) => {

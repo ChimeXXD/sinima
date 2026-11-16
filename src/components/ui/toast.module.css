@@ -11,7 +11,7 @@
   min-height: 45px;
   padding: var(--space-12) var(--space-12) var(--space-12) var(--space-16);
   border-radius: var(--radius-tile);
-  background: var(--brand-eyes);
+  background: var(--toast-info);
   color: var(--text-on-action);
   translate: -50% 0;
   /* Purpose: it arrives from where the eye already is, the bottom of the screen. */
@@ -28,6 +28,9 @@
 }
 .icon path {
   fill: currentColor;
+}
+.toast[data-tone="error"] {
+  background: var(--toast-error);
 }
 .text {
   flex: 1;

@@ -2,6 +2,7 @@
 
 import { Link, useCity } from "@/components/ui/CityLink";
 import { createContext, useEffect, useRef, useState } from "react";
+import { useDesktop } from "./useDesktop";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useServiceWorker } from "@/lib/offline";
 import { useSaved } from "@/lib/saved";
@@ -29,8 +30,10 @@ function loadParts(): Promise<Parts> {
   return parts;
 }
 
-/** Opens the city sheet: the Films title's "Lagos ⌄" uses it. */
-export const OpenCity = createContext<() => void>(() => {});
+/** Who opened the city picker: the search bar's pill or the Films title. */
+type CityFrom = "bar" | "title";
+/** Opens the city picker, and says which trigger has it open: the Films title's "Lagos ⌄" uses it. */
+export const OpenCity = createContext<{ open: (event: React.MouseEvent<HTMLElement>, from: CityFrom) => void; from: CityFrom | null }>({ open: () => {}, from: null });
 
 /** The Sinima lockup: the ticket face and the wordmark. Links home. */
 export function Lockup() {
@@ -91,6 +94,11 @@ export function AppFrame({ active, search, city: chosen, bg, bar, footer, onAbou
   useServiceWorker();
   const [open, setOpen] = useState(false);
   const [city, setCity] = useState<boolean | null>(null); // null until first opened
+  const [cityFrom, setCityFrom] = useState<CityFrom | null>(null);
+  /** Opened with Enter or Space: the computer's menu appears at once. */
+  const [cityKeys, setCityKeys] = useState(false);
+  const cityAt = useRef<HTMLElement | null>(null);
+  const desktop = useDesktop();
   const [loaded, setLoaded] = useState<Parts | null>(null);
   const field = useRef<HTMLInputElement>(null);
   const quiet = useRef(false);
@@ -109,9 +117,22 @@ export function AppFrame({ active, search, city: chosen, bg, bar, footer, onAbou
     field.current?.focus();
     quiet.current = false;
   };
-  const openCity = () => (load(), setCity(true));
+  // On a computer the trigger stays in view under its menu, so a second click closes it (D-109 c).
+  const openCity = (event: React.MouseEvent<HTMLElement>, from: CityFrom) => {
+    const again = desktop && city === true && cityAt.current === event.currentTarget;
+    cityAt.current = event.currentTarget;
+    setCityKeys(event.detail === 0);
+    setCityFrom(again ? null : from);
+    load();
+    setCity(!again);
+  };
+  const closeCity = (refocus = false) => {
+    setCity(false);
+    setCityFrom(null);
+    if (refocus) cityAt.current?.focus();
+  };
   return (
-    <OpenCity value={openCity}>
+    <OpenCity value={{ open: openCity, from: city ? cityFrom : null }}>
       <header className={s.header} data-bar={bar ? "" : undefined}>
         {bar && <div className={s.bar}>{bar}</div>}
         <Lockup />
@@ -122,7 +143,8 @@ export function AppFrame({ active, search, city: chosen, bg, bar, footer, onAbou
             onChange={(text) => (search.onChange(text), load(), setOpen(true))}
             onSubmit={search.onSubmit}
             onFocus={() => quiet.current || (load(), setOpen(true))}
-            onCity={openCity}
+            onCity={(event) => openCity(event, "bar")}
+            cityOpen={city === true && cityFrom === "bar"}
             inputRef={field}
           />
           {open && loaded && <loaded.Search query={search.value} onQuery={search.onChange} onSubmit={() => (close(), search.onSubmit?.())} onClose={close} city={cityChoice} />}
@@ -145,7 +167,7 @@ export function AppFrame({ active, search, city: chosen, bg, bar, footer, onAbou
           </p>
         )}
       </footer>
-      {city !== null && loaded && <loaded.City open={city} onClose={() => setCity(false)} />}
+      {city !== null && loaded && <loaded.City open={city} onClose={closeCity} anchor={cityAt} instant={cityKeys} />}
     </OpenCity>
   );
 }

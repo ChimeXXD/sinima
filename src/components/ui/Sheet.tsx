@@ -11,8 +11,8 @@ import s from "./sheet.module.css";
 // on the scrim all close it.
 //
 // `picker` is the Cinemas pickers' sheet (Figma Cinemas › Area picker open): tighter, no close
-// button, 640 wide on an iPad, and on desktop a popover over its picker, 10 px below the picker's
-// top, growing from that corner. Escape and the scrim close it.
+// button, 640 wide on an iPad. On a computer the pickers drop the Spring dropdown instead (D-109 c,
+// SpringMenu). Escape and the scrim close it.
 
 export function Sheet({ open, onClose, title, subtitle, children, className, testId = "sheet", picker }: { open: boolean; onClose: () => void; title: string; subtitle?: string; children: React.ReactNode; className?: string; testId?: string; /** The picker the sheet opens from. */ picker?: React.RefObject<HTMLElement | null> }) {
   const ref = useRef<HTMLDialogElement>(null);
@@ -24,24 +24,8 @@ export function Sheet({ open, onClose, title, subtitle, children, className, tes
       if (dialog.open) dialog.close();
       return;
     }
-    // The popover sits over its picker, and stays there when the page scrolls or the window
-    // resizes; it moves left only when it would run past the window's right edge.
-    const place = () => {
-      const at = picker?.current?.getBoundingClientRect();
-      if (!at) return;
-      dialog.style.setProperty("--at-top", `${at.top + 10}px`);
-      dialog.style.setProperty("--at-left", `${Math.max(8, Math.min(at.left, window.innerWidth - dialog.offsetWidth - 8))}px`);
-    };
     if (!dialog.open) dialog.showModal();
-    place();
-    if (!picker) return;
-    window.addEventListener("scroll", place, { passive: true });
-    window.addEventListener("resize", place);
-    return () => {
-      window.removeEventListener("scroll", place);
-      window.removeEventListener("resize", place);
-    };
-  }, [open, picker]);
+  }, [open]);
 
   return (
     <dialog

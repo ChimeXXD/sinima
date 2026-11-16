@@ -89,9 +89,10 @@ export function PullCord({ on, onFlip, label, testId, className }: { on: boolean
         <path data-wire className={s.line} d={`M22 0L22 ${WIRE}`} />
         <path data-cord className={s.line} d={`M${REST.x} ${REST.top}L${REST.x} ${REST.bead}`} />
         <g data-lamp transform={`translate(0 ${WIRE})`}>
+          {/* The bulb first, so the shade hides its top half, as in the reference (D-109 e). */}
+          <circle data-bulb className={s.bulb} r="4" transform={`translate(22 ${SHADE})`} />
           <rect className={s.cap} x="19" y="-3" width="6" height="4" rx="1.5" />
           <path className={s.shade} d={`M11 ${SHADE} Q11 0 22 0 Q33 0 33 ${SHADE} Z`} />
-          <circle data-bulb className={s.bulb} r="4" transform={`translate(22 ${SHADE})`} />
         </g>
         <rect data-bead className={s.bead} x="-3.5" y="-1.5" width="7" height="12" rx="3.5" transform={`translate(${REST.x} ${REST.bead})`} />
       </svg>

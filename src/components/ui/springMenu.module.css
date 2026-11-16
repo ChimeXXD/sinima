@@ -1,0 +1,88 @@
+/* D-109 c: the Spring dropdown (SpringMenu.tsx) in Sinima's look: a raised surface with the
+   floating shadow, the pickers' 14 px rows, the pickers' hover tint for the highlight (raised and
+   surface are one colour in dark, so it mixes in the text colour). Its height,
+   width, opacity and the rows' entrance are written by its springs each frame. */
+.menu {
+  position: fixed;
+  z-index: 60;
+  top: 0;
+  left: 0;
+  height: 0;
+  padding: var(--space-6);
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  background: var(--bg-raised);
+  box-shadow: var(--fx-shadow-floating);
+  transform-origin: 50% 0;
+  visibility: hidden;
+  outline: none;
+}
+.menu[data-columns="2"] {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--space-8);
+  align-content: start;
+}
+.hl {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 14px; /* the pickers' rows */
+  background: color-mix(in srgb, var(--bg-surface), var(--text-primary) 6%);
+  opacity: 0;
+  pointer-events: none;
+}
+.row {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  min-height: 48px;
+  padding: var(--space-6) var(--space-12);
+  border-radius: 14px;
+  color: var(--text-primary);
+  cursor: pointer;
+  opacity: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.row[aria-selected="true"] {
+  color: var(--text-accent);
+}
+.text {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+.text b {
+  font: var(--type-body-m);
+  font-weight: 600;
+}
+.text small {
+  color: var(--text-secondary);
+  font: var(--type-meta);
+}
+.count {
+  color: var(--text-secondary);
+  font: var(--type-meta);
+  white-space: nowrap;
+}
+.tick {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: var(--text-accent);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.tick path {
+  stroke-dasharray: 22;
+  stroke-dashoffset: 22;
+}
+/* Moved by the arrow keys, the highlight is the focus: it gets the focus ring. */
+.menu:focus-visible .hl {
+  outline: 2px solid var(--action-primary);
+  outline-offset: -2px;
+}
