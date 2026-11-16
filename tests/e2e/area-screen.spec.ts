@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Page } from "./test";
 import { cinemasBySoonest, dataFile, freeze, sampleTime, shownClock, today, type DataFile } from "./helpers";
 
 // An area's page as Figma draws it (Figma Area 200:6420, build unit 7): the cinemas kept on this

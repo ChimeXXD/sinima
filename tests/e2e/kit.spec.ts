@@ -1,4 +1,4 @@
-import { expect, test, type Locator } from "@playwright/test";
+import { expect, test, type Locator } from "./test";
 
 // The shared components (build unit 2, D-82) on /kit, held to the Figma Design System page's sizes
 // and to the rules that protect correctness. The kit runs on a fixed example clock (17:30).

@@ -1,4 +1,4 @@
-import { expect, test, type APIRequestContext, type Page } from "@playwright/test";
+import { expect, test, type APIRequestContext, type Page } from "./test";
 import { dataFile, freeze, lagosDay, sampleTime, shownClock, type DataFile } from "./helpers";
 
 // A cinema's page as Figma draws it (Figma Cinema 202:7192, build unit 8): the logo, name, address,

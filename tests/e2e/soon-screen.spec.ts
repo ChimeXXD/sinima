@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Page } from "./test";
 import { dataFile, freeze, sampleTime, shownClock, today, type DataFile } from "./helpers";
 
 // Starting soon as Figma draws it (Figma 204:7192 Default, 204:7931 Nothing in 2 hours, build unit

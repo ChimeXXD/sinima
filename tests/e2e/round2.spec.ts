@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Page } from "./test";
 
 // D-109: Chime's review, round 2. On a computer the pickers and "Lagos ⌄" drop the Spring dropdown
 // under their trigger (which stays visible), the chevron turns up, the highlight follows the

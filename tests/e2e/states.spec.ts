@@ -1,4 +1,4 @@
-import { devices, expect, test, type Locator } from "@playwright/test";
+import { devices, expect, test, type Locator } from "./test";
 import { sampleTime } from "./helpers";
 
 // Review round 1 (D-106 c, d): a picked state fades in instead of switching in one frame, and on a

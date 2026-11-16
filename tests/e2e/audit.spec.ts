@@ -1,4 +1,4 @@
-import { expect, test, type Browser, type Page } from "@playwright/test";
+import { expect, test, type Browser, type Page } from "./test";
 import { freeze, sampleTime } from "./helpers";
 
 // D-112: the motion audit's picks. Units 1 and 2: small fixes and no motion on keyboard actions.

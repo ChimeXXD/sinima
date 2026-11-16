@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./test";
 
 // About and 404 as Figma draws them (Figma 208:9122 About, 208:9467 404; build unit 11).
 

@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Page } from "./test";
 
 // M11 (D-103): from the Films grid to a film's page, the poster you tapped travels into the
 // film's hero (a view transition React starts on the navigation). The page records each view

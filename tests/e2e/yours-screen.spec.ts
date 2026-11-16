@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Page } from "./test";
 import { dataFile, freeze, sampleTime, shownClock, today } from "./helpers";
 
 // Your cinemas as Figma draws it (Figma 206:8570 Default, 206:8921 None saved, build unit 10): the

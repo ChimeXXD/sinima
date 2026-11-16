@@ -3,7 +3,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { Cinema, ShowtimesFile, Source } from "../src/lib/data/types.ts";
-import { mergeCredits, type ManualEntry, type TmdbFilm } from "./credits.ts";
+import { mergeCredits, type FilmCredits, type ManualEntry, type TmdbFilm } from "./credits.ts";
 import { buildShowtimes, splitByArea, type Batch } from "./pipeline.ts";
 
 export type RegistryCinema = Omit<Cinema, "sourceIds"> & Record<string, unknown>;
@@ -15,6 +15,15 @@ export const readSources = (root: string) => readJson<{ sources: RegistrySource[
 /** Where each file goes: the whole file, then "all" and each area slug. */
 export type Paths = { main: string; part: (slug: string) => string };
 export const SAMPLE_PATHS: Paths = { main: "data/showtimes.json", part: (slug) => (slug === "all" ? "public/data/all.json" : `public/data/area/${slug}.json`) };
+
+/** What scripts/tmdb.ts last wrote (if it has run) for a film, with Chime's own entries on top (D-19). */
+export function creditsLookup(root: string): (filmId: string) => FilmCredits | undefined {
+  const creditsPath = join(root, "data/credits.json");
+  const tmdb = existsSync(creditsPath) ? readJson<{ tmdb: Record<string, TmdbFilm> }>(creditsPath).tmdb : {};
+  const manualPath = join(root, "data/credits-manual.json");
+  const manual = existsSync(manualPath) ? readJson<{ films: Record<string, ManualEntry> }>(manualPath).films : {};
+  return (filmId) => mergeCredits({ filmIds: [filmId], tmdb, manual })[filmId];
+}
 
 export function assemble(input: { now: string; root: string; batches: Batch[]; method: Source["method"]; paths: Paths }): { files: Map<string, ShowtimesFile>; log: string[] } {
   const { now, root, batches, method, paths } = input;
@@ -32,13 +41,7 @@ export function assemble(input: { now: string; root: string; batches: Batch[]; m
     sourceIds: sources.filter((source) => sourceRegistry.find((entry) => entry.id === source.id)?.cinemaIds.includes(cinema.id)).map((source) => source.id),
   }));
 
-  // Credits: what scripts/tmdb.ts last wrote (if it has run) with Chime's own entries on top (D-19).
-  const creditsPath = join(root, "data/credits.json");
-  const tmdb = existsSync(creditsPath) ? readJson<{ tmdb: Record<string, TmdbFilm> }>(creditsPath).tmdb : {};
-  const manual = readJson<{ films: Record<string, ManualEntry> }>(join(root, "data/credits-manual.json")).films;
-  const creditsFor = (filmId: string) => mergeCredits({ filmIds: [filmId], tmdb, manual })[filmId];
-
-  const { file, log } = buildShowtimes({ generatedAt: now, sources, cinemas, batches, creditsFor });
+  const { file, log } = buildShowtimes({ generatedAt: now, sources, cinemas, batches, creditsFor: creditsLookup(root) });
   const files = new Map<string, ShowtimesFile>([[paths.main, file]]);
   for (const [slug, part] of splitByArea(file, registry.areas.map((area) => area.slug), now)) files.set(paths.part(slug), part);
   return { files, log };

@@ -2,7 +2,7 @@
 
 import { Link, useCityPath, useCityRouter as useRouter } from "@/components/ui/CityLink";
 import { useRef, useState } from "react";
-import { IconButton, Segmented } from "@/components/ui/Actions";
+import { Button, IconButton, Segmented } from "@/components/ui/Actions";
 import { AppFrame, BarBack, BarTitle } from "@/components/ui/AppFrame";
 import { Icon } from "@/components/ui/Icon";
 import { PageNotice, TimeChip } from "@/components/ui/Status";
@@ -17,7 +17,7 @@ import { pageBanner, type ListData, type ListRow } from "@/lib/data/select";
 import { minutesFromStart } from "@/lib/time/countdown";
 import { useNow } from "@/lib/time/useNow";
 import { dayWords } from "@/lib/wording/day";
-import { areaTag, earlierLine, filmFacts, heroNote, noTimes, shareText, shortAddress, timesSubtitle } from "@/lib/wording/filmPage";
+import { areaTag, earlierLine, filmFacts, heroNote, noTimes, shareText, shortAddress, timesSubtitle, trailerLink } from "@/lib/wording/filmPage";
 import { FilmHero } from "./FilmHero";
 import { showingHash, useLazySheet } from "./useLazySheet";
 import s from "./film.module.css";
@@ -58,6 +58,7 @@ export function FilmScreen({ data, areas, bg }: { data: ListData; areas: Area[];
   const formats = [...new Set(data.rows.map((r) => formatLabel(r.format)).filter((label): label is string => label !== null))];
   const where = today.cinemas > 0 ? { cinemas: today.cinemas, city: CITY, on: dayWords(0, dates[0], live).on } : { cinemas: cinemasOn(data.rows, 1, now).cinemas, city: CITY, on: dayWords(1, dates[1], live).on };
   const facts = filmFacts(film, formats, where);
+  const trailer = film.trailer ? trailerLink(film.title, film.trailer) : null;
   const groups = areaGroups(data.rows, day, now, live, (cinema) => data.cinemas[cinema]!.area, home);
   const earlier = live && day === 0 ? earlierLine(startedEarlier(data.rows, now).map(({ cinema, at }) => ({ name: data.cinemas[cinema]!.name, at })), cinemasOn(data.rows, 1, now)) : null;
   const banner = pageBanner(data, clock);
@@ -108,6 +109,13 @@ export function FilmScreen({ data, areas, bg }: { data: ListData; areas: Area[];
             <p className={s.stayDetail} data-testid="credits.detail">
               {film.stay.detail}
             </p>
+            {trailer && (
+              // The trailer on YouTube (D-117), in a new tab like every link off the site.
+              <Button kind="secondary" icon="external-link" href={trailer.href} testId="film.trailer">
+                {trailer.text}
+                <span className={s.hidden}>{trailer.more}</span>
+              </Button>
+            )}
           </div>
         </div>
 

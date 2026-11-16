@@ -2,6 +2,18 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 16 Nov 2026 — trailers on YouTube, and TMDB for the live films (D-117)
+
+- **Changed:** `pickTrailer` in `scripts/credits.ts` (YouTube, type Trailer, official → English → newest); `tmdb.ts` asks for videos, re-asks any saved film without a trailer field, and looks up the live films as well as the sample ones; `trailerKey` on films (validator: an 11-character YouTube id or null); `trailer` on ListFilm; "Watch the trailer" (secondary button, external-link icon) under Stay or Go on the film page; the build step puts today's `credits.json` on the live films; the scheduled job runs `tmdb.ts` after each read when the `TMDB_READ_TOKEN` secret is set, and commits `data/credits.json`.
+- **TMDB run:** 20 of 37 films matched (all 20 with posters), 19 with a trailer. Matches read by eye; five trailer keys checked against YouTube's oEmbed titles, all the films' official trailers.
+- **Checked:** red then green: `tests/unit/scripts/trailer.test.ts`, `tests/unit/lib/data/trailer.test.ts`, the build-step credits test; `tests/e2e/trailer.spec.ts` (href, new tab, noopener, accessible name, no button without a trailer); 647 unit tests; screenshots at 390 and 360 (button 184 × 47).
+- **Tests changed because the data changed shape:** whole-object expectations in `select.test.ts` and `credits.test.ts` gained `trailer`/`trailerKey: null`; `tmdb.test.ts`'s fake TMDB answers the new address (`keywords,videos`) and now checks the trailer it keeps.
+- **Review:** code-review medium --fix, no bugs; fixed: a failed TMDB step no longer stops the showtimes commit (`continue-on-error`), the token is set only on the TMDB step, the screen-reader words are a `more` field instead of a slice, one JSON reader in tmdb.ts. Skipped: the build step's validator log, and films losing a poster when credits.json drops them (as D-117 intends).
+- **Tests that held TMDB's numbers:** `film-screen.spec.ts` wrote Ramayana's runtime ("3 h 21 min") and calendar end ("9:21 PM") from 201 min; TMDB now says 195. Both now read the runtime from the data. Flagged to Chime.
+- **Real-clock tests (D-118):** `motion-poster.spec.ts`, then `audit.spec.ts`, opened Films on the real clock and found no film card to tap near midnight; a copy at the sample day's noon passed, so the hour was the cause. With Chime's OK, `tests/e2e/test.ts` now gives every page the sample day's noon unless the test sets its own clock (Playwright: a second `install` replaces the first, checked); all 29 specs import from it. Full suite: 263 of 264 passed; the offline file opts out with `test.use({ realClock: true })`, because the worker saves files on timers a fake clock holds back (4 of 4 then passed).
+- **Motion skills:** not run for this unit; the button is the existing `Button`, which already fades its hover and press (DESIGN.md §Motion).
+- **Not verified:** Chime's phone; the job's TMDB step (needs the secret).
+
 ## 16 Nov 2026 — live data, Lagos through Lagocine (D-116)
 
 - **Why the site was still a demo:** every source but Filmhouse's own was cleared on 15 Nov, but `refresh` could only read saved pages, only 2 readers existed (Lagocine, Veezi), the scheduled job was off, and Abuja has no cinemas in the data yet.

@@ -107,7 +107,7 @@ describe("mergeCredits", () => {
   it("gives every film an entry, matched or not", () => {
     expect(Object.keys(merged)).toEqual(["whalefall", "clayface", "one-gidi-night"]);
     expect(merged["one-gidi-night"]).toEqual({
-      tmdbId: null, runtimeMin: null, posterPath: null,
+      tmdbId: null, runtimeMin: null, posterPath: null, trailerKey: null,
       credits: { during: "unknown", after: "unknown", confidence: "unknown", sources: [], count: null },
     });
   });

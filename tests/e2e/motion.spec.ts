@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Page } from "./test";
 import { dataFile, freeze, lagosDay, sampleTime } from "./helpers";
 
 // The motion pass (D-102, D-103). Each test reads the animations the page started, by id, with the

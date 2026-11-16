@@ -93,6 +93,16 @@ describe("liveBuildFiles (the build step)", () => {
     expect((files?.get("public/data/area/abuja-wuse.json") as ShowtimesFile).showings).toEqual([]);
   });
 
+  it("puts today's credits.json on the live films, so a new poster or trailer shows without reading the site again (D-117)", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "sinima-live-"));
+    await live(dir);
+    const film = ((JSON.parse(readFileSync(join(dir, LIVE_DIR, "showtimes.json"), "utf8")) as ShowtimesFile).films[0])!;
+    writeFileSync(join(dir, "data/credits-manual.json"), JSON.stringify({ films: {} }));
+    writeFileSync(join(dir, "data/credits.json"), JSON.stringify({ tmdb: { [film.id]: { tmdbId: 42, runtimeMin: 101, posterPath: "/new.jpg", trailerKey: "newTrailer1", keywordIds: [], checkedAt: NOW } } }));
+    const built = (liveBuildFiles(dir, NOW)?.get("data/showtimes.json") as ShowtimesFile).films.find((f) => f.id === film.id);
+    expect(built).toMatchObject({ tmdbId: 42, runtimeMin: 101, posterPath: "/new.jpg", trailerKey: "newTrailer1" });
+  });
+
   it("gives nothing when there is no live data, so the caller makes sample data", () => {
     const dir = mkdtempSync(join(tmpdir(), "sinima-live-"));
     expect(liveBuildFiles(dir, NOW)).toBeNull();

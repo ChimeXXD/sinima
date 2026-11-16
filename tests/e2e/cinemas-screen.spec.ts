@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Page } from "./test";
 import { cinemasBySoonest, dataFile, freeze, sampleTime, shownClock, today, type DataFile } from "./helpers";
 
 // The Cinemas tab as Figma draws it (Figma Cinemas 200:6415, build unit 6): your area first, then

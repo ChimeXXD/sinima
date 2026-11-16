@@ -6,7 +6,8 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import type { ShowtimesFile } from "../src/lib/data/types.ts";
 import { lagosDayKey, utcMs, utcString } from "../src/lib/time/lagos.ts";
-import { assemble, readJson, readSources, SAMPLE_PATHS, type Paths } from "./assemble.ts";
+import { validateShowtimes } from "../src/lib/data/validate.ts";
+import { assemble, creditsLookup, readJson, readSources, SAMPLE_PATHS, type Paths } from "./assemble.ts";
 import { splitByArea, type Batch } from "./pipeline.ts";
 import { parseLagocineDay } from "./sources/lagocine.ts";
 import type { FetchText } from "./sources/polite.ts";
@@ -60,7 +61,12 @@ export async function refreshLive(input: { now: string; root: string; fetchText:
 export function liveBuildFiles(root: string, now: string): Map<string, ShowtimesFile> | null {
   const mainPath = join(root, LIVE_PATHS.main);
   if (!existsSync(mainPath)) return null;
-  const file = readJson<ShowtimesFile>(mainPath);
+  // Today's credits.json on each film: a poster or trailer found since the read shows at once (D-117).
+  const creditsFor = creditsLookup(root);
+  const read = readJson<ShowtimesFile>(mainPath);
+  const checked = validateShowtimes({ ...read, films: read.films.map((film) => ({ ...film, ...creditsFor(film.id) })) });
+  if (!checked.ok) throw new Error(`data/live/showtimes.json with today's credits was refused:\n${checked.errors.join("\n")}`);
+  const file = checked.file;
   const areaSlugs = readJson<{ areas: { slug: string }[] }>(join(root, "data/cinemas.json")).areas.map((area) => area.slug);
   const files = new Map<string, ShowtimesFile>([[SAMPLE_PATHS.main, file]]);
   for (const [slug, part] of splitByArea(file, areaSlugs, now)) files.set(SAMPLE_PATHS.part(slug), part);

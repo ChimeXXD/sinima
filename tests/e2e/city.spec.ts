@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./test";
 
 // The city is the first part of every city page's address (D-98, build unit 13): /lagos/…,
 // /abuja/…. Old addresses forward to their Lagos page; "/" opens the city kept on this phone.

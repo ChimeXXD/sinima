@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./test";
 
 // Chime's review, 12 Nov 2026 (D-55): Films comes first. A visitor has a film in mind, picks it, then
 // sees every cinema showing it.

@@ -7,33 +7,28 @@
       "tmdbTitle": "Agbara Nla: The Return",
       "runtimeMin": 155,
       "posterPath": "/ea2IOcZnkRJfwZUmTJBqbvgQAgF.jpg",
+      "trailerKey": "sTJ3ZKxIePQ",
       "keywordIds": [],
-      "checkedAt": "2026-11-12T00:11:52Z"
-    },
-    "alahun-the-weaver": {
-      "tmdbId": 1755101,
-      "tmdbTitle": "Alahun: The Weaver",
-      "runtimeMin": 120,
-      "posterPath": "/8R361wK5IXN4pYws7PQTposlJgF.jpg",
-      "keywordIds": [],
-      "checkedAt": "2026-11-12T00:11:52Z"
+      "checkedAt": "2026-11-16T22:32:15Z"
     },
     "arnie-and-barney": {
       "tmdbId": 1365598,
       "tmdbTitle": "Arnie & Barney",
       "runtimeMin": 77,
       "posterPath": "/5PmDs2QlPas0xGgxxZM793y0XIP.jpg",
+      "trailerKey": "vbhTyM5E9QE",
       "keywordIds": [
         3126,
         15285
       ],
-      "checkedAt": "2026-11-12T00:11:52Z"
+      "checkedAt": "2026-11-16T22:32:15Z"
     },
     "clayface": {
       "tmdbId": 1400940,
       "tmdbTitle": "Clayface",
       "runtimeMin": 109,
       "posterPath": "/9l1NuFjel2j89hiuiJbsxfblqjy.jpg",
+      "trailerKey": "f7jlCqdtwdM",
       "keywordIds": [
         1299,
         1370,
@@ -50,13 +45,288 @@
         312528,
         367031
       ],
-      "checkedAt": "2026-11-12T00:11:52Z"
+      "checkedAt": "2026-11-16T22:32:15Z"
+    },
+    "dear-ajayi": {
+      "tmdbId": 1709982,
+      "tmdbTitle": "Dear Ajayi",
+      "runtimeMin": 116,
+      "posterPath": "/alRqFPXa5G9FHBvA9DWf5HYtCVS.jpg",
+      "trailerKey": "AZGMQnJEyFM",
+      "keywordIds": [],
+      "checkedAt": "2026-11-16T22:32:15Z"
+    },
+    "five-figurines": {
+      "tmdbId": 1755500,
+      "tmdbTitle": "Five Figurines",
+      "runtimeMin": 120,
+      "posterPath": "/kbCVv6IoxSEK6857ZS1lIkMbBtc.jpg",
+      "trailerKey": null,
+      "keywordIds": [],
+      "checkedAt": "2026-11-16T22:32:15Z"
+    },
+    "ghost-soldier": {
+      "tmdbId": 1562642,
+      "tmdbTitle": "Ghost Soldier",
+      "runtimeMin": 90,
+      "posterPath": "/8Y4oJ5iUs3hgPcDB3SIEmsNYjZk.jpg",
+      "trailerKey": "UKaWzMf9Ybc",
+      "keywordIds": [
+        11259,
+        13116,
+        179867,
+        181112,
+        185994,
+        214910,
+        223539,
+        297751,
+        337188,
+        361421
+      ],
+      "checkedAt": "2026-11-16T22:32:15Z"
+    },
+    "heart-of-the-beast": {
+      "tmdbId": 1263337,
+      "tmdbTitle": "Heart of the Beast",
+      "runtimeMin": 101,
+      "posterPath": "/6sYemVUn79UPKz1ZsSG6kPU4RVy.jpg",
+      "trailerKey": "UkMuGKqAux4",
+      "keywordIds": [
+        9880,
+        15162,
+        15218,
+        162365,
+        190899,
+        239821,
+        249530,
+        336497,
+        372834
+      ],
+      "checkedAt": "2026-11-16T22:32:15Z"
+    },
+    "how-to-rob-a-bank": {
+      "tmdbId": 1437511,
+      "tmdbTitle": "How to Rob a Bank",
+      "runtimeMin": 122,
+      "posterPath": "/ifYDZkr2qkHFz87TNVvlxajOxl5.jpg",
+      "trailerKey": "MVvWKh336m4",
+      "keywordIds": [
+        10051,
+        15363,
+        196917,
+        247799,
+        274650,
+        309270,
+        370881
+      ],
+      "checkedAt": "2026-11-16T22:32:15Z"
+    },
+    "other-mommy": {
+      "tmdbId": 1400837,
+      "tmdbTitle": "Other Mommy",
+      "runtimeMin": 93,
+      "posterPath": "/fGRNCssTRrhYZxNzykGGCoMsAVq.jpg",
+      "trailerKey": "-mnTITqqiT0",
+      "keywordIds": [
+        818,
+        6152,
+        3358,
+        10114,
+        15001,
+        18035,
+        33711,
+        159939,
+        181109,
+        240315,
+        256183,
+        272553,
+        286379,
+        295907
+      ],
+      "checkedAt": "2026-11-16T22:32:15Z"
+    },
+    "phoenix-fury": {
+      "tmdbId": 1532702,
+      "tmdbTitle": "Phoenix Fury",
+      "runtimeMin": 131,
+      "posterPath": "/g6orCbnrC5xcuLIqiKhHHVhlxnq.jpg",
+      "trailerKey": "n1H5zThWiyQ",
+      "keywordIds": [],
+      "checkedAt": "2026-11-16T22:32:15Z"
+    },
+    "ramayana": {
+      "tmdbId": 656908,
+      "tmdbTitle": "Ramayana: Rise of a Legend",
+      "runtimeMin": 195,
+      "posterPath": "/vBQ7wks68OhJKlb3RnXSl2yXBXK.jpg",
+      "trailerKey": "AYkPRN874m8",
+      "keywordIds": [
+        185316,
+        185343,
+        192159,
+        211227,
+        325810,
+        375250,
+        377433
+      ],
+      "checkedAt": "2026-11-16T22:32:15Z"
+    },
+    "resident-evil": {
+      "tmdbId": 1423191,
+      "tmdbTitle": "Resident Evil",
+      "runtimeMin": 94,
+      "posterPath": "/gAgWJhUSQWCgtKR8170nMkYlBda.jpg",
+      "trailerKey": "mNd1gb19A-c",
+      "keywordIds": [
+        1533,
+        4884,
+        9744,
+        10349,
+        11181,
+        10794,
+        12377,
+        41645,
+        50009,
+        161184,
+        186565,
+        188839,
+        188957,
+        283085,
+        325770,
+        360949,
+        388461
+      ],
+      "checkedAt": "2026-11-16T22:32:15Z"
+    },
+    "spider-man-brand-new-day": {
+      "tmdbId": 969681,
+      "tmdbTitle": "Spider-Man: Brand New Day",
+      "runtimeMin": 145,
+      "posterPath": "/bjiS5ipwxb9JFy3XRRN4OAilSeX.jpg",
+      "trailerKey": "P3uI5sLosKU",
+      "keywordIds": [
+        9678,
+        242,
+        1701,
+        2766,
+        1308,
+        9715,
+        3986,
+        3289,
+        9717,
+        9663,
+        12375,
+        33637,
+        158456,
+        169909,
+        179430,
+        180547,
+        180734,
+        193946,
+        233300
+      ],
+      "checkedAt": "2026-11-16T22:32:15Z"
+    },
+    "street-fighter": {
+      "tmdbId": 1153576,
+      "tmdbTitle": "Street Fighter",
+      "runtimeMin": 120,
+      "posterPath": "/8nP4lF51Ea861YfHEEqhZBLYv3e.jpg",
+      "trailerKey": "U6sbm1OaJb8",
+      "keywordIds": [
+        779,
+        41645,
+        156159,
+        179431,
+        184656,
+        188955,
+        200234,
+        210608,
+        285633,
+        288793,
+        295504,
+        325765,
+        325844
+      ],
+      "checkedAt": "2026-11-16T22:32:15Z"
+    },
+    "the-cat-in-the-hat": {
+      "tmdbId": 1117898,
+      "tmdbTitle": "The Cat in the Hat",
+      "runtimeMin": 108,
+      "posterPath": "/mWN6knIVJ2o7eGwSm7mOgSCwNUc.jpg",
+      "trailerKey": "tkZpcypT8Z4",
+      "keywordIds": [
+        380,
+        818,
+        2656,
+        977,
+        15101,
+        40846,
+        188745,
+        188748,
+        204905,
+        288816,
+        309974,
+        317964,
+        320420,
+        324713,
+        325844
+      ],
+      "checkedAt": "2026-11-16T22:32:15Z"
+    },
+    "verity": {
+      "tmdbId": 1283515,
+      "tmdbTitle": "Verity",
+      "runtimeMin": 117,
+      "posterPath": "/rmaNMA1seHqpjtnYKzyynFAr1g8.jpg",
+      "trailerKey": "xdPMKhjMSFs",
+      "keywordIds": [
+        818,
+        12565,
+        155251,
+        180724,
+        207767,
+        210726
+      ],
+      "checkedAt": "2026-11-16T22:32:15Z"
+    },
+    "whalefall": {
+      "tmdbId": 1255833,
+      "tmdbTitle": "Whalefall",
+      "runtimeMin": 106,
+      "posterPath": "/vjTYUTgh9nO88i6HZ4YPRhiFL05.jpg",
+      "trailerKey": "Dw-5ZGapGTQ",
+      "keywordIds": [
+        4776,
+        818,
+        560,
+        10201,
+        10349,
+        226153,
+        266753,
+        325780,
+        325805,
+        326009,
+        336497
+      ],
+      "checkedAt": "2026-11-16T22:32:15Z"
+    },
+    "alahun-the-weaver": {
+      "tmdbId": 1755101,
+      "tmdbTitle": "Alahun: The Weaver",
+      "runtimeMin": 120,
+      "posterPath": "/8R361wK5IXN4pYws7PQTposlJgF.jpg",
+      "trailerKey": "dnicUk2Ym7k",
+      "keywordIds": [],
+      "checkedAt": "2026-11-16T22:32:15Z"
     },
     "forgotten-island": {
       "tmdbId": 1465063,
       "tmdbTitle": "Forgotten Island",
       "runtimeMin": 109,
       "posterPath": "/myd1K3gefdNAWFsGNRDdMeiK9Qg.jpg",
+      "trailerKey": "PhgY8cOJiQA",
       "keywordIds": [
         6054,
         2041,
@@ -85,219 +355,24 @@
         381928,
         381930
       ],
-      "checkedAt": "2026-11-12T00:11:52Z"
-    },
-    "heart-of-the-beast": {
-      "tmdbId": 1263337,
-      "tmdbTitle": "Heart of the Beast",
-      "runtimeMin": 101,
-      "posterPath": "/6sYemVUn79UPKz1ZsSG6kPU4RVy.jpg",
-      "keywordIds": [
-        9880,
-        15162,
-        15218,
-        162365,
-        190899,
-        239821,
-        249530,
-        281585,
-        336497,
-        372834
-      ],
-      "checkedAt": "2026-11-12T00:11:52Z"
-    },
-    "other-mommy": {
-      "tmdbId": 1400837,
-      "tmdbTitle": "Other Mommy",
-      "runtimeMin": 93,
-      "posterPath": "/fGRNCssTRrhYZxNzykGGCoMsAVq.jpg",
-      "keywordIds": [
-        818,
-        6152,
-        3358,
-        10114,
-        18035,
-        33711,
-        159939,
-        181109,
-        240315,
-        256183,
-        272553,
-        295907
-      ],
-      "checkedAt": "2026-11-12T00:11:52Z"
-    },
-    "phoenix-fury": {
-      "tmdbId": 1532702,
-      "tmdbTitle": "Phoenix Fury",
-      "runtimeMin": 131,
-      "posterPath": "/g6orCbnrC5xcuLIqiKhHHVhlxnq.jpg",
-      "keywordIds": [],
-      "checkedAt": "2026-11-12T00:11:52Z"
-    },
-    "ramayana": {
-      "tmdbId": 656908,
-      "tmdbTitle": "Ramayana: Rise of a Legend",
-      "runtimeMin": 201,
-      "posterPath": "/dPrtk4iNf6T5w8fWfg4uxDDbJSW.jpg",
-      "keywordIds": [
-        185316,
-        185343,
-        192159,
-        211227,
-        375250,
-        377433
-      ],
-      "checkedAt": "2026-11-12T00:11:52Z"
+      "checkedAt": "2026-11-16T22:32:15Z"
     },
     "ramayana-rise-of-a-legend": {
       "tmdbId": 656908,
       "tmdbTitle": "Ramayana: Rise of a Legend",
-      "runtimeMin": 201,
-      "posterPath": "/dPrtk4iNf6T5w8fWfg4uxDDbJSW.jpg",
+      "runtimeMin": 195,
+      "posterPath": "/vBQ7wks68OhJKlb3RnXSl2yXBXK.jpg",
+      "trailerKey": "AYkPRN874m8",
       "keywordIds": [
         185316,
         185343,
         192159,
         211227,
+        325810,
         375250,
         377433
       ],
-      "checkedAt": "2026-11-12T00:11:52Z"
-    },
-    "resident-evil": {
-      "tmdbId": 1423191,
-      "tmdbTitle": "Resident Evil",
-      "runtimeMin": 94,
-      "posterPath": "/gAgWJhUSQWCgtKR8170nMkYlBda.jpg",
-      "keywordIds": [
-        1533,
-        4884,
-        9744,
-        10349,
-        11181,
-        10794,
-        12377,
-        41645,
-        50009,
-        161184,
-        186565,
-        188839,
-        188957,
-        283085,
-        360949,
-        388461
-      ],
-      "checkedAt": "2026-11-12T00:11:52Z"
-    },
-    "spider-man-brand-new-day": {
-      "tmdbId": 969681,
-      "tmdbTitle": "Spider-Man: Brand New Day",
-      "runtimeMin": 145,
-      "posterPath": "/bjiS5ipwxb9JFy3XRRN4OAilSeX.jpg",
-      "keywordIds": [
-        9678,
-        242,
-        1701,
-        2766,
-        1308,
-        9715,
-        3986,
-        3289,
-        9717,
-        9663,
-        12375,
-        33637,
-        158456,
-        169909,
-        179430,
-        180547,
-        180734,
-        193946,
-        233300
-      ],
-      "checkedAt": "2026-11-12T00:11:52Z"
-    },
-    "street-fighter": {
-      "tmdbId": 1153576,
-      "tmdbTitle": "Street Fighter",
-      "runtimeMin": 120,
-      "posterPath": "/dJPT2Uf12X6aFg8i5N67NTpIZ9t.jpg",
-      "keywordIds": [
-        779,
-        41645,
-        156159,
-        179431,
-        184656,
-        188955,
-        200234,
-        210608,
-        285633,
-        288793,
-        295504,
-        325765,
-        325844
-      ],
-      "checkedAt": "2026-11-12T00:11:52Z"
-    },
-    "the-cat-in-the-hat": {
-      "tmdbId": 1117898,
-      "tmdbTitle": "The Cat in the Hat",
-      "runtimeMin": 108,
-      "posterPath": "/mWN6knIVJ2o7eGwSm7mOgSCwNUc.jpg",
-      "keywordIds": [
-        380,
-        818,
-        2656,
-        977,
-        15101,
-        40846,
-        188745,
-        188748,
-        204905,
-        288816,
-        309974,
-        317964,
-        320420,
-        324713,
-        325844
-      ],
-      "checkedAt": "2026-11-12T00:11:52Z"
-    },
-    "whalefall": {
-      "tmdbId": 1255833,
-      "tmdbTitle": "Whalefall",
-      "runtimeMin": 106,
-      "posterPath": "/vjTYUTgh9nO88i6HZ4YPRhiFL05.jpg",
-      "keywordIds": [
-        4776,
-        818,
-        560,
-        10201,
-        10349,
-        226153,
-        266753,
-        325780,
-        325805,
-        326009,
-        336497
-      ],
-      "checkedAt": "2026-11-12T00:11:52Z"
-    },
-    "verity": {
-      "tmdbId": 1283515,
-      "tmdbTitle": "Verity",
-      "runtimeMin": 117,
-      "posterPath": "/rmaNMA1seHqpjtnYKzyynFAr1g8.jpg",
-      "keywordIds": [
-        818,
-        12565,
-        155251,
-        180724,
-        207767,
-        210726
-      ],
-      "checkedAt": "2026-11-13T15:03:20Z"
+      "checkedAt": "2026-11-16T22:32:15Z"
     }
   }
 }

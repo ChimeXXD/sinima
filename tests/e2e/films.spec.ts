@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./test";
 import { dataFile, freeze, lagosClock, sampleTime, shownClock, today } from "./helpers";
 
 test("Films (the home page, D-55) lists every film still showing; typing narrows it; a film opens its page", async ({ page, request }) => {

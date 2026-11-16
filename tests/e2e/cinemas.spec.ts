@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./test";
 import { dataFile, freeze, sampleTime, shownClock, today } from "./helpers";
 
 // A cinema's page, Your cinemas, and the rules every page keeps (rule 3, 44 px, no sideways scroll).

@@ -20,6 +20,8 @@ const STATUSES = ["cleared", "pending", "refused", "do-not-use"];
 const ANSWERS = ["yes", "no", "unknown"];
 const CONFIDENCES = ["confirmed", "likely", "unknown"];
 const UTC_SECONDS = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/;
+/** A YouTube video id: 11 letters, digits, "-" or "_" (D-117). */
+export const YOUTUBE_ID = /^[A-Za-z0-9_-]{11}$/;
 const TRACKING = /^(utm_.+|fbclid|gclid|dclid|gbraid|wbraid|msclkid|yclid|twclid|ttclid|igshid|mc_cid|mc_eid|_hsenc|_hsmi)$/i;
 const MIN = 60_000;
 /** A showing has ended 30 min after its start (D-05); it leaves the file an hour after that. */
@@ -145,6 +147,11 @@ export function validateShowtimes(input: unknown, options: ValidateOptions = {})
   const filmById = byId(films);
 
   for (const film of films) {
+    // The trailer key becomes part of a YouTube link (D-117): only a video id passes.
+    if (film.trailerKey !== undefined && film.trailerKey !== null && !(typeof film.trailerKey === "string" && YOUTUBE_ID.test(film.trailerKey))) {
+      log.push(`Film ${String(film.id)}: the trailer key ${show(film.trailerKey)} is not a YouTube video id, so it is left out`);
+      film.trailerKey = null;
+    }
     const credits = film.credits as Row | null | undefined;
     if (!credits) continue;
     const hasSource = Array.isArray(credits.sources) && credits.sources.length > 0;

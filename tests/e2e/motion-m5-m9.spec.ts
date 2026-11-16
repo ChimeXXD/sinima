@@ -1,4 +1,4 @@
-import { devices, expect, test, type BrowserContext, type Page } from "@playwright/test";
+import { devices, expect, test, type BrowserContext, type Page } from "./test";
 import { sampleTime } from "./helpers";
 
 // The motion pass, units 5 to 9 (D-103): the first visit, the countdowns, hover, search and tabs.

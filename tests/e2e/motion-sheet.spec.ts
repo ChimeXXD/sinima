@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Page } from "./test";
 import { sampleTime } from "./helpers";
 
 // M10 (D-103): pull a sheet down to close it. Touches go through the DevTools protocol, the only

@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./test";
 import { dataFile, freeze, sampleTime, today } from "./helpers";
 
 // A cinema's page: every film has artwork, and a day that is over still says what was on.

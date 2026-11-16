@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./test";
 
 // The Ticket S logo (D-42) in the header, the browser tab, the home screen and the manifest.
 test("the header shows the Ticket S mark beside the name", async ({ page, request }) => {

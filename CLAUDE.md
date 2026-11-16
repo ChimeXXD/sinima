@@ -94,7 +94,7 @@ Run `npm run lint`, `npm run typecheck`, `npm test` and `npm run build` before s
 
 - Work day by day from `docs/PLAN.md`. Pass a day's gate before starting the next.
 - **Tests first** for `lib/time/`, `lib/wording/`, `lib/data/validate.ts`, `lib/ics/` and every parser in `scripts/sources/`. Fixtures are **saved HTML/JSON samples** in `tests/fixtures/<source>/` with the date saved in the file name. Use a fixed clock in tests (`vi.setSystemTime`), always with UTC instants.
-- **Playwright e2e** for the core flows (SPEC §Acceptance) against the built static site, at a phone viewport, with the clock frozen.
+- **Playwright e2e** for the core flows (SPEC §Acceptance) against the built static site, at a phone viewport, with the clock frozen. Specs import `test` and `expect` from `tests/e2e/test.ts`, which freezes every page at noon on the sample day; a test that needs another time sets its own clock (D-118).
 - Commit after each green step with a conventional message (`feat:`, `fix:`, `test:`, `chore:`, `docs:`). **Push to GitHub after every commit** (the repo is public, D-30).
 - After UI work: build, screenshot at 390×844 and 360×800, and compare with the approved direction before calling the step done. Check on Chime's phone before a gate passes.
 - For UI units, run the motion skills (find-animation-opportunities, then animate / choreograph / gestures) and list the skills that ran in the unit's PROGRESS entry (D-102).

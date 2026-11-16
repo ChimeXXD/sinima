@@ -28,6 +28,10 @@ jobs:
   refresh:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      # Optional: with the secret, new films get their TMDB poster, runtime and trailer (D-117).
+      # Only the TMDB step sees the token itself.
+      HAS_TMDB_TOKEN: ${{ secrets.TMDB_READ_TOKEN != '' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -43,10 +47,21 @@ jobs:
         env:
           FETCH_USER_AGENT: "SinimaBot/0.1 (+https://github.com/ChimeXXD/sinima)"
 
+      # After the read, so the films just read are the ones looked up. A film is asked about at most
+      # once a week; the build puts data/credits.json on the live films.
+      - name: Match new films to TMDB (posters, runtimes, trailers)
+        if: env.HAS_TMDB_TOKEN == 'true'
+        # TMDB being down must not cost the showtimes just read: on a failure nothing is written
+        # and the commit below still runs.
+        continue-on-error: true
+        run: node scripts/tmdb.ts
+        env:
+          TMDB_READ_TOKEN: ${{ secrets.TMDB_READ_TOKEN }}
+
       - name: Commit if changed
         run: |
           # Stage first: `git diff` alone does not see files that are new in this run.
-          git add -A -- data/live
+          git add -A -- data/live data/credits.json
           if git diff --cached --quiet; then
             echo "No changes."
             exit 0

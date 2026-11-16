@@ -2,6 +2,7 @@
 // say, and how Chime's own entries override them (D-10, D-19, D-25). Pure; scripts/tmdb.ts does
 // the reading and writing.
 import type { CreditsAnswer, CreditsInfo, CreditsSource } from "../src/lib/data/types.ts";
+import { YOUTUBE_ID } from "../src/lib/data/validate.ts";
 import { filmIdFromTitle } from "./pipeline.ts";
 
 /** TMDB keyword ids: `aftercreditsstinger` and `duringcreditsstinger`. */
@@ -11,9 +12,20 @@ export const DURING_CREDITS = 179431;
 export type TmdbResult = { id: number; title: string; original_title?: string; release_date?: string };
 /** What one TMDB film told us, and when we asked. */
 /** `posterPath` is TMDB's image path ("/abc.jpg"); null when the film has no poster there. */
-export type TmdbFilm = { tmdbId: number; runtimeMin: number | null; posterPath?: string | null; keywordIds: number[]; checkedAt: string };
+/** `trailerKey` is a YouTube video id (D-117); null when TMDB lists no trailer, left out in an answer saved before trailers were kept. */
+export type TmdbFilm = { tmdbId: number; runtimeMin: number | null; posterPath?: string | null; trailerKey?: string | null; keywordIds: number[]; checkedAt: string };
+/** One of the videos TMDB lists for a film (`append_to_response=videos`). */
+export type TmdbVideo = { key: string; site: string; type: string; official?: boolean; iso_639_1?: string; published_at?: string };
 export type ManualEntry = { during: string; after: string; source: CreditsSource };
-export type FilmCredits = { tmdbId: number | null; runtimeMin: number | null; posterPath: string | null; credits: CreditsInfo };
+export type FilmCredits = { tmdbId: number | null; runtimeMin: number | null; posterPath: string | null; trailerKey: string | null; credits: CreditsInfo };
+
+/** The film's trailer on YouTube: official first, then English, then the newest. Teasers and clips are not trailers. */
+export function pickTrailer(videos: TmdbVideo[]): string | null {
+  const trailers = videos.filter((video) => video.site === "YouTube" && video.type === "Trailer" && YOUTUBE_ID.test(video.key));
+  const rank = (video: TmdbVideo) => [video.official === true ? 0 : 1, video.iso_639_1 === "en" ? 0 : 1] as const;
+  trailers.sort((a, b) => rank(a)[0] - rank(b)[0] || rank(a)[1] - rank(b)[1] || (b.published_at ?? "").localeCompare(a.published_at ?? ""));
+  return trailers[0]?.key ?? null;
+}
 
 const UTC_SECONDS = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/;
 // A film in cinemas now came out recently or is about to: old films with the same title are remakes' namesakes.
@@ -87,6 +99,7 @@ export function mergeCredits(input: { filmIds: string[]; tmdb: Record<string, Tm
       tmdbId: found?.tmdbId ?? null,
       runtimeMin: found?.runtimeMin ?? null,
       posterPath: found?.posterPath ?? null,
+      trailerKey: found?.trailerKey ?? null,
       credits: entry ? manualCredits(filmId, entry) : found ? creditsFromKeywords(found.tmdbId, found.keywordIds, found.checkedAt) : unknown(),
     };
   }

@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Page } from "./test";
 import { dataFile, freeze, sampleTime, type DataFile } from "./helpers";
 
 // Search and city (Figma 192:7519, build unit 5). The data has Lagos only until the city layer

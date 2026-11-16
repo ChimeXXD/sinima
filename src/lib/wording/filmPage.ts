@@ -94,6 +94,13 @@ export function shareText(what: { film: string; cinema: string; at: string } | {
   return `${what.film} · ${what.cinema} · ${toLagos(what.at).weekday} ${formatTime(what.at).replace("\u00a0", " ")}`;
 }
 
+/** The film's trailer on YouTube (D-117): the link, its words, the words only screen readers hear, and the whole name. */
+export function trailerLink(film: string, key: string): { href: string; text: string; more: string; label: string } {
+  const text = "Watch the trailer";
+  const more = ` for ${film} on YouTube`;
+  return { href: `https://www.youtube.com/watch?v=${key}`, text, more, label: text + more };
+}
+
 /** When a day has no cinema to list: nothing more today, or no times listed for that day yet. */
 export function noTimes(film: string, on: string, todayIsOver: boolean): string {
   return todayIsOver ? `Nothing more starts ${on}.` : `No times for ${film} are listed ${on} yet.`;

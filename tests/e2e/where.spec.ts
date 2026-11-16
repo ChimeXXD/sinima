@@ -1,4 +1,4 @@
-import { expect, test, type BrowserContext } from "@playwright/test";
+import { expect, test, type BrowserContext } from "./test";
 
 // Where are you watching? (Figma 162:215, 162:262, 162:302; D-65, build unit 12): a first visit is
 // asked for its location as "/" opens, only to pick the city; elsewhere or no answer offers Lagos.

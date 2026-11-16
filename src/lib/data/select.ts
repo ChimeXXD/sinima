@@ -11,7 +11,7 @@ import { freshness, type FreshnessBand } from "@/lib/wording/freshness";
 export type ListFresh = { source: string; method: SourceMethod; url: string; fetchedAt: string; via?: Via };
 /** `film`, `cinema` and `fresh` are positions in ListData's lists. */
 export type ListRow = { at: string; film: number; cinema: number; format: string | null; book: string | null; fresh: number };
-export type ListFilm = { id: string; title: string; /** TMDB's image path, or null. */ poster: string | null; rating: string | null; runtimeMin: number | null; stay: { verdict: CreditsVerdict; chip: string; detail: string } };
+export type ListFilm = { id: string; title: string; /** TMDB's image path, or null. */ poster: string | null; /** The trailer's YouTube id, or null (D-117). */ trailer: string | null; rating: string | null; runtimeMin: number | null; stay: { verdict: CreditsVerdict; chip: string; detail: string } };
 export type ListCinema = { id: string; name: string; area: string; chain: string; /** Has a booking page of its own. */ online: boolean; address: string | null; website: string | null };
 export type ListData = {
   sample: boolean;
@@ -65,7 +65,7 @@ export function toListData(file: ShowtimesFile, only: { filmId?: string; cinemaI
     at: file.generatedAt,
     films: films.map((film) => {
       const { verdict, chip, detail } = creditsWording(film.credits ?? UNKNOWN_CREDITS);
-      return { id: film.id, title: film.title, poster: film.posterPath ?? null, rating: film.rating, runtimeMin: film.runtimeMin, stay: { verdict, chip, detail } };
+      return { id: film.id, title: film.title, poster: film.posterPath ?? null, trailer: film.trailerKey ?? null, rating: film.rating, runtimeMin: film.runtimeMin, stay: { verdict, chip, detail } };
     }),
     cinemas: file.cinemas.map(({ id, name, area, chain, address, website, bookingHost }) => ({ id, name, area, chain, online: Boolean(bookingHost), address, website })),
     fresh,

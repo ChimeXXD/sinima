@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
-import { expect, test, type Page } from "@playwright/test";
-import { dataFile, freeze, lagosClock, sampleTime } from "./helpers";
+import { expect, test, type Page } from "./test";
+import { dataFile, freeze, lagosClock, sampleTime, shownClock } from "./helpers";
 
 // Film (Figma 185:3558, build unit 4). The sample data holds Figma's own example: Ramayana at
 // 17:30, Lekki saved as the visitor's area.
@@ -22,7 +22,9 @@ test("your area first, then the areas next to it, then the rest soonest first (F
   await keepArea(page, "lekki");
   await page.goto("/lagos/film/ramayana");
   await expect(page.getByTestId("film.title")).toHaveText("Ramayana");
-  await expect(page.getByTestId("film.facts")).toHaveText("3 h 21 min·IMAX·MX4D·at 10 cinemas in Lagos today");
+  // The runtime is TMDB's, which TMDB can correct (201 → 195 min on 16 Nov), so it comes from the data.
+  const runtime = (await dataFile(request, "all")).films.find((f) => f.id === "ramayana") as unknown as { runtimeMin: number };
+  await expect(page.getByTestId("film.facts")).toHaveText(`${Math.floor(runtime.runtimeMin / 60)} h ${runtime.runtimeMin % 60} min·IMAX·MX4D·at 10 cinemas in Lagos today`);
   await expect(page.getByTestId("credits.chip")).toHaveText("Credits scene: not known yet");
   await expect(page.getByTestId("film.note")).toHaveText("in IMAX!");
   await expect(page.getByText(`${await sampleDay(request)} · your area first`)).toBeVisible();
@@ -79,7 +81,9 @@ test("a time opens its sheet: sample times can't be booked; calendar, countdown;
   const ics = readFileSync(await download.path(), "utf8");
   expect(ics).toContain(`DTSTART:${at.replace(/[-:]/g, "")}`);
   expect(ics).toContain("TRIGGER:-PT30M");
-  await expect(sheet.getByTestId("showing.calendar")).toContainText("6:00 PM to 9:21 PM, with an alert 30 min before.");
+  // It ends when Ramayana's TMDB runtime says (it can change), so the end comes from the data.
+  const { runtimeMin } = (await dataFile(request, "all")).films.find((f) => f.id === "ramayana") as unknown as { runtimeMin: number };
+  await expect(sheet.getByTestId("showing.calendar")).toContainText(`6:00 PM to ${shownClock(new Date(Date.parse(at) + runtimeMin * 60_000).toISOString())}, with an alert 30 min before.`);
 
   await sheet.getByTestId("showing.keep").click();
   await expect(sheet.getByTestId("showing.keep")).toHaveAttribute("aria-pressed", "true");

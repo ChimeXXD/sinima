@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./test";
 import { dataFile, freeze, lagosDay, sampleTime, today } from "./helpers";
 
 // The Films screen as Figma draws it (Figma Films 175:3480, build unit 3): the next 2 hours, then

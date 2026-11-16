@@ -1,8 +1,12 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Page } from "./test";
 import { freeze, sampleTime, shownClock } from "./helpers";
 
 // Offline (Figma Offline · Films 208:9731, build unit 11): with no connection the site still opens
 // on the copy saved on this phone, and says when those times were saved.
+
+// The service worker saves a page's files on timers a few seconds in; the shared noon clock would
+// hold them back (tests/e2e/test.ts). Tests here that need a time set it with freeze().
+test.use({ realClock: true });
 
 /** Loads `path` online until the service worker controls the page and has saved it. */
 async function saveForOffline(page: Page, path: string) {

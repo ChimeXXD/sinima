@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Page } from "./test";
 
 // R9 (D-106 h): the nav's blue pill is moved by springs, as in Design Bookmark's Bottom bar. The
 // pill (data-hl) is a layer of its own once the page's script runs (data-live on the nav).

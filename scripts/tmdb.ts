@@ -7,12 +7,13 @@
 // The token never leaves this script: it is not printed, not written, and never in client code.
 // TMDB data may be kept at most 6 months (D-31); an entry older than a week is asked again.
 // First run against the live API on 11 Nov 2026: 14 of 31 films matched, each checked by eye.
+// Since D-117 it also keeps each film's YouTube trailer, and it looks up the live films as well as the sample ones.
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Film } from "../src/lib/data/types.ts";
 import { lagosDayKey } from "../src/lib/time/lagos.ts";
-import { answerShare, mergeCredits, pickMatch, type ManualEntry, type TmdbFilm, type TmdbResult } from "./credits.ts";
+import { answerShare, mergeCredits, pickMatch, pickTrailer, type ManualEntry, type TmdbFilm, type TmdbResult, type TmdbVideo } from "./credits.ts";
 import { refreshFromFixtures } from "./refresh.ts";
 
 const API = "https://api.themoviedb.org/3";
@@ -25,10 +26,14 @@ export type Deps = { root: string; env: Record<string, string | undefined>; fetc
 
 const readJson = <T>(path: string, fallback: T): T => (existsSync(path) ? (JSON.parse(readFileSync(path, "utf8")) as T) : fallback);
 
+/** The films in the live data (D-116) and in the built (or else sample) data, once each: both need posters and trailers. */
 function filmsShowing(root: string, now: string): Film[] {
+  const liveFilms = readJson<{ films: Film[] }>(join(root, "data/live/showtimes.json"), { films: [] }).films;
   const onDisk = join(root, "data/showtimes.json");
-  if (existsSync(onDisk)) return (JSON.parse(readFileSync(onDisk, "utf8")) as { films: Film[] }).films;
-  return (refreshFromFixtures({ now, root }).files.get("data/showtimes.json") as { films: Film[] }).films;
+  const sampleFilms = existsSync(onDisk) ? readJson<{ films: Film[] }>(onDisk, { films: [] }).films : (refreshFromFixtures({ now, root }).files.get("data/showtimes.json") as { films: Film[] }).films;
+  const byId = new Map<string, Film>();
+  for (const film of [...liveFilms, ...sampleFilms]) if (!byId.has(film.id)) byId.set(film.id, film);
+  return [...byId.values()];
 }
 
 async function ask<T>(path: string, deps: Deps, token: string): Promise<T> {
@@ -51,8 +56,8 @@ export async function main(argv: string[], deps: Deps): Promise<number> {
   const manual = readJson<{ films: Record<string, ManualEntry> }>(join(root, "data/credits-manual.json"), { films: {} }).films;
   const cachePath = join(root, "data/credits.json");
   const cache = readJson<CreditsFile | null>(cachePath, null)?.tmdb ?? {};
-  // An answer saved before posters were kept has no posterPath field: ask again.
-  const fresh = (filmId: string) => Object.hasOwn(cache, filmId) && (cache[filmId] as TmdbFilm).posterPath !== undefined && Date.parse(now) - Date.parse((cache[filmId] as TmdbFilm).checkedAt) < WEEK_MS;
+  // An answer saved before posters or trailers were kept lacks that field: ask again.
+  const fresh = (filmId: string) => Object.hasOwn(cache, filmId) && (cache[filmId] as TmdbFilm).posterPath !== undefined && (cache[filmId] as TmdbFilm).trailerKey !== undefined && Date.parse(now) - Date.parse((cache[filmId] as TmdbFilm).checkedAt) < WEEK_MS;
   const report = (tmdb: Record<string, TmdbFilm>) => console.log(`tmdb: ${answerShare(mergeCredits({ filmIds: films.map((film) => film.id), tmdb, manual })).text}`);
 
   const noMatch = films.filter((film) => Object.hasOwn(overrides, film.id) && overrides[film.id] === null);
@@ -86,12 +91,13 @@ export async function main(argv: string[], deps: Deps): Promise<number> {
       console.log(`tmdb: no sure match for "${film.title}"; it stays "not known yet"`);
       continue;
     }
-    const details = await ask<{ title?: string; runtime?: number | null; poster_path?: string | null; keywords?: { keywords?: { id: number }[] } }>(`/movie/${tmdbId}?append_to_response=keywords`, deps, token);
+    const details = await ask<{ title?: string; runtime?: number | null; poster_path?: string | null; keywords?: { keywords?: { id: number }[] }; videos?: { results?: TmdbVideo[] } }>(`/movie/${tmdbId}?append_to_response=keywords,videos`, deps, token);
     tmdb[film.id] = {
       tmdbId,
       tmdbTitle: details.title,
       runtimeMin: typeof details.runtime === "number" && details.runtime > 0 ? details.runtime : null,
       posterPath: typeof details.poster_path === "string" ? details.poster_path : null,
+      trailerKey: pickTrailer(details.videos?.results ?? []),
       keywordIds: (details.keywords?.keywords ?? []).map((keyword) => keyword.id),
       checkedAt: now,
     };

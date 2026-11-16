@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./test";
 import { dataFile, freeze, sampleTime, shownClock, today } from "./helpers";
 
 // The showing sheet's own flows are in film-screen, cinema-screen and soon-screen specs (Figma, build
