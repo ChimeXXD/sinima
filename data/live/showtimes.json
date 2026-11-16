@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-16T22:10:50Z",
+  "generatedAt": "2026-11-16T22:28:02Z",
   "timeZone": "Africa/Lagos",
   "sources": [
     {
@@ -9,8 +9,8 @@
       "url": "https://lagocine.com/",
       "method": "public-page",
       "status": "cleared",
-      "fetchedAt": "2026-11-16T22:10:50Z",
-      "lastOkAt": "2026-11-16T22:10:50Z",
+      "fetchedAt": "2026-11-16T22:28:02Z",
+      "lastOkAt": "2026-11-16T22:28:02Z",
       "health": "ok"
     }
   ],
@@ -842,60 +842,6 @@
   ],
   "showings": [
     {
-      "id": "ebonylife-vi_clayface_2026-11-16T20:50:00Z",
-      "filmId": "clayface",
-      "cinemaId": "ebonylife-vi",
-      "screenId": null,
-      "startsAt": "2026-11-16T20:50:00Z",
-      "format": null,
-      "language": null,
-      "price": null,
-      "bookingUrl": "https://ebonylifecinemas.com/movies/a80966f1-afac-47ca-ad9e-ebf4e054d2cd?showTimeId=b736c372-8ac1-4705-a59e-0ed5f1d65985&showtimeDate=2026-11-16",
-      "sourceId": "lagocine",
-      "via": {
-        "name": "EbonyLife's site",
-        "url": "https://ebonylifecinemas.com/",
-        "fetchedAt": "2026-11-16T14:08:56Z"
-      },
-      "fetchedAt": "2026-11-16T22:10:50Z"
-    },
-    {
-      "id": "ebonylife-vi_how-to-rob-a-bank_2026-11-16T20:50:00Z",
-      "filmId": "how-to-rob-a-bank",
-      "cinemaId": "ebonylife-vi",
-      "screenId": null,
-      "startsAt": "2026-11-16T20:50:00Z",
-      "format": null,
-      "language": null,
-      "price": null,
-      "bookingUrl": "https://ebonylifecinemas.com/movies/e936ea18-ed41-4d8d-a8b4-00dd29f6bff2?showTimeId=e396ef2c-da25-4c7e-b864-a0e617cbc2d6&showtimeDate=2026-11-16",
-      "sourceId": "lagocine",
-      "via": {
-        "name": "EbonyLife's site",
-        "url": "https://ebonylifecinemas.com/",
-        "fetchedAt": "2026-11-16T14:08:56Z"
-      },
-      "fetchedAt": "2026-11-16T22:10:50Z"
-    },
-    {
-      "id": "genesis-festac_street-fighter_2026-11-16T20:50:00Z",
-      "filmId": "street-fighter",
-      "cinemaId": "genesis-festac",
-      "screenId": null,
-      "startsAt": "2026-11-16T20:50:00Z",
-      "format": null,
-      "language": null,
-      "price": null,
-      "bookingUrl": "https://genesiscinemas.com/festival-mall-festac/booknow/58609",
-      "sourceId": "lagocine",
-      "via": {
-        "name": "Genesis's site",
-        "url": "https://genesiscinemas.com/",
-        "fetchedAt": "2026-11-16T14:08:56Z"
-      },
-      "fetchedAt": "2026-11-16T22:10:50Z"
-    },
-    {
       "id": "ebonylife-vi_ghost-soldier_2026-11-16T21:00:00Z",
       "filmId": "ghost-soldier",
       "cinemaId": "ebonylife-vi",
@@ -911,7 +857,7 @@
         "url": "https://ebonylifecinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "filmhouse-lekki-imax_clayface_2026-11-16T21:00:00Z",
@@ -929,7 +875,7 @@
         "url": "https://filmhouseng.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-purple-lekki_how-to-rob-a-bank_2026-11-16T21:00:00Z",
@@ -947,7 +893,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-maryland_ghost-soldier_2026-11-16T21:10:00Z",
@@ -965,7 +911,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-purple-lekki_clayface_2026-11-16T21:20:00Z",
@@ -983,7 +929,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "sky-sangotedo_isakaba-the-returns_2026-11-16T21:30:00Z",
@@ -1001,7 +947,7 @@
         "url": "https://skycinemas.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "filmhouse-circle-mall_clayface_2026-11-16T21:35:00Z",
@@ -1019,7 +965,7 @@
         "url": "https://filmhouseng.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "sky-sangotedo_how-to-rob-a-bank_2026-11-16T21:35:00Z",
@@ -1037,7 +983,7 @@
         "url": "https://skycinemas.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-festac_how-to-rob-a-bank_2026-11-16T21:50:00Z",
@@ -1055,7 +1001,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_no-fury_2026-11-17T09:00:00Z",
@@ -1073,7 +1019,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_ramayana_2026-11-17T09:00:00Z",
@@ -1091,7 +1037,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_tele-x-zikora_2026-11-17T09:00:00Z",
@@ -1109,7 +1055,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_the-perfect-spec_2026-11-17T09:00:00Z",
@@ -1127,7 +1073,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_verity_2026-11-17T09:00:00Z",
@@ -1145,7 +1091,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "silverbird-ikeja_arnie-and-barney_2026-11-17T09:30:00Z",
@@ -1162,7 +1108,7 @@
         "name": "Silverbird's site",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ebonylife-vi_arnie-and-barney_2026-11-17T09:40:00Z",
@@ -1180,7 +1126,7 @@
         "url": "https://ebonylifecinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "silverbird-ikeja_how-to-rob-a-bank_2026-11-17T09:45:00Z",
@@ -1197,7 +1143,7 @@
         "name": "Silverbird's site",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ebonylife-vi_a-land-apart_2026-11-17T09:50:00Z",
@@ -1215,7 +1161,7 @@
         "url": "https://ebonylifecinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "silverbird-ikeja_the-perfect-spec_2026-11-17T09:55:00Z",
@@ -1232,7 +1178,7 @@
         "name": "Silverbird's site",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ebonylife-vi_dear-ajayi_2026-11-17T10:00:00Z",
@@ -1250,7 +1196,7 @@
         "url": "https://ebonylifecinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ebonylife-vi_the-cat-in-the-hat_2026-11-17T10:00:00Z",
@@ -1268,7 +1214,7 @@
         "url": "https://ebonylifecinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "filmworld-idimu_the-perfect-spec_2026-11-17T10:00:00Z",
@@ -1286,7 +1232,7 @@
         "url": "https://filmworldcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_loving-itohan_2026-11-17T10:00:00Z",
@@ -1304,7 +1250,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ozone-yaba_the-cat-in-the-hat_2026-11-17T10:00:00Z",
@@ -1322,7 +1268,7 @@
         "url": "https://ozone.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "silverbird-ikeja_ghost-soldier_2026-11-17T10:00:00Z",
@@ -1339,7 +1285,7 @@
         "name": "Silverbird's site",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "sky-sangotedo_loving-itohan_2026-11-17T10:00:00Z",
@@ -1357,7 +1303,7 @@
         "url": "https://skycinemas.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "sky-sangotedo_five-figurines_2026-11-17T10:10:00Z",
@@ -1375,7 +1321,7 @@
         "url": "https://skycinemas.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ozone-yaba_dear-ajayi_2026-11-17T10:15:00Z",
@@ -1393,7 +1339,7 @@
         "url": "https://ozone.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "sky-sangotedo_how-to-rob-a-bank_2026-11-17T10:15:00Z",
@@ -1411,7 +1357,7 @@
         "url": "https://skycinemas.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "filmworld-idimu_the-cat-in-the-hat_2026-11-17T10:20:00Z",
@@ -1429,7 +1375,7 @@
         "url": "https://filmworldcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "sky-sangotedo_isakaba-the-returns_2026-11-17T10:20:00Z",
@@ -1447,7 +1393,7 @@
         "url": "https://skycinemas.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ebonylife-vi_agbara-nla-the-return_2026-11-17T10:30:00Z",
@@ -1465,7 +1411,7 @@
         "url": "https://ebonylifecinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "silverbird-ikeja_five-figurines_2026-11-17T10:30:00Z",
@@ -1482,7 +1428,7 @@
         "name": "Silverbird's site",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "viva-ikeja_other-mommy_2026-11-17T10:40:00Z",
@@ -1500,7 +1446,7 @@
         "url": "https://web.vivacinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "viva-ikeja_the-cat-in-the-hat_2026-11-17T10:40:00Z",
@@ -1518,7 +1464,7 @@
         "url": "https://web.vivacinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ozone-yaba_arnie-and-barney_2026-11-17T10:45:00Z",
@@ -1536,7 +1482,7 @@
         "url": "https://ozone.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "filmworld-idimu_ikenga_2026-11-17T10:50:00Z",
@@ -1554,7 +1500,7 @@
         "url": "https://filmworldcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "silverbird-ikeja_dear-ajayi_2026-11-17T10:55:00Z",
@@ -1571,7 +1517,7 @@
         "name": "Silverbird's site",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "blue-pictures-onikan_wire-transfer_2026-11-17T11:00:00Z",
@@ -1589,7 +1535,7 @@
         "url": "https://bluepicturesng.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-maryland_street-fighter_2026-11-17T11:00:00Z",
@@ -1607,7 +1553,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "grand-lekki_street-fighter_2026-11-17T11:00:00Z",
@@ -1625,7 +1571,7 @@
         "url": "https://grandcinemas.com.ng/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_clayface_2026-11-17T11:00:00Z",
@@ -1643,7 +1589,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_onibon-oje_2026-11-17T11:00:00Z",
@@ -1661,7 +1607,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_star-lomo_2026-11-17T11:00:00Z",
@@ -1679,7 +1625,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_the-cat-in-the-hat_2026-11-17T11:00:00Z",
@@ -1697,7 +1643,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ozone-yaba_ghost-soldier_2026-11-17T11:00:00Z",
@@ -1715,7 +1661,7 @@
         "url": "https://ozone.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-purple-lekki_street-fighter_2026-11-17T11:05:00Z",
@@ -1733,7 +1679,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ebonylife-vi_phoenix-fury_2026-11-17T11:10:00Z",
@@ -1751,7 +1697,7 @@
         "url": "https://ebonylifecinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-maryland_maybe-maybe-not_2026-11-17T11:10:00Z",
@@ -1769,7 +1715,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "viva-ikeja_phoenix-fury_2026-11-17T11:15:00Z",
@@ -1787,7 +1733,7 @@
         "url": "https://web.vivacinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "grand-lekki_how-to-rob-a-bank_2026-11-17T11:20:00Z",
@@ -1805,7 +1751,7 @@
         "url": "https://grandcinemas.com.ng/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "grand-lekki_loving-itohan_2026-11-17T11:20:00Z",
@@ -1823,7 +1769,7 @@
         "url": "https://grandcinemas.com.ng/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "filmworld-idimu_star-lomo_2026-11-17T11:30:00Z",
@@ -1841,7 +1787,7 @@
         "url": "https://filmworldcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "blue-pictures-onikan_maybe-maybe-not_2026-11-17T11:40:00Z",
@@ -1859,7 +1805,7 @@
         "url": "https://bluepicturesng.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-festac_how-to-rob-a-bank_2026-11-17T11:40:00Z",
@@ -1877,7 +1823,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "viva-ikeja_clayface_2026-11-17T11:40:00Z",
@@ -1895,7 +1841,7 @@
         "url": "https://web.vivacinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ebonylife-vi_maybe-maybe-not_2026-11-17T11:50:00Z",
@@ -1913,7 +1859,7 @@
         "url": "https://ebonylifecinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "silverbird-ikeja_the-cat-in-the-hat_2026-11-17T11:50:00Z",
@@ -1930,7 +1876,7 @@
         "name": "Silverbird's site",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-maryland_the-perfect-spec_2026-11-17T11:55:00Z",
@@ -1948,7 +1894,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "filmworld-idimu_other-mommy_2026-11-17T12:00:00Z",
@@ -1966,7 +1912,7 @@
         "url": "https://filmworldcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_isakaba-the-returns_2026-11-17T12:00:00Z",
@@ -1984,7 +1930,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_loving-itohan_2026-11-17T12:00:00Z",
@@ -2002,7 +1948,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_one-gidi-night_2026-11-17T12:00:00Z",
@@ -2020,7 +1966,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ozone-yaba_five-figurines_2026-11-17T12:00:00Z",
@@ -2038,7 +1984,7 @@
         "url": "https://ozone.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "silverbird-ikeja_agbara-nla-the-return_2026-11-17T12:00:00Z",
@@ -2055,7 +2001,7 @@
         "name": "Silverbird's site",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "sky-sangotedo_isakaba-the-returns_2026-11-17T12:00:00Z",
@@ -2073,7 +2019,7 @@
         "url": "https://skycinemas.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "silverbird-ikeja_loving-itohan_2026-11-17T12:05:00Z",
@@ -2090,7 +2036,7 @@
         "name": "Silverbird's site",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ebonylife-vi_heart-of-the-beast_2026-11-17T12:10:00Z",
@@ -2108,7 +2054,7 @@
         "url": "https://ebonylifecinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ebonylife-vi_street-fighter_2026-11-17T12:10:00Z",
@@ -2126,7 +2072,7 @@
         "url": "https://ebonylifecinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "filmworld-idimu_maybe-maybe-not_2026-11-17T12:10:00Z",
@@ -2144,7 +2090,7 @@
         "url": "https://filmworldcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "filmworld-idimu_whalefall_2026-11-17T12:10:00Z",
@@ -2162,7 +2108,7 @@
         "url": "https://filmworldcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ozone-yaba_loving-itohan_2026-11-17T12:15:00Z",
@@ -2180,7 +2126,7 @@
         "url": "https://ozone.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ozone-yaba_tele-x-zikora_2026-11-17T12:20:00Z",
@@ -2198,7 +2144,7 @@
         "url": "https://ozone.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "viva-ikeja_five-figurines_2026-11-17T12:20:00Z",
@@ -2216,7 +2162,7 @@
         "url": "https://web.vivacinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "sky-sangotedo_five-figurines_2026-11-17T12:35:00Z",
@@ -2234,7 +2180,7 @@
         "url": "https://skycinemas.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "sky-sangotedo_agbara-nla-the-return_2026-11-17T12:40:00Z",
@@ -2252,7 +2198,7 @@
         "url": "https://skycinemas.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "thc-agege_street-fighter_2026-11-17T12:40:00Z",
@@ -2270,7 +2216,7 @@
         "url": "https://cinemaxthc.ng/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "viva-ikeja_street-fighter_2026-11-17T12:40:00Z",
@@ -2288,7 +2234,7 @@
         "url": "https://web.vivacinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "filmworld-idimu_loving-itohan_2026-11-17T12:50:00Z",
@@ -2306,7 +2252,7 @@
         "url": "https://filmworldcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ozone-yaba_how-to-rob-a-bank_2026-11-17T12:50:00Z",
@@ -2324,7 +2270,7 @@
         "url": "https://ozone.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-festac_ghost-soldier_2026-11-17T12:55:00Z",
@@ -2342,7 +2288,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "thc-agege_phoenix-fury_2026-11-17T12:55:00Z",
@@ -2360,7 +2306,7 @@
         "url": "https://cinemaxthc.ng/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-purple-lekki_ghost-soldier_2026-11-17T13:00:00Z",
@@ -2378,7 +2324,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_first-lady_2026-11-17T13:00:00Z",
@@ -2396,7 +2342,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_how-to-rob-a-bank_2026-11-17T13:00:00Z",
@@ -2414,7 +2360,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_tele-x-zikora_2026-11-17T13:00:00Z",
@@ -2432,7 +2378,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "silverbird-ikeja_five-figurines_2026-11-17T13:00:00Z",
@@ -2449,7 +2395,7 @@
         "name": "Silverbird's site",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "silverbird-ikeja_isakaba-the-returns_2026-11-17T13:00:00Z",
@@ -2466,7 +2412,7 @@
         "name": "Silverbird's site",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "thc-agege_a-land-apart_2026-11-17T13:00:00Z",
@@ -2484,7 +2430,7 @@
         "url": "https://cinemaxthc.ng/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-festac_isakaba-the-returns_2026-11-17T13:05:00Z",
@@ -2502,7 +2448,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "sky-sangotedo_how-to-rob-a-bank_2026-11-17T13:05:00Z",
@@ -2520,7 +2466,7 @@
         "url": "https://skycinemas.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "blue-pictures-onikan_the-cleaner_2026-11-17T13:10:00Z",
@@ -2538,7 +2484,7 @@
         "url": "https://bluepicturesng.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-maryland_ghost-soldier_2026-11-17T13:10:00Z",
@@ -2556,7 +2502,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ebonylife-vi_dear-ajayi_2026-11-17T13:25:00Z",
@@ -2574,7 +2520,7 @@
         "url": "https://ebonylifecinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-maryland_five-figurines_2026-11-17T13:25:00Z",
@@ -2592,7 +2538,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-purple-lekki_how-to-rob-a-bank_2026-11-17T13:25:00Z",
@@ -2610,7 +2556,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "blue-pictures-onikan_loving-itohan_2026-11-17T13:30:00Z",
@@ -2628,7 +2574,7 @@
         "url": "https://bluepicturesng.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-purple-lekki_isakaba-the-returns_2026-11-17T13:30:00Z",
@@ -2646,7 +2592,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "grand-lekki_spider-man-brand-new-day_2026-11-17T13:30:00Z",
@@ -2664,7 +2610,7 @@
         "url": "https://grandcinemas.com.ng/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "viva-ikeja_loving-itohan_2026-11-17T13:30:00Z",
@@ -2682,7 +2628,7 @@
         "url": "https://web.vivacinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ebonylife-vi_the-perfect-spec_2026-11-17T13:35:00Z",
@@ -2700,7 +2646,7 @@
         "url": "https://ebonylifecinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "silverbird-ikeja_the-beacon-man_2026-11-17T13:35:00Z",
@@ -2717,7 +2663,7 @@
         "name": "Silverbird's site",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ebonylife-vi_whalefall_2026-11-17T13:40:00Z",
@@ -2735,7 +2681,7 @@
         "url": "https://ebonylifecinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "viva-ikeja_agbara-nla-the-return_2026-11-17T13:40:00Z",
@@ -2753,7 +2699,7 @@
         "url": "https://web.vivacinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "filmworld-idimu_clayface_2026-11-17T13:50:00Z",
@@ -2771,7 +2717,7 @@
         "url": "https://filmworldcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "filmworld-idimu_the-perfect-spec_2026-11-17T13:50:00Z",
@@ -2789,7 +2735,7 @@
         "url": "https://filmworldcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "silverbird-ikeja_maybe-maybe-not_2026-11-17T13:55:00Z",
@@ -2806,7 +2752,7 @@
         "name": "Silverbird's site",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "filmworld-idimu_five-figurines_2026-11-17T14:00:00Z",
@@ -2824,7 +2770,7 @@
         "url": "https://filmworldcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-maryland_isakaba-the-returns_2026-11-17T14:00:00Z",
@@ -2842,7 +2788,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "grand-lekki_dear-ajayi_2026-11-17T14:00:00Z",
@@ -2860,7 +2806,7 @@
         "url": "https://grandcinemas.com.ng/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "grand-lekki_ghost-soldier_2026-11-17T14:00:00Z",
@@ -2878,7 +2824,7 @@
         "url": "https://grandcinemas.com.ng/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_dear-ajayi_2026-11-17T14:00:00Z",
@@ -2896,7 +2842,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_loving-itohan_2026-11-17T14:00:00Z",
@@ -2914,7 +2860,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_no-fury_2026-11-17T14:00:00Z",
@@ -2932,7 +2878,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-festac_agbara-nla-the-return_2026-11-17T14:05:00Z",
@@ -2950,7 +2896,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ozone-yaba_the-perfect-spec_2026-11-17T14:05:00Z",
@@ -2968,7 +2914,7 @@
         "url": "https://ozone.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ebonylife-vi_five-figurines_2026-11-17T14:10:00Z",
@@ -2986,7 +2932,7 @@
         "url": "https://ebonylifecinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "filmworld-idimu_ghost-soldier_2026-11-17T14:10:00Z",
@@ -3004,7 +2950,7 @@
         "url": "https://filmworldcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ozone-yaba_agbara-nla-the-return_2026-11-17T14:10:00Z",
@@ -3022,7 +2968,7 @@
         "url": "https://ozone.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-maryland_loving-itohan_2026-11-17T14:15:00Z",
@@ -3040,7 +2986,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ebonylife-vi_ramayana_2026-11-17T14:30:00Z",
@@ -3058,7 +3004,7 @@
         "url": "https://ebonylifecinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ozone-yaba_isakaba-the-returns_2026-11-17T14:30:00Z",
@@ -3076,7 +3022,7 @@
         "url": "https://ozone.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "filmworld-idimu_first-lady_2026-11-17T14:40:00Z",
@@ -3094,7 +3040,7 @@
         "url": "https://filmworldcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-festac_loving-itohan_2026-11-17T14:45:00Z",
@@ -3112,7 +3058,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "sky-sangotedo_maybe-maybe-not_2026-11-17T14:45:00Z",
@@ -3130,7 +3076,7 @@
         "url": "https://skycinemas.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "viva-ikeja_ghost-soldier_2026-11-17T14:45:00Z",
@@ -3148,7 +3094,7 @@
         "url": "https://web.vivacinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-purple-lekki_ghost-soldier_2026-11-17T14:50:00Z",
@@ -3166,7 +3112,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "silverbird-ikeja_agbara-nla-the-return_2026-11-17T14:50:00Z",
@@ -3183,7 +3129,7 @@
         "name": "Silverbird's site",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "viva-ikeja_tele-x-zikora_2026-11-17T14:55:00Z",
@@ -3201,7 +3147,7 @@
         "url": "https://web.vivacinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-maryland_maybe-maybe-not_2026-11-17T15:00:00Z",
@@ -3219,7 +3165,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_five-figurines_2026-11-17T15:00:00Z",
@@ -3237,7 +3183,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_ghost-soldier_2026-11-17T15:00:00Z",
@@ -3255,7 +3201,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ozone-yaba_ghost-soldier_2026-11-17T15:00:00Z",
@@ -3273,7 +3219,7 @@
         "url": "https://ozone.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "sky-sangotedo_five-figurines_2026-11-17T15:00:00Z",
@@ -3291,7 +3237,7 @@
         "url": "https://skycinemas.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "thc-agege_ghost-soldier_2026-11-17T15:00:00Z",
@@ -3309,7 +3255,7 @@
         "url": "https://cinemaxthc.ng/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "thc-agege_loving-itohan_2026-11-17T15:10:00Z",
@@ -3327,7 +3273,7 @@
         "url": "https://cinemaxthc.ng/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "blue-pictures-onikan_isakaba-the-returns_2026-11-17T15:20:00Z",
@@ -3345,7 +3291,7 @@
         "url": "https://bluepicturesng.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "blue-pictures-onikan_the-beacon-man_2026-11-17T15:20:00Z",
@@ -3363,7 +3309,7 @@
         "url": "https://bluepicturesng.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "thc-agege_agbara-nla-the-return_2026-11-17T15:20:00Z",
@@ -3381,7 +3327,7 @@
         "url": "https://cinemaxthc.ng/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "viva-ikeja_loving-itohan_2026-11-17T15:20:00Z",
@@ -3399,7 +3345,7 @@
         "url": "https://web.vivacinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "silverbird-ikeja_loving-itohan_2026-11-17T15:30:00Z",
@@ -3416,7 +3362,7 @@
         "name": "Silverbird's site",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "sky-sangotedo_loving-itohan_2026-11-17T15:30:00Z",
@@ -3434,7 +3380,7 @@
         "url": "https://skycinemas.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ebonylife-vi_agbara-nla-the-return_2026-11-17T15:35:00Z",
@@ -3452,7 +3398,7 @@
         "url": "https://ebonylifecinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "silverbird-ikeja_the-cleaner_2026-11-17T15:35:00Z",
@@ -3469,7 +3415,7 @@
         "name": "Silverbird's site",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ebonylife-vi_how-to-rob-a-bank_2026-11-17T15:40:00Z",
@@ -3487,7 +3433,7 @@
         "url": "https://ebonylifecinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "sky-sangotedo_spider-man-brand-new-day_2026-11-17T15:40:00Z",
@@ -3505,7 +3451,7 @@
         "url": "https://skycinemas.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-purple-lekki_ramayana_2026-11-17T15:45:00Z",
@@ -3523,7 +3469,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ebonylife-vi_ghost-soldier_2026-11-17T15:50:00Z",
@@ -3541,7 +3487,7 @@
         "url": "https://ebonylifecinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "filmworld-idimu_ramayana_2026-11-17T15:50:00Z",
@@ -3559,7 +3505,7 @@
         "url": "https://filmworldcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-festac_five-figurines_2026-11-17T15:50:00Z",
@@ -3577,7 +3523,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-purple-lekki_five-figurines_2026-11-17T15:50:00Z",
@@ -3595,7 +3541,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "silverbird-ikeja_ghost-soldier_2026-11-17T15:50:00Z",
@@ -3612,7 +3558,7 @@
         "name": "Silverbird's site",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "silverbird-ikeja_the-perfect-spec_2026-11-17T15:50:00Z",
@@ -3629,7 +3575,7 @@
         "name": "Silverbird's site",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ozone-yaba_how-to-rob-a-bank_2026-11-17T15:55:00Z",
@@ -3647,7 +3593,7 @@
         "url": "https://ozone.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "filmworld-idimu_tele-x-zikora_2026-11-17T16:00:00Z",
@@ -3665,7 +3611,7 @@
         "url": "https://filmworldcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-maryland_five-figurines_2026-11-17T16:00:00Z",
@@ -3683,7 +3629,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_dear-ajayi_2026-11-17T16:00:00Z",
@@ -3701,7 +3647,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_tele-x-zikora_2026-11-17T16:00:00Z",
@@ -3719,7 +3665,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_the-perfect-spec_2026-11-17T16:00:00Z",
@@ -3737,7 +3683,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "filmworld-idimu_agbara-nla-the-return_2026-11-17T16:10:00Z",
@@ -3755,7 +3701,7 @@
         "url": "https://filmworldcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-maryland_how-to-rob-a-bank_2026-11-17T16:15:00Z",
@@ -3773,7 +3719,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ebonylife-vi_five-figurines_2026-11-17T16:30:00Z",
@@ -3791,7 +3737,7 @@
         "url": "https://ebonylifecinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "grand-lekki_agbara-nla-the-return_2026-11-17T16:30:00Z",
@@ -3809,7 +3755,7 @@
         "url": "https://grandcinemas.com.ng/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "grand-lekki_loving-itohan_2026-11-17T16:30:00Z",
@@ -3827,7 +3773,7 @@
         "url": "https://grandcinemas.com.ng/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "viva-ikeja_agbara-nla-the-return_2026-11-17T16:30:00Z",
@@ -3845,7 +3791,7 @@
         "url": "https://web.vivacinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "viva-ikeja_five-figurines_2026-11-17T16:35:00Z",
@@ -3863,7 +3809,7 @@
         "url": "https://web.vivacinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-purple-lekki_maybe-maybe-not_2026-11-17T16:40:00Z",
@@ -3881,7 +3827,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "sky-sangotedo_five-figurines_2026-11-17T16:40:00Z",
@@ -3899,7 +3845,7 @@
         "url": "https://skycinemas.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-festac_isakaba-the-returns_2026-11-17T16:45:00Z",
@@ -3917,7 +3863,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-maryland_isakaba-the-returns_2026-11-17T16:45:00Z",
@@ -3935,7 +3881,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ozone-yaba_tele-x-zikora_2026-11-17T16:50:00Z",
@@ -3953,7 +3899,7 @@
         "url": "https://ozone.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ozone-yaba_five-figurines_2026-11-17T16:55:00Z",
@@ -3971,7 +3917,7 @@
         "url": "https://ozone.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "filmworld-idimu_phoenix-fury_2026-11-17T17:00:00Z",
@@ -3989,7 +3935,7 @@
         "url": "https://filmworldcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-festac_maybe-maybe-not_2026-11-17T17:00:00Z",
@@ -4007,7 +3953,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-maryland_agbara-nla-the-return_2026-11-17T17:00:00Z",
@@ -4025,7 +3971,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "grand-lekki_spider-man-brand-new-day_2026-11-17T17:00:00Z",
@@ -4043,7 +3989,7 @@
         "url": "https://grandcinemas.com.ng/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_how-to-rob-a-bank_2026-11-17T17:00:00Z",
@@ -4061,7 +4007,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_tele-x-zikora_2026-11-17T17:00:00Z",
@@ -4079,7 +4025,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_whalefall_2026-11-17T17:00:00Z",
@@ -4097,7 +4043,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "thc-agege_how-to-rob-a-bank_2026-11-17T17:00:00Z",
@@ -4115,7 +4061,7 @@
         "url": "https://cinemaxthc.ng/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "viva-ikeja_clayface_2026-11-17T17:05:00Z",
@@ -4133,7 +4079,7 @@
         "url": "https://web.vivacinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ozone-yaba_loving-itohan_2026-11-17T17:10:00Z",
@@ -4151,7 +4097,7 @@
         "url": "https://ozone.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "thc-agege_five-figurines_2026-11-17T17:10:00Z",
@@ -4169,7 +4115,7 @@
         "url": "https://cinemaxthc.ng/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "viva-ikeja_the-perfect-spec_2026-11-17T17:10:00Z",
@@ -4187,7 +4133,7 @@
         "url": "https://web.vivacinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "blue-pictures-onikan_isakaba-the-returns_2026-11-17T17:20:00Z",
@@ -4205,7 +4151,7 @@
         "url": "https://bluepicturesng.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "silverbird-ikeja_five-figurines_2026-11-17T17:20:00Z",
@@ -4222,7 +4168,7 @@
         "name": "Silverbird's site",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "sky-sangotedo_isakaba-the-returns_2026-11-17T17:20:00Z",
@@ -4240,7 +4186,7 @@
         "url": "https://skycinemas.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "sky-sangotedo_loving-itohan_2026-11-17T17:30:00Z",
@@ -4258,7 +4204,7 @@
         "url": "https://skycinemas.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "silverbird-ikeja_how-to-rob-a-bank_2026-11-17T17:40:00Z",
@@ -4275,7 +4221,7 @@
         "name": "Silverbird's site",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "silverbird-ikeja_isakaba-the-returns_2026-11-17T17:40:00Z",
@@ -4292,7 +4238,7 @@
         "name": "Silverbird's site",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ebonylife-vi_clayface_2026-11-17T17:50:00Z",
@@ -4310,7 +4256,7 @@
         "url": "https://ebonylifecinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "silverbird-ikeja_wire-transfer_2026-11-17T17:50:00Z",
@@ -4327,7 +4273,7 @@
         "name": "Silverbird's site",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_five-figurines_2026-11-17T18:00:00Z",
@@ -4345,7 +4291,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_loving-itohan_2026-11-17T18:00:00Z",
@@ -4363,7 +4309,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "silverbird-ikeja_tele-x-zikora_2026-11-17T18:00:00Z",
@@ -4380,7 +4326,7 @@
         "name": "Silverbird's site",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ebonylife-vi_how-to-rob-a-bank_2026-11-17T18:10:00Z",
@@ -4398,7 +4344,7 @@
         "url": "https://ebonylifecinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ebonylife-vi_isakaba-the-returns_2026-11-17T18:10:00Z",
@@ -4416,7 +4362,7 @@
         "url": "https://ebonylifecinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "filmworld-idimu_street-fighter_2026-11-17T18:10:00Z",
@@ -4434,7 +4380,7 @@
         "url": "https://filmworldcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-festac_five-figurines_2026-11-17T18:10:00Z",
@@ -4452,7 +4398,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-purple-lekki_loving-itohan_2026-11-17T18:10:00Z",
@@ -4470,7 +4416,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ozone-yaba_ramayana_2026-11-17T18:10:00Z",
@@ -4488,7 +4434,7 @@
         "url": "https://ozone.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "thc-agege_ramayana_2026-11-17T18:15:00Z",
@@ -4506,7 +4452,7 @@
         "url": "https://cinemaxthc.ng/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "filmworld-idimu_agbara-nla-the-return_2026-11-17T18:20:00Z",
@@ -4524,7 +4470,7 @@
         "url": "https://filmworldcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ebonylife-vi_tele-x-zikora_2026-11-17T18:30:00Z",
@@ -4542,7 +4488,7 @@
         "url": "https://ebonylifecinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "sky-sangotedo_agbara-nla-the-return_2026-11-17T18:30:00Z",
@@ -4560,7 +4506,7 @@
         "url": "https://skycinemas.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-maryland_five-figurines_2026-11-17T18:35:00Z",
@@ -4578,7 +4524,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-maryland_loving-itohan_2026-11-17T18:35:00Z",
@@ -4596,7 +4542,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-purple-lekki_five-figurines_2026-11-17T18:40:00Z",
@@ -4614,7 +4560,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ebonylife-vi_loving-itohan_2026-11-17T18:50:00Z",
@@ -4632,7 +4578,7 @@
         "url": "https://ebonylifecinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "filmworld-idimu_tele-x-zikora_2026-11-17T19:00:00Z",
@@ -4650,7 +4596,7 @@
         "url": "https://filmworldcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-festac_ghost-soldier_2026-11-17T19:00:00Z",
@@ -4668,7 +4614,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_dear-ajayi_2026-11-17T19:00:00Z",
@@ -4686,7 +4632,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ozone-yaba_agbara-nla-the-return_2026-11-17T19:00:00Z",
@@ -4704,7 +4650,7 @@
         "url": "https://ozone.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ozone-yaba_isakaba-the-returns_2026-11-17T19:00:00Z",
@@ -4722,7 +4668,7 @@
         "url": "https://ozone.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "viva-ikeja_tele-x-zikora_2026-11-17T19:00:00Z",
@@ -4740,7 +4686,7 @@
         "url": "https://web.vivacinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "viva-ikeja_five-figurines_2026-11-17T19:05:00Z",
@@ -4758,7 +4704,7 @@
         "url": "https://web.vivacinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ozone-yaba_clayface_2026-11-17T19:10:00Z",
@@ -4776,7 +4722,7 @@
         "url": "https://ozone.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "sky-sangotedo_isakaba-the-returns_2026-11-17T19:10:00Z",
@@ -4794,7 +4740,7 @@
         "url": "https://skycinemas.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "viva-ikeja_isakaba-the-returns_2026-11-17T19:10:00Z",
@@ -4812,7 +4758,7 @@
         "url": "https://web.vivacinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "viva-ikeja_how-to-rob-a-bank_2026-11-17T19:15:00Z",
@@ -4830,7 +4776,7 @@
         "url": "https://web.vivacinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-purple-lekki_maybe-maybe-not_2026-11-17T19:20:00Z",
@@ -4848,7 +4794,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "filmworld-idimu_loving-itohan_2026-11-17T19:25:00Z",
@@ -4866,7 +4812,7 @@
         "url": "https://filmworldcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "thc-agege_isakaba-the-returns_2026-11-17T19:25:00Z",
@@ -4884,7 +4830,7 @@
         "url": "https://cinemaxthc.ng/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "filmworld-idimu_resident-evil_2026-11-17T19:30:00Z",
@@ -4902,7 +4848,7 @@
         "url": "https://filmworldcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-festac_how-to-rob-a-bank_2026-11-17T19:30:00Z",
@@ -4920,7 +4866,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-maryland_ramayana_2026-11-17T19:30:00Z",
@@ -4938,7 +4884,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "grand-lekki_agbara-nla-the-return_2026-11-17T19:30:00Z",
@@ -4956,7 +4902,7 @@
         "url": "https://grandcinemas.com.ng/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "grand-lekki_street-fighter_2026-11-17T19:30:00Z",
@@ -4974,7 +4920,7 @@
         "url": "https://grandcinemas.com.ng/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "thc-agege_five-figurines_2026-11-17T19:30:00Z",
@@ -4992,7 +4938,7 @@
         "url": "https://cinemaxthc.ng/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "grand-lekki_spider-man-brand-new-day_2026-11-17T19:40:00Z",
@@ -5010,7 +4956,7 @@
         "url": "https://grandcinemas.com.ng/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_ghost-soldier_2026-11-17T19:40:00Z",
@@ -5028,7 +4974,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "sky-sangotedo_maybe-maybe-not_2026-11-17T19:40:00Z",
@@ -5046,7 +4992,7 @@
         "url": "https://skycinemas.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "silverbird-ikeja_loving-itohan_2026-11-17T19:50:00Z",
@@ -5063,7 +5009,7 @@
         "name": "Silverbird's site",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-maryland_agbara-nla-the-return_2026-11-17T19:55:00Z",
@@ -5081,7 +5027,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ebonylife-vi_five-figurines_2026-11-17T20:00:00Z",
@@ -5099,7 +5045,7 @@
         "url": "https://ebonylifecinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_five-figurines_2026-11-17T20:00:00Z",
@@ -5117,7 +5063,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_maybe-or-maybe-not_2026-11-17T20:00:00Z",
@@ -5135,7 +5081,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "magnificent-ikorodu-road_no-fury_2026-11-17T20:00:00Z",
@@ -5153,7 +5099,7 @@
         "url": "https://magnificentcinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "silverbird-ikeja_clayface_2026-11-17T20:00:00Z",
@@ -5170,7 +5116,7 @@
         "name": "Silverbird's site",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "silverbird-ikeja_isakaba-the-returns_2026-11-17T20:00:00Z",
@@ -5187,7 +5133,7 @@
         "name": "Silverbird's site",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-purple-lekki_the-perfect-spec_2026-11-17T20:10:00Z",
@@ -5205,7 +5151,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "silverbird-ikeja_how-to-rob-a-bank_2026-11-17T20:10:00Z",
@@ -5222,7 +5168,7 @@
         "name": "Silverbird's site",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "sky-sangotedo_five-figurines_2026-11-17T20:10:00Z",
@@ -5240,7 +5186,7 @@
         "url": "https://skycinemas.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "silverbird-ikeja_five-figurines_2026-11-17T20:15:00Z",
@@ -5257,7 +5203,7 @@
         "name": "Silverbird's site",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ebonylife-vi_loving-itohan_2026-11-17T20:30:00Z",
@@ -5275,7 +5221,7 @@
         "url": "https://ebonylifecinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-festac_ramayana_2026-11-17T20:30:00Z",
@@ -5293,7 +5239,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-maryland_how-to-rob-a-bank_2026-11-17T20:35:00Z",
@@ -5311,7 +5257,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ebonylife-vi_clayface_2026-11-17T20:50:00Z",
@@ -5329,7 +5275,7 @@
         "url": "https://ebonylifecinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ebonylife-vi_how-to-rob-a-bank_2026-11-17T20:50:00Z",
@@ -5347,7 +5293,7 @@
         "url": "https://ebonylifecinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-festac_street-fighter_2026-11-17T20:50:00Z",
@@ -5365,7 +5311,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "ebonylife-vi_ghost-soldier_2026-11-17T21:00:00Z",
@@ -5383,7 +5329,7 @@
         "url": "https://ebonylifecinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-purple-lekki_how-to-rob-a-bank_2026-11-17T21:00:00Z",
@@ -5401,7 +5347,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-maryland_ghost-soldier_2026-11-17T21:10:00Z",
@@ -5419,7 +5365,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-purple-lekki_clayface_2026-11-17T21:20:00Z",
@@ -5437,7 +5383,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "sky-sangotedo_isakaba-the-returns_2026-11-17T21:30:00Z",
@@ -5455,7 +5401,7 @@
         "url": "https://skycinemas.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "sky-sangotedo_how-to-rob-a-bank_2026-11-17T21:35:00Z",
@@ -5473,7 +5419,7 @@
         "url": "https://skycinemas.reachcinema.io/showtimes",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     },
     {
       "id": "genesis-festac_how-to-rob-a-bank_2026-11-17T21:50:00Z",
@@ -5491,7 +5437,7 @@
         "url": "https://genesiscinemas.com/",
         "fetchedAt": "2026-11-16T14:08:56Z"
       },
-      "fetchedAt": "2026-11-16T22:10:50Z"
+      "fetchedAt": "2026-11-16T22:28:02Z"
     }
   ],
   "sample": false
