@@ -47,6 +47,13 @@
   --bg-surface: light-dark(#f4f4f5, #18181b);
   --bg-raised: light-dark(#ffffff, #18181b);
   --bg-accent-soft: light-dark(#eef3ff, #0b1b3f);
+  /* A film with no poster gets one of five tints, picked from its title (D-106 j): Figma's folder
+     pastels and a soft amber; in dark mode the same hues mixed deep into the dark surface. */
+  --poster-1: light-dark(var(--p-folder-blue), color-mix(in srgb, var(--p-folder-blue) 26%, var(--p-neutral-900)));
+  --poster-2: light-dark(var(--p-folder-violet), color-mix(in srgb, var(--p-folder-violet) 26%, var(--p-neutral-900)));
+  --poster-3: light-dark(var(--p-folder-pink), color-mix(in srgb, var(--p-folder-pink) 24%, var(--p-neutral-900)));
+  --poster-4: light-dark(var(--p-folder-green), color-mix(in srgb, var(--p-folder-green) 24%, var(--p-neutral-900)));
+  --poster-5: light-dark(color-mix(in srgb, var(--p-amber-300) 55%, var(--p-neutral-0)), color-mix(in srgb, var(--p-amber-300) 22%, var(--p-neutral-900)));
   --bg-scrim: light-dark(#000000, #000000); /* Always used with opacity (Figma: layer opacity). */
   --text-primary: light-dark(#18181b, #fafafa);
   --text-secondary: light-dark(#71717a, #d4d4d8);
@@ -152,6 +159,18 @@
   --dur-fast: 160ms;
   --dur-base: 220ms;
   --dur-sheet: 450ms;
+}
+
+/* Dark posters keep each tint's hue, deep and coloured (relative colour; the mixes above are the
+   fallback where it isn't supported). D-106 j. */
+@supports (color: oklch(from red l c h)) {
+  :root {
+    --poster-1: light-dark(var(--p-folder-blue), oklch(from var(--p-folder-blue) 0.34 0.09 h));
+    --poster-2: light-dark(var(--p-folder-violet), oklch(from var(--p-folder-violet) 0.34 0.09 h));
+    --poster-3: light-dark(var(--p-folder-pink), oklch(from var(--p-folder-pink) 0.34 0.09 h));
+    --poster-4: light-dark(var(--p-folder-green), oklch(from var(--p-folder-green) 0.34 0.09 h));
+    --poster-5: light-dark(color-mix(in srgb, var(--p-amber-300) 55%, var(--p-neutral-0)), oklch(from var(--p-amber-300) 0.34 0.09 h));
+  }
 }
 
 @theme {

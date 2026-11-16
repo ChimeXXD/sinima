@@ -144,3 +144,71 @@
     transform: none;
   }
 }
+
+/* D-106 c, d: a picked state fades in (fill, edge, colour, shadow, on `ease`), and on a pointer
+   device a hover answers with a quiet tint; the press keeps its own quick timing. */
+.tab {
+  transition:
+    transform var(--dur-press) var(--ease-out),
+    background-color var(--dur-fast) ease,
+    color var(--dur-fast) ease,
+    border-color var(--dur-fast) ease,
+    box-shadow var(--dur-fast) ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .tab:not([aria-current]):hover {
+    color: var(--text-primary);
+  }
+}
+
+/* R9 (D-106 h): once the springs run (data-live, set by the page's script), the blue pill is its own
+   layer the springs move and stretch, and the picked tab lets it show through. Before that, and
+   without script, the picked tab draws its own pill as above. */
+.hl {
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  border: 1px solid var(--action-primary-edge);
+  border-radius: var(--radius-full);
+  background: var(--action-primary);
+  box-shadow: var(--fx-button-gloss);
+  pointer-events: none;
+}
+.nav:not([data-live]) .hl {
+  display: none;
+}
+.nav[data-live] .tab {
+  z-index: 1;
+  /* The moving pill is the fill now, and the springs colour the words frame by frame: neither may
+     fade on its own, or a second pill shows and the words lag the pill. */
+  transition: transform var(--dur-press) var(--ease-out);
+}
+.nav[data-live] .tab[aria-current] {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+.nav[data-live] .icon {
+  will-change: transform; /* the pick pops */
+}
+/* The phone and iPad bar: the springs open the picked tab's name and close the others'. */
+@media (max-width: 1199px) {
+  .nav[data-live] .tab {
+    gap: 0;
+  }
+  .nav[data-live] .label,
+  .nav[data-live] .tab:not([aria-current]) .label {
+    position: static;
+    width: 0;
+    height: auto;
+    overflow: hidden;
+    clip-path: none;
+  }
+}
+@media (min-width: 1200px) {
+  .nav[data-live] {
+    position: relative; /* the pill's layer is placed against the nav */
+    inset: auto; /* the floating bar's left and bottom would otherwise shift it */
+  }
+}

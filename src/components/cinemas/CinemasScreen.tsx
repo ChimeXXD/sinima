@@ -1,9 +1,11 @@
 "use client";
 
 import { useCityRouter as useRouter } from "@/components/ui/CityLink";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { AppFrame, LogoNote } from "@/components/ui/AppFrame";
+import { pop } from "@/components/ui/motion";
 import { PageNotice } from "@/components/ui/Status";
+import { Toast } from "@/components/ui/Toast";
 import { useSwapIn } from "@/components/ui/useSwapIn";
 import { rememberArea } from "@/lib/area";
 import { useSavedArea } from "@/lib/browser";
@@ -13,7 +15,9 @@ import type { FormatTag } from "@/lib/data/format";
 import type { Area } from "@/lib/data/load";
 import { byFilm, dayDates, formatsOf, showingOn, type Day } from "@/lib/data/programme";
 import { laterName, pageBanner, type ListData } from "@/lib/data/select";
+import { toggleSaved, useSaved } from "@/lib/saved";
 import { useNow } from "@/lib/time/useNow";
+import { SAVED_TOAST } from "@/lib/wording/cinemaPage";
 import { NO_TIMES_NOTE, cinemaLine, cinemasHeading } from "@/lib/wording/cinemas";
 import { dayWords } from "@/lib/wording/day";
 import { formatNote } from "@/lib/wording/films";
@@ -40,6 +44,16 @@ export function CinemasScreen({ data, areas, bg }: { data: ListData; areas: Area
   const saved = useSavedArea();
   // Picking an area keeps it on this phone; until the store answers, the pick shows at once.
   const [picked, setPicked] = useState<string | null>(null);
+  // Keeping a cinema from its row (D-106 f): the heart pops and, as on the cinema's page, a toast says so.
+  const kept = useSaved();
+  const [toast, setToast] = useState<string | null>(null);
+  const hideToast = useCallback(() => setToast(null), []);
+  const keep = (id: string, icon: SVGSVGElement | null) => {
+    const saving = !kept.includes(id);
+    if (saving) pop(icon);
+    toggleSaved(id);
+    setToast(saving ? id : null);
+  };
   const home = areas.find((area) => area.slug === (picked ?? saved)) ?? null;
 
   const dates = dayDates(data.rows, now);
@@ -111,6 +125,8 @@ export function CinemasScreen({ data, areas, bg }: { data: ListData; areas: Area
                     line={cinemaLine({ next, films: byFilm(entry.rows).length, listed: entry.listed, when })}
                     at={next}
                     formats={formatsOf(entry.rows)}
+                    saved={kept.includes(cinema.id)}
+                    onSave={(icon) => keep(cinema.id, icon)}
                     testId={`cinema.card.${cinema.id}`}
                   />
                 );
@@ -129,6 +145,7 @@ export function CinemasScreen({ data, areas, bg }: { data: ListData; areas: Area
           {`No cinema is showing a film in ${format} ${dayWords(day, dates[day], live).on}.`}
         </p>
       )}
+      {toast && <Toast key={toast} icon="heart" text={SAVED_TOAST} onUndo={() => (toggleSaved(toast), setToast(null))} onDone={hideToast} />}
     </AppFrame>
   );
 }

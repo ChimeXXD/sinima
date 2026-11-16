@@ -40,6 +40,7 @@
 }
 
 .row {
+  position: relative; /* the name's link stretches over the whole row */
   display: flex;
   align-items: center;
   gap: var(--space-14);
@@ -52,8 +53,63 @@
   -webkit-tap-highlight-color: transparent;
   transition: transform var(--dur-press) var(--ease-out);
 }
-.row:active {
+.row:has(.open:active) {
   transform: scale(0.99);
+}
+/* The name is the row's link, stretched over it; the heart sits above (D-106 f). */
+.open {
+  color: inherit;
+}
+.open::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+.open:focus-visible {
+  outline: none;
+}
+.row:has(.open:focus-visible) {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+.keep {
+  position: relative; /* above the stretched link */
+  z-index: 1;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-block: calc(-1 * var(--space-6));
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--text-secondary);
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform var(--dur-press) var(--ease-out),
+    background-color var(--dur-fast) ease,
+    color var(--dur-fast) ease;
+}
+.keep:active {
+  transform: scale(0.92);
+}
+.keep[aria-pressed="true"] {
+  background: var(--bg-accent-soft);
+  color: var(--text-accent);
+}
+.keep[aria-pressed="true"] svg {
+  fill: currentColor;
+}
+@media (hover: hover) and (pointer: fine) {
+  .keep:hover:not(:active) {
+    background: color-mix(in srgb, var(--bg-surface), var(--text-primary) 6%);
+    color: var(--text-accent);
+  }
+  .keep[aria-pressed="true"]:hover:not(:active) {
+    background: color-mix(in srgb, var(--bg-accent-soft), var(--text-accent) 12%);
+  }
 }
 .logo {
   display: flex;
@@ -111,7 +167,23 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .row:active {
+  .row:has(.open:active),
+  .keep:active {
     transform: none;
+  }
+}
+
+/* D-106 c, d: a picked state fades in (fill, edge, colour, shadow, on `ease`), and on a pointer
+   device a hover answers with a quiet tint; the press keeps its own quick timing. */
+.row {
+  transition:
+    transform var(--dur-press) var(--ease-out),
+    border-color var(--dur-fast) ease,
+    background-color var(--dur-fast) ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .row:hover:not(:active) {
+    border-color: var(--border-divider);
+    background: color-mix(in srgb, var(--bg-page), var(--text-primary) 3%); /* both themes */
   }
 }

@@ -1,6 +1,16 @@
 # Handoff: read this first when you pick the project back up
 
-## Now: the motion pass, all 11 units built (16 Nov 2026, latest)
+## Now: review round 1 built (16 Nov 2026, latest)
+
+**What Chime asked (D-106):** after reviewing the site on desktop and phone (screen recording) with two Design Bookmark references: new favicon; the ticket sticker's outline cut off in dark mode; state changes and hovers animated everywhere; Figma's Cinemas tab icon; quick saving (heart on Cinemas rows, + on Your cinemas opens a list to tick); motion between pages; the nav moving like Design Bookmark's Bottom bar; the theme switch as their Pull cord (D-107: the new theme floods out of the bulb); posterless films in several colours.
+
+**Built (R1–R10, all green, full gate passed):** see PROGRESS's top entry for the parts and files. Key new files: `ui/navSprings.ts`, `ui/spring.ts`, `PullCord.tsx` + `pullCordPhysics.ts` + `pullCord.module.css`, `yours/PickCinemas.tsx`, `ui/hover.module.css`... and the `D-106 c, d` blocks at the end of most component stylesheets.
+
+**Waiting on Chime:** the phone check (the cord's drag, the nav springs, the light flood in iPhone Safari), D-108 (whether late-loaded code counts in the page limit), then the next animation references. Still open from before: TMDB logo (D-99 i), Abuja's cinemas, focus after Show more / letting a cinema go.
+
+**Gotchas:** review agents run the full gate and hold port 4173: wait for their run before the gate (`until ! kill -0 <pid>`), never kill it. The nav springs and cord physics load late (budget): tests wait for `nav[data-live]` and the cord's `data-ready` (after a hover). Chromium holds touch moves under ~15 px.
+
+## Earlier: the motion pass, all 11 units built (16 Nov 2026)
 
 **What happened:** Chime noticed little motion; build units 1–13 had never run the 18 design-engineering skills D-82 asked for (D-102). Step 1, `find-animation-opportunities`, gave seven proposals on `mockup/motion-picks/index.html` (live Now/Proposed demos). Chime kept all seven and added five of the six left-out ideas (D-103). Page limit raised to 225 KB (D-104). Where the build differs from the demos: D-105 (a)–(g).
 

@@ -1,0 +1,60 @@
+/* R10 (D-106 i, D-107): the pull cord in the header's 44 px corner. The lamp hangs from the top
+   edge of the header; the bead is the control (a 44 × 52 target that follows it). */
+.cord {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 44px;
+}
+.art {
+  position: absolute;
+  left: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+.line {
+  fill: none;
+  stroke: var(--text-secondary);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.shade {
+  fill: var(--text-body-strong);
+}
+.cap {
+  fill: var(--text-secondary);
+}
+/* Lit in the light theme (Design Bookmark: the system yellow on the bulb, never a halo), dim in dark. */
+.bulb {
+  fill: light-dark(var(--p-amber-300), var(--p-neutral-700));
+}
+.bead {
+  fill: var(--text-primary);
+  transition: fill var(--dur-fast) ease;
+}
+.grab {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 44px;
+  height: 52px;
+  border: 0;
+  border-radius: var(--radius-button);
+  background: transparent;
+  cursor: grab;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.grab[data-held] {
+  cursor: grabbing;
+}
+.grab:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 0;
+}
+@media (hover: hover) and (pointer: fine) {
+  .cord:has(.grab:hover) .bead {
+    fill: var(--text-accent);
+  }
+}

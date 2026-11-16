@@ -288,3 +288,14 @@
     gap: var(--space-14);
   }
 }
+
+/* D-106 c, d: a picked state fades in (fill, edge, colour, shadow, on `ease`), and on a pointer
+   device a hover answers with a quiet tint; the press keeps its own quick timing. */
+@media (hover: hover) and (pointer: fine) {
+  .save:hover:not(:active, [aria-pressed="true"]) {
+    background: color-mix(in srgb, var(--bg-surface), var(--text-primary) 6%);
+  }
+  .save[aria-pressed="true"]:hover:not(:active) {
+    background: color-mix(in srgb, var(--bg-accent-soft), var(--text-accent) 12%);
+  }
+}

@@ -44,19 +44,10 @@
 .nav {
   display: contents;
 }
-/* Two classes, so these beat the old global .round until it goes. */
+/* The light switch's corner: the pull cord hangs here from the top of the header (D-106 i). */
 .header .theme {
   grid-area: theme;
-  display: inline-grid;
-  place-items: center;
-  border-radius: var(--radius-full);
-  /* Figma's 40 circle inside a 44 touch area: the transparent edge is not painted. */
-  width: 44px;
-  height: 44px;
-  margin: -2px;
-  border: 2px solid transparent;
-  background: var(--bg-surface) padding-box;
-  color: var(--text-primary);
+  justify-self: end;
 }
 
 /* Phone and iPad on a screen with a top bar (Figma Film › Top bar): back, name, share; 60 tall. */
@@ -124,10 +115,6 @@
     display: block;
     grid-area: nav;
   }
-  .header .theme {
-    margin: 0;
-    border: 0;
-  }
   .footer {
     padding-top: var(--space-48);
     padding-bottom: 64px;
@@ -190,5 +177,19 @@
     padding-block: 11.5px;
     color: var(--text-secondary);
     font: var(--type-body-m);
+  }
+}
+
+/* D-106 c, d: a picked state fades in (fill, edge, colour, shadow, on `ease`), and on a pointer
+   device a hover answers with a quiet tint; the press keeps its own quick timing. */
+.round {
+  transition:
+    transform var(--dur-press) var(--ease-out),
+    background-color var(--dur-fast) ease,
+    color var(--dur-fast) ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .round:hover:not(:active) {
+    background: color-mix(in srgb, var(--bg-surface), var(--text-primary) 8%) padding-box;
   }
 }

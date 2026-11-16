@@ -1,15 +1,8 @@
-/* The light and dark switch (D-58, D-60, after Rune Icons). The page changes at once; only the icon
-   moves. It shows the theme on screen, a sun in light and a moon in dark: the new one grows in from
-   small, blurred and faded while the old one goes the same way. Both are drawn, so a quick second tap
-   reverses mid-way. The icon follows the theme on the page itself, so it is right from the first paint. */
-.round.theme { position: relative; overflow: hidden; }
-html.theme-cut :not(.round.theme > span) { transition: none !important; }
-.round.theme > span { position: absolute; inset: 0; display: grid; place-items: center; transition: opacity 200ms cubic-bezier(0.23, 1, 0.32, 1), transform 200ms cubic-bezier(0.23, 1, 0.32, 1), filter 200ms cubic-bezier(0.23, 1, 0.32, 1); }
-.round.theme > .moon, :root[data-theme="dark"] .round.theme > .sun { opacity: 0; transform: scale(0.6); filter: blur(3px); }
-:root[data-theme="dark"] .round.theme > .moon { opacity: 1; transform: none; filter: none; }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .round.theme > .sun { opacity: 0; transform: scale(0.6); filter: blur(3px); }
-  :root:not([data-theme="light"]) .round.theme > .moon { opacity: 1; transform: none; filter: none; }
-}
-/* Reduced motion: the icons only fade. */
-@media (prefers-reduced-motion: reduce) { .round.theme > span { transition: opacity 150ms ease !important; transform: none !important; filter: none !important; } }
+/* The light switch is the pull cord (D-106 i, D-107). While the theme changes, nothing fades its
+   colours across, so the page is never half in one theme. During the light's view transition the
+   two snapshots don't cross-fade: the new theme opens as a circle from the bulb (light on), or the
+   old one closes back into it (light off), drawn above the new one. */
+html.theme-cut * { transition: none !important; }
+html.light-switch::view-transition-old(root),
+html.light-switch::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+html.light-off::view-transition-old(root) { z-index: 1; }

@@ -292,3 +292,18 @@
     }
   }
 }
+
+/* D-106 c, d: a picked state fades in (fill, edge, colour, shadow, on `ease`), and on a pointer
+   device a hover answers with a quiet tint; the press keeps its own quick timing. */
+@media (hover: hover) and (pointer: fine) {
+  .result {
+    transition:
+      transform var(--dur-press) var(--ease-out),
+      border-color var(--dur-fast) ease,
+      background-color var(--dur-fast) ease;
+  }
+  .result:hover:not(:active) {
+    border-color: var(--border-divider);
+    background: color-mix(in srgb, var(--bg-page), var(--text-primary) 3%); /* both themes */
+  }
+}

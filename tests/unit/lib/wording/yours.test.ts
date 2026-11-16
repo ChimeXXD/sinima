@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { ADD, EMPTY, FOOTER, folderLine, savedCount } from "@/lib/wording/yours";
+import { ADD, EMPTY, FOOTER, PICK, addLabel, folderLine, savedCount } from "@/lib/wording/yours";
 
 // Words on Your cinemas (Figma 206:8570 Default, 206:8921 None saved).
 
@@ -24,13 +24,15 @@ describe("folderLine", () => {
 
 describe("fixed words", () => {
   it("Figma's empty state, add card and footer", () => {
-    expect(EMPTY("Lagos")).toEqual({
+    expect(EMPTY).toEqual({
       title: "Keep your usual cinemas here",
-      body: "Tap the heart on any cinema's page. Its next times show up here first, and the tab bar counts them.",
-      action: "Browse cinemas in Lagos",
+      body: "Tick the ones you go to, or tap the heart on any cinema. Their next times show up here first, and the tab bar counts them.",
+      action: "Pick your cinemas",
       note: "Saved on this phone only. Nothing is sent anywhere.",
     });
-    expect(ADD).toEqual({ title: "Save a cinema to see its times first", body: "Tap the heart on any cinema page." });
+    expect(ADD).toEqual({ title: "Add your cinemas", body: "Tick them from a list, or tap a heart." });
+    expect(addLabel("Lagos")).toBe("Add cinemas in Lagos");
+    expect(PICK("Lagos")).toEqual({ title: "Add your cinemas", subtitle: "Tick the cinemas you go to in Lagos. Saved on this phone only.", done: "Done" });
     expect(FOOTER).toBe("Saved on this phone only, soonest first. Nothing is sent anywhere, and there's no account.");
   });
 });

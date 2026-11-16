@@ -172,3 +172,40 @@
     transition-duration: 0ms;
   }
 }
+
+/* D-106 c, d: a picked state fades in (fill, edge, colour, shadow, on `ease`), and on a pointer
+   device a hover answers with a quiet tint; the press keeps its own quick timing. */
+.button,
+.chip {
+  transition:
+    transform var(--dur-press) var(--ease-out),
+    background-color var(--dur-fast) ease,
+    border-color var(--dur-fast) ease,
+    color var(--dur-fast) ease,
+    box-shadow var(--dur-fast) ease;
+}
+.iconButton {
+  transition:
+    transform var(--dur-press) var(--ease-out),
+    background-color var(--dur-fast) ease,
+    color var(--dur-fast) ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .primary:hover:not([aria-disabled="true"], :active),
+  .chip[aria-pressed="true"]:hover:not(:active) {
+    background: color-mix(in srgb, var(--action-primary), var(--action-primary-edge));
+  }
+  .secondary:hover:not([aria-disabled="true"], :active) {
+    background: color-mix(in srgb, var(--tint-secondary), var(--tint-secondary-pressed));
+  }
+  .iconButton:hover:not(:active) {
+    background: color-mix(in srgb, var(--bg-surface), var(--text-primary) 8%);
+  }
+  .chip:hover:not(:disabled, :active, [aria-pressed="true"]) {
+    border-color: var(--border-divider);
+    background: color-mix(in srgb, var(--bg-raised), var(--text-primary) 6%); /* tints in both themes */
+  }
+  .segment:hover:not([aria-checked="true"]) {
+    color: var(--text-primary);
+  }
+}

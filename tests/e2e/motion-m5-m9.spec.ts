@@ -204,3 +204,31 @@ test.describe("M6: the countdowns move with the clock", () => {
     expect(await badge.locator("span").first().evaluate((el) => getComputedStyle(el).transitionProperty)).not.toContain("--share");
   });
 });
+
+test.describe("D-106 g: every move between pages slides", () => {
+  const slide = (page: Page) => page.locator("main").evaluate((main) => main.getAnimations().filter((a) => a.id === "tab").map((a) => (a as Animation & { effect: KeyframeEffect }).effect.getKeyframes()[0]!.transform));
+
+  test("into a cinema from the right; back out (the back button, the browser's back) from the left", async ({ page }) => {
+    await page.goto("/lagos/cinemas");
+    await page.getByTestId("cinema.card.grand-lekki").getByTestId("cinema.name").click();
+    await expect(page).toHaveURL(/\/lagos\/cinema\/grand-lekki$/);
+    expect(await slide(page)).toEqual(["translateX(12px)"]);
+    await page.getByTestId("cinema.back").click();
+    await expect(page).toHaveURL(/\/lagos\/cinemas$/);
+    expect(await slide(page)).toEqual(["translateX(-12px)"]);
+    // The back button added a step; the browser's back walks the history: into the cinema, then out.
+    await page.goBack();
+    await expect(page).toHaveURL(/\/lagos\/cinema\/grand-lekki$/);
+    expect(await slide(page)).toEqual(["translateX(12px)"]);
+    await page.goBack();
+    await expect(page).toHaveURL(/\/lagos\/cinemas$/);
+    expect(await slide(page)).toEqual(["translateX(-12px)"]);
+  });
+
+  test("Films to a film's page is left to the poster travelling (no slide)", async ({ page }) => {
+    await page.goto("/lagos");
+    await page.locator('[data-testid^="film.card."] a').first().click();
+    await expect(page).toHaveURL(/\/lagos\/film\//);
+    expect(await slide(page)).toEqual([]);
+  });
+});

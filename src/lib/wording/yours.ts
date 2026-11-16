@@ -14,18 +14,21 @@ export function folderLine(input: { area: string; next: string | null; listed: b
   return `${input.area} · ${input.listed ? "nothing more today" : "times not available yet"}`;
 }
 
-/** None saved yet (Figma 206:8921). */
-export const EMPTY = (city: string) => ({
+/** None saved yet (Figma 206:8921; the action opens the list to pick from, D-106 f). */
+export const EMPTY = {
   title: "Keep your usual cinemas here",
-  body: "Tap the heart on any cinema's page. Its next times show up here first, and the tab bar counts them.",
-  action: `Browse cinemas in ${city}`,
+  body: "Tick the ones you go to, or tap the heart on any cinema. Their next times show up here first, and the tab bar counts them.",
+  action: "Pick your cinemas",
   note: "Saved on this phone only. Nothing is sent anywhere.",
-});
+} as const;
 
-/** The dashed card after the folders. */
-export const ADD = { title: "Save a cinema to see its times first", body: "Tap the heart on any cinema page." } as const;
+/** The dashed card after the folders: it opens the list (D-106 f). */
+export const ADD = { title: "Add your cinemas", body: "Tick them from a list, or tap a heart." } as const;
 
 /** The + by the title, read out. */
-export const addLabel = (city: string) => `Find a cinema to save in ${city}`;
+export const addLabel = (city: string) => `Add cinemas in ${city}`;
+
+/** The list the + opens: every cinema in the city, by area, to tick (D-106 f). */
+export const PICK = (city: string) => ({ title: "Add your cinemas", subtitle: `Tick the cinemas you go to in ${city}. Saved on this phone only.`, done: "Done" });
 
 export const FOOTER = "Saved on this phone only, soonest first. Nothing is sent anywhere, and there's no account.";

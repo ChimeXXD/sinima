@@ -73,37 +73,75 @@ test("with no choice made, the page follows the phone's setting", async ({ page 
   await expect(page.getByTestId("theme.toggle")).toHaveAccessibleName("Switch to light mode");
 });
 
-// D-60 (after Rune Icons): the page changes at once, with no view transition; only the icon moves.
-// It shows the theme on screen: a sun in light, a moon in dark. The new one grows in from small,
-// blurred and faded, as the old one goes the same way. With reduced motion the icons only fade.
+// D-107 (supersedes D-60): the switch is a pull cord (D-106 i). Pulled, the new theme opens as a
+// circle from its bulb: a view transition. With reduced motion the page changes at once, no transition.
 for (const reduced of [false, true]) {
-  test(`switching changes the page at once and ${reduced ? "fades the icon (reduced motion)" : "blurs and grows the new icon in"}`, async ({ page }) => {
+  test(`pulling the cord switches the theme ${reduced ? "at once (reduced motion)" : "through a view transition from the bulb"}`, async ({ page }) => {
     await page.emulateMedia({ colorScheme: "light", reducedMotion: reduced ? "reduce" : "no-preference" });
     await page.goto("/lagos");
-    const toggle = page.getByTestId("theme.toggle");
-    await expect(toggle.locator(".sun")).toHaveCSS("opacity", "1");
-    await expect(toggle.locator(".moon")).toHaveCSS("opacity", "0");
     await page.evaluate(() => {
-      (window as unknown as { transitions: number }).transitions = 0;
-      if (document.startViewTransition) document.startViewTransition = () => { (window as unknown as { transitions: number }).transitions++; throw new Error("no view transition"); };
+      const w = window as unknown as { transitions: number };
+      w.transitions = 0;
+      const start = document.startViewTransition?.bind(document);
+      if (start) document.startViewTransition = ((update: ViewTransitionUpdateCallback) => (w.transitions++, start(update))) as typeof document.startViewTransition;
     });
-    // Tap and read in the same task, so a slow runner cannot let the 200 ms icon transition finish first.
-    const after = await toggle.evaluate((el: HTMLElement) => {
-      el.click();
-      const transitions = (a: Animation) => (a as CSSTransition).transitionProperty ?? "";
-      return {
-        background: getComputedStyle(document.body).backgroundColor,
-        moving: el.querySelector(".moon")!.getAnimations().map(transitions).sort(),
-        // Nothing else fades its colours across, so the page is never half in one theme and half in the other.
-        colours: document.getAnimations().filter((a) => /color/.test(transitions(a))).length,
-      };
-    });
-    // Right after the tap: the page is already dark, and the moon is part-way in.
-    expect(after.background).toBe(rgb("#000000"));
-    expect(await page.evaluate(() => (window as unknown as { transitions: number }).transitions)).toBe(0);
-    expect(after.moving).toEqual(reduced ? ["opacity"] : ["filter", "opacity", "transform"]);
-    expect(after.colours).toBe(0);
-    await expect(toggle.locator(".moon")).toHaveCSS("opacity", "1");
-    await expect(toggle.locator(".sun")).toHaveCSS("opacity", "0");
+    await page.getByTestId("theme.toggle").click(); // a tap pulls it
+    await expect(page.locator("body")).toHaveCSS("background-color", rgb("#000000"));
+    expect(await page.evaluate(() => (window as unknown as { transitions: number }).transitions)).toBe(reduced ? 0 : 1);
   });
 }
+
+test("dragging the bead down past its click switches the theme too", async ({ page, browserName }) => {
+  test.skip(browserName !== "chromium", "mouse drag");
+  await page.emulateMedia({ colorScheme: "light" });
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/lagos");
+  await page.getByTestId("theme.toggle").hover(); // a pointer arriving loads the cord's physics
+  await expect(page.getByTestId("theme.toggle")).toHaveAttribute("data-ready", "");
+  const bead = (await page.getByTestId("theme.toggle").boundingBox())!;
+  await page.mouse.move(bead.x + bead.width / 2, bead.y + bead.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(bead.x + bead.width / 2, bead.y + bead.height / 2 + 50, { steps: 8 });
+  await page.mouse.up();
+  await expect(page.locator("body")).toHaveCSS("background-color", rgb("#000000"));
+});
+
+test("Enter on the cord switches the theme at once: no pull, no light (no motion on keyboard actions)", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "light" });
+  await page.goto("/lagos");
+  await page.evaluate(() => {
+    const w = window as unknown as { transitions: number };
+    w.transitions = 0;
+    const start = document.startViewTransition?.bind(document);
+    if (start) document.startViewTransition = ((update: ViewTransitionUpdateCallback) => (w.transitions++, start(update))) as typeof document.startViewTransition;
+  });
+  await page.getByTestId("theme.toggle").focus();
+  // Press and read in the same task: right after, the page is already dark and nothing fades its
+  // colours across (theme-cut), so the page is never half in one theme and half in the other.
+  const after = await page.evaluate(async () => {
+    document.activeElement!.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
+    (document.activeElement as HTMLElement).click(); // what Enter does on a button: a click with no pointer (detail 0)
+    return {
+      background: getComputedStyle(document.body).backgroundColor,
+      colours: document.getAnimations().filter((a) => /color/.test((a as CSSTransition).transitionProperty ?? "")).length,
+    };
+  });
+  expect(after.background).toBe(rgb("#000000"));
+  expect(after.colours).toBe(0);
+  expect(await page.evaluate(() => (window as unknown as { transitions: number }).transitions)).toBe(0);
+});
+
+test("a screen reader's activation (a click with no press before it) switches the theme too", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "light" });
+  await page.goto("/lagos");
+  await page.getByTestId("theme.toggle").hover(); // the physics are there, as they would be after a visit's first touch
+  await expect(page.getByTestId("theme.toggle")).toHaveAttribute("data-ready", "");
+  await page.getByTestId("theme.toggle").dispatchEvent("click", { detail: 1 });
+  await expect(page.locator("body")).toHaveCSS("background-color", rgb("#000000"));
+  // On the next page the physics are already loaded: Enter still switches.
+  await page.getByTestId("tab.cinemas").click();
+  await expect(page).toHaveURL(/\/lagos\/cinemas$/);
+  await page.getByTestId("theme.toggle").focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("body")).toHaveCSS("background-color", rgb("#ffffff"));
+});

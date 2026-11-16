@@ -23,9 +23,13 @@ export function TicketFace({ height = 24, className }: { height?: number; classN
  * not repeat its path data (the page budget, D-21).
  */
 export function TicketFaceSticker({ height = 46, className }: { height?: number; className?: string }) {
+  // The die-cut outline reaches past Figma's 55.4 × 46 box (Figma doesn't clip it), so the file has 3
+  // units of room on every side; the image grows by as much and a negative margin keeps the ticket
+  // where Figma puts it (D-106 b: the outline was cut off at the top, seen on a dark page).
+  const unit = height / 46;
   return (
     // eslint-disable-next-line @next/next/no-img-element -- a static export has no image optimiser
-    <img className={`${s.sticker} ${className ?? ""}`} src="/stickers/ticket.svg" alt="" height={height} width={(height * 55.4) / 46} decoding="async" />
+    <img className={`${s.sticker} ${className ?? ""}`} src="/stickers/ticket.svg" alt="" height={52 * unit} width={61.4 * unit} style={{ margin: -3 * unit }} decoding="async" />
   );
 }
 

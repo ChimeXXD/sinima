@@ -95,13 +95,20 @@ export function ShowingCard(props: { title: string; cinema: string; meta: string
   );
 }
 
+/** Which of the five poster tints a film without artwork gets: the same one every time for its title. */
+export function posterTint(title: string): number {
+  let hash = 0;
+  for (const char of title) hash = (hash * 31 + char.codePointAt(0)!) >>> 0;
+  return (hash % 5) + 1;
+}
+
 /**
  * A poster face for a film with no artwork yet (Figma: Tele X Zikora): the title large on the
  * accent tint, a ticket sticker, and "Poster not listed yet". Never an empty box (D-49).
  */
 export function NoPoster({ title }: { title: string }) {
   return (
-    <div className={s.noPoster} data-testid="poster.none">
+    <div className={s.noPoster} style={{ "--tint": `var(--poster-${posterTint(title)})` } as React.CSSProperties} data-testid="poster.none">
       <span className={s.noPosterNote}>
         {NO_POSTER[0]}
         <br />

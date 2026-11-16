@@ -113,7 +113,7 @@ export function WhereScreen({ lagosLine, bg }: { lagosLine: string; bg: { light:
     <div className={`${s.page} ${a.page}`}>
       <header className={s.top}>
         <Lockup />
-        <ThemeToggle bg={bg} className={s.theme} icons={{ sun: <Icon name="sun" size={20} />, moon: <Icon name="moon" size={20} /> }} />
+        <ThemeToggle bg={bg} className={s.theme} />
       </header>
       <main className={s.main}>
         <div className={s.stage} ref={stage}>

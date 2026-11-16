@@ -204,8 +204,10 @@
   text-align: center;
 }
 .emptyTicket {
-  rotate: 8deg;
-  margin-bottom: var(--space-10); /* Figma: the title 21 below the ticket */
+  rotate: 8deg; /* its own margin is the sticker's (D-106 b), so the gap below it is the title's */
+}
+.emptyTicket + h2 {
+  margin-top: var(--space-10); /* Figma: the title 21 below the ticket */
 }
 .empty h2 {
   max-width: 420px;
@@ -216,4 +218,22 @@
   max-width: 440px;
   color: var(--text-secondary);
   font: var(--type-body-m);
+}
+
+/* D-106 c, d: a picked state fades in (fill, edge, colour, shadow, on `ease`), and on a pointer
+   device a hover answers with a quiet tint; the press keeps its own quick timing. */
+.heart,
+.nextCard {
+  transition:
+    transform var(--dur-press) var(--ease-out),
+    background-color var(--dur-fast) ease,
+    color var(--dur-fast) ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .heart:hover:not(:active) {
+    background: color-mix(in srgb, var(--bg-accent-soft), var(--text-accent) 12%) padding-box;
+  }
+  .nextCard:hover:not(:active) {
+    background: color-mix(in srgb, var(--bg-surface), var(--text-primary) 5%);
+  }
 }

@@ -282,3 +282,22 @@ button.chip:active {
     opacity: 0;
   }
 }
+
+/* D-106 c, d: a picked state fades in (fill, edge, colour, shadow, on `ease`), and on a pointer
+   device a hover answers with a quiet tint; the press keeps its own quick timing. */
+button.chip,
+.book {
+  transition:
+    transform var(--dur-press) var(--ease-out),
+    background-color var(--dur-fast) ease,
+    color var(--dur-fast) ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  button.chip:hover:not(:active, [data-state="soonest"]) {
+    background: color-mix(in srgb, var(--bg-surface), var(--text-primary) 6%);
+  }
+  button.chip[data-state="soonest"]:hover:not(:active),
+  .book:hover:not(:active) {
+    background: color-mix(in srgb, var(--action-primary), var(--action-primary-edge));
+  }
+}

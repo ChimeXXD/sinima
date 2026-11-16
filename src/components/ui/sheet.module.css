@@ -242,3 +242,23 @@ div.option:active {
     transform: none;
   }
 }
+
+/* D-106 c, d: a picked state fades in (fill, edge, colour, shadow, on `ease`), and on a pointer
+   device a hover answers with a quiet tint; the press keeps its own quick timing. */
+.option,
+.close {
+  transition:
+    transform var(--dur-press) var(--ease-out),
+    background-color var(--dur-fast) ease,
+    color var(--dur-fast) ease,
+    box-shadow var(--dur-fast) ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  a.option:hover:not(:active, [data-selected]),
+  button.option:hover:not(:active, [data-selected]) {
+    background: color-mix(in srgb, var(--bg-surface), var(--text-primary) 5%);
+  }
+  .close:hover:not(:active) {
+    background: color-mix(in srgb, var(--tint-close), var(--text-primary) 8%);
+  }
+}

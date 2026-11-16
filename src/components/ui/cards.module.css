@@ -299,13 +299,13 @@
 /* No poster yet (Figma Films › Tele X Zikora): accent tint, note top left, ticket top right, title. */
 .noPoster {
   position: relative;
-  background: var(--bg-accent-soft);
+  background: var(--tint, var(--bg-accent-soft)); /* one of five, from the title (D-106 j) */
 }
 .noPosterNote {
   position: absolute;
   top: var(--space-16);
   left: var(--space-14);
-  color: var(--text-secondary);
+  color: color-mix(in srgb, var(--text-brand-deep) 72%, transparent); /* reads on every tint */
   font: 500 12px/1.2 var(--font-sans); /* Figma: Urbanist Medium 12 */
 }
 .noPosterTicket {

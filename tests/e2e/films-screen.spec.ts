@@ -96,12 +96,12 @@ for (const [width, columns] of [
   });
 }
 
-test("the theme switch and the logo are 44 px touch targets; the switch still looks 40 on a phone", async ({ page }) => {
+// The switch is the pull cord's bead now (D-106 i), not Figma's 40 round button: its grab target stays 44.
+test("the theme switch and the logo are 44 px touch targets", async ({ page }) => {
   await page.goto("/lagos");
   const theme = page.getByTestId("theme.toggle");
   const box = (await theme.boundingBox())!;
   expect(Math.min(box.width, box.height)).toBeGreaterThanOrEqual(44);
-  expect(await theme.evaluate((el) => getComputedStyle(el).borderTopWidth)).toBe("2px"); // the unpainted edge: 40 drawn
   expect((await page.getByTestId("wordmark").boundingBox())!.height).toBeGreaterThanOrEqual(44);
 });
 

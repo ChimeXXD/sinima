@@ -130,7 +130,7 @@ export function AppFrame({ active, search, city: chosen, bg, bar, footer, onAbou
         <div className={s.nav}>
           <SectionNav active={active} saved={saved} />
         </div>
-        <ThemeToggle bg={bg} className={s.theme} icons={{ sun: <Icon name="sun" size={20} />, moon: <Icon name="moon" size={20} /> }} />
+        <ThemeToggle bg={bg} className={s.theme} />
       </header>
       <main className={s.main} ref={content}>
         {children}

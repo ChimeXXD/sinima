@@ -128,3 +128,16 @@
     transform: none;
   }
 }
+
+/* D-106 c, d: a picked state fades in (fill, edge, colour, shadow, on `ease`), and on a pointer
+   device a hover answers with a quiet tint; the press keeps its own quick timing. */
+.picker {
+  transition:
+    transform var(--dur-press) var(--ease-out),
+    background-color var(--dur-fast) ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .picker:hover:not(:active) {
+    background: color-mix(in srgb, var(--bg-surface), var(--text-primary) 6%);
+  }
+}

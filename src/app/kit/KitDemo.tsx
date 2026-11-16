@@ -84,7 +84,7 @@ export function KitDemo() {
       </Section>
 
       <Section id="navigation" title="9 · Navigation">
-        <SectionNav active="films" saved={4} hrefs={{ films: "/kit", cinemas: "/kit", soon: "/kit", yours: "/kit" }} />
+        <SectionNav active="films" saved={4} hrefs={{ films: "/kit", cinemas: "/kit", soon: "/kit", yours: "/kit" }} live={false} />
       </Section>
 
       <Section id="cards" title="10 · Cards">

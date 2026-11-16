@@ -4,6 +4,7 @@ import NextLink from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo, useSyncExternalStore } from "react";
 import { CITY_KEY, cityOfPath, cityPath, isCity, type City } from "@/lib/city";
+import { linkTapped } from "./tabSlide";
 
 // Links inside the site carry the city (D-98). A page's city is the first part of its address; on
 // a page for both cities (About, the 404) it is the one kept on this phone, or Lagos. Screens write
@@ -40,7 +41,13 @@ export function useCityPath(): (path: string) => string {
 /** next/link, with the city in front of a site path. */
 export function Link(props: React.ComponentProps<typeof NextLink>) {
   const path = useCityPath();
-  return <NextLink {...props} href={typeof props.href === "string" ? path(props.href) : props.href} />;
+  const href = typeof props.href === "string" ? path(props.href) : props.href;
+  // D-106 g: the next page slides in from the way the visitor went (deeper, or back up).
+  const onClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (typeof href === "string") linkTapped(href, event);
+    props.onClick?.(event);
+  };
+  return <NextLink {...props} href={href} onClick={onClick} />;
 }
 
 /** next/navigation's router, with the city in front of a site path. */

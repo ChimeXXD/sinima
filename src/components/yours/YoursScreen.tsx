@@ -1,6 +1,6 @@
 "use client";
 
-import { Link, useCityRouter as useRouter } from "@/components/ui/CityLink";
+import { useCityRouter as useRouter } from "@/components/ui/CityLink";
 import { useState } from "react";
 import { Poster } from "@/components/Poster";
 import { Button } from "@/components/ui/Actions";
@@ -14,6 +14,7 @@ import { folderTint, yourCinemas } from "@/lib/data/yours";
 import { useSaved } from "@/lib/saved";
 import { useNow } from "@/lib/time/useNow";
 import { ADD, EMPTY, FOOTER, NOTE, addLabel, folderLine, savedCount } from "@/lib/wording/yours";
+import { PickCinemas } from "./PickCinemas";
 import s from "./yours.module.css";
 
 // Your cinemas (Figma 206:8570 Default, 206:8921 None saved): the cinemas saved on this phone as
@@ -28,12 +29,12 @@ export function YoursScreen({ data, areas, bg }: { data: ListData; areas: { slug
   const live = clock !== null;
   const router = useRouter();
   const [typed, setTyped] = useState("");
+  const [picking, setPicking] = useState(false); // the list the + opens (D-106 f)
   const ids = useSaved();
   const saved = ids.map((id) => data.cinemas.findIndex((cinema) => cinema.id === id)).filter((index) => index >= 0);
   const cinemas = yourCinemas({ rows: data.rows, saved, now: clock });
   const banner = pageBanner(data, clock);
   const areaName = (slug: string) => areas.find((area) => area.slug === slug)?.name ?? slug;
-  const empty = EMPTY(CITY);
 
   const footer = (
     <>
@@ -55,9 +56,9 @@ export function YoursScreen({ data, areas, bg }: { data: ListData; areas: { slug
           </p>
         </div>
         {live && saved.length > 0 && (
-          <Link href="/cinemas" className={s.add} aria-label={addLabel(CITY)} data-testid="yours.add">
+          <button type="button" className={s.add} aria-label={addLabel(CITY)} aria-haspopup="dialog" onClick={() => setPicking(true)} data-testid="yours.add">
             <Icon name="plus" size={20} />
-          </Link>
+          </button>
         )}
       </div>
 
@@ -93,14 +94,14 @@ export function YoursScreen({ data, areas, bg }: { data: ListData; areas: { slug
               />
             );
           })}
-          <Link href="/cinemas" className={s.addCard} data-testid="yours.add-card">
+          <button type="button" className={s.addCard} aria-haspopup="dialog" onClick={() => setPicking(true)} data-testid="yours.add-card">
             <svg className={s.dash} aria-hidden="true">
               <rect width="100%" height="100%" rx="23.25" />
             </svg>
             <TicketFaceSticker height={44} />
             <b>{ADD.title}</b>
             <span>{ADD.body}</span>
-          </Link>
+          </button>
         </div>
       )}
 
@@ -111,14 +112,15 @@ export function YoursScreen({ data, areas, bg }: { data: ListData; areas: { slug
             <LogoSticker chain="Genesis" scale={1.1} tilt={-8} />
             <LogoSticker chain="EbonyLife" scale={1.1} tilt={4} />
           </span>
-          <h2 id="yours.empty">{empty.title}</h2>
-          <p>{empty.body}</p>
-          <Button href="/cinemas" testId="yours.browse">
-            {empty.action}
+          <h2 id="yours.empty">{EMPTY.title}</h2>
+          <p>{EMPTY.body}</p>
+          <Button onClick={() => setPicking(true)} testId="yours.browse">
+            {EMPTY.action}
           </Button>
-          <p className={s.small}>{empty.note}</p>
+          <p className={s.small}>{EMPTY.note}</p>
         </section>
       )}
+      <PickCinemas open={picking} onClose={() => setPicking(false)} cinemas={data.cinemas} areas={areas} city={CITY} />
     </AppFrame>
   );
 }
