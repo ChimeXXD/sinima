@@ -199,11 +199,11 @@
     background: color-mix(in srgb, var(--tint-secondary), var(--tint-secondary-pressed));
   }
   .iconButton:hover:not(:active) {
-    background: color-mix(in srgb, var(--bg-surface), var(--text-primary) 8%);
+    background: var(--hover-fill);
   }
   .chip:hover:not(:disabled, :active, [aria-pressed="true"]) {
     border-color: var(--border-divider);
-    background: color-mix(in srgb, var(--bg-raised), var(--text-primary) 6%); /* tints in both themes */
+    background: var(--hover-fill-raised); /* tints in both themes */
   }
   .segment:hover:not([aria-checked="true"]) {
     color: var(--text-primary);

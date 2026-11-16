@@ -65,6 +65,7 @@ export default function CitySheet({
         instant={instant}
         width={340}
         label={CITY_SHEET.title}
+        footer={CITY_SHEET.footer}
         options={(["lagos", "abuja"] as const).map((city) => ({
           id: city,
           label: city === "lagos" ? "Lagos" : "Abuja",

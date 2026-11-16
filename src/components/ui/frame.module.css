@@ -190,6 +190,6 @@
 }
 @media (hover: hover) and (pointer: fine) {
   .round:hover:not(:active) {
-    background: color-mix(in srgb, var(--bg-surface), var(--text-primary) 8%) padding-box;
+    background: var(--hover-fill) padding-box;
   }
 }

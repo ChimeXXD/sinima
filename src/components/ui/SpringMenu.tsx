@@ -17,7 +17,7 @@ export type MenuOption = { id: string; label: string; desc?: string; count?: str
 
 type Rows = { el: HTMLElement; tick: SVGPathElement | null; s: Spring; k: Spring }[];
 
-export function SpringMenu({ open, anchor, instant = false, options, columns = 1, width, label, onPick, onClose, testId }: { open: boolean; /** The trigger: the menu hangs 8 px under it. */ anchor: React.RefObject<HTMLElement | null>; /** Opened by a key: it appears at once. */ instant?: boolean; options: MenuOption[]; columns?: 1 | 2; /** px; at least the trigger's width. */ width?: number; label: string; onPick: (id: string, byKey: boolean) => void; onClose: (refocus: boolean) => void; testId: string }) {
+export function SpringMenu({ open, anchor, instant = false, options, columns = 1, width, label, footer, onPick, onClose, testId }: { open: boolean; /** The trigger: the menu hangs 8 px under it. */ anchor: React.RefObject<HTMLElement | null>; /** Opened by a key: it appears at once. */ instant?: boolean; options: MenuOption[]; columns?: 1 | 2; /** px; at least the trigger's width. */ width?: number; label: string; /** A line under the choices, not one of them. */ footer?: string; onPick: (id: string, byKey: boolean) => void; onClose: (refocus: boolean) => void; testId: string }) {
   const menu = useRef<HTMLDivElement>(null);
   const engine = useRef<{ setOpen: (open: boolean, byKey: boolean) => void; picked: (id: string) => void; hover: (i: number, snap: boolean) => void; current: () => number } | null>(null);
   const byKey = useRef(false);
@@ -247,7 +247,7 @@ export function SpringMenu({ open, anchor, instant = false, options, columns = 1
 
   if (typeof document === "undefined") return null;
   return createPortal(
-    <div ref={menu} className={s.menu} role="listbox" aria-label={label} tabIndex={-1} data-columns={columns} onKeyDown={onKey} data-testid={testId} data-state="closed">
+    <div ref={menu} className={s.menu} role="listbox" aria-label={label} aria-describedby={footer ? `${testId}.footer` : undefined} tabIndex={-1} data-columns={columns} onKeyDown={onKey} data-testid={testId} data-state="closed">
       <i className={s.hl} data-hl aria-hidden="true" />
       {options.map((option, i) => (
         <div
@@ -274,6 +274,7 @@ export function SpringMenu({ open, anchor, instant = false, options, columns = 1
           </svg>
         </div>
       ))}
+      {footer && <p id={`${testId}.footer`} className={s.footer} role="presentation">{footer}</p>}
     </div>,
     document.body,
   );

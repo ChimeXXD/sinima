@@ -246,9 +246,9 @@ div.option:active {
 @media (hover: hover) and (pointer: fine) {
   a.option:hover:not(:active, [data-selected]),
   button.option:hover:not(:active, [data-selected]) {
-    background: color-mix(in srgb, var(--bg-surface), var(--text-primary) 5%);
+    background: var(--hover-fill);
   }
   .close:hover:not(:active) {
-    background: color-mix(in srgb, var(--tint-close), var(--text-primary) 8%);
+    background: color-mix(in srgb, var(--tint-close), var(--text-primary) 4%);
   }
 }

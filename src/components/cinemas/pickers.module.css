@@ -138,7 +138,7 @@
 }
 @media (hover: hover) and (pointer: fine) {
   .picker:hover:not(:active) {
-    background: color-mix(in srgb, var(--bg-surface), var(--text-primary) 6%);
+    background: var(--hover-fill);
   }
 }
 

@@ -2,6 +2,13 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 16 Nov 2026 — lighter hovers, city tip (D-110)
+
+- **Changed:** every grey hover is one token, half as dark: `--hover-fill` (surface + 3 % text colour, was 5–8 % per element), `--hover-fill-page` for rows on the page (1.5 %, was 3 %), `--hover-fill-raised` for chips (3 %, was 6 %), the sheet's close button 4 % (was 8 %). The computer's city menu shows the sheet's tip under the cities (described to screen readers through `aria-describedby`).
+- **Skills run:** emil-design-eng (hover fills, pointer-gated), code-review medium --fix (fixed: the tip's place in the listbox for screen readers, a comment moved off the toast tokens; chips getting darker on white caught and fixed with the raised token).
+- **Checked:** lint, typecheck, unit tests (hover-fill.test.ts guards against hand-mixed greys), round2 + states + search e2e, budget; screenshots of the menu hover and the city tip at 1440 in light and dark.
+- **Not verified:** Chime's eye on a real screen; the tip shows at once while the rows fade in.
+
 ## 16 Nov 2026 — review round 2 (D-109)
 
 - **From:** Chime's screen recording (BetterShot_2026-11-16-14-37-16.mov), every frame read at 2 s; Design Bookmark's Spring dropdown source (index.html, dropdown.css, dropdown.js, shared motion.js) read in full.

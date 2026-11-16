@@ -294,7 +294,7 @@ button.chip,
 }
 @media (hover: hover) and (pointer: fine) {
   button.chip:hover:not(:active, [data-state="soonest"]) {
-    background: color-mix(in srgb, var(--bg-surface), var(--text-primary) 6%);
+    background: var(--hover-fill);
   }
   button.chip[data-state="soonest"]:hover:not(:active),
   .book:hover:not(:active) {

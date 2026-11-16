@@ -304,6 +304,6 @@
   }
   .result:hover:not(:active) {
     border-color: var(--border-divider);
-    background: color-mix(in srgb, var(--bg-page), var(--text-primary) 3%); /* both themes */
+    background: var(--hover-fill-page); /* both themes */
   }
 }

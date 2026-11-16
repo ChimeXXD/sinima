@@ -104,7 +104,7 @@
 }
 @media (hover: hover) and (pointer: fine) {
   .keep:hover:not(:active) {
-    background: color-mix(in srgb, var(--bg-surface), var(--text-primary) 6%);
+    background: var(--hover-fill);
     color: var(--text-accent);
   }
   .keep[aria-pressed="true"]:hover:not(:active) {
@@ -184,6 +184,6 @@
 @media (hover: hover) and (pointer: fine) {
   .row:hover:not(:active) {
     border-color: var(--border-divider);
-    background: color-mix(in srgb, var(--bg-page), var(--text-primary) 3%); /* both themes */
+    background: var(--hover-fill-page); /* both themes */
   }
 }

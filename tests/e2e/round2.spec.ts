@@ -91,6 +91,7 @@ test("on a computer “Lagos ⌄” drops the city menu under the pill, which st
   await expect(pill).toHaveAttribute("aria-expanded", "true");
   await expect(page.getByTestId("city.lagos")).toHaveAttribute("aria-selected", "true");
   await expect(page.getByTestId("city.abuja")).toContainText("Abuja's cinemas are being added");
+  await expect(menu).toContainText("To see both cities at once, search: results are grouped by city.");
   await page.getByTestId("city.abuja").click();
   await expect(page).toHaveURL(/\/abuja$/);
 });
@@ -134,4 +135,22 @@ test("in dark mode the highlight stands apart from the menu", async ({ page }) =
   await expect(menu).toHaveAttribute("data-state", "open");
   const [bg, hl] = await menu.evaluate((el) => [getComputedStyle(el).backgroundColor, getComputedStyle(el.querySelector("[data-hl]")!).backgroundColor]);
   expect(hl).not.toBe(bg);
+});
+
+// The test browser is a touch phone, where hovers are off; the stylesheets are checked for the token
+// in tests/unit (no tint mixed by hand), and the menu's highlight here.
+test("the menu highlight is the one lighter hover fill (D-110)", async ({ page }) => {
+  await desktop(page, "/lagos/cinemas");
+  const fills = await page.evaluate(() => {
+    const probe = document.createElement("div");
+    document.body.append(probe);
+    const read = (value: string) => ((probe.style.background = ""), (probe.style.background = value), getComputedStyle(probe).backgroundColor);
+    const out = { hover: read("var(--hover-fill)"), surface: read("var(--bg-surface)") };
+    probe.remove();
+    return out;
+  });
+  await page.getByTestId("pick.day").click();
+  await expect(page.getByTestId("sheet.day")).toHaveAttribute("data-state", "open");
+  expect(await page.getByTestId("sheet.day").locator("[data-hl]").evaluate((el) => getComputedStyle(el).backgroundColor)).toBe(fills.hover);
+  expect(fills.hover).not.toBe(fills.surface);
 });

@@ -193,7 +193,7 @@
 }
 @media (hover: hover) and (pointer: fine) {
   .add:hover:not(:active) {
-    background: color-mix(in srgb, var(--bg-surface), var(--text-primary) 8%);
+    background: var(--hover-fill);
   }
   .addCard:hover:not(:active) {
     background: var(--bg-accent-soft);

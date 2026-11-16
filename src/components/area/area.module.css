@@ -234,6 +234,6 @@
     background: color-mix(in srgb, var(--bg-accent-soft), var(--text-accent) 12%) padding-box;
   }
   .nextCard:hover:not(:active) {
-    background: color-mix(in srgb, var(--bg-surface), var(--text-primary) 5%);
+    background: var(--hover-fill);
   }
 }
