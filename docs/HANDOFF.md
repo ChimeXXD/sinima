@@ -1,6 +1,44 @@
 # Handoff: read this first when you pick the project back up
 
-## Now: session of 16 Nov 2026 (afternoon), round 2, lighter hovers and the motion audit (latest)
+## Now: session of 16–17 Nov 2026: posters on MTN, 12-hour clock, live data in both cities (latest)
+
+Everything below is committed and pushed (last code commit `83b0217`; the refresh job commits data on its own). The full gate passed on each commit.
+
+### What Chime asked, and what was done
+
+1. **Posters missing on MTN (D-113):** MTN blocks `image.tmdb.org`. Posters now load from Sinima's own `/poster/<w154|w342|w500>/<file>`, which `vercel.json` rewrites to TMDB (cached at Vercel's edge). Off Vercel the pages ask TMDB directly. Checked live with TMDB blocked in WebKit.
+2. **12-hour clock (D-114):** `formatTime` says "7:30 PM" (no-break space); calendar file names keep "1930"; shared text uses a plain space.
+3. **Security notice (D-115):** Next.js 16.4.6 (GHSA-mfr8; not reachable on a static site); `npm audit` 0.
+4. **Live data, then "do everything" (D-116 to D-127):**
+   - `refresh --live` reads every cleared source with a reader through `scripts/sources/polite.ts` (our bot name, robots.txt per path and per redirect hop, 5 s per host, a refusal is final) and `scripts/sources/browser.ts` (the same rules in a headless Chromium for script-built sites). Output in `data/live/` (committed). `prebuild` runs `refresh --build` (live data if present, else sample). Tests and CI always build on sample data.
+   - **Own readers** (D-122 to D-125): Silverbird's Veezi pages (Ikeja, Galleria, SEC, Jabi), Genesis (Lekki, Festac, Maryland, Ceddi Plaza; ~30 pages a run, flagged in D-123), Grand, Blue Pictures, Viva, Nova (Lagos and Abuja), EbonyLife, THC, Magnificent.
+   - **Lagocine** now feeds Filmhouse's 7, Filmworld (its Veezi page was empty overnight), and Ozone and Sky (D-127: Ozone answered 403 from GitHub's servers).
+   - **Abuja** is a real city (D-120, D-121): areas with a `city`, five cinemas (The Jays has no times online), every `/abuja/…` page built like Lagos.
+   - **Film matching** across sources (D-119): case and subtitle merges ("AGBARA NLA" → "Agbara Nla: The Return"), `data/film-aliases.json` for the rest. A failed source keeps its last good rows, marked failing, with a GitHub warning.
+   - **Data budget per city** (D-126): pages load `lagos.json` or `abuja.json`, each ≤ 20 KB gzipped.
+   - **Trailers** (D-117): "Watch the trailer" on a film's page opens YouTube; `scripts/tmdb.ts` keeps one official trailer per film and looks up the live films too.
+   - **Tests** run on a fixed clock (D-118): every e2e spec imports `test` from `tests/e2e/test.ts` (noon on the sample day); offline tests opt out.
+
+### Live state (17 Nov, 10:14 UTC run)
+
+- Lagos: 520 showings, 14 cinemas with times. Abuja: 181 showings, 4 cinemas. No Sample banner.
+- **Filmhouse has no times:** CINEsync refuses our bot (403), and Lagocine's own Filmhouse pages went almost empty (Lekki IMAX: 4 showings, all on 20 Nov). Its cinemas say "Times not available yet". The fix is permission: `docs/OUTREACH.md` §4 (Filmhouse, CINEsync), for Chime to send.
+
+### For Chime
+
+- Add the GitHub secret `TMDB_READ_TOKEN` (same value as `.env.local`) so new films get posters and trailers in the job.
+- Confirm D-121 (Abuja calls), D-123 (Genesis's ~30 pages a run, Grand's undated tabs), D-127 (Ozone and Sky on Lagocine).
+- Send the Filmhouse and CINEsync emails (OUTREACH §4).
+- Check on the phone: posters on MTN, Abuja's tabs, a trailer.
+
+### Watch out
+
+- `npm run build` now builds on live data, so sample-data e2e tests fail on it. Before the gate: `node scripts/refresh.ts --fixtures --now "$(TZ=Africa/Lagos date +%F)T07:00:00Z" && npx --no-install next build`.
+- The proof gate runs the full e2e after each reply; don't start a second Playwright run beside it (port 4173).
+- The refresh job had not yet run on its own schedule by 10:33 UTC on 17 Nov (only runs started by hand). Check `gh run list --workflow=refresh-showtimes.yml --event schedule`.
+- Review leftovers worth doing: Sky's day check needs the live page looked at; the 30 s wait after a click in browser.ts; tmdb.ts and the pipeline find a film's spellings two ways.
+
+## Earlier: session of 16 Nov 2026 (afternoon), round 2, lighter hovers and the motion audit
 
 Everything below is committed and pushed (last commit `fc3bcdc`); the full gate passed on it.
 
