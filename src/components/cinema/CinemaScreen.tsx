@@ -64,6 +64,7 @@ export function CinemaScreen({ data, id, area, city, bg }: { data: ListData; id:
   const when = !live ? null : laterName(now) === "Later tonight" ? "tonight" : "today";
   const banner = pageBanner(data, clock);
   const warning = banner && banner.kind !== "sample" ? rowWarning(banner.kind) : null;
+  const note = filmsNote({ day, live, total: films.total, left: films.left, warning });
   // A cinema whose times we can't read: the films its chain's home page features today (D-131).
   const featured = featuredFor(data, data.cinemas.indexOf(cinema), clock);
   const options = [dayOption({ day: 0, date: dates[0], live }), dayOption({ day: 1, date: dates[1], live })] as const;
@@ -138,7 +139,7 @@ export function CinemaScreen({ data, id, area, city, bg }: { data: ListData; id:
               <h2 id="films.title" data-testid="films.title">
                 {filmsTitle({ day, when, date: dates[day] })}
               </h2>
-              <p data-testid="films.note">{filmsNote({ day, live, total: films.total, left: films.left, warning })}</p>
+              {note && <p data-testid="films.note">{note}</p>}
             </div>
             {alone ? (
               <p className={s.alone}>

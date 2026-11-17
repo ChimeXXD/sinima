@@ -13,9 +13,10 @@ export function filmsTitle(input: { day: 0 | 1; when: "tonight" | "today" | null
   return input.day === 1 ? "Films tomorrow" : `Films ${input.when}`;
 }
 
-/** Under it: "4 films today · 3 still to start"; with old times, "3 films · times from yesterday". */
-export function filmsNote(input: { day: 0 | 1; live: boolean; total: number; left: number; warning: string | null }): string {
+/** Under it: "4 films today · 3 still to start"; with old times, "3 films · times from yesterday". Nothing with no films: the page says no times are listed. */
+export function filmsNote(input: { day: 0 | 1; live: boolean; total: number; left: number; warning: string | null }): string | null {
   const { total, left, warning } = input;
+  if (total === 0) return null;
   if (warning) return `${films(total)} · ${warning.toLowerCase()}`;
   if (!input.live || input.day === 1) return films(total);
   return `${films(total)} today · ${left === 0 ? "all started" : `${left} still to start`}`;

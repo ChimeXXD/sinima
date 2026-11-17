@@ -23,6 +23,12 @@ describe("filmsNote", () => {
     expect(filmsNote({ day: 0, live: true, total: 1, left: 1, warning: null })).toBe("1 film today · 1 still to start");
     expect(filmsNote({ day: 0, live: true, total: 4, left: 0, warning: null })).toBe("4 films today · all started");
   });
+
+  it("says nothing with no films: never \"0 films today · all started\" (the page already says no times are listed)", () => {
+    expect(filmsNote({ day: 0, live: true, total: 0, left: 0, warning: null })).toBeNull();
+    expect(filmsNote({ day: 1, live: true, total: 0, left: 0, warning: null })).toBeNull();
+    expect(filmsNote({ day: 0, live: false, total: 0, left: 0, warning: null })).toBeNull();
+  });
   it("with times from yesterday, says so instead (Figma Times a day old)", () => {
     expect(filmsNote({ day: 0, live: true, total: 3, left: 3, warning: "Times from yesterday" })).toBe("3 films · times from yesterday");
   });
