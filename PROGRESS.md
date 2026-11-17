@@ -2,6 +2,13 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 17 Nov 2026 — Lagocine's line on every page; Filmhouse outreach (D-128, D-129)
+
+- **Outreach (Chime: "Send the mail for me"):** sent from ekpenduchimezie1@gmail.com to Filmhouse (sales@, cc info@, from its contact page) and CINEsync (inquiries@); FilmOne left as a Gmail draft for Chime (Claude Code's safety check stopped the third send). Replied to Lagocine's 11 Nov yes: our stack, what we read, his link, and whether Filmhouse's times will come back. Instagram and LinkedIn messages drafted for Chime to send. IMAX's site answers our bot with a Cloudflare challenge (403), so it is not a source.
+- **Changed:** `LAGOCINE_LINE` and `LAGOCINE_URL` in `src/lib/wording/films.ts`; the shared footer links to Lagocine on every page (D-129). Test first: `tests/e2e/lagocine.spec.ts` red (element not found), then green on ten pages.
+- **Checked:** footer at 390 and 360 (link 333 × 44, no side scroll), types, lint.
+- **Timer:** cron-job.org starts the refresh job at 06:17, 12:17, 16:17 Lagos (D-128); test run 204.
+
 ## 17 Nov 2026 — the job on GitHub; Ozone and Sky back on Lagocine (D-127)
 
 - **First job run with every reader (GitHub, 10:14 UTC, started by hand):** every source read except Ozone, which answered 403 for its page for tomorrow; the run kept Ozone and Sky's last good times and raised a `::warning::`, as D-119 intends. lagos.json 16.4 KB, abuja.json 5.4 KB; 520 Lagos and 181 Abuja showings; committed by the job as `0f70a90`.

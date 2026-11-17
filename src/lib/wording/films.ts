@@ -50,6 +50,9 @@ export function nothingMoreToday(input: { city: string; last: string | null; tom
 
 /** Under every rebuilt screen. */
 export const FOOTER_NOTE = "Times come from each cinema's own pages. Always book on the cinema's site.";
+/** Lagocine's one condition for its showtimes, in its owner's words (Paul Sergent, 11 Nov 2026, D-129): on every page. */
+export const LAGOCINE_LINE = "If you want to see all showtimes in Lagos, it's on Lagocine";
+export const LAGOCINE_URL = "https://lagocine.com/";
 
 /** In every footer: the way to About. */
 export const ABOUT_LINK = "About Sinima: sources and takedown";
