@@ -53,6 +53,9 @@
   --hover-fill: color-mix(in srgb, var(--bg-surface), var(--text-primary) 2%);
   --hover-fill-page: color-mix(in srgb, var(--bg-page), var(--text-primary) 1%);
   --hover-fill-raised: color-mix(in srgb, var(--bg-raised), var(--text-primary) 2%); /* chips on the raised colour */
+  /* Scrollbars on a computer (D-134): a quiet pill in the text colour, darker under the pointer. */
+  --scrollbar-thumb: color-mix(in srgb, var(--text-primary) 20%, transparent);
+  --scrollbar-thumb-hover: color-mix(in srgb, var(--text-primary) 36%, transparent);
   /* Toasts by context (D-109 d): a lighter blue than the navy, the lightest that keeps white words
      readable (5.2:1); an error in Sinima's red, deepened for the same reason, never pure red. */
   --toast-info: var(--p-blue-600);

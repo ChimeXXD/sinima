@@ -2,6 +2,17 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 17 Nov 2026 — Sinima's own scrollbars on a computer (D-134)
+
+Chime's recording of the side panel and page: the system's grey bar "doesn't follow our design principle"; remove it or make our own.
+
+- **Changed:** `tokens.css` `--scrollbar-thumb`, `--scrollbar-thumb-hover`; `globals.css` under `(hover: hover) and (pointer: fine)`: `html { scrollbar-gutter: stable }` (no sideways jump between short and long pages); `::-webkit-scrollbar` 12 px, thumb a 6 px pill (3 px transparent border, padding-box), no track, buttons or corner; darker on hover; `dialog` tracks start and end 32 px in (`--radius-sheet`); Firefox `scrollbar-width: thin` with the same colour via `@supports not selector(::-webkit-scrollbar)`.
+- **Red:** new `tests/e2e/scrollbar.spec.ts` (a desktop context, `--hide-scrollbars` off): without the CSS `Expected: 12, Received: 15` (the system bar).
+- **Checked:** the spec 3 × pass; crops of the page edge and the side panel at 1440, light and dark, at rest and under the pointer (scratchpad).
+- **Gotchas:** headless Chromium hides scrollbars (`--hide-scrollbars`), and a `browser.newContext()` in a test takes the phone project's touch settings unless `isMobile: false, hasTouch: false`.
+- **Code review (medium, --fix):** fixed: stable page gutter, the thumb stays dark while dragged (`:active`), hover gating, the spec's clock frozen at noon. Left: fixed elements sized from `100vw` (nav, toast) sit up to 6 px off the content's centre beside the gutter; the spec measures the gutter only, not the colour.
+- **Not verified:** Safari and Firefox by eye; Chime's computer.
+
 ## 17 Nov 2026 — "Add your cinemas" is a side panel on a computer (D-133)
 
 Chime sent a recording of the desktop list as a centred pop-up and drew a panel down the window's right edge: "Make it a sidebar over here instead of it popping up."

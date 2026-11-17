@@ -37,6 +37,48 @@ a { color: inherit; text-decoration: none; }
   outline-offset: 2px;
 }
 
+/* D-134: on a computer (mouse or trackpad) every scrollbar is Sinima's own, never the system's grey
+   bar: a 6 px pill in a 12 px gutter, no track or arrows, darker under the pointer, and clear of a
+   sheet's rounded corners. Touch screens keep the phone's overlay bar, which shows only while
+   scrolling. Browsers without the ::-webkit-scrollbar parts (Firefox) take the standard thin bar. */
+@media (hover: hover) and (pointer: fine) {
+  /* The page keeps its 12 px gutter whether or not it scrolls, so it doesn't jump sideways between
+     a short page and a long one (a Mac's overlay bar used to take no room). */
+  html {
+    scrollbar-gutter: stable;
+  }
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+    background: transparent;
+  }
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-button {
+    display: none;
+  }
+  ::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    border-radius: var(--radius-full);
+    background: var(--scrollbar-thumb) padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover,
+  ::-webkit-scrollbar-thumb:active {
+    background-color: var(--scrollbar-thumb-hover);
+  }
+  dialog::-webkit-scrollbar-track {
+    margin-block: var(--radius-sheet);
+  }
+  @supports not selector(::-webkit-scrollbar) {
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--scrollbar-thumb) transparent;
+    }
+  }
+}
+
 /* M11 (D-103, D-105 f, i): a film's poster travels from the Films grid into its page's hero, and
    back (React's <ViewTransition>, the "poster" class); the rest of the page appears at once under
    it. Moving on screen, so --ease-in-out, 300 ms both ways: a little over the UI budget for the
