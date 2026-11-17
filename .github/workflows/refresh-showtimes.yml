@@ -8,15 +8,15 @@
 # were read, so its pages say how old the times are (DATA §Freshness, D-119). Only when every source
 # fails does the run fail, and then nothing is committed.
 #
-# Times are UTC: 05:17, 11:17, 15:17 UTC = 06:17, 12:17, 16:17 in Lagos. Odd minutes avoid the
-# top-of-hour queue. Three runs a day is the most data/sources.json allows a source (rateLimit).
-# In a public repo, GitHub disables schedules after 60 days without activity; the commits count.
+# Three runs a day (06:17, 12:17, 16:17 Lagos) is the most data/sources.json allows a source
+# (rateLimit). The timer lives at cron-job.org and calls GitHub's workflow_dispatch with a
+# fine-grained token limited to this repository's Actions (D-128).
 # ---------------------------------------------------------------------------------------------
 name: Refresh showtimes
 
+# Started by cron-job.org at 06:17, 12:17 and 16:17 Lagos (D-128): GitHub's own schedule never ran
+# this job on 17 Nov. It can still be started by hand from the Actions tab.
 on:
-  schedule:
-    - cron: "17 5,11,15 * * *"
   workflow_dispatch:
 
 concurrency:

@@ -35,7 +35,7 @@ Everything below is committed and pushed (last code commit `83b0217`; the refres
 
 - `npm run build` now builds on live data, so sample-data e2e tests fail on it. Before the gate: `node scripts/refresh.ts --fixtures --now "$(TZ=Africa/Lagos date +%F)T07:00:00Z" && npx --no-install next build`.
 - The proof gate runs the full e2e after each reply; don't start a second Playwright run beside it (port 4173).
-- The refresh job had not yet run on its own schedule by 10:33 UTC on 17 Nov (only runs started by hand). Check `gh run list --workflow=refresh-showtimes.yml --event schedule`.
+- The refresh job is started by cron-job.org at 06:17, 12:17 and 16:17 Lagos (D-128); GitHub's own schedule never fired and was removed. The token `sinima-refresh-timer` (Actions read and write on this repo only) expires on 17 Nov 2027: renew it and paste the new one into the cron-job.org job's Authorization header before then.
 - Review leftovers worth doing: Sky's day check needs the live page looked at; the 30 s wait after a click in browser.ts; tmdb.ts and the pipeline find a film's spellings two ways.
 
 ## Earlier: session of 16 Nov 2026 (afternoon), round 2, lighter hovers and the motion audit
