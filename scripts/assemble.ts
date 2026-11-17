@@ -2,7 +2,7 @@
 // credits, built into the validated showtimes file and its per-area files (SPEC §4, D-18).
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { CITIES, type City } from "../src/lib/city.ts";
+import { CITIES, isCity, type City } from "../src/lib/city.ts";
 import { inCity } from "../src/lib/data/cities.ts";
 import type { Cinema, ShowtimesFile, Source } from "../src/lib/data/types.ts";
 import { mergeCredits, type FilmCredits, type ManualEntry, type TmdbFilm } from "./credits.ts";
@@ -38,10 +38,8 @@ export function pageFiles(file: ShowtimesFile, areas: { slug: string; city: stri
   const files = new Map<string, ShowtimesFile>();
   const parts = splitByArea(file, areas.map((area) => area.slug), now);
   for (const [slug, part] of parts) files.set(paths.part(slug), part);
-  const cityOfArea = (slug: string) => {
-    const city = areas.find((area) => area.slug === slug)?.city;
-    return city === "lagos" || city === "abuja" ? city : undefined;
-  };
+  const cities = new Map(areas.flatMap((area) => (isCity(area.city) ? [[area.slug, area.city] as const] : [])));
+  const cityOfArea = (slug: string) => cities.get(slug);
   for (const city of CITIES) files.set(paths.city(city), inCity(parts.get("all") as ShowtimesFile, city, cityOfArea));
   return files;
 }

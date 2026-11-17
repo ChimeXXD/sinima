@@ -6,13 +6,13 @@
 // Each film card lists its times ("01:00 PM", a 12-hour clock) and links to the film's page on the
 // cinema's own site, where tickets are sold. The page names the cinema it shows, which must be ours.
 import * as cheerio from "cheerio";
-import { clock12, lagosDay, ordinal, shortMonth, shortWeekday, showStart, withinDays, type Day } from "./dates.ts";
+import { clock12, MONTH_ORDINAL, monthOrdinal, shortMonth, shortWeekday, showStart, type Day } from "./dates.ts";
 import { clean, type RawShowing, type Reader } from "./raw.ts";
+import { readEachDay } from "./tabbed.ts";
 
 type Options = { cinemaId: string; day: Day; name: string; origin: string };
 type Cheerio = ReturnType<typeof cheerio.load>;
 const FILM_PAGE = /^\/movies\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
-const TAB = /^[A-Z][a-z]{2} \d{1,2}(?:st|nd|rd|th)$/;
 const NOT_RATED = "N/A";
 
 /** The address of one day on a dated-slides page: the site's own form, "Wed Nov 18 2026". */
@@ -23,8 +23,7 @@ export function reachDayUrl(page: string, day: Day): string {
 }
 
 /** The tab a visitor taps for `day` on a date-tabs page: "Nov 18th". */
-const tabLabel = (day: Day) => `${shortMonth(day)} ${ordinal(day.day)}`;
-export const reachTabSelector = (day: Day) => `button:text-is('${tabLabel(day)}')`;
+export const reachTabSelector = (day: Day) => `button:text-is('${monthOrdinal(day)}')`;
 
 /** The cinema the page shows; it must be the one we asked for. */
 function checkCinema($: Cheerio, { cinemaId, name }: Options): void {
@@ -62,7 +61,8 @@ export function parseReachDay(html: string, options: Options): RawShowing[] {
   const { cinemaId, day } = options;
   if ($(".swiper-slide").length === 0) throw new Error(`Reach page for ${cinemaId}: no date slides found. Has the page layout changed?`);
   const active = $(".swiper-slide.bg-grad-yellow");
-  const shown = active.length === 1 ? active.find("span").map((_, span) => clean($(span).text())).get().join(" ") : `${active.length} highlighted slides`;
+  // The site's own day address pads the day ("Dec 05"), so its slide may too: "05" is read as 5.
+  const shown = active.length === 1 ? active.find("span").map((_, span) => clean($(span).text())?.replace(/^0(?=\d$)/, "")).get().join(" ") : `${active.length} highlighted slides`;
   const wanted = `${shortMonth(day)} ${day.day} ${shortWeekday(day)}`;
   if (shown !== wanted) throw new Error(`Reach page for ${cinemaId}: the page shows "${shown}", not "${wanted}".`);
   checkCinema($, options);
@@ -80,9 +80,9 @@ export function parseReachDay(html: string, options: Options): RawShowing[] {
 export function parseReachTabs(html: string, options: Options): RawShowing[] {
   const $ = cheerio.load(html);
   const { cinemaId, day } = options;
-  const tabs = $("article button").filter((_, button) => TAB.test(clean($(button).text()) ?? ""));
+  const tabs = $("article button").filter((_, button) => MONTH_ORDINAL.test(clean($(button).text()) ?? ""));
   if (tabs.length === 0) throw new Error(`Reach page for ${cinemaId}: no date tabs found. Has the page layout changed?`);
-  const label = tabLabel(day);
+  const label = monthOrdinal(day);
   if (!tabs.toArray().some((tab) => clean($(tab).text()) === label)) return [];
   const clicked = clean($("[data-sinima-clicked]").first().text());
   if (clicked !== label) throw new Error(`Reach page for ${cinemaId}: the clicked tab is "${clicked}", not "${label}".`);
@@ -98,21 +98,11 @@ export function parseReachTabs(html: string, options: Options): RawShowing[] {
  * cinema with no times on any day read fails the source (its last good showings are kept, D-119):
  * an empty page and one whose times did not load look the same.
  */
-export const readReach: Reader = async ({ now, days, renderText, pages, names = {} }) => {
-  const showings: RawShowing[] = [];
-  for (const [cinemaId, page] of Object.entries(pages)) {
+export const readReach: Reader = ({ now, days, renderText, pages, names = {} }) =>
+  readEachDay("Reach", { now, days, pages }, async (cinemaId, page, day) => {
     const name = Object.hasOwn(names, cinemaId) ? names[cinemaId] : undefined;
     if (name === undefined) throw new Error(`Reach: ${cinemaId} has no entry in pageNames in data/sources.json.`);
-    const options = { cinemaId, name, origin: new URL(page).origin };
-    const dated = new URL(page).searchParams.has("cinemaId");
-    const rows: RawShowing[] = [];
-    for (let offset = 0; offset < days; offset += 1) {
-      const day = lagosDay(now, offset);
-      if (dated) rows.push(...parseReachDay(await renderText(reachDayUrl(page, day)), { ...options, day }));
-      else rows.push(...parseReachTabs(await renderText(page, { click: reachTabSelector(day) }), { ...options, day }));
-    }
-    if (rows.length === 0) throw new Error(`Reach page for ${cinemaId}: no times on any day read. Has the page layout changed?`);
-    showings.push(...withinDays(rows, now, days));
-  }
-  return [{ showings, builtAt: null }];
-};
+    const options = { cinemaId, name, origin: new URL(page).origin, day };
+    if (new URL(page).searchParams.has("cinemaId")) return parseReachDay(await renderText(reachDayUrl(page, day)), options);
+    return parseReachTabs(await renderText(page, { click: reachTabSelector(day) }), options);
+  });

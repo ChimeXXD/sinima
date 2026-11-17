@@ -31,6 +31,10 @@ export function ordinal(n: number): string {
   const suffix = teens ? "th" : ({ 1: "st", 2: "nd", 3: "rd" } as Record<number, string>)[n % 10] ?? "th";
   return `${n}${suffix}`;
 }
+/** The day as a date tab says it: "Nov 18th" (Sky, THC; D-125). */
+export const monthOrdinal = (day: Day) => `${shortMonth(day)} ${ordinal(day.day)}`;
+/** Text shaped like a date tab ("Nov 18th", "Dec 1st"). */
+export const MONTH_ORDINAL = /^[A-Z][a-z]{2} \d{1,2}(?:st|nd|rd|th)$/;
 /** The day as a date-only ISO string: "2026-11-18". */
 export const isoDay = (day: Day) => `${day.year}-${String(day.month).padStart(2, "0")}-${String(day.day).padStart(2, "0")}`;
 
@@ -81,7 +85,7 @@ export function dateNearest(date: { month: number; day: number; weekday?: string
   const candidates = [readOn.year - 1, readOn.year, readOn.year + 1]
     .map((year) => ({ year, month: date.month, day: date.day }))
     .filter((day) => addDays(day, 0).day === date.day);
-  const name = `${date.day} ${(MONTHS[date.month - 1] ?? "?").replace(/^./, (c) => c.toUpperCase())}`;
+  const name = `${date.day} ${capital(MONTHS[date.month - 1] ?? "?")}`;
   if (candidates.length === 0) throw new Error(`${name} is not a date`);
   const nearest = candidates.reduce((best, next) => (Math.abs(dayNumber(next) - dayNumber(readOn)) < Math.abs(dayNumber(best) - dayNumber(readOn)) ? next : best));
   if (date.weekday === undefined) return nearest;

@@ -4,22 +4,20 @@
 // in white. Each film lists its times ("01:40 PM", a 12-hour clock). The site says "Online booking
 // not available" (tickets at the cinema), so there are no booking links.
 import * as cheerio from "cheerio";
-import { clock12, ordinal, shortMonth, showStart, type Day } from "./dates.ts";
+import { clock12, MONTH_ORDINAL, monthOrdinal, showStart, type Day } from "./dates.ts";
 import { clean, type RawShowing } from "./raw.ts";
 import { tabbedReader, type DayParser } from "./tabbed.ts";
 
-const TAB = /^[A-Z][a-z]{2} \d{1,2}(?:st|nd|rd|th)$/;
 /** How the page marks the day it is showing. */
 const SHOWING = "!text-white";
 
-const tabLabel = (day: Day) => `${shortMonth(day)} ${ordinal(day.day)}`;
-export const thcDaySelector = (day: Day) => `span:text-is('${tabLabel(day)}')`;
+export const thcDaySelector = (day: Day) => `span:text-is('${monthOrdinal(day)}')`;
 
 export const parseThc: DayParser = (html, { cinemaId, day }) => {
   const $ = cheerio.load(html);
-  const tabs = $("header span").filter((_, span) => TAB.test(clean($(span).text()) ?? ""));
+  const tabs = $("header span").filter((_, span) => MONTH_ORDINAL.test(clean($(span).text()) ?? ""));
   if (tabs.length === 0) throw new Error(`THC page for ${cinemaId}: no date tabs found. Has the page layout changed?`);
-  const label = tabLabel(day);
+  const label = monthOrdinal(day);
   if (!tabs.toArray().some((tab) => clean($(tab).text()) === label)) return [];
   const shown = tabs.filter((_, tab) => ($(tab).attr("class") ?? "").split(/\s+/).includes(SHOWING));
   const showing = shown.length === 1 ? clean(shown.text()) : `${shown.length} tabs`;

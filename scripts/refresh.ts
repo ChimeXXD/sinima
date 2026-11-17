@@ -75,8 +75,11 @@ const gzipKb = (text: string) => gzipSync(text, { level: 9 }).length / 1024;
  * code fetches it. Not showtimes.json: the whole set, kept readable for diffs.
  */
 export const pageLoads = (path: string) => !path.endsWith("showtimes.json") && !path.endsWith("/all.json");
+/** Each file's gzipped size as written, in KB. */
+const sizes = (files: Map<string, ShowtimesFile>) => new Map([...files].map(([path, file]) => [path, gzipKb(serialise(path, file))]));
+const overIn = (sized: Map<string, number>) => [...sized].filter(([path, size]) => pageLoads(path) && size > DATA_FILE_LIMIT_KB).map(([path]) => path);
 /** The page files over the budget, by path. */
-export const overBudget = (files: Map<string, ShowtimesFile>) => [...files].filter(([path, file]) => pageLoads(path) && gzipKb(serialise(path, file)) > DATA_FILE_LIMIT_KB).map(([path]) => path);
+export const overBudget = (files: Map<string, ShowtimesFile>) => overIn(sizes(files));
 /** Compact for files in public/ and data/live/; showtimes.json pretty, for diffs. */
 const serialise = (path: string, file: ShowtimesFile) => (path.endsWith("showtimes.json") ? `${JSON.stringify(file, null, 2)}\n` : JSON.stringify(file));
 const withoutStamp = (file: ShowtimesFile) => JSON.stringify({ ...file, generatedAt: null });
@@ -110,9 +113,10 @@ function writeChecked(files: Map<string, ShowtimesFile>, log: string[], root: st
     // is raised as a warning on the run, where it shows instead of passing unseen.
     if (process.env.GITHUB_ACTIONS === "true" && line.includes(": could not be read (")) console.log(`::warning title=A source could not be read::${line}`);
   }
-  const over = new Set(overBudget(files));
+  const sized = sizes(files);
+  const over = new Set(overIn(sized));
   for (const [path, file] of files) {
-    const size = gzipKb(serialise(path, file));
+    const size = sized.get(path) as number;
     const note = over.has(path) ? ` (over the ${DATA_FILE_LIMIT_KB} KB limit)` : pageLoads(path) ? "" : " (not loaded by a page, so not held to the budget)";
     console.log(`refresh: ${path}: ${file.showings.length} showings, ${file.films.length} films, ${size.toFixed(1)} KB gzipped${note}`);
   }

@@ -58,6 +58,12 @@ describe("parseReachDay (dated slides: Ozone, Viva, Nova)", () => {
     expect(parseReachDay(fixture("viva/2026-11-17-lekki-empty.html"), { cinemaId: "viva-ikeja", day: nov17, name: "Viva Lekki", origin: "https://web.vivacinemas.com" })).toEqual([]);
   });
 
+  it("reads a slide whose day is padded as the site's own day address pads it (\"Dec 07\")", () => {
+    // Not seen live yet (the fixtures are 17-23 Nov): the slide's day changed to "07", the rest as read.
+    const padded = fixture("reachcinema/2026-11-17-ozone.html").replace('lg:text-[32px]">17</span><span class="text-xs uppercase md:text-sm lg:text-base">Tue', 'lg:text-[32px]">07</span><span class="text-xs uppercase md:text-sm lg:text-base">Mon').replace('text-base">Nov</span>', 'text-base">Dec</span>');
+    expect(ozone(padded, { year: 2026, month: 12, day: 7 }).length).toBeGreaterThan(0);
+  });
+
   it("refuses a page that shows another day, another cinema, or no date slides", () => {
     expect(() => ozone(undefined, nov18)).toThrow('Reach page for ozone-yaba: the page shows "Nov 17 Tue", not "Nov 18 Wed".');
     expect(() => ozone(undefined, nov17, "Nova Lagos")).toThrow('Reach page for ozone-yaba: the page shows "Ozone Cinemas", not "Nova Lagos".');
