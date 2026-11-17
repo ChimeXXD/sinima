@@ -33,13 +33,13 @@ Everything below is committed and pushed (last code commit `57a1c9d`; the refres
 
 ### For Chime
 
-- Send the FilmOne email from Gmail Drafts (or say drop it).
+- ~~Send the FilmOne email~~: sent 17 Nov 20:52 UTC (Chime: "send the FilmOne email as well"). Filmhouse's cc to info@filmhouseng.com bounced (internal senders only); sales@ took it. The connector sends links as Google redirects (OUTREACH §4).
 - Confirm D-121 (Abuja's areas), D-123 (Genesis's ~30 pages a run, Grand's undated tabs), D-127 (Ozone and Sky on Lagocine).
-- Check on the phone: posters on MTN, Abuja's tabs, a trailer.
+- Check on the phone: ~~posters on MTN~~ (Chime, 17 Nov: "the MTN is working now on the phone"), Abuja's tabs, a trailer.
 
 ### Waiting on replies
 
-- Filmhouse, CINEsync, Kene Okwuosa (LinkedIn), FilmOne once sent. **Tue 24 Nov:** if nobody has replied, draft the follow-ups in OUTREACH §4 and show Chime the exact text before anything goes.
+- Filmhouse (sales@), CINEsync, Kene Okwuosa (LinkedIn), FilmOne (sent 17 Nov). **Tue 24 Nov:** if nobody has replied, draft the follow-ups in OUTREACH §4 and show Chime the exact text before anything goes.
 
 ### Watch out
 

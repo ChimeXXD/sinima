@@ -63,9 +63,10 @@ chimexd.work
 ## 4. Filmhouse, FilmOne and CINEsync (15 Nov 2026, D-76)
 
 **Sent 17 Nov 2026 (Chime: "Yes, I approve. Send the mail for me")** from ekpenduchimezie1@gmail.com, each with a link to the live site added:
-- 4a to sales@filmhouseng.com, cc info@filmhouseng.com (both from filmhouseng.com/contact-us). Sent.
+- 4a to sales@filmhouseng.com, cc info@filmhouseng.com (both from filmhouseng.com/contact-us). Sent. The cc bounced (14:03, Office 365 `550 5.7.133`: info@ takes mail only from inside Filmhouse); no bounce from sales@.
 - 4c to inquiries@cinesync.io (CINEsync's Trustpilot company profile; its own site shows no address). Sent.
-- 4b to info@filmoneng.com (filmoneng.com/contact): left as a Gmail draft for Chime to send; Claude Code's safety check stopped the third send.
+- 4b to info@filmoneng.com (filmoneng.com/contact): sent 17 Nov 20:52 UTC on Chime's "send the FilmOne email as well", the approved text unchanged; the draft was deleted.
+- **Links:** the Gmail connector stores links in what it sends as Google redirects (`google.com/url?q=https://sinima-app.vercel.app&…`), in 4a, 4b and 4c alike (a resend with plain links came out the same). They still reach the site, through Google's "you're being redirected" page once a day has passed. Follow-ups: send from Gmail itself, or check a sent copy, so the links are plain.
 - LinkedIn InMail to Kene Okwuosa (Group CEO, Filmhouse Group), sent 17 Nov 15:32 from Chime's account (Chime: "send it to my LinkedIn"); 1 of 3 InMail credits.
 - Instagram DM to Filmhouse: not sent; Chime: "Leave Instagram for now" (17 Nov). The draft is in this session's notes.
 - Follow-up (below) on Tue 24 Nov if nobody replies. Lagocine replied on 11 Nov: "you can use it freely as much as you want".
