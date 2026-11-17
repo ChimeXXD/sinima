@@ -25,7 +25,7 @@ import s from "./soon.module.css";
 // Starting soon (Figma 204:7192 Default, 204:7931 Nothing in 2 hours): in your area, the showings
 // in the next 2 hours as cards that count down and book on the cinema's own site, then the rest of
 // tonight as rows. The showings kept with "Keep a countdown" lead the page. Nothing is "soon"
-// until the browser has the time (rule 3): the page's own HTML lists the day, for all of Lagos.
+// until the browser has the time (rule 3): the page's own HTML lists the day, for the whole city.
 
 export type SoonArea = { slug: string; name: string; neighbours: string[] };
 

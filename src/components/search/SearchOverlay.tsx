@@ -114,7 +114,8 @@ export default function SearchOverlay({ query, onQuery, onSubmit, onClose, city 
             {index === "failed" && <p className={s.line}>{SEARCH_FAILED}</p>}
             {groups && banner && <Notice kind={banner.kind} text={banner.text} />}
             {groups && scope === "abuja" && abujaSoon ? (
-              <NoMatch words={{ ...noMatch(text, scope, home), title: ABUJA_SOON, body: null }} onHome={() => (onQuery(""), onClose())} />
+              // Abuja has nothing to show yet, so the way out is Lagos's Films, whatever the page's city.
+              <NoMatch words={{ ...noMatch(text, scope, "lagos"), title: ABUJA_SOON, body: null }} href="/lagos" onHome={() => (onQuery(""), onClose())} />
             ) : (
               groups && found === 0 && <NoMatch words={noMatch(text, scope, home)} onHome={() => (onQuery(""), onClose())} />
             )}
@@ -181,13 +182,14 @@ function Result({ city, result, now, onOpen }: { city: City; result: SearchResul
   );
 }
 
-function NoMatch({ words, onHome }: { words: { title: string; body: string | null; action: string }; onHome: () => void }) {
+/** `href` is the Films the action opens: the page's own city's unless given. */
+function NoMatch({ words, href = "/", onHome }: { words: { title: string; body: string | null; action: string }; href?: string; onHome: () => void }) {
   return (
     <div className={s.none} data-testid="search.none">
       <TicketFaceSticker height={64} />
       <h3>{words.title}</h3>
       {words.body && <p>{words.body}</p>}
-      <Link href="/" className={`${a.button} ${a.secondary}`} onClick={onHome} data-testid="search.home">
+      <Link href={href} className={`${a.button} ${a.secondary}`} onClick={onHome} data-testid="search.home">
         {words.action}
       </Link>
     </div>
