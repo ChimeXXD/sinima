@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { clock12, clock24h, dateNearest, lagosDay, showStart, withinDays } from "../../../../scripts/sources/dates";
+import { clock12, clock24h, dateNearest, isoDay, lagosDay, longWeekday, monthNumber, ordinal, shortMonth, shortWeekday, showStart, withinDays } from "../../../../scripts/sources/dates";
 
 // The clock and calendar pieces every cinema reader shares (D-122). Cinemas write times on a
 // 12-hour clock ("6:35 PM", "4:20pm") or a 24-hour one ("09:15"), and dates without a year
@@ -82,5 +82,17 @@ describe("withinDays", () => {
     const now = "2026-11-17T00:20:00Z"; // 01:20 on the 17th in Lagos
     const rows = ["2026-11-16T22:00:00Z", "2026-11-17T08:00:00Z", "2026-11-18T20:00:00Z", "2026-11-19T02:30:00Z", "2026-11-19T03:00:00Z", "2026-12-04T18:00:00Z"].map(row);
     expect(withinDays(rows, now, 2).map((r) => r.startsAt)).toEqual(["2026-11-17T08:00:00Z", "2026-11-18T20:00:00Z", "2026-11-19T02:30:00Z"]);
+  });
+});
+
+// How script-built pages write a day on their date tabs (D-125): "Nov 18th", "18 Nov", "Wednesday".
+describe("day labels", () => {
+  const nov18 = { year: 2026, month: 11, day: 18 };
+  it("writes the day short and long, as cinemas' tabs do", () => {
+    expect([shortMonth(nov18), shortWeekday(nov18), longWeekday(nov18), isoDay({ year: 2026, month: 3, day: 7 })]).toEqual(["Nov", "Wed", "Wednesday", "2026-03-07"]);
+    expect([1, 2, 3, 4, 11, 12, 13, 21, 22, 23, 31].map(ordinal)).toEqual(["1st", "2nd", "3rd", "4th", "11th", "12th", "13th", "21st", "22nd", "23rd", "31st"]);
+  });
+  it("reads a month's short name as well as its full one", () => {
+    expect([monthNumber("Nov"), monthNumber("november"), monthNumber("Sept"), monthNumber("No")]).toEqual([11, 11, 0, 0]);
   });
 });

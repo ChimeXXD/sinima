@@ -12,8 +12,27 @@ const WEEKDAYS = ["sunday", "monday", "tuesday", "wednesday", "thursday", "frida
 const TWELVE = /^(\d{1,2}):(\d{2})\s*(am|pm)$/i;
 const TWENTY_FOUR = /^(\d{1,2}):(\d{2})$/;
 
-/** "january" (any case) as 1, or 0 when it is not a month's name. */
-export const monthNumber = (name: string) => MONTHS.indexOf(name.toLowerCase()) + 1;
+/** "january" or "Jan" (any case) as 1, or 0 when it is not a month's name. */
+export const monthNumber = (name: string) => {
+  const lower = name.toLowerCase();
+  return MONTHS.findIndex((month) => month === lower || (lower.length === 3 && month.startsWith(lower))) + 1;
+};
+
+const capital = (word: string) => word.replace(/^./, (c) => c.toUpperCase());
+/** The day's month as pages write it short: "Nov". */
+export const shortMonth = (day: Day) => capital((MONTHS[day.month - 1] ?? "").slice(0, 3));
+/** The day's weekday as pages write it short: "Wed". */
+export const shortWeekday = (day: Day) => capital(weekdayOf(day).slice(0, 3));
+/** The day's weekday in full, as pages write it: "Wednesday". */
+export const longWeekday = (day: Day) => capital(weekdayOf(day));
+/** 18 as "18th", 21 as "21st", 22 as "22nd", 23 as "23rd", 11 to 13 as "11th" to "13th". */
+export function ordinal(n: number): string {
+  const teens = n % 100 >= 11 && n % 100 <= 13;
+  const suffix = teens ? "th" : ({ 1: "st", 2: "nd", 3: "rd" } as Record<number, string>)[n % 10] ?? "th";
+  return `${n}${suffix}`;
+}
+/** The day as a date-only ISO string: "2026-11-18". */
+export const isoDay = (day: Day) => `${day.year}-${String(day.month).padStart(2, "0")}-${String(day.day).padStart(2, "0")}`;
 
 /** "6:35 PM" or "4:20pm" as 18:35 and 16:20; "12:05 AM" is five past midnight. Null for anything else. */
 export function clock12(text: string): Clock | null {

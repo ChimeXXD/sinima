@@ -72,6 +72,41 @@ const RULES: Record<string, Rule> = {
     kept: "the heading, titles, times and the ticket links",
     removed: "page chrome, scripts, styles, the other sections, the coming-soon list and every poster image",
   },
+  // A Reach Cinema showtimes page with its days as dated slides (Ozone, Viva, Nova; D-125), rendered.
+  "reach-day": {
+    keep: "main",
+    drop: ["p[title]", "a[target='_blank']", ".skeleton", "h1"],
+    kept: "the date slides, the cinema picked, titles, ratings, times, halls and Book Now links",
+    removed: "page chrome, scripts, styles, every poster image, the synopses and the trailer links",
+  },
+  // A Reach Cinema showtimes page with its days as tabs (Sky; D-125), rendered after a tab was clicked.
+  "reach-tabs": {
+    keep: "main article",
+    drop: ["p.font-nunito", "h3"],
+    kept: "the date tabs (the clicked one marked), the cinema picked, titles, times, halls and film links",
+    removed: "page chrome, scripts, styles, every poster image and the synopses",
+  },
+  // EbonyLife's /movies page, rendered after a date was clicked (D-125).
+  ebonylife: {
+    keep: '[class*="MovieListContainer_containerGrid"]',
+    drop: ['[class*="MovieList_poster"]', '[class*="TitleDesc_text"]', '[class*="DatePicker_chevron"]'],
+    kept: "the date picker, titles, times, screens and each time's booking link",
+    removed: "page chrome, scripts, styles, every poster image and the synopses",
+  },
+  // Cinemax THC's home page "Now Showing" section, rendered after a date was clicked (D-125).
+  thc: {
+    keep: 'section:has(> h2:contains("Now Showing"))',
+    drop: ["div:has(> img)", ".place-content-center", "input"],
+    kept: "the date tabs, titles, film links and times",
+    removed: "page chrome, scripts, styles, the hero slider, every poster and trailer button, the loading spinner and the search box",
+  },
+  // Magnificent's review.html ("Movies and showtimes"), rendered after a day was clicked (D-125).
+  magnificent: {
+    keep: "main.wrap",
+    drop: [".pos", ".cats", "input"],
+    kept: "the day tabs, the day's heading, titles, times and cinemas",
+    removed: "page chrome, scripts, styles, every poster image, the category filter and the date box",
+  },
   // Lagocine's day page: one card per film, with every showing in Lagos that day (D-33).
   "lagocine-day": {
     keep: ".movie-grid",

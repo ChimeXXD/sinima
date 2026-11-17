@@ -2,7 +2,6 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import registry from "../../../data/cinemas.json";
 import { isCity, type City } from "@/lib/city";
-import { inCity } from "@/lib/data/cities";
 import type { ShowtimesFile } from "@/lib/data/types";
 
 // Build-time only: pages read the files `npm run refresh` wrote (DATA §Per-area files). Each page
@@ -36,9 +35,10 @@ function read(path: string): ShowtimesFile {
   }
 }
 
+/** Both cities: About's counts and the search index only (build time; no page carries it, D-126). */
 export const loadAll = () => read("all.json");
-/** One city's cinemas, showings, films and sources (D-120): what a city's page is built from. */
-export const loadCity = (city: City) => inCity(loadAll(), city, cityOfArea);
+/** One city's cinemas, showings, films and sources (D-120): what a city's page is built from, its own file (D-126). */
+export const loadCity = (city: City) => read(`${city}.json`);
 export const loadArea = (slug: string) => read(`area/${slug}.json`);
 
 /** A page's city from its address (D-98); a static page is only ever built for a known one. */

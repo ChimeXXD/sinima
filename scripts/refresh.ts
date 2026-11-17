@@ -68,9 +68,17 @@ export function refreshFromFixtures(options: { now: string; root: string }): { f
 
 const UTC_SECONDS = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/;
 const gzipKb = (text: string) => gzipSync(text, { level: 9 }).length / 1024;
-/** The files a page loads (all.json and each area's), compact and under the budget; showtimes.json is the whole set, kept readable for diffs. */
-const pageLoads = (path: string) => !path.endsWith("showtimes.json");
-const serialise = (path: string, file: ShowtimesFile) => (pageLoads(path) ? JSON.stringify(file) : `${JSON.stringify(file, null, 2)}\n`);
+/**
+ * The files pages are built from, each held to the budget (D-126): each city's (lagos.json,
+ * abuja.json) and each area's. Not all.json: it holds both cities and is read only at build time
+ * (About's counts and the search index, which is its own file); no page loads it, and no browser
+ * code fetches it. Not showtimes.json: the whole set, kept readable for diffs.
+ */
+export const pageLoads = (path: string) => !path.endsWith("showtimes.json") && !path.endsWith("/all.json");
+/** The page files over the budget, by path. */
+export const overBudget = (files: Map<string, ShowtimesFile>) => [...files].filter(([path, file]) => pageLoads(path) && gzipKb(serialise(path, file)) > DATA_FILE_LIMIT_KB).map(([path]) => path);
+/** Compact for files in public/ and data/live/; showtimes.json pretty, for diffs. */
+const serialise = (path: string, file: ShowtimesFile) => (path.endsWith("showtimes.json") ? `${JSON.stringify(file, null, 2)}\n` : JSON.stringify(file));
 const withoutStamp = (file: ShowtimesFile) => JSON.stringify({ ...file, generatedAt: null });
 
 /** Writes each file under `root`, skipping one whose content is the same apart from generatedAt. */
@@ -102,14 +110,13 @@ function writeChecked(files: Map<string, ShowtimesFile>, log: string[], root: st
     // is raised as a warning on the run, where it shows instead of passing unseen.
     if (process.env.GITHUB_ACTIONS === "true" && line.includes(": could not be read (")) console.log(`::warning title=A source could not be read::${line}`);
   }
-  let overBudget = false;
+  const over = new Set(overBudget(files));
   for (const [path, file] of files) {
     const size = gzipKb(serialise(path, file));
-    const over = pageLoads(path) && size > DATA_FILE_LIMIT_KB;
-    if (over) overBudget = true;
-    console.log(`refresh: ${path}: ${file.showings.length} showings, ${file.films.length} films, ${size.toFixed(1)} KB gzipped${over ? ` (over the ${DATA_FILE_LIMIT_KB} KB limit)` : ""}`);
+    const note = over.has(path) ? ` (over the ${DATA_FILE_LIMIT_KB} KB limit)` : pageLoads(path) ? "" : " (not loaded by a page, so not held to the budget)";
+    console.log(`refresh: ${path}: ${file.showings.length} showings, ${file.films.length} films, ${size.toFixed(1)} KB gzipped${note}`);
   }
-  if (overBudget) {
+  if (over.size > 0) {
     console.error("refresh: a data file is over the budget (D-21). Nothing was written.");
     return 1;
   }

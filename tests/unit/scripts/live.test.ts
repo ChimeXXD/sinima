@@ -14,6 +14,25 @@ const NOW = "2026-11-11T07:00:00Z"; // 08:00 in Lagos
 // tested on their own pages in tests/unit/scripts/sources/).
 const LAGOCINE_ONLY = { lagocine: READERS.lagocine! };
 
+// Lagocine's cinemas as on 17 Nov (D-122), before the script-built sites got their own readers
+// (D-125). The tests of how a run treats a source keep these, so the saved day page still has
+// plenty of their showings as each cinema leaves Lagocine for its own reader.
+const LAGOCINE_ON_17_NOV = [
+  "filmhouse-lekki-imax", "filmhouse-surulere", "filmhouse-circle-mall", "filmhouse-ikota", "filmhouse-palms-lekki", "filmhouse-oniru", "filmhouse-landmark",
+  "ebonylife-vi", "filmworld-idimu", "magnificent-ikorodu-road", "ozone-yaba", "sky-sangotedo", "thc-agege", "viva-ikeja",
+];
+
+/** A copy of data/ in which Lagocine feeds `cinemaIds`. */
+function rootWithLagocine(cinemaIds = LAGOCINE_ON_17_NOV): string {
+  const dir = mkdtempSync(join(tmpdir(), "sinima-feeds-"));
+  mkdirSync(join(dir, "data"));
+  for (const name of ["cinemas.json", "credits.json", "credits-manual.json", "film-aliases.json"]) writeFileSync(join(dir, "data", name), readFileSync(join(root, "data", name)));
+  const registry = JSON.parse(readFileSync(join(root, "data/sources.json"), "utf8")) as { sources: { id: string; cinemaIds: string[] }[] };
+  registry.sources.find((s) => s.id === "lagocine")!.cinemaIds = cinemaIds;
+  writeFileSync(join(dir, "data/sources.json"), JSON.stringify(registry));
+  return dir;
+}
+
 function fakeLagocine() {
   const asked: string[] = [];
   const fetchText = async (url: string) => {
@@ -32,7 +51,7 @@ describe("refreshLive", () => {
   });
 
   it("writes real data: not sample, read from a public page now, with the cinemas' own booking links", async () => {
-    const { files } = await refreshLive({ now: NOW, root, fetchText: fakeLagocine().fetchText, readers: LAGOCINE_ONLY });
+    const { files } = await refreshLive({ now: NOW, root: rootWithLagocine(), fetchText: fakeLagocine().fetchText, readers: LAGOCINE_ONLY });
     const all = files.get(`${LIVE_DIR}/showtimes.json`) as ShowtimesFile;
     expect(all.sample).toBe(false);
     expect(all.sources).toEqual([expect.objectContaining({ id: "lagocine", method: "public-page", fetchedAt: NOW, health: "ok" })]);
@@ -44,15 +63,9 @@ describe("refreshLive", () => {
 
   it("keeps only the cinemas data/sources.json gives Lagocine", async () => {
     // A copy of the registry in which Lagocine no longer feeds EbonyLife (as when its own reader is built).
-    const dir = mkdtempSync(join(tmpdir(), "sinima-feeds-"));
-    mkdirSync(join(dir, "data"));
-    for (const name of ["cinemas.json", "credits.json", "credits-manual.json"]) writeFileSync(join(dir, "data", name), readFileSync(join(root, "data", name)));
-    const registry = JSON.parse(readFileSync(join(root, "data/sources.json"), "utf8")) as { sources: { id: string; cinemaIds: string[] }[] };
-    const lagocine = registry.sources.find((s) => s.id === "lagocine")!;
-    lagocine.cinemaIds = lagocine.cinemaIds.filter((id) => id !== "ebonylife-vi");
-    writeFileSync(join(dir, "data/sources.json"), JSON.stringify(registry));
+    const dir = rootWithLagocine(LAGOCINE_ON_17_NOV.filter((id) => id !== "ebonylife-vi"));
 
-    const before = (await refreshLive({ now: NOW, root, fetchText: fakeLagocine().fetchText, readers: LAGOCINE_ONLY })).files.get(`${LIVE_DIR}/showtimes.json`) as ShowtimesFile;
+    const before = (await refreshLive({ now: NOW, root: rootWithLagocine(), fetchText: fakeLagocine().fetchText, readers: LAGOCINE_ONLY })).files.get(`${LIVE_DIR}/showtimes.json`) as ShowtimesFile;
     expect(before.showings.some((s) => s.cinemaId === "ebonylife-vi")).toBe(true); // the page lists EbonyLife
     const { files, log } = await refreshLive({ now: NOW, root: dir, fetchText: fakeLagocine().fetchText, readers: LAGOCINE_ONLY });
     const after = files.get(`${LIVE_DIR}/showtimes.json`) as ShowtimesFile;
@@ -75,8 +88,22 @@ describe("refreshLive", () => {
 });
 
 describe("each cinema's own reader (D-76, D-122)", () => {
-  it("reads Silverbird's Veezi pages, Genesis, Grand and Blue Pictures from their own sites, beside Lagocine", () => {
-    expect(Object.keys(READERS).sort()).toEqual(["bluepictures", "genesis", "grand", "lagocine", "silverbird"]);
+  it("reads Silverbird's Veezi pages, Genesis, Grand, Blue Pictures and the script-built sites from their own sites, beside Lagocine", () => {
+    expect(Object.keys(READERS).sort()).toEqual(["bluepictures", "ebonylife", "genesis", "grand", "lagocine", "magnificent", "nova", "reachcinema", "silverbird", "thc", "viva"]);
+  });
+
+  it("gives the Reach Cinema readers each cinema's name on its page, from data/sources.json pageNames (D-125)", async () => {
+    const given: Record<string, Record<string, string> | undefined> = {};
+    const spy = (id: string) => async (input: { names?: Record<string, string> }) => {
+      given[id] = input.names;
+      return [{ showings: [{ cinemaId: "ozone-yaba", filmTitle: "Whalefall", rating: null, startsAt: "2026-11-11T18:30:00Z", format: null, bookingUrl: null }], builtAt: null }];
+    };
+    await refreshLive({ now: NOW, root, fetchText: fakeLagocine().fetchText, readers: { reachcinema: spy("reachcinema"), viva: spy("viva"), nova: spy("nova") } });
+    expect(given).toEqual({
+      reachcinema: { "ozone-yaba": "Ozone Cinemas", "sky-sangotedo": "Sky Cinema" },
+      viva: { "viva-ikeja": "Viva Ikeja" },
+      nova: { "nova-lagos": "Nova Lagos", "nova-abuja": "Nova Abuja" },
+    });
   });
 
   it("gives each reader its source's own pages for the cinemas it feeds, from data/sources.json", async () => {
@@ -131,16 +158,7 @@ describe("refreshLive when one source fails (D-119)", () => {
   const failing = async (url: string) => {
     throw new Error(`${new URL(url).host} answered 503`);
   };
-  const setup = () => {
-    const dir = mkdtempSync(join(tmpdir(), "sinima-kept-"));
-    mkdirSync(join(dir, "data"));
-    for (const name of ["cinemas.json", "credits.json", "credits-manual.json", "film-aliases.json"]) writeFileSync(join(dir, "data", name), readFileSync(join(root, "data", name)));
-    const registry = JSON.parse(readFileSync(join(root, "data/sources.json"), "utf8")) as { sources: { id: string; cinemaIds: string[] }[] };
-    const lagocine = registry.sources.find((s) => s.id === "lagocine")!;
-    lagocine.cinemaIds = lagocine.cinemaIds.filter((id) => !id.startsWith("genesis-"));
-    writeFileSync(join(dir, "data/sources.json"), JSON.stringify(registry));
-    return dir;
-  };
+  const setup = () => rootWithLagocine();
   const save = (dir: string, file: ShowtimesFile) => {
     mkdirSync(join(dir, LIVE_DIR), { recursive: true });
     writeFileSync(join(dir, LIVE_DIR, "showtimes.json"), JSON.stringify(file));
@@ -228,6 +246,9 @@ describe("liveBuildFiles (the build step)", () => {
     expect((files?.get("public/data/all.json") as ShowtimesFile).showings.length).toBe(main.showings.length);
     expect((files?.get("public/data/area/lekki.json") as ShowtimesFile).showings.length).toBeGreaterThan(0);
     expect((files?.get("public/data/area/abuja-wuse.json") as ShowtimesFile).showings).toEqual([]);
+    // Each city's own file, the one its pages are built from (D-126).
+    expect((files?.get("public/data/lagos.json") as ShowtimesFile).showings.length).toBe(main.showings.length);
+    expect(files?.has("public/data/abuja.json")).toBe(true);
   });
 
   it("puts today's credits.json on the live films, so a new poster or trailer shows without reading the site again (D-117)", async () => {

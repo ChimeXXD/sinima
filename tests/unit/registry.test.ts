@@ -36,11 +36,13 @@ describe("data registries", () => {
     }
   });
 
-  it("names a cinema in its source's booking links (bookingSites) only for a cinema the source feeds, each name once (D-124)", () => {
-    for (const source of sources.sources as { id: string; cinemaIds: string[]; bookingSites?: Record<string, string> }[]) {
-      const sites = Object.entries(source.bookingSites ?? {});
-      expect(sites.filter(([id]) => !source.cinemaIds.includes(id)).map(([id]) => id), source.id).toEqual([]);
-      expect(new Set(sites.map(([, site]) => site)).size, source.id).toBe(sites.length);
+  it("names a cinema in its source's booking links (bookingSites) or pages (pageNames) only for a cinema the source feeds, each name once (D-124, D-125)", () => {
+    for (const source of sources.sources as { id: string; cinemaIds: string[]; bookingSites?: Record<string, string>; pageNames?: Record<string, string> }[]) {
+      for (const [field, map] of [["bookingSites", source.bookingSites], ["pageNames", source.pageNames]] as const) {
+        const names = Object.entries(map ?? {});
+        expect(names.filter(([id]) => !source.cinemaIds.includes(id)).map(([id]) => id), `${source.id} ${field}`).toEqual([]);
+        expect(new Set(names.map(([, name]) => name)).size, `${source.id} ${field}`).toBe(names.length);
+      }
     }
   });
 });

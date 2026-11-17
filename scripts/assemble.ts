@@ -2,6 +2,8 @@
 // credits, built into the validated showtimes file and its per-area files (SPEC §4, D-18).
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { CITIES, type City } from "../src/lib/city.ts";
+import { inCity } from "../src/lib/data/cities.ts";
 import type { Cinema, ShowtimesFile, Source } from "../src/lib/data/types.ts";
 import { mergeCredits, type FilmCredits, type ManualEntry, type TmdbFilm } from "./credits.ts";
 import { buildShowtimes, splitByArea, type Batch } from "./pipeline.ts";
@@ -13,14 +15,36 @@ export type RegistrySource = {
   cinemaPages?: Record<string, string>;
   /** The name this source's booking links give each cinema, by cinema id (Genesis, D-124). */
   bookingSites?: Record<string, string>;
+  /** The name this source's pages show for each cinema, by cinema id (Reach Cinema, D-125). */
+  pageNames?: Record<string, string>;
 };
 
 export const readJson = <T>(path: string) => JSON.parse(readFileSync(path, "utf8")) as T;
 export const readSources = (root: string) => readJson<{ sources: RegistrySource[] }>(join(root, "data/sources.json")).sources;
 
-/** Where each file goes: the whole file, then "all" and each area slug. */
-export type Paths = { main: string; part: (slug: string) => string };
-export const SAMPLE_PATHS: Paths = { main: "data/showtimes.json", part: (slug) => (slug === "all" ? "public/data/all.json" : `public/data/area/${slug}.json`) };
+/** Where each file goes: the whole file, then "all" and each area slug, then each city (D-126). */
+export type Paths = { main: string; part: (slug: string) => string; city: (city: City) => string };
+export const SAMPLE_PATHS: Paths = {
+  main: "data/showtimes.json",
+  part: (slug) => (slug === "all" ? "public/data/all.json" : `public/data/area/${slug}.json`),
+  city: (city) => `public/data/${city}.json`,
+};
+
+/**
+ * The page files cut from the whole file: "all" and each area's (the next two days), then each
+ * city's cut from "all" (D-126), the file that city's pages are built from.
+ */
+export function pageFiles(file: ShowtimesFile, areas: { slug: string; city: string }[], now: string, paths: Paths): Map<string, ShowtimesFile> {
+  const files = new Map<string, ShowtimesFile>();
+  const parts = splitByArea(file, areas.map((area) => area.slug), now);
+  for (const [slug, part] of parts) files.set(paths.part(slug), part);
+  const cityOfArea = (slug: string) => {
+    const city = areas.find((area) => area.slug === slug)?.city;
+    return city === "lagos" || city === "abuja" ? city : undefined;
+  };
+  for (const city of CITIES) files.set(paths.city(city), inCity(parts.get("all") as ShowtimesFile, city, cityOfArea));
+  return files;
+}
 
 /**
  * What scripts/tmdb.ts last wrote (if it has run) for a film, with Chime's own entries on top (D-19).
@@ -49,7 +73,7 @@ export function creditsLookup(root: string, options: { savedOnly?: boolean } = {
 
 export function assemble(input: { now: string; root: string; batches: Batch[]; method: Source["method"]; paths: Paths }): { files: Map<string, ShowtimesFile>; log: string[] } {
   const { now, root, batches, method, paths } = input;
-  const registry = readJson<{ areas: { slug: string }[]; cinemas: RegistryCinema[] }>(join(root, "data/cinemas.json"));
+  const registry = readJson<{ areas: { slug: string; city: string }[]; cinemas: RegistryCinema[] }>(join(root, "data/cinemas.json"));
   const sourceRegistry = readSources(root);
 
   const sources: Source[] = batches.map((batch) => {
@@ -67,7 +91,6 @@ export function assemble(input: { now: string; root: string; batches: Batch[]; m
   const aliasPath = join(root, "data/film-aliases.json");
   const aliases = existsSync(aliasPath) ? readJson<{ aliases: Record<string, string> }>(aliasPath).aliases : {};
   const { file, log } = buildShowtimes({ generatedAt: now, sources, cinemas, batches, aliases, creditsFor: creditsLookup(root) });
-  const files = new Map<string, ShowtimesFile>([[paths.main, file]]);
-  for (const [slug, part] of splitByArea(file, registry.areas.map((area) => area.slug), now)) files.set(paths.part(slug), part);
+  const files = new Map<string, ShowtimesFile>([[paths.main, file], ...pageFiles(file, registry.areas, now, paths)]);
   return { files, log };
 }

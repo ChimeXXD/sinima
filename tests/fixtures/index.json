@@ -145,6 +145,145 @@
       "savedAt": "2026-11-17T00:18:27Z",
       "sample": false,
       "why": "Evidence for D-122: Filmworld's Veezi page said no shows were scheduled while Lagocine listed 22 times from Filmworld's own site, so Filmworld stays on Lagocine."
+    },
+    {
+      "file": "reachcinema/2026-11-17-ozone.html",
+      "sourceId": "reachcinema",
+      "page": "reach-day",
+      "cinemaId": "ozone-yaba",
+      "pageUrl": "https://ozone.reachcinema.io/showtimes?cinemaId=ozo-a4239533&date=Tue+Nov+17+2026",
+      "savedAt": "2026-11-17T01:44:12Z",
+      "sample": false,
+      "why": "Parser and reader tests only (D-125), rendered once through politeBrowser under our bot name. Not sample data: the sample's Lagocine day page (11 Nov) still lists this cinema, so both would list the same showings."
+    },
+    {
+      "file": "reachcinema/2026-11-17-ozone-nov-18.html",
+      "sourceId": "reachcinema",
+      "page": "reach-day",
+      "cinemaId": "ozone-yaba",
+      "pageUrl": "https://ozone.reachcinema.io/showtimes?cinemaId=ozo-a4239533&date=Wed+Nov+18+2026",
+      "savedAt": "2026-11-17T01:38:11Z",
+      "sample": false,
+      "why": "Parser and reader tests only (D-125), rendered once through politeBrowser under our bot name. Not sample data: the sample's Lagocine day page (11 Nov) still lists this cinema, so both would list the same showings."
+    },
+    {
+      "file": "reachcinema/2026-11-17-sky-nov-17th.html",
+      "sourceId": "reachcinema",
+      "page": "reach-tabs",
+      "cinemaId": "sky-sangotedo",
+      "pageUrl": "https://skycinemas.reachcinema.io/showtimes",
+      "savedAt": "2026-11-17T01:44:29Z",
+      "sample": false,
+      "why": "Parser and reader tests only (D-125), rendered once through politeBrowser under our bot name. Not sample data: the sample's Lagocine day page (11 Nov) still lists this cinema, so both would list the same showings. Rendered after clicking the \"Nov 17th\" tab."
+    },
+    {
+      "file": "reachcinema/2026-11-17-sky-nov-18th.html",
+      "sourceId": "reachcinema",
+      "page": "reach-tabs",
+      "cinemaId": "sky-sangotedo",
+      "pageUrl": "https://skycinemas.reachcinema.io/showtimes",
+      "savedAt": "2026-11-17T01:44:37Z",
+      "sample": false,
+      "why": "Parser and reader tests only (D-125), rendered once through politeBrowser under our bot name. Not sample data: the sample's Lagocine day page (11 Nov) still lists this cinema, so both would list the same showings. Rendered after clicking the \"Nov 18th\" tab."
+    },
+    {
+      "file": "viva/2026-11-17-ikeja.html",
+      "sourceId": "viva",
+      "page": "reach-day",
+      "cinemaId": "viva-ikeja",
+      "pageUrl": "https://web.vivacinemas.com/showtimes?cinemaId=viv-27fd41dc&date=Tue+Nov+17+2026",
+      "savedAt": "2026-11-17T01:38:24Z",
+      "sample": false,
+      "why": "Parser and reader tests only (D-125), rendered once through politeBrowser under our bot name. Not sample data: the sample's Lagocine day page (11 Nov) still lists this cinema, so both would list the same showings."
+    },
+    {
+      "file": "viva/2026-11-17-lekki-empty.html",
+      "sourceId": "viva",
+      "page": "reach-day",
+      "pageUrl": "https://web.vivacinemas.com/showtimes?cinemaId=viv-6ac91519&date=Tue+Nov+17+2026",
+      "savedAt": "2026-11-17T01:42:04Z",
+      "sample": false,
+      "why": "Parser tests only (D-125): Viva Lekki (not a cinema we list) showing no films, the platform's empty day."
+    },
+    {
+      "file": "nova/2026-11-17-lagos.html",
+      "sourceId": "nova",
+      "page": "reach-day",
+      "cinemaId": "nova-lagos",
+      "pageUrl": "https://novacinemang.com/showtimes?cinemaId=nov-d419ab98&date=Tue+Nov+17+2026",
+      "savedAt": "2026-11-17T01:44:21Z",
+      "sample": false,
+      "why": "Parser and reader tests only (D-125), rendered once through politeBrowser under our bot name. Not sample data yet: the sample is built from saved pages read without a browser."
+    },
+    {
+      "file": "nova/2026-11-17-abuja.html",
+      "sourceId": "nova",
+      "page": "reach-day",
+      "cinemaId": "nova-abuja",
+      "pageUrl": "https://novacinemang.com/showtimes?cinemaId=nov-f76e616e&date=Tue+Nov+17+2026",
+      "savedAt": "2026-11-17T01:38:32Z",
+      "sample": false,
+      "why": "Parser and reader tests only (D-125), rendered once through politeBrowser under our bot name. Not sample data yet: the sample is built from saved pages read without a browser."
+    },
+    {
+      "file": "ebonylife/2026-11-17-movies-17-nov.html",
+      "sourceId": "ebonylife",
+      "page": "ebonylife",
+      "cinemaId": "ebonylife-vi",
+      "pageUrl": "https://ebonylifecinemas.com/movies",
+      "savedAt": "2026-11-17T01:44:42Z",
+      "sample": false,
+      "why": "Parser and reader tests only (D-125), rendered once through politeBrowser under our bot name. Not sample data: the sample's Lagocine day page (11 Nov) still lists this cinema, so both would list the same showings. Rendered after clicking \"17 Nov\"."
+    },
+    {
+      "file": "ebonylife/2026-11-17-movies-18-nov.html",
+      "sourceId": "ebonylife",
+      "page": "ebonylife",
+      "cinemaId": "ebonylife-vi",
+      "pageUrl": "https://ebonylifecinemas.com/movies",
+      "savedAt": "2026-11-17T01:44:51Z",
+      "sample": false,
+      "why": "Parser and reader tests only (D-125), rendered once through politeBrowser under our bot name. Not sample data: the sample's Lagocine day page (11 Nov) still lists this cinema, so both would list the same showings. Rendered after clicking \"18 Nov\"."
+    },
+    {
+      "file": "thc/2026-11-17-home-nov-17th.html",
+      "sourceId": "thc",
+      "page": "thc",
+      "cinemaId": "thc-agege",
+      "pageUrl": "https://cinemaxthc.ng/",
+      "savedAt": "2026-11-17T01:44:55Z",
+      "sample": false,
+      "why": "Parser and reader tests only (D-125), rendered once through politeBrowser under our bot name. Not sample data: the sample's Lagocine day page (11 Nov) still lists this cinema, so both would list the same showings. Rendered after clicking \"Nov 17th\"."
+    },
+    {
+      "file": "thc/2026-11-17-home-nov-18th.html",
+      "sourceId": "thc",
+      "page": "thc",
+      "cinemaId": "thc-agege",
+      "pageUrl": "https://cinemaxthc.ng/",
+      "savedAt": "2026-11-17T01:45:05Z",
+      "sample": false,
+      "why": "Parser and reader tests only (D-125), rendered once through politeBrowser under our bot name. Not sample data: the sample's Lagocine day page (11 Nov) still lists this cinema, so both would list the same showings. Rendered after clicking \"Nov 18th\"."
+    },
+    {
+      "file": "magnificent/2026-11-17-review-17.html",
+      "sourceId": "magnificent",
+      "page": "magnificent",
+      "cinemaId": "magnificent-ikorodu-road",
+      "pageUrl": "https://magnificentcinemas.com/review.html",
+      "savedAt": "2026-11-17T01:45:09Z",
+      "sample": false,
+      "why": "Parser and reader tests only (D-125), rendered once through politeBrowser under our bot name. Not sample data: the sample's Lagocine day page (11 Nov) still lists this cinema, so both would list the same showings. Rendered after clicking the 17th."
+    },
+    {
+      "file": "magnificent/2026-11-17-review-18.html",
+      "sourceId": "magnificent",
+      "page": "magnificent",
+      "cinemaId": "magnificent-ikorodu-road",
+      "pageUrl": "https://magnificentcinemas.com/review.html",
+      "savedAt": "2026-11-17T01:45:18Z",
+      "sample": false,
+      "why": "Parser and reader tests only (D-125), rendered once through politeBrowser under our bot name. Not sample data: the sample's Lagocine day page (11 Nov) still lists this cinema, so both would list the same showings. Rendered after clicking the 18th."
     }
   ]
 }

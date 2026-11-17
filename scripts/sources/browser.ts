@@ -4,12 +4,20 @@
 // opened, page loads to a host are at least `minGapMs` apart, a page has 30 s to answer and 30 s
 // to render, a refusal is final, and a redirect is checked hop by hop and refused if it leaves the
 // site. Images, fonts and media are never downloaded. One browser per run, launched on the first
-// page and closed by `close()`: the Mac and the job's runner are both short of memory.
+// page and closed by `close()`: the Mac and the job's runner are both short of memory. A page whose
+// days are tabs a visitor taps (no address for each day) can have one control clicked once it has
+// settled (D-125); a click is not a page load, and the page's own requests after it are the ones a
+// visitor's tap would make.
 import type { Page, Route } from "@playwright/test";
 import { MAX_REDIRECTS, PAGE_TIMEOUT_MS, refusal, rulesFrom, type PoliteOptions, type PoliteRules } from "./polite.ts";
 
-/** The rendered HTML of a page, once `waitFor` is on it (or the network has gone quiet). */
-export type RenderText = (url: string, opts?: { waitFor?: string }) => Promise<string>;
+/**
+ * The rendered HTML of a page, once `waitFor` is on it (or the network has gone quiet). With
+ * `click`, the first control matching that selector is then clicked (a date tab), marked
+ * `data-sinima-clicked` so the parser can see which one, and the page read once the network is
+ * quiet again; when no control matches, the page is read as it is, for the parser to judge.
+ */
+export type RenderText = (url: string, opts?: { waitFor?: string; click?: string }) => Promise<string>;
 
 /** What the rules need from one browser tab. The real one is below; tests use a fake. */
 export type BrowserPage = {
@@ -17,6 +25,8 @@ export type BrowserPage = {
   open: (url: string, timeoutMs: number) => Promise<{ status: number; location: string | null }>;
   /** Waits until `selector` is on the page, or with none until the network has been quiet a moment. */
   settle: (selector: string | null, timeoutMs: number) => Promise<void>;
+  /** Clicks the first control matching `selector`, marked, and waits for the network to go quiet; false when there is none. */
+  click: (selector: string, timeoutMs: number) => Promise<boolean>;
   html: () => Promise<string>;
   close: () => Promise<void>;
 };
@@ -45,6 +55,7 @@ export function politeBrowser(options: (PoliteOptions | { rules: PoliteRules }) 
         }
         if (status < 200 || status >= 300) throw refusal(url, status);
         await page.settle(opts.waitFor ?? null, PAGE_TIMEOUT_MS);
+        if (opts.click !== undefined) await page.click(opts.click, PAGE_TIMEOUT_MS);
         return await page.html();
       }
     } finally {
@@ -60,6 +71,10 @@ export function politeBrowser(options: (PoliteOptions | { rules: PoliteRules }) 
   }
   return Object.assign(render, { close });
 }
+
+/** After a click: time for the request it starts to begin, then how long the network must stay quiet. */
+const CLICK_GRACE_MS = 300;
+const QUIET_MS = 500;
 
 /** What a visitor's eye needs and a listing does not: never downloaded. */
 const BLOCKED = new Set(["image", "font", "media"]);
@@ -101,6 +116,25 @@ async function chromiumPage(page: Page): Promise<BrowserPage> {
     }
   }
 
+  // Requests the page has in flight, so a click can wait until what it asked for has arrived.
+  let inFlight = 0;
+  page.on("request", () => (inFlight += 1));
+  const settled = () => (inFlight = Math.max(0, inFlight - 1));
+  page.on("requestfinished", settled);
+  page.on("requestfailed", settled);
+
+  /** Resolves once nothing has been in flight for QUIET_MS (after a short grace for the request a click starts). */
+  async function quiet(timeoutMs: number): Promise<void> {
+    const deadline = Date.now() + timeoutMs;
+    await page.waitForTimeout(CLICK_GRACE_MS);
+    let since = Date.now();
+    while (Date.now() - since < QUIET_MS) {
+      if (Date.now() > deadline) throw new Error(`The page was still loading ${timeoutMs / 1000} s after the click. Not read.`);
+      if (inFlight > 0) since = Date.now();
+      await page.waitForTimeout(50);
+    }
+  }
+
   await page.route("**/*", async (route, request) => {
     if (BLOCKED.has(request.resourceType())) return route.abort();
     if (request.isNavigationRequest() && request.frame() === page.mainFrame()) {
@@ -128,6 +162,14 @@ async function chromiumPage(page: Page): Promise<BrowserPage> {
     async settle(selector, timeoutMs) {
       if (selector === null) await page.waitForLoadState("networkidle", { timeout: timeoutMs });
       else await page.waitForSelector(selector, { state: "attached", timeout: timeoutMs });
+    },
+    async click(selector, timeoutMs) {
+      const control = page.locator(selector).first();
+      if ((await control.count()) === 0) return false;
+      await control.evaluate((element) => element.setAttribute("data-sinima-clicked", ""));
+      await control.click({ timeout: timeoutMs });
+      await quiet(timeoutMs);
+      return true;
     },
     html: () => page.content(),
     close: () => page.close(),

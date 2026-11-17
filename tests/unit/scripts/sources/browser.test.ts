@@ -9,7 +9,8 @@ import { chromiumLauncher, politeBrowser, type BrowserPage, type Launcher } from
 // loads to a host, 30 s to answer, a refusal is final and a redirect to another site is refused.
 const UA = "SinimaBot/0.1 (+https://github.com/ChimeXXD/sinima)";
 
-type FakePage = { status: number; location?: string; html?: string };
+/** `tabs`: what the page shows after a control (by selector) is clicked. */
+type FakePage = { status: number; location?: string; html?: string; tabs?: Record<string, string> };
 
 /** A fake browser and clock: records each page opened, each wait and what was launched. */
 function fakeBrowser(pages: Record<string, FakePage>, robots: Record<string, { status: number; body: string }> = {}) {
@@ -40,6 +41,14 @@ function fakeBrowser(pages: Record<string, FakePage>, robots: Record<string, { s
           async settle(selector, timeoutMs) {
             events.push({ what: `settle ${selector}`, url: "", at: clock });
             timeouts.push(timeoutMs);
+          },
+          async click(selector, timeoutMs) {
+            events.push({ what: `click ${selector}`, url: "", at: clock });
+            timeouts.push(timeoutMs);
+            const after = shown?.tabs?.[selector];
+            if (after === undefined) return false;
+            shown = { ...shown!, html: after };
+            return true;
           },
           async html() {
             return shown?.html ?? "";
@@ -93,6 +102,20 @@ describe("politeBrowser", () => {
     await render("https://reach.example/a");
     expect(net.events.filter((e) => e.what.startsWith("settle")).map((e) => e.what)).toEqual(["settle .showtime", "settle null"]);
     expect(net.timeouts.every((ms) => ms === 30_000)).toBe(true);
+    await render.close();
+  });
+
+  // A day a visitor picks by tapping its tab (Sky, THC, EbonyLife, Magnificent): one page load,
+  // then the click, after the page has settled.
+  it("clicks the control it is given once the page has settled, and reads the page after it", async () => {
+    const net = fakeBrowser({ "https://sky.example/showtimes": { status: 200, html: "today", tabs: { "button:text-is('Nov 18th')": "tomorrow" } } });
+    const render = net.make();
+    expect(await render("https://sky.example/showtimes", { click: "button:text-is('Nov 18th')" })).toBe("tomorrow");
+    expect(net.events.filter((e) => !e.what.startsWith("fetch")).map((e) => e.what)).toEqual(["open", "settle null", "click button:text-is('Nov 18th')"]);
+    expect(net.timeouts.every((ms) => ms === 30_000)).toBe(true);
+    // No such control on the page (no tab for that day): the page as it is, for the parser to judge.
+    expect(await render("https://sky.example/showtimes", { click: "button:text-is('Nov 21st')" })).toBe("today");
+    expect(net.opened()).toEqual(["https://sky.example/showtimes", "https://sky.example/showtimes"]);
     await render.close();
   });
 
@@ -167,6 +190,36 @@ describe.skipIf(!existsSync(chromiumPath))("politeBrowser with Chromium (local s
       expect(seen.some((r) => r.host.startsWith("localhost"))).toBe(false);
       await expect(render(`http://127.0.0.1:${port}/private/times`)).rejects.toThrow(/robots\.txt/);
       await expect(render(`http://127.0.0.1:${port}/gone`)).rejects.toThrow(/404/);
+    } finally {
+      await render.close();
+      await new Promise((done) => server.close(done));
+    }
+  }, 60_000);
+
+  // A date tab that loads its day's times when tapped, as Sky's and EbonyLife's pages do.
+  it("clicks a tab, waits for what it loads, and marks the control it clicked", async () => {
+    const server = createServer((request: IncomingMessage, response) => {
+      const path = request.url ?? "/";
+      if (path === "/robots.txt") return response.end("User-agent: *\nAllow: /");
+      if (path === "/day/18") return setTimeout(() => response.end("<li>8:15 PM (18th)</li>"), 300);
+      if (path === "/showtimes")
+        return response.end(
+          `<!doctype html><button id="t17">Nov 17th</button><button id="t18">Nov 18th</button><ul id="times"><li>7:30 PM (17th)</li></ul>` +
+            `<script>document.getElementById("t18").onclick = () => fetch("/day/18").then((r) => r.text()).then((t) => { document.getElementById("times").innerHTML = t; });</script>`,
+        );
+      response.writeHead(404).end("not here");
+    });
+    await new Promise<void>((done) => server.listen(0, "127.0.0.1", done));
+    const port = (server.address() as AddressInfo).port;
+    const render = politeBrowser({ userAgent: UA, minGapMs: 0, launcher: chromiumLauncher });
+    try {
+      const tomorrow = await render(`http://127.0.0.1:${port}/showtimes`, { click: "button:text-is('Nov 18th')" });
+      expect(tomorrow).toContain("8:15 PM (18th)");
+      expect(tomorrow).not.toContain("7:30 PM (17th)");
+      expect(tomorrow).toMatch(/<button id="t18" data-sinima-clicked="">Nov 18th<\/button>/);
+      const none = await render(`http://127.0.0.1:${port}/showtimes`, { click: "button:text-is('Nov 21st')" });
+      expect(none).toContain("7:30 PM (17th)");
+      expect(none).not.toContain("data-sinima-clicked");
     } finally {
       await render.close();
       await new Promise((done) => server.close(done));

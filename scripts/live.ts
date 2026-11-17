@@ -9,26 +9,34 @@ import type { ShowtimesFile } from "../src/lib/data/types.ts";
 import { lagosDayKey, lagosLocalToUtc, toLagos, utcMs, utcString } from "../src/lib/time/lagos.ts";
 import { COMPILERS } from "../src/lib/data/about.ts";
 import { validateShowtimes } from "../src/lib/data/validate.ts";
-import { assemble, creditsLookup, readJson, readSources, SAMPLE_PATHS, type Paths } from "./assemble.ts";
-import { splitByArea, type Batch } from "./pipeline.ts";
+import { assemble, creditsLookup, pageFiles, readJson, readSources, SAMPLE_PATHS, type Paths } from "./assemble.ts";
+import type { Batch } from "./pipeline.ts";
 import { readBluePictures } from "./sources/bluepictures.ts";
 import type { RenderText } from "./sources/browser.ts";
 import { genesisReader, MAX_FILM_PAGES } from "./sources/genesis.ts";
+import { readEbonyLife } from "./sources/ebonylife.ts";
 import { readGrand } from "./sources/grand.ts";
 import { parseLagocineDay } from "./sources/lagocine.ts";
+import { readMagnificent } from "./sources/magnificent.ts";
 import type { FetchText } from "./sources/polite.ts";
 import type { ParsedPage, Reader } from "./sources/raw.ts";
+import { readReach } from "./sources/reach.ts";
+import { readThc } from "./sources/thc.ts";
 import { readVeezi } from "./sources/veezi.ts";
 
 export const LIVE_DIR = "data/live";
-const LIVE_PATHS: Paths = { main: `${LIVE_DIR}/showtimes.json`, part: (slug) => (slug === "all" ? `${LIVE_DIR}/all.json` : `${LIVE_DIR}/area/${slug}.json`) };
+const LIVE_PATHS: Paths = {
+  main: `${LIVE_DIR}/showtimes.json`,
+  part: (slug) => (slug === "all" ? `${LIVE_DIR}/all.json` : `${LIVE_DIR}/area/${slug}.json`),
+  city: (city) => `${LIVE_DIR}/${city}.json`,
+};
 const DAY = 86_400_000;
 
 export type { Reader };
 
 /**
  * The sources we can read live. A cleared source with no reader here is not read yet. Each cinema
- * is read from its own site where it can be (D-76, D-122), and from Lagocine only while it can't.
+ * is read from its own site where it can be (D-76, D-122, D-125), and from Lagocine only while it can't.
  * Filmworld's Veezi page (the same reader as Silverbird's) is not read yet: on 17 Nov it said "No
  * shows currently scheduled" while Filmworld's own site, through Lagocine, listed 22 times (D-122).
  */
@@ -45,6 +53,15 @@ export const READERS: Record<string, Reader> = {
   genesis: genesisReader(MAX_FILM_PAGES),
   grand: readGrand,
   bluepictures: readBluePictures,
+  // Script-built pages, read rendered through the run's headless browser (D-125): the Reach Cinema
+  // platform (Ozone and Sky; Viva; Nova in Lagos and Abuja), EbonyLife, THC and Magnificent, each
+  // day by its own address or by clicking its date tab. Two page loads per cinema a run.
+  reachcinema: readReach,
+  viva: readReach,
+  nova: readReach,
+  ebonylife: readEbonyLife,
+  thc: readThc,
+  magnificent: readMagnificent,
 };
 
 /** A run with no browser (tests, or no reader that needs one) refuses a page built by script. */
@@ -110,7 +127,7 @@ export async function refreshLive(input: {
     try {
       // Each cinema's own page on this source, for the cinemas it feeds (data/sources.json `cinemaPages`).
       const own = (map: Record<string, string> = {}) => Object.fromEntries(Object.entries(map).filter(([cinemaId]) => given.has(cinemaId)));
-      pages = await reader({ now, days: source.daysAhead ?? 2, fetchText, renderText, pages: own(source.cinemaPages), sites: own(source.bookingSites) });
+      pages = await reader({ now, days: source.daysAhead ?? 2, fetchText, renderText, pages: own(source.cinemaPages), sites: own(source.bookingSites), names: own(source.pageNames) });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       failures.push(message);
@@ -136,9 +153,9 @@ export async function refreshLive(input: {
 
 /**
  * The build step: the committed live set as the files pages read, or null when there is none and
- * the caller makes sample data instead. The page files are split again here against today's
- * data/cinemas.json, so an area added since the last live run gets its file and the build does
- * not fail on a missing one.
+ * the caller makes sample data instead. The page files (each area's, each city's) are cut again
+ * here against today's data/cinemas.json, so an area added since the last live run gets its file
+ * and the build does not fail on a missing one.
  */
 export function liveBuildFiles(root: string, now: string): Map<string, ShowtimesFile> | null {
   const mainPath = join(root, LIVE_PATHS.main);
@@ -151,8 +168,6 @@ export function liveBuildFiles(root: string, now: string): Map<string, Showtimes
   const checked = validateShowtimes({ ...read, films: read.films.map((film) => ({ ...film, ...creditsFor(film.id) })) });
   if (!checked.ok) throw new Error(`data/live/showtimes.json with today's credits was refused:\n${checked.errors.join("\n")}`);
   const file = checked.file;
-  const areaSlugs = readJson<{ areas: { slug: string }[] }>(join(root, "data/cinemas.json")).areas.map((area) => area.slug);
-  const files = new Map<string, ShowtimesFile>([[SAMPLE_PATHS.main, file]]);
-  for (const [slug, part] of splitByArea(file, areaSlugs, now)) files.set(SAMPLE_PATHS.part(slug), part);
-  return files;
+  const areas = readJson<{ areas: { slug: string; city: string }[] }>(join(root, "data/cinemas.json")).areas;
+  return new Map<string, ShowtimesFile>([[SAMPLE_PATHS.main, file], ...pageFiles(file, areas, now, SAMPLE_PATHS)]);
 }

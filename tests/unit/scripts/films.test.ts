@@ -63,16 +63,27 @@ describe("matchFilms", () => {
   it("keeps Ramayana at /film/ramayana through data/film-aliases.json, both spellings one film", () => {
     const file = JSON.parse(readFileSync(join(import.meta.dirname, "../../../data/film-aliases.json"), "utf8")) as { about: string; aliases: Record<string, string> };
     expect(file.about).toMatch(/D-119/);
-    // D-122 adds the spellings cinemas' own sites use for two films Lagocine already lists.
+    // D-122 and D-125 add the spellings cinemas' own sites use for films Lagocine already lists.
     expect(file.aliases).toEqual({
       "ramayana-rise-of-a-legend": "ramayana",
       "issakaba-returns": "isakaba-the-returns",
       "issakaba-return": "isakaba-the-returns",
       "isakaba-return": "isakaba-the-returns",
       "tele-and-zikora": "tele-x-zikora",
+      "agbaranla-the-return": "agbara-nla-the-return",
+      "clay-face": "clayface",
+      "whale-fall": "whalefall",
     });
     const { films } = matchFilms(["Ramayana", "Ramayana: Rise of a Legend"], file.aliases);
     expect([...films.values()]).toEqual([{ id: "ramayana", title: "Ramayana" }, { id: "ramayana", title: "Ramayana" }]);
+  });
+
+  // The script-built sites (D-125): Reach, EbonyLife and THC write "AGBARANLA: THE RETURN" (the
+  // remake of Mount Zion's 1991 Agbaranla), Magnificent "CLAY FACE" and "WHALE FALL".
+  it("makes the script-built sites' spellings of Agbara Nla, Clayface and Whalefall one film each (D-125)", () => {
+    const file = JSON.parse(readFileSync(join(import.meta.dirname, "../../../data/film-aliases.json"), "utf8")) as { aliases: Record<string, string> };
+    const { films } = matchFilms(["AGBARANLA: THE RETURN", "Agbara Nla: The Return", "CLAY FACE", "Clayface", "WHALE FALL", "Whalefall"], file.aliases);
+    expect([...films.values()].map((film) => film.id)).toEqual(["agbara-nla-the-return", "agbara-nla-the-return", "clayface", "clayface", "whalefall", "whalefall"]);
   });
 
   it("makes Genesis's, Veezi's, Blue Pictures' and Lagocine's spellings of Isakaba one film, and Tele & Zikora one (D-122)", () => {

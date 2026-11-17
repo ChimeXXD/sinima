@@ -99,7 +99,7 @@ Dates are a target. If a week slips, cut its Should items first; never cut the c
 ## Week 3: live data, remaining pages, video script (30 Nov – 6 Dec)
 
 - [x] Readers for the sites with times in their HTML, tested on saved pages and run live (D-122): Veezi (Silverbird's four; each booking link's siteToken checked, since the host is shared), Genesis (four locations), Grand, Blue Pictures; each left Lagocine. Filmworld's Veezi page is read by the same code but held back: it showed no shows while Lagocine listed 22 times (D-122)
-- [ ] Readers for the script-built sites (headless browser): Reach (Ozone, Sky), Viva, Nova, EbonyLife, THC, Magnificent; Lagocine stays for Filmhouse and anything not yet read (D-76)
+- [x] Readers for the script-built sites (headless browser): Reach (Ozone, Sky), Viva, Nova, EbonyLife, THC, Magnificent; Lagocine stays for Filmhouse and anything not yet read (D-76). Done 17 Nov (D-125): tested on rendered pages and run live; each left Lagocine; Nova's two have times for the first time. The data budget is now per city file (D-126)
 - [ ] Refresh workflow runs for every cleared source in both cities (D-76); a cinema with no cleared source says "Times not available yet"; Lagocine credited on /about and on the cinema pages it feeds
 - [ ] Film page complete; cinema page; Stay or Go; started showings not bookable (e2e at `now − 1 min`)
 - [ ] Reminder (.ics with a 30-min alert, checked on iPhone and Android) and share
