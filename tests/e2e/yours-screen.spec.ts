@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "./test";
-import { dataFile, freeze, sampleTime, shownClock, today } from "./helpers";
+import { dataFile, freeze, live, sampleTime, shownClock, today } from "./helpers";
 
 // Your cinemas as Figma draws it (Figma 206:8570 Default, 206:8921 None saved, build unit 10): the
 // cinemas saved on this phone as folders, soonest first; with none, the way to keep one (D-61).
@@ -149,4 +149,28 @@ test("a heart on each row of the Cinemas tab keeps a cinema without opening it (
   expect(await page.evaluate(() => localStorage.getItem("ls.cinemas"))).toBe(JSON.stringify(["grand-lekki"]));
   await row.getByTestId("cinema.name").click(); // the rest of the row still opens the cinema
   await expect(page).toHaveURL(/\/lagos\/cinema\/grand-lekki$/);
+});
+
+test("on a computer the list is a panel down the right edge, full height, sliding in from it (D-133)", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await keep(page, ["ebonylife-vi"]); // with a cinema kept, the list opens from the + (Chime's recording)
+  await page.goto("/lagos/yours");
+  await live(page);
+  await page.addStyleTag({ content: ":root { --dur-sheet: 10s; }" }); // slow, so its first frame can be read
+  await page.getByTestId("yours.add").click();
+  const sheet = page.getByTestId("yours.pick");
+  await expect(sheet).toHaveAttribute("open", ""); // opened: its 10 s slide has begun
+  // It comes in from the right edge: its first frame is one width and 8 off to the right, not lower or smaller.
+  const from = await sheet.evaluate((el) => {
+    const slide = el.getAnimations().find((a) => (a as CSSTransition).transitionProperty === "transform");
+    if (!slide) return null;
+    slide.pause();
+    slide.currentTime = 0;
+    const transform = getComputedStyle(el).transform;
+    slide.finish();
+    return transform;
+  });
+  expect(from).toBe("matrix(1, 0, 0, 1, 448, 0)");
+  // Settled: 8 in from the top, right and bottom, 440 wide.
+  await expect.poll(async () => JSON.stringify(await sheet.boundingBox())).toBe(JSON.stringify({ x: 1440 - 8 - 440, y: 8, width: 440, height: 900 - 16 }));
 });

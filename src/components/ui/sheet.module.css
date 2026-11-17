@@ -192,6 +192,48 @@ div.option:active {
   }
 }
 
+/* D-133: on a computer a long list (Your cinemas › Add) is a panel down the right edge, full height
+   and 8 in from it like the phone sheet, 440 wide like the dialog. It slides in from the edge on
+   the drawer curve and leaves the same way, quicker. */
+@media (min-width: 1200px) {
+  .sheet.side {
+    inset: var(--space-8) var(--space-8) var(--space-8) auto;
+    width: 440px;
+    height: auto;
+    max-height: none;
+    margin: 0;
+    opacity: 1;
+    transform: translateX(calc(100% + var(--space-8)));
+    transition-property: transform, display, overlay;
+  }
+  .sheet.side[open] {
+    transform: none;
+    transition-duration: var(--dur-sheet);
+    transition-timing-function: var(--ease-drawer);
+  }
+  @starting-style {
+    .sheet.side[open] {
+      transform: translateX(calc(100% + var(--space-8)));
+    }
+  }
+}
+@media (min-width: 1200px) and (prefers-reduced-motion: reduce) {
+  .sheet.side {
+    opacity: 0;
+    transform: none;
+    transition-property: opacity, display, overlay;
+  }
+  .sheet.side[open] {
+    opacity: 1;
+  }
+  @starting-style {
+    .sheet.side[open] {
+      opacity: 0;
+      transform: none;
+    }
+  }
+}
+
 /* The pickers' sheet (Figma Cinemas › Area picker open): 20 12 16 padding, 6 between parts; the
    title block has 8 at its sides and 6 under it. */
 .picker {

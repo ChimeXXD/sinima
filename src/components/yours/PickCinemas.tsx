@@ -22,7 +22,7 @@ export function PickCinemas({ open, onClose, cinemas, areas, city }: { open: boo
     .map((area) => ({ area, cinemas: cinemas.filter((cinema) => cinema.area === area).sort((a, b) => a.name.localeCompare(b.name)) }));
 
   return (
-    <Sheet open={open} onClose={onClose} title={words.title} subtitle={words.subtitle} testId="yours.pick">
+    <Sheet open={open} onClose={onClose} title={words.title} subtitle={words.subtitle} testId="yours.pick" side>
       {groups.map((group) => (
         <section key={group.area} className={s.pickGroup} aria-labelledby={`pick.${group.area}`}>
           <h3 id={`pick.${group.area}`} className={s.pickArea}>

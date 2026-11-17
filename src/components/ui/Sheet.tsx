@@ -13,8 +13,12 @@ import s from "./sheet.module.css";
 // `picker` is the Cinemas pickers' sheet (Figma Cinemas › Area picker open): tighter, no close
 // button, 640 wide on an iPad. On a computer the pickers drop the Spring dropdown instead (D-109 c,
 // SpringMenu). Escape and the scrim close it.
+//
+// `side` is for a long list (Your cinemas › Add): on a computer it is a panel down the right edge,
+// sliding in from it, in place of the centred dialog (D-133). Below 1200 px (phones, iPads upright)
+// it stays the sheet.
 
-export function Sheet({ open, onClose, title, subtitle, children, className, testId = "sheet", picker }: { open: boolean; onClose: () => void; title: string; subtitle?: string; children: React.ReactNode; className?: string; testId?: string; /** The picker the sheet opens from. */ picker?: React.RefObject<HTMLElement | null> }) {
+export function Sheet({ open, onClose, title, subtitle, children, className, testId = "sheet", picker, side }: { open: boolean; onClose: () => void; title: string; subtitle?: string; children: React.ReactNode; className?: string; testId?: string; /** The picker the sheet opens from. */ picker?: React.RefObject<HTMLElement | null>; /** On a computer, a panel down the right edge (D-133). */ side?: boolean }) {
   const ref = useRef<HTMLDialogElement>(null);
   useSwipeDown(ref, open);
   useEffect(() => {
@@ -30,7 +34,7 @@ export function Sheet({ open, onClose, title, subtitle, children, className, tes
   return (
     <dialog
       ref={ref}
-      className={[s.sheet, picker && s.picker, className].filter(Boolean).join(" ")}
+      className={[s.sheet, picker && s.picker, side && s.side, className].filter(Boolean).join(" ")}
       aria-labelledby={`${testId}.title`}
       data-testid={testId}
       onClose={(event) => {

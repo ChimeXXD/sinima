@@ -10,7 +10,7 @@ import { motion } from "@/components/ui/motion";
  * 0.11 px/ms, and it closes from where it is on its own close transition; otherwise it snaps back
  * on --dur-base --ease-out. It only takes over a pull that starts downward with the sheet scrolled
  * to its top, so its content still scrolls. Phones and iPads only: from 1200 px the sheet is a
- * centred dialog or a popover. Reduced motion: the pull still follows the finger; the close fades
+ * centred dialog, a popover or a side panel (D-133). Reduced motion: the pull still follows the finger; the close fades
  * (the sheet's own reduced-motion transition).
  */
 export function useSwipeDown(ref: React.RefObject<HTMLDialogElement | null>, open: boolean): void {

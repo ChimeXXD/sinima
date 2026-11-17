@@ -2,6 +2,16 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 17 Nov 2026 — "Add your cinemas" is a side panel on a computer (D-133)
+
+Chime sent a recording of the desktop list as a centred pop-up and drew a panel down the window's right edge: "Make it a sidebar over here instead of it popping up."
+
+- **Changed:** `Sheet` takes `side`; `sheet.module.css` from 1200 px: `.sheet.side` is fixed 8 px from the top, right and bottom, 440 wide, full height; enters from `translateX(calc(100% + 8px))` on `--dur-sheet` `--ease-drawer`, leaves on `--dur-base` `--ease-out`; reduced motion fades; keys: no motion (the existing `html[data-input="keys"]` rule). `PickCinemas` passes `side`. Phones and iPads unchanged.
+- **Skills:** animate (gate: occasional, purpose spatial consistency; CSS transition + `@starting-style`, transform only, the project's own tokens).
+- **Red:** new `yours-screen.spec.ts` "on a computer the list is a panel down the right edge…" on the old build: `Expected {"x":992,"y":8,"width":440,"height":884}, Received {"x":500,…}` (the centred dialog).
+- **Checked:** the new test 3 × 3 pass, its first frame read from the paused transition is `matrix(1, 0, 0, 1, 448, 0)`; `yours-screen`, `audit`, `kit` specs pass (48); screenshots at 1440 light, dark and mid-slide, 390 and 834 (bottom sheet as before), in the scratchpad.
+- **Not verified:** Chime's own look at it on the computer; the phone (Chime will check and say).
+
 ## 17 Nov 2026 — GitHub CI: the tests that failed on Linux every run
 
 CI had failed every listed run (none green in the last 40), on the same tests; all passed on the Mac. Chime: "let's do it".
