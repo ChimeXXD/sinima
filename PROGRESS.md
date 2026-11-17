@@ -2,6 +2,18 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 17 Nov 2026 — e2e always tests sample data; plan brought up to date
+
+Chime: keep the new mockups local, update the plan, fix "tests vs live data", and set up the timer token's renewal.
+
+- **Changed:**
+  - `playwright.config.ts`: the e2e run serves a prebuilt `out/` only when `E2E_PREBUILT` is set (`ci.yml`'s E2E step sets it); everywhere else, the proof gate included, it rebuilds on sample data at 08:00 Lagos first. Before, the gate's `CI=true` made it serve whatever `out/` held, so a live `npm run build` failed the sample tests and code changes were never rebuilt before e2e.
+  - `mockup/round4*`, `mockup/r6/`, `mockup/motion-audit/` listed in `.git/info/exclude` (local only).
+  - PLAN: ticked the two-city decision, the 13 build units, the motion pass, the source line (D-72), Abuja's clock, the refresh workflow (Lagocine on /about only, D-130/D-132) and the film/cinema pages, each with its evidence; outreach and the phone checks annotated, still open; the token renewal added under After launch (by 1 Nov 2027). `features.json` D6-4 passes.
+- **Checked:** `npm run build` (live data, `out/data/lagos.json` `sample: false`), then `CI=true npx playwright test --max-failures=1`: failed at `about-screen.spec.ts:9` before the fix; after it, 276 pass (3.1 min) and `out/` ends on sample data. Code review (medium, --fix): one finding fixed (the explicit `E2E_PREBUILT` flag).
+- **Not verified:** a GitHub CI run with `E2E_PREBUILT` (runs on push). The page-weight budget now always measures the sample build; nothing measures a live build's pages (the refresh checks each data file's 20 KB, not the page total). The gate still gets `retries: 1` from `CI=true`.
+- **Next:** Chime's phone checks; FilmOne draft; follow-ups on 24 Nov.
+
 ## 17 Nov 2026 — Filmhouse: what's showing, without times (D-131)
 
 Chime approved the stopgap in the honest form proposed after the first look (the entry below): only the banner films Filmhouse's home page has on today, chain-wide, never "and N more".

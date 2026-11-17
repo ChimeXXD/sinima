@@ -62,6 +62,8 @@ jobs:
 
       - name: E2E tests
         run: npm run test:e2e
+        env:
+          E2E_PREBUILT: "1"   # serve the out/ built above instead of building again (playwright.config.ts)
 
       - name: Keep the Playwright report
         if: failure()

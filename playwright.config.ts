@@ -23,8 +23,10 @@ export default defineConfig({
     },
   ],
   webServer: {
-    // CI has already built out/ (with its secrets) and checked its budget: serve that same build.
-    command: process.env.CI
+    // CI's workflow has already built out/ (with its secrets) and checked its budget, and says so with
+    // E2E_PREBUILT: serve that same build. Not plain CI: the proof gate sets CI=true too, and it must
+    // test this code on sample data, not whatever out/ holds (`npm run build` makes it from live data, D-116).
+    command: process.env.E2E_PREBUILT
       ? `node scripts/serve-out.mjs ${PORT}`
       : // Sample data as of 08:00 in Lagos today, so a build late in the evening still holds a full day
         // (`npm run build` would make it at the real hour, and the day's ended showings drop out).

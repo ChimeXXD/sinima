@@ -44,7 +44,9 @@ Everything below is committed and pushed (last code commit `57a1c9d`; the refres
 ### Watch out
 
 - The GitHub secret `TMDB_READ_TOKEN` is set (17 Nov, from `.env.local`): each refresh looks up new films on TMDB; first run with it, 13:47 UTC, rewrote credits.json.
-- `npm run build` now builds on live data, so sample-data e2e tests fail on it. Before the gate: `node scripts/refresh.ts --fixtures --now "$(TZ=Africa/Lagos date +%F)T07:00:00Z" && npx --no-install next build`. Review agents that rebuild `out/` on live data break the sample tests the same way: rebuild on sample before committing.
+- `npm run build` builds on live data. Since 17 Nov that no longer matters for the tests: Playwright always rebuilds `out/` on sample data at 08:00 Lagos before it runs, the proof gate included (it sets `CI=true`, which used to serve whatever `out/` held). Only GitHub's CI e2e step serves its own prebuilt `out/`, and it says so with `E2E_PREBUILT=1`. So the gate's e2e takes about a minute longer (the build).
+- The mockups `mockup/round4*`, `mockup/r6/` and `mockup/motion-audit/` stay local (Chime, 17 Nov): they are listed in `.git/info/exclude`, never committed.
+- The timer's token (`sinima-refresh-timer`, the key that lets cron-job.org start the refresh) expires 17 Nov 2027; renewing it is in PLAN §After launch, due by 1 Nov 2027.
 - The proof gate runs the full e2e after each reply; don't start a second Playwright run beside it (port 4173).
 - The refresh job is started by cron-job.org at 06:17, 12:17 and 16:17 Lagos (D-128); GitHub's own schedule never fired and was removed. The token `sinima-refresh-timer` (Actions read and write on this repo only) expires on 17 Nov 2027: renew it and paste the new one into the cron-job.org job's Authorization header before then.
 - Never send or promise anything in Chime's name that Chime hasn't read: quote every new "I'll…" line first.
