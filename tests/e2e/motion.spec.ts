@@ -29,7 +29,7 @@ const swapsSoon = async (page: Page) => {
 /** A key's change has drawn (real time: the page's clock may be paused). */
 const drawn = (page: Page) => page.waitForTimeout(200);
 
-const firstDay = async (request: Parameters<typeof dataFile>[0]) => new Date((await dataFile(request, "all")).generatedAt);
+const firstDay = async (request: Parameters<typeof dataFile>[0]) => new Date((await dataFile(request, "lagos")).generatedAt);
 
 test.describe("M1: the day's list follows Today | Tomorrow", () => {
   test("a tap slides the new day in from the side the thumb moved to, and back", async ({ page, request }) => {
@@ -72,7 +72,7 @@ test.describe("M1: the day's list follows Today | Tomorrow", () => {
   });
 
   test("Films' \"nothing more today\" state enters too, coming back to Today", async ({ page, request }) => {
-    const all = await dataFile(request, "all");
+    const all = await dataFile(request, "lagos");
     const first = lagosDay(all.showings.map((s) => s.startsAt).sort()[0]!);
     const last = all.showings.filter((s) => lagosDay(s.startsAt) === first).map((s) => s.startsAt).sort().at(-1)!;
     await freeze(page, new Date(Date.parse(last) + 60_000));
@@ -199,7 +199,7 @@ const cssAnimations = (page: Page, testId: string) =>
 
 test.describe("M4: the moment a showing starts", () => {
   async function circleMallAt18(request: Parameters<typeof dataFile>[0]): Promise<string> {
-    const all = await dataFile(request, "all");
+    const all = await dataFile(request, "lagos");
     const day = lagosDay((await sampleTime(request, "12:00")).toISOString());
     return all.showings.find((s) => s.filmId === "ramayana" && s.cinemaId === "filmhouse-circle-mall" && lagosDay(s.startsAt) === day && new Date(Date.parse(s.startsAt) + 3_600_000).toISOString().slice(11, 16) === "18:00")!.startsAt;
   }

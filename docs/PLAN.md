@@ -78,14 +78,14 @@ Dates are a target. If a week slips, cut its Should items first; never cut the c
 - [x] Terms read and the headless-browser route tested (15 Nov): all 14 non-Filmhouse Lagos cinemas cleared (D-77, D-78); Filmhouse stays on Lagocine
 - [ ] Messages to Filmhouse marketing, FilmOne and CINEsync asking to read Filmhouse's times directly (Chime sends)
 - [x] Outreach: none needed for Abuja (all readable, D-79); Filmhouse, FilmOne and CINEsync drafts are in `docs/OUTREACH.md` §4 for Chime to send
-- [ ] Abuja areas and their neighbours: drafted (Central Business District, Jabi, Lugbe, Kuje; docs/RESEARCH.md), Chime to confirm
+- [x] Abuja areas and their neighbours: drafted (Central Business District, Jabi, Lugbe, Kuje; docs/RESEARCH.md); adopted 17 Nov with the city layer (D-120), Chime can still change them
 - [x] Avengers: Doomsday opens in Nigeria Fri 18 Dec 2026, per Filmhouse's own page; launch stays Tue 15 Dec (D-80, closes O-14)
 
 ## Week 2: build the design and the city layer (23–29 Nov)
 
-- [ ] Data: a `city` above areas in `cinemas.json` and the schema; Abuja fixtures; validator and tests updated
+- [x] Data: a `city` above areas in `cinemas.json` and the schema; Abuja fixtures; validator and tests updated (17 Nov, D-120: `city` on every area, Silverbird SEC and Jabi Veezi fixtures, `tests/unit/registry.test.ts`, `tests/unit/lib/data/cities.test.ts`)
 - [x] Routes for two cities, `/lagos/…` and `/abuja/…` (D-98, D-100); today's addresses forward to Lagos; the saved city on the phone, like the saved area (D-18)
-- [ ] Abuja's cinemas (D-79) in data/cinemas.json and saved sample pages, so Abuja's tabs show times (D-100 a)
+- [x] Abuja's cinemas (D-79) in data/cinemas.json and saved sample pages, so Abuja's tabs show times (D-100 a) (17 Nov, D-120; `tests/e2e/abuja.spec.ts`)
 - [ ] Build the Figma design with motion (D-82), unit by unit: 1 foundation (tokens, fonts, motion tokens) ✅ · 2 shared components ✅ (D-84) · 3 Films ✅ · 4 Film + showing sheet ✅ (D-88) · 5 Search and city ✅ (D-89) · 6 Cinemas ✅ (D-91) · 7 Area ✅ (D-92) · 8 Cinema ✅ (D-93) · 9 Starting soon ✅ (D-96) · 10 Your cinemas ✅ (D-97) · 11 About, 404, Offline ✅ (D-99) · 12 Where are you watching? ✅ (D-101) · 13 city layer ✅ (D-100). Each checked at 390, 834 and 1440 against the Figma frames
 - [ ] Motion pass with the design-engineering skills (D-102, D-103), unit by unit, CSS-only first: M1 Today/Tomorrow list ✅ · M2 Show N more ✅ · M3 keep / let go ✅ · M4 a showing starts ✅ · M5 Where first visit ✅ · M6 countdown ring and digits ✅ · M7 cards lift on hover ✅ · M8 search results ✅ · M9 tabs ✅ · M10 sheet swipe ✅ · M11 poster travel ✅ (React ViewTransition, no config in Next 16.4). Each: the skill that fits (animate, choreograph, gestures), animation-performance, break-ui, verifier, code review; PROGRESS names the skills that ran
 - [ ] Review round 1 (D-106, D-107), built and green, waiting for Chime's phone check: R1 favicon ✅ · R2 dark ticket sticker outline ✅ · R3 state changes fade ✅ · R4 hover states ✅ · R5 Cinemas tab icon from Figma ✅ · R6 posterless films in several colours ✅ · R7 quick save (heart on rows, + picks cinemas) ✅ · R8 page-to-page motion ✅ · R9 nav springs (Bottom bar) ✅ · R10 pull-cord theme toggle ✅

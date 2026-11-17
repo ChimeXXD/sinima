@@ -1,6 +1,6 @@
 "use client";
 
-import { Link } from "@/components/ui/CityLink";
+import { Link, useCity } from "@/components/ui/CityLink";
 import { useEffect, useRef, useState } from "react";
 import { Chip } from "@/components/ui/Actions";
 import { Icon } from "@/components/ui/Icon";
@@ -42,6 +42,7 @@ export default function SearchOverlay({ query, onQuery, onSubmit, onClose, city 
   const [index, setIndex] = useState<SearchIndex | "failed" | null>(null);
   const field = useRef<HTMLInputElement>(null);
   const now = useNow();
+  const home = useCity();
 
   useEffect(() => {
     field.current?.focus();
@@ -61,7 +62,7 @@ export default function SearchOverlay({ query, onQuery, onSubmit, onClose, city 
   const loaded = typeof index === "object" && index !== null ? index : null;
   // Search covers the page's banner on a phone, so it says the same (rules 2 and 8).
   const banner = loaded && pageBanner(loaded, now);
-  // Abuja has no cinemas until the city layer: say so, rather than suggest a spelling mistake.
+  // A city with no cinemas in the index (Abuja before a live run reads it): say so, rather than suggest a spelling mistake.
   const abujaSoon = loaded !== null && !hasCinemas(loaded, "abuja");
   // Enter shows today's matches on Films, in its city (Lagos when both are searched): only those count.
   const filmsCity = city === "both" ? "lagos" : city;
@@ -113,9 +114,9 @@ export default function SearchOverlay({ query, onQuery, onSubmit, onClose, city 
             {index === "failed" && <p className={s.line}>{SEARCH_FAILED}</p>}
             {groups && banner && <Notice kind={banner.kind} text={banner.text} />}
             {groups && scope === "abuja" && abujaSoon ? (
-              <NoMatch words={{ ...noMatch(text, scope), title: ABUJA_SOON, body: null }} onHome={() => (onQuery(""), onClose())} />
+              <NoMatch words={{ ...noMatch(text, scope, home), title: ABUJA_SOON, body: null }} onHome={() => (onQuery(""), onClose())} />
             ) : (
-              groups && found === 0 && <NoMatch words={noMatch(text, scope)} onHome={() => (onQuery(""), onClose())} />
+              groups && found === 0 && <NoMatch words={noMatch(text, scope, home)} onHome={() => (onQuery(""), onClose())} />
             )}
             {groups && found > 0 && scope !== "both" && (
               <>

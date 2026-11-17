@@ -33,7 +33,8 @@ export function useSavedArea(): string | null {
 
 /**
  * The area a page filters by: the visitor's saved one until they pick another here. Null is all
- * of Lagos. Picking here does not change the saved area.
+ * of the page's city; an area saved in the other city counts as none (D-120). Picking here does not
+ * change the saved area.
  */
 export function useAreaChoice(areas: { slug: string }[]): [string | null, (slug: string | null) => void] {
   const kept = useSavedArea();

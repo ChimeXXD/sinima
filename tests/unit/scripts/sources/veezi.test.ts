@@ -72,3 +72,38 @@ describe("parseVeeziSessions", () => {
     expect(() => parse("<html></html>")).toThrow("Veezi page: no films found. Has the page layout changed?");
   });
 });
+
+// Silverbird's two Abuja cinemas, saved once each on 17 Nov 2026 (00:38 in Lagos) and cut down
+// (D-24, D-120): the sample data's Abuja times. The counts are the <time> elements under each date
+// in the saved markup.
+describe("parseVeeziSessions: Silverbird Abuja", () => {
+  const read = (file: string, cinemaId: string) =>
+    parseVeeziSessions(readFileSync(join(import.meta.dirname, `../../../fixtures/silverbird/${file}`), "utf8"), { cinemaId, readOn: { year: 2026, month: 11, day: 17 } }).showings;
+  const byDay = (rows: { startsAt: string }[]) => {
+    const days: Record<string, number> = {};
+    for (const s of rows) days[s.startsAt.slice(0, 10)] = (days[s.startsAt.slice(0, 10)] ?? 0) + 1;
+    return days;
+  };
+  const december = { "2026-12-04": 2, "2026-12-05": 2, "2026-12-06": 2, "2026-12-07": 2, "2026-12-08": 2, "2026-12-09": 2, "2026-12-10": 2 };
+
+  it("reads Silverbird Entertainment Centre: 30 times on each of 17, 18 and 19 Nov, 17 films", () => {
+    const rows = read("2026-11-17-sec.html", "silverbird-sec");
+    expect(byDay(rows)).toEqual({ "2026-11-17": 30, "2026-11-18": 30, "2026-11-19": 30, ...december });
+    expect(new Set(rows.map((s) => s.filmTitle)).size).toBe(17);
+    expect(rows[0]).toEqual({
+      cinemaId: "silverbird-sec",
+      filmTitle: "The Beacon Man",
+      rating: null,
+      startsAt: "2026-11-17T09:00:00Z", // 10:00 AM in Abuja, on Lagos's clock
+      format: null,
+      bookingUrl: "https://ticketing.eu.veezi.com/purchase/323428?siteToken=ntfpkgyc0phrmzxb2ctk828vd4",
+    });
+  });
+
+  it("reads Silverbird Jabi Lake Mall: 27, 24 and 27 times on 17, 18 and 19 Nov, 12 films", () => {
+    const rows = read("2026-11-17-jabi.html", "silverbird-jabi");
+    expect(byDay(rows)).toEqual({ "2026-11-17": 27, "2026-11-18": 24, "2026-11-19": 27, ...december });
+    expect(new Set(rows.map((s) => s.filmTitle)).size).toBe(12);
+    expect(rows[0]).toMatchObject({ filmTitle: "Street Fighter", rating: "12A", startsAt: "2026-11-17T09:05:00Z" });
+  });
+});

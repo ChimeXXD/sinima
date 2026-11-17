@@ -7,20 +7,24 @@ import { OptionRow, Sheet } from "@/components/ui/Sheet";
 import { SpringMenu } from "@/components/ui/SpringMenu";
 import { useDesktop } from "@/components/ui/useDesktop";
 import { CitySticker } from "@/components/ui/Stickers";
-import { CITY_KEY, cityOfPath, type City } from "@/lib/city";
-import { ABUJA_SOON, CITY_SHEET, cityLine } from "@/lib/wording/search";
+import { CITIES, CITY_KEY, cityOfPath, type City } from "@/lib/city";
+import { CITY_SHEET, cityLine } from "@/lib/wording/search";
 import s from "./city.module.css";
 
 // City sheet (Figma Search and city › City sheet): opens from "Lagos ⌄" in the search bar and in
 // the Films title. Picking a city keeps it on this phone and opens the same tab there, or its Films
-// for a page that city doesn't have (D-98). Abuja has no cinemas in the data yet, so its line says
-// they are being added: nothing invented stands in for them. Loaded only when first opened. On a
-// computer it is the Spring dropdown under the trigger, which stays in view (D-109 c).
+// for a page that city doesn't have (D-98). Each city's line counts its own cinemas and names its
+// first areas (D-120). Loaded only when first opened. On a computer it is the Spring dropdown under
+// the trigger, which stays in view (D-109 c).
 
-const LAGOS = cityLine(
-  registry.cinemas.length,
-  registry.areas.map((area) => area.name),
-);
+/** "22 cinemas in Lekki, Victoria Island, Ikeja and 9 more areas", for each city. */
+const LINES = Object.fromEntries(
+  CITIES.map((city) => {
+    const areas = registry.areas.filter((area) => area.city === city);
+    const slugs = new Set(areas.map((area) => area.slug));
+    return [city, cityLine(registry.cinemas.filter((cinema) => slugs.has(cinema.area)).length, areas.map((area) => area.name))];
+  }),
+) as Record<City, string>;
 const TABS = ["", "/cinemas", "/soon", "/yours"];
 
 /** The same tab in the other city, or its Films; a page for both cities (About) stays. */
@@ -69,7 +73,7 @@ export default function CitySheet({
         options={(["lagos", "abuja"] as const).map((city) => ({
           id: city,
           label: city === "lagos" ? "Lagos" : "Abuja",
-          desc: city === "lagos" ? LAGOS : ABUJA_SOON,
+          desc: LINES[city],
           lead: (
             <span aria-hidden="true">
               <CitySticker city={city} />
@@ -100,7 +104,7 @@ export default function CitySheet({
           </span>
         }
         title="Lagos"
-        desc={LAGOS}
+        desc={LINES.lagos}
         selected={current === "lagos"}
         onClick={() => pick("lagos")}
         testId="city.lagos"
@@ -113,7 +117,7 @@ export default function CitySheet({
           </span>
         }
         title="Abuja"
-        desc={ABUJA_SOON}
+        desc={LINES.abuja}
         selected={current === "abuja"}
         onClick={() => pick("abuja")}
         testId="city.abuja"

@@ -14,6 +14,7 @@ import { dayDates, formatsOf, showingOn, type Day } from "@/lib/data/programme";
 import { matchesTitle } from "@/lib/data/search";
 import { laterName, pageBanner, type ListData } from "@/lib/data/select";
 import { useQuery } from "@/lib/browser";
+import { CITY_NAMES, type City } from "@/lib/city";
 import { useNow } from "@/lib/time/useNow";
 import { dayWords } from "@/lib/wording/day";
 import { filmMeta } from "@/lib/wording/film";
@@ -25,9 +26,8 @@ import s from "./films.module.css";
 // starting in the next 2 hours, then later tonight. Relative words and the countdowns wait for the
 // clock (rule 3); until then the day is one list under its date.
 
-const CITY = "Lagos"; // one city until the city layer (unit 13, O-16)
-
-export function FilmsScreen({ data, bg }: { data: ListData; bg: { light: string; dark: string } }) {
+export function FilmsScreen({ data, city, bg }: { data: ListData; city: City; bg: { light: string; dark: string } }) {
+  const cityName = CITY_NAMES[city];
   const clock = useNow();
   const live = clock !== null;
   const now = clock ?? data.at;
@@ -59,14 +59,14 @@ export function FilmsScreen({ data, bg }: { data: ListData; bg: { light: string;
     section.key === "later"
       ? sectionWords({ key: "later", count: section.films.length, later: laterName(now) })
       : section.key === "format"
-        ? sectionWords({ key: "format", count: section.films.length, format: format!, on, city: CITY })
+        ? sectionWords({ key: "format", count: section.films.length, format: format!, on, city: cityName })
         : section.key === "soon"
           ? sectionWords({ key: "soon", count: section.films.length })
           : sectionWords({ key: "day", count: section.films.length, on, live });
 
   return (
     <AppFrame active="films" search={{ value: query, onChange: setTyped }} bg={bg}>
-      <FilmsHero city={CITY} live={live && day === 0 && sections.length > 0} />
+      <FilmsHero city={cityName} live={live && day === 0 && sections.length > 0} />
       <div className={s.controls}>
         <Segmented label="Day" options={names} value={names[day]!} onChange={(name, how) => changeDay(names.indexOf(name) === 1 ? 1 : 0, how)} testId="films.day" />
         <div className={s.chips} role="group" aria-label="Format">
@@ -116,12 +116,12 @@ export function FilmsScreen({ data, bg }: { data: ListData; bg: { light: string;
         );
       })}
 
-      {sections.length === 0 && <Empty data={data} day={day} now={now} live={live} format={format} query={query.trim()} on={on} onTomorrow={() => changeDay(1, "tap")} />}
+      {sections.length === 0 && <Empty data={data} cityName={cityName} day={day} now={now} live={live} format={format} query={query.trim()} on={on} onTomorrow={() => changeDay(1, "tap")} />}
     </AppFrame>
   );
 }
 
-function Empty({ data, day, now, live, format, query, on, onTomorrow }: { data: ListData; day: Day; now: string; live: boolean; format: FormatTag | null; query: string; on: string; onTomorrow: () => void }) {
+function Empty({ data, cityName, day, now, live, format, query, on, onTomorrow }: { data: ListData; cityName: string; day: Day; now: string; live: boolean; format: FormatTag | null; query: string; on: string; onTomorrow: () => void }) {
   if (query || format || day === 1 || !live) {
     const text = noFilms({ query, format, on });
     return (
@@ -131,7 +131,7 @@ function Empty({ data, day, now, live, format, query, on, onTomorrow }: { data: 
     );
   }
   const tomorrow = showingOn(data.rows, 1, now);
-  const words = nothingMoreToday({ city: CITY, last: lastStart(data.rows, now), tomorrowFilms: new Set(tomorrow.map((row) => row.film)).size, tomorrowFirst: tomorrow[0]?.at ?? null });
+  const words = nothingMoreToday({ city: cityName, last: lastStart(data.rows, now), tomorrowFilms: new Set(tomorrow.map((row) => row.film)).size, tomorrowFirst: tomorrow[0]?.at ?? null });
   return (
     <div className={s.empty} data-testid="films.empty" data-swap>
       <TicketFaceSticker height={74} />

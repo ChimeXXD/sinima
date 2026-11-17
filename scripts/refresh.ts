@@ -9,11 +9,12 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { gzipSync } from "node:zlib";
 import type { ShowtimesFile } from "../src/lib/data/types.ts";
-import { lagosDayKey } from "../src/lib/time/lagos.ts";
+import { lagosDayKey, toLagos } from "../src/lib/time/lagos.ts";
 import { assemble, readJson, SAMPLE_PATHS } from "./assemble.ts";
 import { LIVE_DIR, liveBuildFiles, refreshLive } from "./live.ts";
 import { toSampleDays, type Batch } from "./pipeline.ts";
 import { parseLagocineCinema, parseLagocineDay } from "./sources/lagocine.ts";
+import { parseVeeziSessions } from "./sources/veezi.ts";
 import { politeBrowser } from "./sources/browser.ts";
 import { politeFetcher, politeRules } from "./sources/polite.ts";
 import type { ParsedPage } from "./sources/raw.ts";
@@ -34,6 +35,11 @@ const USER_AGENT = "SinimaBot/0.1 (+https://github.com/ChimeXXD/sinima)";
 function parseFixture(entry: FixtureEntry, html: string): ParsedPage {
   if (entry.page === "lagocine-day") return parseLagocineDay(html);
   if (entry.page === "lagocine-cinema" && entry.cinemaId) return parseLagocineCinema(html, entry.cinemaId);
+  // Veezi's dates carry no year: the page was read on the Lagos day it was saved (Abuja's clock too).
+  if (entry.page === "veezi-sessions" && entry.cinemaId) {
+    const { year, month, day } = toLagos(entry.savedAt);
+    return parseVeeziSessions(html, { cinemaId: entry.cinemaId, readOn: { year, month, day } });
+  }
   throw new Error(`No sample-data parser for the fixture ${entry.file} (page "${entry.page}")`);
 }
 

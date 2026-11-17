@@ -17,7 +17,7 @@ function order(all: DataFile, now: Date, ids: string[]): string[] {
 }
 
 test("with Lekki kept, Lekki's cinemas come first, then the areas next to it, then the rest; every cinema once", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const now = await sampleTime(request, "17:30");
   await keep(page, "lekki");
   await freeze(page, now);
@@ -44,7 +44,7 @@ test("with Lekki kept, Lekki's cinemas come first, then the areas next to it, th
 });
 
 test("a row gives the next time and the films left tonight, its area and formats; a cinema we can't read says so", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const now = await sampleTime(request, "17:30");
   await freeze(page, now);
   await page.goto("/lagos/cinemas");
@@ -70,7 +70,7 @@ test("a row gives the next time and the films left tonight, its area and formats
 });
 
 test("with no area kept, one list of every cinema, soonest first", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const now = await sampleTime(request, "17:30");
   await freeze(page, now);
   await page.goto("/lagos/cinemas");
@@ -80,7 +80,7 @@ test("with no area kept, one list of every cinema, soonest first", async ({ page
 });
 
 test("choosing an area regroups the page in place and is kept on this phone", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   await freeze(page, await sampleTime(request, "17:30"));
   await page.goto("/lagos/cinemas");
   await page.getByTestId("pick.area").click();
@@ -149,7 +149,7 @@ test("on a computer the area picker drops a menu under the picker, two areas to 
 });
 
 test("the day picker shows tomorrow, and says so", async ({ page, request }) => {
-  await freeze(page, new Date((await dataFile(request, "all")).generatedAt)); // the data's first day, so tomorrow has times
+  await freeze(page, new Date((await dataFile(request, "lagos")).generatedAt)); // the data's first day, so tomorrow has times
   await page.goto("/lagos/cinemas");
   await page.getByTestId("pick.day").click();
   await page.getByTestId("day.option.tomorrow").click();
@@ -159,7 +159,7 @@ test("the day picker shows tomorrow, and says so", async ({ page, request }) => 
 });
 
 test("choosing IMAX leaves only cinemas showing in IMAX, and says which were left out", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const now = await sampleTime(request, "10:00");
   const rows = today(all, now);
   const imax = [...new Set(rows.filter((s) => /^IMAX/.test(s.format ?? "")).map((s) => s.cinemaId))];

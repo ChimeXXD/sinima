@@ -17,7 +17,7 @@ function order(all: DataFile, now: Date, ids: string[]): string[] {
 }
 
 test("kept cinemas first, then the area's others soonest first, then the areas next to it (Figma Default)", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const now = await sampleTime(request, "17:30");
   await keepCinemas(page, ["filmhouse-lekki-imax", "ebonylife-vi"]); // one here, one elsewhere
   await freeze(page, now);
@@ -52,7 +52,7 @@ test("kept cinemas first, then the area's others soonest first, then the areas n
 });
 
 test("a cinema card shows its next three times with their films, the soonest marked, and links to all its times", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const now = await sampleTime(request, "17:30");
   await freeze(page, now);
   await page.goto("/lagos/area/lekki");
@@ -81,7 +81,7 @@ test("a cinema card shows its next three times with their films, the soonest mar
 });
 
 test("a time opens the showing sheet; sample times can't be booked; Escape closes it", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const now = await sampleTime(request, "17:30");
   await freeze(page, now);
   await page.goto("/lagos/area/lekki");
@@ -111,7 +111,7 @@ test("the heart on a kept cinema lets it go: it moves to the area's other cinema
 });
 
 test("with nothing more tonight, it says whose showing was last and the areas next to it lead (Figma Nothing left tonight)", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const day = await sampleTime(request, "12:00");
   const island = all.cinemas.filter((c) => c.area === "lagos-island");
   expect(island.map((c) => c.id)).toEqual(["blue-pictures-onikan"]);
@@ -133,7 +133,7 @@ test("with nothing more tonight, it says whose showing was last and the areas ne
 });
 
 test("a cinema whose times we can't read says so, and the footer explains", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   await freeze(page, await sampleTime(request, "17:30"));
   await page.goto("/lagos/area/victoria-island");
   const unread = all.cinemas.filter((c) => c.area === "victoria-island" && !all.showings.some((s) => s.cinemaId === c.id));
@@ -172,7 +172,7 @@ test("cards sit one to a row on a phone, two on an iPad and three on a computer,
 for (const width of [320, 360, 390, 834, 1440]) {
   test(`at ${width} px every area's title stays clear of its sticker`, async ({ page, request }) => {
     await page.setViewportSize({ width, height: 900 });
-    const all = await dataFile(request, "all");
+    const all = await dataFile(request, "lagos");
     const slugs = [...new Set(all.cinemas.map((c) => c.area))];
     const bad: string[] = [];
     for (const slug of slugs) {

@@ -13,7 +13,7 @@ const ids = (page: Page, prefix: string) => page.locator(`[data-testid^="${prefi
 const sampleDay = async (request: Parameters<typeof dataFile>[0]) => new Intl.DateTimeFormat("en-GB", { timeZone: "Africa/Lagos", weekday: "long", day: "numeric", month: "long" }).format(await sampleTime(request, "12:00")).replace(",", "");
 
 async function startOf(request: Parameters<typeof dataFile>[0], cinema: string, hhmm: string): Promise<string> {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const day = (await sampleTime(request, "12:00")).toISOString().slice(0, 10);
   return all.showings.find((s) => s.filmId === "ramayana" && s.cinemaId === cinema && s.startsAt.startsWith(day) && lagosClock(s.startsAt) === hhmm)!.startsAt;
 }
@@ -24,7 +24,7 @@ test("your area first, then the areas next to it, then the rest soonest first (F
   await page.goto("/lagos/film/ramayana");
   await expect(page.getByTestId("film.title")).toHaveText("Ramayana");
   // The runtime is TMDB's, which TMDB can correct (201 → 195 min on 16 Nov), so it comes from the data.
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const runtime = all.films.find((f) => f.id === "ramayana") as unknown as { runtimeMin: number };
   // So is the number of cinemas showing it today, which grows as sources merge spellings (D-119).
   const today = lagosDay((await sampleTime(request, "12:00")).toISOString());
@@ -91,7 +91,7 @@ test("a time opens its sheet: sample times can't be booked; calendar, countdown;
   expect(ics).toContain(`DTSTART:${at.replace(/[-:]/g, "")}`);
   expect(ics).toContain("TRIGGER:-PT30M");
   // It ends when Ramayana's TMDB runtime says (it can change), so the end comes from the data.
-  const { runtimeMin } = (await dataFile(request, "all")).films.find((f) => f.id === "ramayana") as unknown as { runtimeMin: number };
+  const { runtimeMin } = (await dataFile(request, "lagos")).films.find((f) => f.id === "ramayana") as unknown as { runtimeMin: number };
   await expect(sheet.getByTestId("showing.calendar")).toContainText(`6:00 PM to ${shownClock(new Date(Date.parse(at) + runtimeMin * 60_000).toISOString())}, with an alert 30 min before.`);
 
   await sheet.getByTestId("showing.keep").click();

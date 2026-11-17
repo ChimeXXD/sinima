@@ -1,4 +1,9 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import type { APIRequestContext, Page } from "@playwright/test";
+
+/** The registry's areas and their cities (D-120); read, as Playwright's loader won't import JSON. */
+const registry = JSON.parse(readFileSync(join(import.meta.dirname, "../../data/cinemas.json"), "utf8")) as { areas: { slug: string; city: string }[] };
 
 // The built site runs on sample data dated the day it was built and the day after (D-20). Tests
 // freeze the browser's clock on the day after, which always holds a full programme whatever time
@@ -13,8 +18,17 @@ export type DataFile = {
 
 const HOUR = 3_600_000;
 
+/** A built data file: "all", an area's slug, or "lagos" / "abuja" for all.json cut to that city's cinemas (D-120). */
 export async function dataFile(request: APIRequestContext, name: string): Promise<DataFile> {
-  return (await (await request.get(`/data/${name}.json`)).json()) as DataFile;
+  const city = name === "lagos" || name === "abuja" ? name : null;
+  const file = (await (await request.get(`/data/${city ? "all" : name}.json`)).json()) as DataFile;
+  if (!city) return file;
+  const areas = new Set(registry.areas.filter((area) => area.city === city).map((area) => area.slug));
+  const cinemas = file.cinemas.filter((cinema) => areas.has(cinema.area));
+  const ids = new Set(cinemas.map((cinema) => cinema.id));
+  const showings = file.showings.filter((showing) => ids.has(showing.cinemaId));
+  const films = new Set(showings.map((showing) => showing.filmId));
+  return { ...file, cinemas, showings, films: file.films.filter((film) => films.has(film.id)) };
 }
 
 /** The instant of `hh:mm` Lagos time on the sample data's second day. Lagos is UTC+1 all year. */

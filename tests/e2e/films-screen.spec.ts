@@ -7,7 +7,7 @@ import { dataFile, freeze, lagosDay, sampleTime, today } from "./helpers";
 const HOUR = 3_600_000;
 
 test("today splits into the next 2 hours and later tonight, soonest first, each card counting down within the hour", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const now = await sampleTime(request, "17:30");
   await freeze(page, now);
   await page.goto("/lagos");
@@ -33,7 +33,7 @@ test("today splits into the next 2 hours and later tonight, soonest first, each 
 });
 
 test("choosing IMAX leaves only IMAX films, and says which cinemas were left out and why", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const now = await sampleTime(request, "17:30");
   const imax = new Set(today(all, now).filter((s) => /^IMAX/i.test(s.format ?? "")).map((s) => s.filmId));
   await freeze(page, now);
@@ -50,7 +50,7 @@ test("choosing IMAX leaves only IMAX films, and says which cinemas were left out
 
 // The sample holds two days: on the first, tomorrow's times are in; on the second, they are not.
 async function afterLastShowing(request: Parameters<typeof dataFile>[0], first: boolean): Promise<Date> {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const days = [...new Set(all.showings.map((s) => lagosDay(s.startsAt)))].sort();
   const day = first ? days[0]! : days.at(-1)!;
   const last = all.showings.filter((s) => lagosDay(s.startsAt) === day).map((s) => s.startsAt).sort().at(-1)!;

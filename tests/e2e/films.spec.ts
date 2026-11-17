@@ -2,7 +2,7 @@ import { expect, test } from "./test";
 import { dataFile, freeze, lagosClock, sampleTime, shownClock, today } from "./helpers";
 
 test("Films (the home page, D-55) lists every film still showing; typing narrows it; a film opens its page", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const now = await sampleTime(request, "18:00");
   const showing = new Set(today(all, now).map((s) => s.filmId));
   await freeze(page, now);
@@ -42,7 +42,7 @@ for (const path of ["/lagos/film/ramayana", "/lagos", "/lagos/cinemas", "/lagos/
 }
 
 test("Starting soon lists only what starts in the next 2 hours, soonest first", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const now = await sampleTime(request, "18:00");
   const soon = today(all, now).filter((s) => Date.parse(s.startsAt) - now.getTime() <= 2 * 3_600_000);
   await freeze(page, now);
@@ -57,7 +57,7 @@ test("Starting soon lists only what starts in the next 2 hours, soonest first", 
 test.describe("with the phone set to New York", () => {
   test.use({ timezoneId: "America/New_York" });
   test("times are still Lagos times", async ({ page, request }) => {
-    const all = await dataFile(request, "all");
+    const all = await dataFile(request, "lagos");
     const now = await sampleTime(request, "18:00");
     const row = today(all, now).find((s) => s.cinemaId === "ebonylife-vi")!;
     await freeze(page, now);

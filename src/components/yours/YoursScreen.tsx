@@ -9,6 +9,7 @@ import { CinemaFolder } from "@/components/ui/Cards";
 import { Icon } from "@/components/ui/Icon";
 import { PageNotice } from "@/components/ui/Status";
 import { LogoSticker, TicketFace, TicketFaceSticker } from "@/components/ui/Stickers";
+import { CITY_NAMES, type City } from "@/lib/city";
 import { pageBanner, type ListData } from "@/lib/data/select";
 import { folderTint, yourCinemas } from "@/lib/data/yours";
 import { useSaved } from "@/lib/saved";
@@ -22,9 +23,8 @@ import s from "./yours.module.css";
 // one. With none saved, the logo stickers and a way to the cinemas. What is saved lives on this
 // phone only, so the page's own HTML lists nothing: the list waits for the browser (rule 3).
 
-const CITY = "Lagos"; // one city until the city layer (unit 13, O-16)
-
-export function YoursScreen({ data, areas, bg }: { data: ListData; areas: { slug: string; name: string }[]; bg: { light: string; dark: string } }) {
+export function YoursScreen({ data, areas, city, bg }: { data: ListData; areas: { slug: string; name: string }[]; city: City; bg: { light: string; dark: string } }) {
+  const cityName = CITY_NAMES[city];
   const clock = useNow();
   const live = clock !== null;
   const router = useRouter();
@@ -56,7 +56,7 @@ export function YoursScreen({ data, areas, bg }: { data: ListData; areas: { slug
           </p>
         </div>
         {live && saved.length > 0 && (
-          <button type="button" className={s.add} aria-label={addLabel(CITY)} aria-haspopup="dialog" onClick={() => setPicking(true)} data-testid="yours.add">
+          <button type="button" className={s.add} aria-label={addLabel(cityName)} aria-haspopup="dialog" onClick={() => setPicking(true)} data-testid="yours.add">
             <Icon name="plus" size={20} />
           </button>
         )}
@@ -120,7 +120,7 @@ export function YoursScreen({ data, areas, bg }: { data: ListData; areas: { slug
           <p className={s.small}>{EMPTY.note}</p>
         </section>
       )}
-      <PickCinemas open={picking} onClose={() => setPicking(false)} cinemas={data.cinemas} areas={areas} city={CITY} />
+      <PickCinemas open={picking} onClose={() => setPicking(false)} cinemas={data.cinemas} areas={areas} city={cityName} />
     </AppFrame>
   );
 }

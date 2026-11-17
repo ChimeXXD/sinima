@@ -11,6 +11,8 @@ import { LogoSticker } from "@/components/ui/Stickers";
 import { Toast } from "@/components/ui/Toast";
 import { pop } from "@/components/ui/motion";
 import { useSwapIn } from "@/components/ui/useSwapIn";
+import { CITY_NAMES, type City } from "@/lib/city";
+import { cityWords } from "@/lib/wording/city";
 import { shareLink, useHash } from "@/lib/browser";
 import { cinemaFilms } from "@/lib/data/cinemaPage";
 import { dayDates, formatsOf, type Day } from "@/lib/data/programme";
@@ -28,9 +30,9 @@ import s from "./cinema.module.css";
 // keeps it on Your cinemas, on this phone only, and a toast says so. The page's own HTML has no
 // relative words and no saved state (rule 3).
 
-const CITY = "Lagos"; // one city until the city layer (unit 13, O-16)
-
-export function CinemaScreen({ data, id, area, bg }: { data: ListData; id: string; area: { slug: string; name: string }; bg: { light: string; dark: string } }) {
+export function CinemaScreen({ data, id, area, city, bg }: { data: ListData; id: string; area: { slug: string; name: string }; city: City; bg: { light: string; dark: string } }) {
+  const cityName = CITY_NAMES[city];
+  const words = cityWords(city);
   const cityHref = useCityPath();
   const clock = useNow();
   const live = clock !== null;
@@ -79,7 +81,7 @@ export function CinemaScreen({ data, id, area, bg }: { data: ListData; id: strin
 
   const bar = (
     <>
-      <BarBack href="/cinemas" label={`All cinemas in ${CITY}`} testId="cinema.back" />
+      <BarBack href="/cinemas" label={words.allCinemas} testId="cinema.back" />
       <BarTitle>Cinema</BarTitle>
       <IconButton icon={copied ? "check" : "share-up"} label={copied ? "Link copied" : `Share ${cinema.name}`} onClick={() => void share()} testId="cinema.share" />
     </>
@@ -93,7 +95,7 @@ export function CinemaScreen({ data, id, area, bg }: { data: ListData; id: strin
 
   return (
     <AppFrame active="cinemas" search={{ value: typed, onChange: setTyped, onSubmit: () => router.push(`/?q=${encodeURIComponent(typed.trim())}`) }} bg={bg} bar={bar} footer={footer}>
-      <Crumb href="/cinemas">All cinemas in {CITY}</Crumb>
+      <Crumb href="/cinemas">{words.allCinemas}</Crumb>
       <PageNotice banner={banner} now={clock} className={s.notice} />
       <div className={s.body}>
         <section className={s.info} aria-labelledby="cinema.title">
@@ -178,7 +180,7 @@ export function CinemaScreen({ data, id, area, bg }: { data: ListData; id: strin
         </section>
       </div>
 
-      {sheet.Sheet && <sheet.Sheet data={sheet.sheetData} row={sheet.row} open={sheet.open} now={clock} areaName={() => area.name} near={near} city={CITY} onPick={sheet.openRow} onClose={sheet.close} />}
+      {sheet.Sheet && <sheet.Sheet data={sheet.sheetData} row={sheet.row} open={sheet.open} now={clock} areaName={() => area.name} near={near} city={cityName} onPick={sheet.openRow} onClose={sheet.close} />}
       {toast && <Toast icon="heart" text={SAVED_TOAST} onUndo={() => (toggleSaved(id), setToast(false))} onDone={hideToast} />}
     </AppFrame>
   );

@@ -7,6 +7,8 @@ describe("where", () => {
   it("Lagos's line names five areas and counts the rest (Figma)", () => {
     expect(areasLine(["Lekki", "Victoria Island", "Ikeja", "Surulere", "Yaba", "Lagos Island", "Festac", "Maryland", "Agege", "Sangotedo", "Ikorodu Road", "Idimu"])).toBe("Lekki, Victoria Island, Ikeja, Surulere, Yaba and 7 more areas");
     expect(areasLine(["Lekki", "Yaba"])).toBe("Lekki and Yaba");
+    // Abuja's card names its own areas, as Lagos's does (D-120), in place of Figma's districts.
+    expect(areasLine(["Central Business District", "Jabi", "Lugbe", "Kuje"])).toBe("Central Business District, Jabi, Lugbe and Kuje");
     expect(areasLine(["Lekki", "Victoria Island", "Ikeja", "Surulere", "Yaba", "Idimu"])).toBe("Lekki, Victoria Island, Ikeja, Surulere, Yaba and 1 more area");
   });
   it("the button says where it goes once a city is picked", () => {
@@ -21,6 +23,5 @@ describe("where", () => {
   it("the fixed words", () => {
     expect(WHERE.title).toBe("Where are you watching?");
     expect(WHERE.fallback).toBe("We couldn't place you in Lagos or Abuja, so here's Lagos. Switch any time in the search bar.");
-    expect(WHERE.abuja).toBe("Wuse, Maitama, Jabi, Garki, Central Area and more");
   });
 });

@@ -28,7 +28,7 @@ const Sticker = ({ name, className }: { name: "clapper" | "popcorn" | "glasses";
   <img className={`${s.sticker} ${className}`} src={`/stickers/${name}.png`} alt="" loading="lazy" decoding="async" fetchPriority="low" />
 );
 
-export function WhereScreen({ lagosLine, bg }: { lagosLine: string; bg: { light: string; dark: string } }) {
+export function WhereScreen({ lines, bg }: { /** Each city card's areas, from the data (D-120). */ lines: Record<City, string>; bg: { light: string; dark: string } }) {
   const router = useRouter();
   const [state, setState] = useState<State>({ kind: "asking" });
   const city = picked(state);
@@ -125,8 +125,8 @@ export function WhereScreen({ lagosLine, bg }: { lagosLine: string; bg: { light:
           <h1 className={s.title}>{WHERE.title}</h1>
           <p className={s.lead}>{WHERE.lead}</p>
           <div className={s.cards} role="group" aria-label="City">
-            {card("lagos", lagosLine)}
-            {card("abuja", WHERE.abuja)}
+            {card("lagos", lines.lagos)}
+            {card("abuja", lines.abuja)}
           </div>
           <div className={s.status} aria-live="polite" data-testid="where.status">
             {state.kind === "asking" && <span className={s.hand}>{WHERE.asking}</span>}

@@ -13,7 +13,7 @@ const key = (s: DataFile["showings"][number]) => `${s.filmId}.${s.startsAt}`;
 const plural = (n: number) => `${n} ${n === 1 ? "showing" : "showings"}`;
 
 test("your area's next 2 hours as cards, soonest first, then the rest of tonight (Figma Default)", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const now = await sampleTime(request, "17:30");
   await keepArea(page, "lekki");
   await freeze(page, now);
@@ -50,7 +50,7 @@ test("your area's next 2 hours as cards, soonest first, then the rest of tonight
 });
 
 test("All Lagos takes every area; the chips don't move, and the area stays kept", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const now = await sampleTime(request, "17:30");
   await keepArea(page, "lekki");
   await freeze(page, now);
@@ -66,7 +66,7 @@ test("All Lagos takes every area; the chips don't move, and the area stays kept"
 });
 
 test("with no area kept: all of Lagos, All Lagos first, then every area", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   await freeze(page, await sampleTime(request, "17:30"));
   await page.goto("/lagos/soon");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Starting soon in Lagos");
@@ -77,7 +77,7 @@ test("with no area kept: all of Lagos, All Lagos first, then every area", async 
 });
 
 test("a card opens the showing sheet; Book is never on a sample time; Escape gives focus back", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const now = await sampleTime(request, "17:30");
   await keepArea(page, "lekki");
   await freeze(page, now);
@@ -95,7 +95,7 @@ test("a card opens the showing sheet; Book is never on a sample time; Escape giv
 });
 
 test("Keep a countdown puts the showing at the top of Starting soon until it begins (D-88)", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const now = await sampleTime(request, "17:30");
   await keepArea(page, "lekki");
   await freeze(page, now);
@@ -114,7 +114,7 @@ test("Keep a countdown puts the showing at the top of Starting soon until it beg
 });
 
 test("nothing in the next 2 hours: Figma's words, what's left in Lagos, and tomorrow in Lekki (Figma Nothing in 2 hours)", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const now = new Date((await sampleTime(request, "22:50")).getTime() - 24 * HOUR); // the first day, so tomorrow has times
   await keepArea(page, "lekki");
   await freeze(page, now);
@@ -173,7 +173,7 @@ test("cards are 2, 4 and 6 to a row and the later rows 1, 2 and 2, at Figma's wi
 for (const width of [320, 360, 390, 834, 1440]) {
   test(`at ${width} px every area's title stays clear of the sticker, "next 2 hours" and the chips`, async ({ page, request }) => {
     await page.setViewportSize({ width, height: 900 });
-    const all = await dataFile(request, "all");
+    const all = await dataFile(request, "lagos");
     const slugs = [...new Set(all.cinemas.map((c) => c.area))];
     const bad: string[] = [];
     for (const slug of slugs) {

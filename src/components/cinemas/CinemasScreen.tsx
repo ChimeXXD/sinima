@@ -6,6 +6,7 @@ import { AppFrame, LogoNote } from "@/components/ui/AppFrame";
 import { PageNotice } from "@/components/ui/Status";
 import { Toast } from "@/components/ui/Toast";
 import { useSwapIn } from "@/components/ui/useSwapIn";
+import { CITY_NAMES, type City } from "@/lib/city";
 import { rememberArea } from "@/lib/area";
 import { useSavedArea } from "@/lib/browser";
 import { cinemaSections, type CinemaSection } from "@/lib/data/cinemas";
@@ -29,9 +30,8 @@ import s from "./cinemas.module.css";
 // phone, its cinemas first, then the areas next to it, then the rest; choosing another area here
 // keeps that one instead (D-91). The page's own HTML has no area and no relative words (rule 3).
 
-const CITY = "Lagos"; // one city until the city layer (unit 13, O-16)
-
-export function CinemasScreen({ data, areas, bg }: { data: ListData; areas: Area[]; bg: { light: string; dark: string } }) {
+export function CinemasScreen({ data, areas, city, bg }: { data: ListData; areas: Area[]; city: City; bg: { light: string; dark: string } }) {
+  const cityName = CITY_NAMES[city];
   const clock = useNow();
   const live = clock !== null;
   const now = clock ?? data.at;
@@ -72,7 +72,7 @@ export function CinemasScreen({ data, areas, bg }: { data: ListData; areas: Area
       : section.key === "next"
         ? cinemasHeading({ key: "next", area: home!.name, neighbours: home!.neighbours.filter((slug) => section.cinemas.some((entry) => areaOf(entry.cinema) === slug)).map((slug) => areas.find((area) => area.slug === slug)?.name ?? slug) })
         : section.key === "rest"
-          ? cinemasHeading({ key: "rest", city: CITY })
+          ? cinemasHeading({ key: "rest", city: cityName })
           : cinemasHeading({ key: "all", count: section.cinemas.length, format });
 
   const footer = (
@@ -84,7 +84,7 @@ export function CinemasScreen({ data, areas, bg }: { data: ListData; areas: Area
 
   return (
     <AppFrame active="cinemas" search={{ value: search, onChange: setSearch, onSubmit: () => router.push(`/?q=${encodeURIComponent(search.trim())}`) }} bg={bg} footer={footer}>
-      <CinemasHero city={CITY} count={data.cinemas.length} />
+      <CinemasHero city={city} count={data.cinemas.length} />
       <Pickers
         areas={areas}
         area={home?.slug ?? null}

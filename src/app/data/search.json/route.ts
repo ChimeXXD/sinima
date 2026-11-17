@@ -1,4 +1,4 @@
-import { loadAll } from "@/lib/data/load";
+import { cityOfArea, loadAll } from "@/lib/data/load";
 import { searchIndex } from "@/lib/data/search";
 
 // The search index (lib/data/search.ts), written as a static file at build time. Search fetches it
@@ -6,5 +6,5 @@ import { searchIndex } from "@/lib/data/search";
 export const dynamic = "force-static";
 
 export function GET() {
-  return Response.json(searchIndex(loadAll()));
+  return Response.json(searchIndex(loadAll(), cityOfArea));
 }

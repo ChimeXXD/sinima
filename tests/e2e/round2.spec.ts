@@ -90,7 +90,9 @@ test("on a computer “Lagos ⌄” drops the city menu under the pill, which st
   expect(Math.round(box.y - (at.y + at.height))).toBe(8);
   await expect(pill).toHaveAttribute("aria-expanded", "true");
   await expect(page.getByTestId("city.lagos")).toHaveAttribute("aria-selected", "true");
-  await expect(page.getByTestId("city.abuja")).toContainText("Abuja's cinemas are being added");
+  // Each city's line counts its own cinemas and names its areas (D-120).
+  await expect(page.getByTestId("city.lagos")).toContainText("22 cinemas in Lekki, Victoria Island, Ikeja and 9 more areas");
+  await expect(page.getByTestId("city.abuja")).toContainText("5 cinemas in Central Business District, Jabi, Lugbe and 1 more area");
   await expect(menu).toContainText("To see both cities at once, search: results are grouped by city.");
   await page.getByTestId("city.abuja").click();
   await expect(page).toHaveURL(/\/abuja$/);

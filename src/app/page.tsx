@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { WhereScreen } from "@/components/where/WhereScreen";
 import { CITIES, CITY_KEY } from "@/lib/city";
-import { areas } from "@/lib/data/load";
+import { areasIn } from "@/lib/data/load";
 import { pageColours } from "@/lib/theme/pageColours";
 import { areasLine } from "@/lib/wording/where";
 
@@ -16,7 +16,7 @@ export default function Home() {
   return (
     <>
       <script dangerouslySetInnerHTML={{ __html: kept }} />
-      <WhereScreen lagosLine={areasLine(areas.map((area) => area.name))} bg={pageColours()} />
+      <WhereScreen lines={{ lagos: areasLine(areasIn("lagos").map((area) => area.name)), abuja: areasLine(areasIn("abuja").map((area) => area.name)) }} bg={pageColours()} />
     </>
   );
 }

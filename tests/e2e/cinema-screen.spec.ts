@@ -21,7 +21,7 @@ function filmsOn(all: DataFile, id: string, now: Date) {
 }
 
 test("the cinema, then its films tonight soonest first, each with its times still to start (Figma Default)", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const now = await firstDay(request, "17:30");
   await freeze(page, now);
   await page.goto(`/lagos/cinema/${ID}`);
@@ -56,7 +56,7 @@ test("the cinema, then its films tonight soonest first, each with its times stil
 });
 
 test("Tomorrow lists the next day's films with all their times", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const now = await firstDay(request, "17:30");
   await freeze(page, now);
   await page.goto(`/lagos/cinema/${ID}`);
@@ -104,7 +104,7 @@ test("Save keeps the cinema on this phone, says so in a toast, and Undo takes it
 });
 
 test("a time opens the showing sheet; sample times can't be booked; Escape gives focus back", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const now = await firstDay(request, "17:30");
   await freeze(page, now);
   await page.goto(`/lagos/cinema/${ID}`);
@@ -120,7 +120,7 @@ test("a time opens the showing sheet; sample times can't be booked; Escape gives
 });
 
 test("a cinema that sells only at the door has no Book button, and its footer says so", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const door = (all.cinemas as (DataFile["cinemas"][number] & { bookingHost: string | null })[]).find((c) => !c.bookingHost && all.showings.some((s) => s.cinemaId === c.id));
   test.skip(!door, "every listed cinema sells online");
   await page.goto(`/lagos/cinema/${door!.id}`);

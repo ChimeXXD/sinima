@@ -9,6 +9,8 @@ import { AppFrame, BarBack, BarTitle, Crumb, LogoNote } from "@/components/ui/Ap
 import { PageNotice } from "@/components/ui/Status";
 import { TicketFaceSticker } from "@/components/ui/Stickers";
 import { useFlip } from "@/components/ui/useFlip";
+import { CITY_NAMES, type City } from "@/lib/city";
+import { cityWords } from "@/lib/wording/city";
 import { shareLink } from "@/lib/browser";
 import { areaPage, type AreaCinema } from "@/lib/data/areaPage";
 import { byFilm, dayDates, formatsOf } from "@/lib/data/programme";
@@ -29,9 +31,9 @@ import s from "./area.module.css";
 // Once nothing more starts here tonight, the page says so and the areas next to it lead. A time
 // opens the showing sheet. The page's own HTML has no kept cinemas and no relative words (rule 3).
 
-const CITY = "Lagos"; // one city until the city layer (unit 13, O-16)
-
-export function AreaScreen({ data, areas, slug, bg }: { data: ListData; areas: Area[]; slug: string; bg: { light: string; dark: string } }) {
+export function AreaScreen({ data, areas, slug, city, bg }: { data: ListData; areas: Area[]; slug: string; city: City; bg: { light: string; dark: string } }) {
+  const cityName = CITY_NAMES[city];
+  const words = cityWords(city);
   const cityHref = useCityPath();
   const clock = useNow();
   const live = clock !== null;
@@ -64,7 +66,7 @@ export function AreaScreen({ data, areas, slug, bg }: { data: ListData; areas: A
   const sheet = useLazySheet(data);
 
   async function share() {
-    const done = await shareLink({ title: `Cinemas in ${area.name}`, text: areaShareText(area.name, CITY), url: `${window.location.origin}${cityHref(`/area/${slug}`)}` });
+    const done = await shareLink({ title: `Cinemas in ${area.name}`, text: areaShareText(area.name, cityName), url: `${window.location.origin}${cityHref(`/area/${slug}`)}` });
     if (done === "copied") {
       setCopied(true);
       clearTimeout(copiedTimer.current);
@@ -121,7 +123,7 @@ export function AreaScreen({ data, areas, slug, bg }: { data: ListData; areas: A
 
   const bar = (
     <>
-      <BarBack href="/cinemas" label={`All cinemas in ${CITY}`} testId="area.back" />
+      <BarBack href="/cinemas" label={words.allCinemas} testId="area.back" />
       <BarTitle>Area</BarTitle>
       <IconButton icon={copied ? "check" : "share-up"} label={copied ? "Link copied" : `Share cinemas in ${area.name}`} onClick={() => void share()} testId="area.share" />
     </>
@@ -137,7 +139,7 @@ export function AreaScreen({ data, areas, slug, bg }: { data: ListData; areas: A
 
   return (
     <AppFrame active="cinemas" search={{ value: typed, onChange: setTyped, onSubmit: () => router.push(`/?q=${encodeURIComponent(typed.trim())}`) }} bg={bg} bar={bar} footer={footer}>
-      <Crumb href="/cinemas">All cinemas in {CITY}</Crumb>
+      <Crumb href="/cinemas">{words.allCinemas}</Crumb>
       <AreaHero area={area.name} count={area.cinemas} />
       <PageNotice banner={banner} now={clock} className={s.notice} />
       {page.quiet && when ? (
@@ -167,7 +169,7 @@ export function AreaScreen({ data, areas, slug, bg }: { data: ListData; areas: A
         </>
       )}
 
-      {sheet.Sheet && <sheet.Sheet data={sheet.sheetData} row={sheet.row} open={sheet.open} now={clock} areaName={areaName} near={near} city={CITY} onPick={sheet.openRow} onClose={sheet.close} />}
+      {sheet.Sheet && <sheet.Sheet data={sheet.sheetData} row={sheet.row} open={sheet.open} now={clock} areaName={areaName} near={near} city={cityName} onPick={sheet.openRow} onClose={sheet.close} />}
     </AppFrame>
   );
 }

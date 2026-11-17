@@ -5,7 +5,7 @@ import { dataFile, freeze, sampleTime } from "./helpers";
 // page, opening YouTube in a new tab; a film with none has no button.
 
 test("a film with a trailer links to it on YouTube, in a new tab; a film without has none", async ({ page, request }) => {
-  const all = (await dataFile(request, "all")) as unknown as { films: { id: string; title: string; trailerKey?: string | null }[] };
+  const all = (await dataFile(request, "lagos")) as unknown as { films: { id: string; title: string; trailerKey?: string | null }[] };
   const withTrailer = all.films.find((film) => film.trailerKey);
   const without = all.films.find((film) => !film.trailerKey);
   expect(withTrailer && without).toBeTruthy();

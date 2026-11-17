@@ -4,7 +4,7 @@ import { dataFile, freeze, sampleTime, shownClock, today } from "./helpers";
 // A cinema's page, Your cinemas, and the rules every page keeps (rule 3, 44 px, no sideways scroll).
 
 test("tapping a time opens that showing; sample data cannot be booked", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const now = await sampleTime(request, "18:00");
   const row = today(all, now).find((s) => all.cinemas.find((c) => c.id === s.cinemaId)!.area === "lekki")!;
   await freeze(page, now);
@@ -23,7 +23,7 @@ test("tapping a time opens that showing; sample data cannot be booked", async ({
 });
 
 test("a showing is gone from the card the minute it starts", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const row = today(all, await sampleTime(request, "18:00")).find((s) => all.cinemas.find((c) => c.id === s.cinemaId)!.area === "lekki")!;
   await freeze(page, new Date(Date.parse(row.startsAt) - 60_000));
   await page.goto(`/lagos/cinema/${row.cinemaId}`);
@@ -34,7 +34,7 @@ test("a showing is gone from the card the minute it starts", async ({ page, requ
 });
 
 test("Tomorrow shows the whole of the next day", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const built = new Date(all.generatedAt);
   const next = new Date(built.getTime() + 24 * 3_600_000);
   const tomorrow = all.showings.filter((s) => new Date(Date.parse(s.startsAt) + 3_600_000).toISOString().slice(0, 10) === new Date(next.getTime() + 3_600_000).toISOString().slice(0, 10));

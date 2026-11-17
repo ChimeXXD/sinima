@@ -9,6 +9,7 @@ import { AppFrame } from "@/components/ui/AppFrame";
 import { NoPoster, ShowingCard } from "@/components/ui/Cards";
 import { PageNotice } from "@/components/ui/Status";
 import { TicketFaceSticker } from "@/components/ui/Stickers";
+import { CITY_NAMES, type City } from "@/lib/city";
 import { useAreaChoice, useSavedArea } from "@/lib/browser";
 import { dayDates } from "@/lib/data/programme";
 import { laterName, nextDayName, pageBanner, type ListData, type ListRow } from "@/lib/data/select";
@@ -26,11 +27,10 @@ import s from "./soon.module.css";
 // tonight as rows. The showings kept with "Keep a countdown" lead the page. Nothing is "soon"
 // until the browser has the time (rule 3): the page's own HTML lists the day, for all of Lagos.
 
-const CITY = "Lagos"; // one city until the city layer (unit 13, O-16)
-
 export type SoonArea = { slug: string; name: string; neighbours: string[] };
 
-export function SoonScreen({ data, areas, bg }: { data: ListData; areas: SoonArea[]; bg: { light: string; dark: string } }) {
+export function SoonScreen({ data, areas, city, bg }: { data: ListData; areas: SoonArea[]; city: City; bg: { light: string; dark: string } }) {
+  const cityName = CITY_NAMES[city];
   const clock = useNow();
   const live = clock !== null;
   const now = clock ?? data.at;
@@ -45,7 +45,7 @@ export function SoonScreen({ data, areas, bg }: { data: ListData; areas: SoonAre
   const areaName = (slug: string) => area(slug)?.name ?? slug;
   const near = (slug: string) => area(slug)?.neighbours ?? [];
   const placeArea = chosen ? (area(chosen) ?? null) : null;
-  const place = placeArea?.name ?? CITY;
+  const place = placeArea?.name ?? cityName;
   // Sorting every row is kept off the keystrokes in the search box: only the data, place, clock or countdowns redo it.
   const page = useMemo(() => soonPage({ rows: data.rows, areaOf: (cinema) => data.cinemas[cinema]!.area, place: placeArea, now, live }), [data, placeArea, now, live]);
   const yours = useMemo(() => (live ? keptRows(data.rows, countdowns, { film: (film) => data.films[film]!.id, cinema: (cinema) => data.cinemas[cinema]!.id }, now) : []), [data, countdowns, now, live]);
@@ -80,7 +80,7 @@ export function SoonScreen({ data, areas, bg }: { data: ListData; areas: SoonAre
   return (
     <AppFrame active="soon" search={{ value: typed, onChange: setTyped, onSubmit: () => router.push(`/?q=${encodeURIComponent(typed.trim())}`) }} bg={bg}>
       <SoonHero place={place} live={live} />
-      <AreaChips chips={chips} allFirst={!areas.some((candidate) => candidate.slug === kept)} current={chosen} city={CITY} names={areaName} onPick={choose} />
+      <AreaChips chips={chips} allFirst={!areas.some((candidate) => candidate.slug === kept)} current={chosen} city={cityName} names={areaName} onPick={choose} />
       <PageNotice banner={banner} now={clock} className={s.notice} />
 
       {yours.length > 0 && (
@@ -113,7 +113,7 @@ export function SoonScreen({ data, areas, bg }: { data: ListData; areas: SoonAre
         </section>
       )}
 
-      {page.quiet && <QuietBlock data={data} quiet={page.quiet} place={place} placeSlug={placeArea?.slug ?? null} now={now} areaName={areaName} onOpen={sheet.openRow} />}
+      {page.quiet && <QuietBlock data={data} cityName={cityName} quiet={page.quiet} place={place} placeSlug={placeArea?.slug ?? null} now={now} areaName={areaName} onOpen={sheet.openRow} />}
 
       {page.later.length > 0 && (
         <section className={s.section} aria-labelledby="soon.later" data-testid="section.later">
@@ -125,13 +125,13 @@ export function SoonScreen({ data, areas, bg }: { data: ListData; areas: SoonAre
         </section>
       )}
 
-      {sheet.Sheet && <sheet.Sheet data={sheet.sheetData} row={sheet.row} open={sheet.open} now={clock} areaName={areaName} near={near} city={CITY} onPick={sheet.openRow} onClose={sheet.close} />}
+      {sheet.Sheet && <sheet.Sheet data={sheet.sheetData} row={sheet.row} open={sheet.open} now={clock} areaName={areaName} near={near} city={cityName} onPick={sheet.openRow} onClose={sheet.close} />}
     </AppFrame>
   );
 }
 
 /** Figma Nothing in 2 hours: a ticket, what else there is, tomorrow here, and a handwritten note. */
-function QuietBlock({ data, quiet, place, placeSlug, now, areaName, onOpen }: { data: ListData; quiet: Quiet; place: string; placeSlug: string | null; now: string; areaName: (slug: string) => string; onOpen: (row: ListRow) => void }) {
+function QuietBlock({ data, cityName, quiet, place, placeSlug, now, areaName, onOpen }: { data: ListData; cityName: string; quiet: Quiet; place: string; placeSlug: string | null; now: string; areaName: (slug: string) => string; onOpen: (row: ListRow) => void }) {
   const named = (row: ListRow) => ({ at: row.at, film: data.films[row.film]!.title, cinema: data.cinemas[row.cinema]!.name });
   const input: QuietInput =
     quiet.kind === "later"
@@ -139,7 +139,7 @@ function QuietBlock({ data, quiet, place, placeSlug, now, areaName, onOpen }: { 
       : quiet.kind === "nearby"
         ? { kind: "nearby", areas: quiet.areas.map(areaName), left: quiet.rows.length }
         : { kind: "city", areas: quiet.areas.map(areaName), left: quiet.rows.length, tomorrow: quiet.tomorrow && named(quiet.tomorrow) };
-  const words = quietWords({ place, city: CITY, when: laterName(now) === "Later tonight" ? "tonight" : "today", next: nextDayName(now), quiet: input });
+  const words = quietWords({ place, city: cityName, when: laterName(now) === "Later tonight" ? "tonight" : "today", next: nextDayName(now), quiet: input });
   const rows = quiet.kind === "later" ? [] : quiet.rows;
   return (
     <section className={s.quiet} aria-labelledby="soon.quiet" data-testid="soon.quiet">

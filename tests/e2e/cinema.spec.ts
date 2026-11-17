@@ -5,7 +5,7 @@ import { dataFile, freeze, sampleTime, today } from "./helpers";
 // The page as Figma draws it (build unit 8): tests/e2e/cinema-screen.spec.ts.
 
 test("every film on a cinema's page has a poster: TMDB's, or a stand-in, never an empty box", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const now = await sampleTime(request, "10:00");
   const id = "genesis-purple-lekki";
   const films = [...new Set(today(all, now).filter((s) => s.cinemaId === id).map((s) => s.filmId))];

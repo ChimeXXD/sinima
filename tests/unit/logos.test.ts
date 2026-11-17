@@ -13,9 +13,13 @@ const size = (file: string) => {
 };
 
 describe("chain logos (D-56)", () => {
-  it("has a logo for every chain in the registry", () => {
+  it("has a logo for every chain in the registry, or says why it has none yet", () => {
     const chains = [...new Set(cinemas.cinemas.map((c) => c.chain))];
-    expect(chains.filter((chain) => !(chain in logos.chains))).toEqual([]);
+    const without: Record<string, string> = logos.withoutLogo;
+    expect(chains.filter((chain) => !(chain in logos.chains) && !(chain in without))).toEqual([]);
+    // A chain listed as having none really has none, and says why; today only The Jays (D-120).
+    expect(Object.keys(without).filter((chain) => chain in logos.chains || !chains.includes(chain))).toEqual([]);
+    for (const [chain, why] of Object.entries(without)) expect(why, chain).toMatch(/D-\d+/);
   });
 
   it("names where each logo came from, on the chain's own site", () => {

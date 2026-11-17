@@ -1,5 +1,6 @@
 import type { FormatTag } from "@/lib/data/format";
 import { byFilm, formatsOf, showingOn, type Day } from "@/lib/data/programme";
+import { cityOfCinema, type CityOfArea } from "@/lib/data/cities";
 import { toListData, type ListFresh, type ListRow } from "@/lib/data/select";
 import type { ShowtimesFile } from "@/lib/data/types";
 
@@ -20,19 +21,19 @@ export type SearchIndex = { sample: boolean; fresh: ListFresh[]; films: SearchFi
 export type SearchResult = { film: SearchFilm; next: { at: string; cinema: string }; cinemas: number; formats: FormatTag[]; day: Day };
 export type SearchGroup = { city: City; results: SearchResult[] };
 
-/** The index the pages fetch. Every cinema is in Lagos until the city layer adds Abuja's (unit 13). */
-export function searchIndex(file: ShowtimesFile): SearchIndex {
+/** The index the pages fetch, both cities in one: each cinema with its area's city (D-120). */
+export function searchIndex(file: ShowtimesFile, cityOfArea: CityOfArea): SearchIndex {
   const list = toListData(file);
   return {
     sample: list.sample,
     fresh: list.fresh,
     films: list.films.map(({ id, title, poster, rating, runtimeMin }) => ({ id, title, poster, rating, runtimeMin })),
-    cinemas: list.cinemas.map((cinema) => ({ name: cinema.name, city: "lagos" })),
+    cinemas: list.cinemas.map((cinema) => ({ name: cinema.name, city: cityOfCinema(cinema, cityOfArea) })),
     rows: list.rows.map((row) => [row.at, row.film, row.cinema, row.format]),
   };
 }
 
-/** True when the index has a cinema in the city: Abuja has none until the city layer (unit 13). */
+/** True when the index has a cinema in the city: a live set read before Abuja was added has none (D-120). */
 export const hasCinemas = (index: SearchIndex, city: City) => index.cinemas.some((cinema) => cinema.city === city);
 
 /** Lower case, no accents, letters and digits only: "Spider-Man" and "spiderman" match. */

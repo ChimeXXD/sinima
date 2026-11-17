@@ -123,7 +123,7 @@ describe("refresh --fixtures", () => {
   it("writes showtimes.json, all.json and one file per area", () => {
     const expected = ["data/showtimes.json", "public/data/all.json", ...registry.areas.map((a) => `public/data/area/${a.slug}.json`)];
     expect([...early.files.keys()].sort()).toEqual(expected.sort());
-    expect(registry.areas).toHaveLength(12);
+    expect(registry.areas).toHaveLength(16); // 12 in Lagos, 4 in Abuja (D-120)
   });
 
   it("writes files that validate with nothing left to drop or repair", () => {
@@ -159,16 +159,22 @@ describe("refresh --fixtures", () => {
       const saved = [...new Set(dayFixture.filter((s) => s.cinemaId === cinemaId).map((s) => `${s.filmTitle} ${clock(s.startsAt)}`))];
       expect(times(all, cinemaId, "2026-11-20"), cinemaId).toEqual(saved.map((s) => s.slice(-5)).sort());
     }
-    expect(all.showings.filter((s) => lagosDayKey(s.startsAt) === "2026-11-20")).toHaveLength(294);
+    expect(all.showings.filter((s) => s.sourceId === "lagocine" && lagosDayKey(s.startsAt) === "2026-11-20")).toHaveLength(294);
     // Lagocine writes Ramayana two ways; data/film-aliases.json keeps it one film at /film/ramayana (D-119).
+    // Abuja's Veezi pages write "AGBARA NLA", Lagocine "Agbara Nla: The Return": one film (D-119, D-120).
     // 59 repeats on the day page, the same 59 again tomorrow, and Silverbird's 28 on both pages.
-    expect(early.log).toEqual(['films: "Ramayana: Rise of a Legend" is shown as "Ramayana"', "lagocine: 146 showings were listed more than once; kept one of each"]);
+    expect(early.log).toEqual([
+      'films: "Ramayana: Rise of a Legend" is shown as "Ramayana"',
+      'films: "AGBARA NLA" is shown as "Agbara Nla: The Return"',
+      "lagocine: 146 showings were listed more than once; kept one of each",
+    ]);
   });
 
   it("uses Silverbird Ikeja's own saved tomorrow, and repeats the saved day for the other cinemas", () => {
     expect(times(all, "silverbird-ikeja", "2026-11-21")).toHaveLength(28);
     expect(times(all, "ebonylife-vi", "2026-11-21")).toEqual(times(all, "ebonylife-vi", "2026-11-20"));
-    expect(all.showings).toHaveLength(294 + 28 + (294 - 28));
+    // Lagos's, then Abuja's two Silverbird pages: 30 + 30 at SEC, 27 + 24 at Jabi Lake Mall (D-120).
+    expect(all.showings).toHaveLength(294 + 28 + (294 - 28) + 30 + 30 + 27 + 24);
   });
 
   it("gives each showing its id, its film and its source through the cinema's own site", () => {
@@ -190,8 +196,10 @@ describe("refresh --fixtures", () => {
     expect(all.showings.find((s) => s.cinemaId === "magnificent-ikorodu-road")).toMatchObject({
       via: { name: "Magnificent's site", url: "https://magnificentcinemas.com/" },
     });
-    // 31 titles, 30 films: "Ramayana" and "Ramayana: Rise of a Legend" are one (D-119).
-    expect(all.films).toHaveLength(30);
+    // Lagos: 31 titles, 30 films: "Ramayana" and "Ramayana: Rise of a Legend" are one (D-119).
+    // Abuja adds five films Lagos isn't showing (D-120).
+    expect(new Set(all.showings.filter((s) => s.sourceId === "lagocine").map((s) => s.filmId)).size).toBe(30);
+    expect(all.films).toHaveLength(35);
   });
 
   it("holds only one area's cinemas, showings, films and sources in an area file", () => {
@@ -218,8 +226,25 @@ describe("refresh --fixtures", () => {
     const evening = refreshFromFixtures({ now: EVENING, root }).files.get("public/data/all.json") as ShowtimesFile;
     const today = evening.showings.filter((s) => lagosDayKey(s.startsAt) === "2026-11-20").map((s) => clock(s.startsAt)).sort();
     expect(today[0]! >= "17:30").toBe(true); // 19:00 less 90 min
-    expect(evening.showings.length).toBeLessThan(588);
-    expect(evening.showings.filter((s) => lagosDayKey(s.startsAt) === "2026-11-21")).toHaveLength(294);
+    expect(evening.showings.length).toBeLessThan(588 + 111);
+    expect(evening.showings.filter((s) => lagosDayKey(s.startsAt) === "2026-11-21")).toHaveLength(294 + 30 + 24); // Lagos, then Abuja (D-120)
+  });
+
+  // Abuja's sample times are Silverbird's two Veezi pages saved on 17 Nov (D-120): 30 and 27 on the
+  // saved day, 30 and 24 the day after, moved onto today and tomorrow like Lagos's.
+  it("holds Abuja's sample times from Silverbird's own Veezi pages, in Abuja's area files", () => {
+    expect(times(all, "silverbird-sec", "2026-11-20")).toHaveLength(30);
+    expect(times(all, "silverbird-sec", "2026-11-21")).toHaveLength(30);
+    expect(times(all, "silverbird-jabi", "2026-11-20")).toHaveLength(27);
+    expect(times(all, "silverbird-jabi", "2026-11-21")).toHaveLength(24);
+    expect(times(all, "silverbird-jabi", "2026-11-20")[0]).toBe("10:05"); // Street Fighter, as saved
+    const abuja = all.showings.filter((s) => s.cinemaId === "silverbird-sec" || s.cinemaId === "silverbird-jabi");
+    expect(abuja.every((s) => s.sourceId === "silverbird" && s.fetchedAt === "2026-11-16T23:38:21Z" && s.bookingUrl === null && !s.via)).toBe(true);
+    expect(all.sources.find((s) => s.id === "silverbird")).toMatchObject({ name: "Silverbird's Veezi page", method: "fixture" });
+    const cbd = early.files.get("public/data/area/central-business-district.json") as ShowtimesFile;
+    expect(new Set(cbd.showings.map((s) => s.cinemaId))).toEqual(new Set(["silverbird-sec"]));
+    expect(cbd.cinemas.map((c) => c.id).sort()).toEqual(["genesis-ceddi-plaza", "silverbird-sec"]);
+    expect((early.files.get("public/data/area/kuje.json") as ShowtimesFile).showings).toEqual([]);
   });
 
   it("keeps every file inside the data budget", () => {
@@ -232,12 +257,12 @@ describe("refresh --fixtures", () => {
 
   it("writes the files to disk, and only rewrites one whose content has changed", () => {
     const out = mkdtempSync(join(tmpdir(), "sinima-refresh-"));
-    expect(writeFiles(early.files, out).written).toHaveLength(14);
+    expect(writeFiles(early.files, out).written).toHaveLength(18);
     const onDisk = JSON.parse(readFileSync(join(out, "public/data/area/lekki.json"), "utf8")) as ShowtimesFile;
     expect(onDisk).toEqual(early.files.get("public/data/area/lekki.json"));
     // A minute later the showings are the same; only generatedAt differs, so nothing is rewritten.
     const later = refreshFromFixtures({ now: "2026-11-19T23:31:00Z", root });
-    expect(writeFiles(later.files, out)).toEqual({ written: [], unchanged: 14 });
+    expect(writeFiles(later.files, out)).toEqual({ written: [], unchanged: 18 });
   });
 
   it("needs a mode: with none (--fixtures, --live or --build) it stops with an error", () => {

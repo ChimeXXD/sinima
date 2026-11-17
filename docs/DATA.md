@@ -150,6 +150,10 @@ An illustrative file: real cinemas and film titles, **made-up times and price**.
 }
 ```
 
+## Cinema registry: `data/cinemas.json` and the two cities (D-120)
+
+`areas[]` holds every area of both cities, each `{ slug, name, city, neighbours }`. `city` is `lagos` or `abuja`; an area's `neighbours` are other areas of the same city (D-46). `cinemas[]` places each cinema in an area by slug, so a cinema's city is its area's: the showtimes file's `cinemas[]` carry `area` only, and the build looks the city up here (`lib/data/load.ts`: `areasIn`, `cityOfArea`, `loadCity`). A city's pages are built from `all.json` cut to that city's cinemas, their showings, and the films and sources those use (`lib/data/cities.ts`, `inCity`); an area with no city fails the build. `tests/unit/registry.test.ts` checks that every area has a city, neighbours stay in their city, and every cinema's area exists. A field not confirmed on the cinema's own page is `null` (an address seen only in a directory stays out, rule 8).
+
 ## Source registry: `data/sources.json`
 
 Filled on Day 0 by the data-source audit. One entry per source.
@@ -248,4 +252,4 @@ Before a build, `npm run build` runs `refresh --build`: it copies `data/live/sho
 
 ## Sample data (D-20, D-45)
 
-`npm run refresh -- --fixtures` builds these files from the saved pages listed in `tests/fixtures/index.json` (the entries marked `sample`). Rows from the day the pages were saved move onto today and rows from the day after onto tomorrow, both in Lagos, keeping their wall-clock times; later days are dropped. A cinema with no saved tomorrow gets its saved day again. Sample rows have no booking link, every source's `method` is `fixture`, and `sample` is `true`. The files are dated today, so they are made by the command and not committed.
+`npm run refresh -- --fixtures` builds these files from the saved pages listed in `tests/fixtures/index.json` (the entries marked `sample`). Lagos's come from Lagocine's pages saved on 11 Nov; Abuja's from Silverbird SEC's and Jabi Lake Mall's Veezi pages saved on 17 Nov (D-120), each batch moved from its own saved day. Rows from the day the pages were saved move onto today and rows from the day after onto tomorrow, both in Lagos, keeping their wall-clock times; later days are dropped. A cinema with no saved tomorrow gets its saved day again. Sample rows have no booking link, every source's `method` is `fixture`, and `sample` is `true`. The files are dated today, so they are made by the command and not committed.

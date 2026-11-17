@@ -1,8 +1,8 @@
 import { expect, test, type Page } from "./test";
 import { dataFile, freeze, sampleTime, type DataFile } from "./helpers";
 
-// Search and city (Figma 192:7519, build unit 5). The data has Lagos only until the city layer
-// (unit 13), so Abuja says its cinemas are being added and is never filled with made-up times.
+// Search and city (Figma 192:7519, build unit 5). Both cities are in the index since D-120: each
+// result is in the city of the cinema showing it.
 
 const fold = (text: string) => text.normalize("NFD").toLowerCase().replace(/[^a-z0-9]/g, "");
 /** Films whose title holds the query and that have a showing still to start today or tomorrow. */
@@ -18,7 +18,7 @@ async function openSearch(page: Page) {
 }
 
 test("on a phone, search opens over the page, finds films in Lagos and opens one", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const now = await sampleTime(request, "17:30");
   await freeze(page, now);
   await page.goto("/lagos");
@@ -41,16 +41,35 @@ test("on a phone, search opens over the page, finds films in Lagos and opens one
   await expect(page).toHaveURL(/\/film\/spider-man-brand-new-day$/);
 });
 
-test("both cities groups the results by city; Abuja says its cinemas are being added", async ({ page, request }) => {
+test("both cities groups the results by city, each result at that city's cinemas", async ({ page, request }) => {
   await freeze(page, await sampleTime(request, "17:30"));
   await page.goto("/lagos");
   await openSearch(page);
-  await page.getByTestId("search.query").fill("rama");
+  await page.getByTestId("search.query").fill("street fighter"); // on in both cities that evening
   await page.getByTestId("search.scope.both").click();
   await expect(page.getByTestId("search.group.lagos").getByRole("heading")).toHaveAccessibleName("In Lagos"); // the sticker is decoration
-  await expect(page.getByTestId("search.group.lagos").locator('[data-testid^="search.hit."]')).not.toHaveCount(0);
-  await expect(page.getByTestId("search.group.abuja")).toHaveCount(0);
-  await expect(page.getByTestId("search.abuja-soon")).toHaveText("Abuja's cinemas are being added.");
+  await expect(page.getByTestId("search.group.abuja").getByRole("heading")).toHaveAccessibleName("In Abuja");
+  const abuja = page.getByTestId("search.group.abuja").getByTestId("search.hit.street-fighter");
+  await expect(abuja).toContainText(/Silverbird (Entertainment Centre|Cinemas Jabi Lake Mall)/);
+  await expect(abuja).toHaveAttribute("href", "/abuja/film/street-fighter");
+  await expect(page.getByTestId("search.group.lagos").getByTestId("search.hit.street-fighter")).toHaveAttribute("href", "/lagos/film/street-fighter");
+  await expect(page.getByTestId("search.group.lagos").getByTestId("search.hit.street-fighter")).not.toContainText("Silverbird Entertainment Centre");
+  await expect(page.getByTestId("search.abuja-soon")).toHaveCount(0);
+});
+
+test("search finds a film on only in Abuja, at its Abuja cinema, and opens Abuja's page for it", async ({ page, request }) => {
+  await freeze(page, await sampleTime(request, "09:00"));
+  await page.goto("/abuja");
+  await openSearch(page);
+  await expect(page.getByTestId("search.scope.abuja")).toHaveAttribute("aria-pressed", "true");
+  await page.getByTestId("search.query").fill("dear ajayi");
+  await expect(page.getByTestId("search.count")).toHaveText("1 film in Abuja matches “dear ajayi”");
+  await expect(page.getByTestId("search.hit.dear-ajayi")).toContainText(/Next \d{1,2}:\d\d\s[AP]M · Silverbird (Entertainment Centre|Cinemas Jabi Lake Mall)/);
+  await page.getByTestId("search.scope.lagos").click();
+  await expect(page.getByTestId("search.none").getByRole("heading")).toHaveText("Nothing called “dear ajayi” in Lagos yet");
+  await page.getByTestId("search.scope.abuja").click();
+  await page.getByTestId("search.hit.dear-ajayi").click();
+  await expect(page).toHaveURL(/\/abuja\/film\/dear-ajayi$/);
 });
 
 test("no match names the cities searched, and leads back to what's on", async ({ page, request }) => {
@@ -61,10 +80,9 @@ test("no match names the cities searched, and leads back to what's on", async ({
   await expect(page.getByTestId("search.none").getByRole("heading")).toHaveText("Nothing called “Avengers” in Lagos yet");
   await page.getByTestId("search.scope.both").click();
   await expect(page.getByTestId("search.none").getByRole("heading")).toHaveText("Nothing called “Avengers” in Lagos or Abuja yet");
-  // Abuja has no cinemas yet: it says so, not that the spelling may be wrong.
   await page.getByTestId("search.scope.abuja").click();
-  await expect(page.getByTestId("search.none").getByRole("heading")).toHaveText("Abuja's cinemas are being added");
-  await expect(page.getByTestId("search.none")).not.toContainText("spelling");
+  await expect(page.getByTestId("search.none").getByRole("heading")).toHaveText("Nothing called “Avengers” in Abuja yet");
+  await expect(page.getByTestId("search.home")).toHaveText("See what's on in Lagos"); // the page's city
   await page.getByTestId("search.home").click();
   await expect(page.getByTestId("search.panel")).toHaveCount(0);
   await expect(page.getByTestId("search.field")).toHaveValue("");
@@ -124,7 +142,7 @@ for (const { width, height } of [
   });
 }
 
-test("the city sheet opens from the search bar and from the Films title; Lagos is picked, Abuja's cinemas are coming", async ({ page }) => {
+test("the city sheet opens from the search bar and from the Films title; Lagos is picked, each city with its own line", async ({ page }) => {
   await page.goto("/lagos");
   await page.getByTestId("search.city").click();
   const sheet = page.getByTestId("city");
@@ -132,7 +150,7 @@ test("the city sheet opens from the search bar and from the Films title; Lagos i
   await expect(sheet.getByRole("heading")).toHaveText("Choose your city");
   await expect(page.getByTestId("city.lagos")).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByTestId("city.lagos")).toContainText(/\d+ cinemas in Lekki, Victoria Island, Ikeja and \d+ more areas/);
-  await expect(page.getByTestId("city.abuja")).toHaveText("AbujaAbujaAbuja's cinemas are being added");
+  await expect(page.getByTestId("city.abuja")).toHaveText("AbujaAbuja5 cinemas in Central Business District, Jabi, Lugbe and 1 more area"); // D-120
   await page.getByTestId("city.lagos").click();
   await expect(sheet).toBeHidden();
 

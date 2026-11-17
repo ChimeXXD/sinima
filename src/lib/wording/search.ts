@@ -46,17 +46,17 @@ export function enterHint(n: number): string {
   return `Press Enter to see ${n === 1 ? "it" : n === 2 ? "both" : `all ${n}`} on Films.`;
 }
 
-/** Nothing matched in the cities searched. */
-export function noMatch(query: string, scope: Scope): { title: string; body: string; action: string } {
+/** Nothing matched in the cities searched. `home` is the page's city, whose Films the action opens. */
+export function noMatch(query: string, scope: Scope, home: City): { title: string; body: string; action: string } {
   const where = scope === "both" ? "Lagos or Abuja" : CITY_NAME[scope];
   return {
     title: `Nothing called ${quoted(query)} in ${where} yet`,
     body: "Times appear here as soon as a cinema lists them. Check the spelling, or see what's on now.",
-    action: "See what's on in Lagos",
+    action: `See what's on in ${CITY_NAME[home]}`,
   };
 }
 
-/** Abuja has no cinemas in the data until the city layer (unit 13): said, never filled with made-up times. */
+/** A city with no cinemas in the search index (Abuja, until a live run has read its sources): said, never filled with made-up times. */
 export const ABUJA_SOON = "Abuja's cinemas are being added";
 
 /** The search index could not be fetched. */

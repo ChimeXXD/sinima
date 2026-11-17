@@ -42,12 +42,14 @@ describe("search wording", () => {
   });
 
   it("no match names the cities searched", () => {
-    expect(noMatch("Avengers", "both")).toEqual({
+    expect(noMatch("Avengers", "both", "lagos")).toEqual({
       title: "Nothing called “Avengers” in Lagos or Abuja yet",
       body: "Times appear here as soon as a cinema lists them. Check the spelling, or see what's on now.",
       action: "See what's on in Lagos",
     });
-    expect(noMatch("Avengers", "abuja").title).toBe("Nothing called “Avengers” in Abuja yet");
+    expect(noMatch("Avengers", "abuja", "abuja").title).toBe("Nothing called “Avengers” in Abuja yet");
+    // The way out goes to the page's own city's Films (D-120).
+    expect(noMatch("Avengers", "both", "abuja").action).toBe("See what's on in Abuja");
   });
 
   it("the city sheet: the cinemas and the first three areas of each city", () => {

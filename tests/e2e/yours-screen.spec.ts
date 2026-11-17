@@ -8,7 +8,7 @@ const keep = (page: Page, ids: string[]) => page.addInitScript((list) => localSt
 const folders = (page: Page) => page.getByTestId("yours.folders").locator('[data-testid^="saved.folder."]').evaluateAll((els) => els.map((el) => el.getAttribute("data-testid")!.slice(13)));
 
 test("saved cinemas as folders, soonest first, each with its count and next time (Figma Default)", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const now = await sampleTime(request, "17:30");
   const ids = ["filmhouse-lekki-imax", "ozone-yaba", "ebonylife-vi", "genesis-maryland"];
   await keep(page, ids);
@@ -73,7 +73,7 @@ test("none saved: the words, and the list to pick cinemas from (Figma None saved
 });
 
 test("a saved cinema with nothing more today stays, and says so; one we can't read says that", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const unread = all.cinemas.find((c) => !all.showings.some((s) => s.cinemaId === c.id));
   await keep(page, ["grand-lekki", ...(unread ? [unread.id] : [])]);
   await freeze(page, await sampleTime(request, "23:58"));

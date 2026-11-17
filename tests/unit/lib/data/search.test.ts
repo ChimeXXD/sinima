@@ -98,21 +98,42 @@ describe("searchFilms", () => {
 });
 
 describe("searchIndex", () => {
-  it("keeps only what a result shows, every cinema in Lagos until the city layer adds Abuja's", () => {
+  // Each cinema's city is its area's (D-120), so Abuja's films are found under Abuja.
+  it("keeps only what a result shows, each cinema with its area's city", () => {
     const file = {
       generatedAt: NOW,
       sample: true,
       films: [{ id: "spider", title: "Spider-Man", posterPath: "/s.jpg", rating: "12A", runtimeMin: 145 }],
-      cinemas: [{ id: "grand-lekki", name: "Grand Cinemas Lekki", area: "lekki", chain: "grand" }],
-      showings: [{ id: "a", cinemaId: "grand-lekki", filmId: "spider", startsAt: "2026-11-13T17:00:00Z", format: "IMAX", bookingUrl: "https://x", sourceId: "s", fetchedAt: NOW }],
+      cinemas: [
+        { id: "grand-lekki", name: "Grand Cinemas Lekki", area: "lekki", chain: "grand" },
+        { id: "silverbird-jabi", name: "Silverbird Cinemas Jabi Lake Mall", area: "jabi", chain: "Silverbird" },
+      ],
+      showings: [
+        { id: "a", cinemaId: "grand-lekki", filmId: "spider", startsAt: "2026-11-13T17:00:00Z", format: "IMAX", bookingUrl: "https://x", sourceId: "s", fetchedAt: NOW },
+        { id: "b", cinemaId: "silverbird-jabi", filmId: "spider", startsAt: "2026-11-13T18:00:00Z", format: null, bookingUrl: null, sourceId: "s", fetchedAt: NOW },
+      ],
       sources: [{ id: "s", name: "S", method: "html", url: "https://s" }],
     } as unknown as ShowtimesFile;
-    expect(searchIndex(file)).toEqual({
+    const built = searchIndex(file, (area) => (area === "jabi" ? "abuja" : "lagos"));
+    expect(built).toEqual({
       sample: true,
       fresh: [{ source: "S", method: "html", url: "https://s", fetchedAt: NOW }],
       films: [{ id: "spider", title: "Spider-Man", poster: "/s.jpg", rating: "12A", runtimeMin: 145 }],
-      cinemas: [{ name: "Grand Cinemas Lekki", city: "lagos" }],
-      rows: [["2026-11-13T17:00:00Z", 0, 0, "IMAX"]],
+      cinemas: [
+        { name: "Grand Cinemas Lekki", city: "lagos" },
+        { name: "Silverbird Cinemas Jabi Lake Mall", city: "abuja" },
+      ],
+      rows: [
+        ["2026-11-13T17:00:00Z", 0, 0, "IMAX"],
+        ["2026-11-13T18:00:00Z", 0, 1, null],
+      ],
     });
+    const abuja = searchFilms(built, "spider", "abuja", NOW)[0]!;
+    expect(abuja.results.map((r) => r.next)).toEqual([{ at: "2026-11-13T18:00:00Z", cinema: "Silverbird Cinemas Jabi Lake Mall" }]);
+  });
+
+  it("refuses a cinema whose area has no city, rather than guess one", () => {
+    const file = { generatedAt: NOW, sample: false, films: [], cinemas: [{ id: "x", name: "X", area: "nowhere", chain: "X" }], showings: [], sources: [] } as unknown as ShowtimesFile;
+    expect(() => searchIndex(file, () => undefined)).toThrow('No city for the area "nowhere"');
   });
 });

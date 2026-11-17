@@ -1,11 +1,12 @@
 {
   "schemaVersion": 1,
   "verifiedOn": "2026-11-06",
-  "about": "Seed registry of Lagos cinemas confirmed on pages opened on 6 Nov 2026. Unverified fields are null. geo is filled on Day 2 from each cinema's own page or map pin; never guessed.",
+  "about": "Registry of Lagos and Abuja cinemas. Each area names its city (D-120). Lagos cinemas confirmed on pages opened on 6 Nov 2026, Abuja's in the 15 Nov audit (docs/RESEARCH.md, D-79). Unverified fields are null. geo is filled from each cinema's own page or map pin; never guessed.",
   "areas": [
     {
       "slug": "lekki",
       "name": "Lekki",
+      "city": "lagos",
       "neighbours": [
         "victoria-island",
         "sangotedo"
@@ -14,6 +15,7 @@
     {
       "slug": "victoria-island",
       "name": "Victoria Island",
+      "city": "lagos",
       "neighbours": [
         "lekki",
         "lagos-island"
@@ -22,6 +24,7 @@
     {
       "slug": "ikeja",
       "name": "Ikeja",
+      "city": "lagos",
       "neighbours": [
         "maryland",
         "agege"
@@ -30,6 +33,7 @@
     {
       "slug": "surulere",
       "name": "Surulere",
+      "city": "lagos",
       "neighbours": [
         "yaba",
         "lagos-island",
@@ -39,6 +43,7 @@
     {
       "slug": "yaba",
       "name": "Yaba",
+      "city": "lagos",
       "neighbours": [
         "surulere",
         "ikorodu-road",
@@ -48,6 +53,7 @@
     {
       "slug": "lagos-island",
       "name": "Lagos Island",
+      "city": "lagos",
       "neighbours": [
         "victoria-island",
         "surulere",
@@ -57,6 +63,7 @@
     {
       "slug": "festac",
       "name": "Festac",
+      "city": "lagos",
       "neighbours": [
         "surulere",
         "idimu"
@@ -65,6 +72,7 @@
     {
       "slug": "maryland",
       "name": "Maryland",
+      "city": "lagos",
       "neighbours": [
         "ikeja",
         "ikorodu-road",
@@ -74,6 +82,7 @@
     {
       "slug": "agege",
       "name": "Agege",
+      "city": "lagos",
       "neighbours": [
         "ikeja",
         "idimu"
@@ -82,6 +91,7 @@
     {
       "slug": "sangotedo",
       "name": "Sangotedo",
+      "city": "lagos",
       "neighbours": [
         "lekki"
       ]
@@ -89,6 +99,7 @@
     {
       "slug": "ikorodu-road",
       "name": "Ikorodu Road",
+      "city": "lagos",
       "neighbours": [
         "maryland",
         "yaba"
@@ -97,10 +108,45 @@
     {
       "slug": "idimu",
       "name": "Idimu",
+      "city": "lagos",
       "neighbours": [
         "agege",
         "festac",
         "ikeja"
+      ]
+    },
+    {
+      "slug": "central-business-district",
+      "name": "Central Business District",
+      "city": "abuja",
+      "neighbours": [
+        "jabi",
+        "lugbe"
+      ]
+    },
+    {
+      "slug": "jabi",
+      "name": "Jabi",
+      "city": "abuja",
+      "neighbours": [
+        "central-business-district"
+      ]
+    },
+    {
+      "slug": "lugbe",
+      "name": "Lugbe",
+      "city": "abuja",
+      "neighbours": [
+        "central-business-district",
+        "kuje"
+      ]
+    },
+    {
+      "slug": "kuje",
+      "name": "Kuje",
+      "city": "abuja",
+      "neighbours": [
+        "lugbe"
       ]
     }
   ],
@@ -108,6 +154,7 @@
     {
       "slug": "ikorodu",
       "name": "Ikorodu",
+      "city": "lagos",
       "note": "Chime listed Ikorodu; no cinema in Ikorodu town confirmed. Magnificent is on Ikorodu Road."
     }
   ],
@@ -486,6 +533,88 @@
         "https://www.discoverlagos.ng/post/the-best-cinemas-in-lagos-where-movie-magic-comes-alive"
       ],
       "notes": "15 Nov 2026: has its own showtimes page (found through Lagocine's cinema page); see data/sources.json."
+    },
+    {
+      "id": "silverbird-sec",
+      "name": "Silverbird Entertainment Centre",
+      "chain": "Silverbird",
+      "area": "central-business-district",
+      "address": null,
+      "geo": null,
+      "website": null,
+      "bookingHost": "ticketing.eu.veezi.com",
+      "lagocinePage": null,
+      "listedOnLagocine": false,
+      "sourceUrls": [
+        "https://ticketing.eu.veezi.com/sessions/?siteToken=ntfpkgyc0phrmzxb2ctk828vd4",
+        "https://silverbirdcinemas.com/"
+      ],
+      "notes": "Abuja audit 15 Nov 2026 (docs/RESEARCH.md, D-79). Linked from silverbirdcinemas.com as \"Online Booking (SEC, Abuja)\"; its Veezi page is server-rendered (12 times on 15 Nov, 90 for 17-19 Nov in the 17 Nov sample). Address from directories only (1161 Memorial Drive, by Musa Yar'Adua Centre), so left out until its own page confirms it."
+    },
+    {
+      "id": "silverbird-jabi",
+      "name": "Silverbird Cinemas Jabi Lake Mall",
+      "chain": "Silverbird",
+      "area": "jabi",
+      "address": null,
+      "geo": null,
+      "website": null,
+      "bookingHost": "ticketing.eu.veezi.com",
+      "lagocinePage": null,
+      "listedOnLagocine": false,
+      "sourceUrls": [
+        "https://ticketing.eu.veezi.com/sessions/?siteToken=ypr75qx9nh88brqya85qtg3wqc",
+        "https://silverbirdcinemas.com/cinema/jabi/"
+      ],
+      "notes": "Abuja audit 15 Nov 2026 (docs/RESEARCH.md, D-79). Site token from silverbirdcinemas.com/cinema/jabi/; the same Veezi reader as Silverbird Lagos. Inside Jabi Lake Mall; no street address confirmed."
+    },
+    {
+      "id": "genesis-ceddi-plaza",
+      "name": "Genesis Cinemas Ceddi Plaza",
+      "chain": "Genesis",
+      "area": "central-business-district",
+      "address": null,
+      "geo": null,
+      "website": "https://genesiscinemas.com/",
+      "bookingHost": "genesiscinemas.com",
+      "lagocinePage": null,
+      "listedOnLagocine": false,
+      "sourceUrls": [
+        "https://genesiscinemas.com/"
+      ],
+      "notes": "Abuja audit 15 Nov 2026 (docs/RESEARCH.md, D-79). Its booking page (genesiscinemas.com/ceddi-plaza-abuja/booknow/<id>) carries the times in the HTML (7:20 PM seen). Address from directories only (264 Tafawa Balewa Way), so left out until its own page confirms it. No saved sample page yet: no times until the Genesis reader exists."
+    },
+    {
+      "id": "nova-abuja",
+      "name": "Nova Cinemas Lugbe",
+      "chain": "Nova",
+      "area": "lugbe",
+      "address": "Novare Gateway Mall, Musa Yar'Adua Expressway (Airport Road), Lugbe District, Abuja",
+      "geo": null,
+      "website": "https://novacinemang.com/showtimes?cinemaId=nov-f76e616e",
+      "bookingHost": "novacinemang.com",
+      "lagocinePage": null,
+      "listedOnLagocine": false,
+      "sourceUrls": [
+        "https://novacinemang.com/"
+      ],
+      "notes": "Abuja audit 15 Nov 2026 (docs/RESEARCH.md, D-79). Nova calls it \"Nova Abuja\" (cinemaId nov-f76e616e on the Reach platform, script-built; 23 times on 15 Nov through the headless browser). Address as the mall's own page gives it. No saved sample page yet: no times until the Nova reader exists."
+    },
+    {
+      "id": "jays-kuje",
+      "name": "The Jays Cinemas",
+      "chain": "The Jays",
+      "area": "kuje",
+      "address": "Union Home Estate Road, Kuchiyako, Kuje, Abuja",
+      "geo": null,
+      "website": "https://thejayscinemas.com/",
+      "bookingHost": null,
+      "lagocinePage": null,
+      "listedOnLagocine": false,
+      "sourceUrls": [
+        "https://thejayscinemas.com/"
+      ],
+      "notes": "Abuja audit 15 Nov 2026 (docs/RESEARCH.md, D-79). Its own site (WordPress) gives the address but shows no times, so it says \"Times not available yet\"; no source feeds it."
     }
   ]
 }

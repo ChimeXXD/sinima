@@ -35,31 +35,40 @@ test("links inside a Lagos page carry /lagos", async ({ page }) => {
   await expect(page.getByTestId("footer.about")).toHaveAttribute("href", "/about");
 });
 
-test("Abuja's tabs say its cinemas are being added, never made-up times, and lead to Lagos", async ({ page }) => {
+// Abuja's tabs have its own times since D-120 (tests/e2e/abuja.spec.ts); its links carry /abuja.
+test("Abuja's tabs are titled for Abuja and their links carry /abuja", async ({ page }) => {
   for (const [path, title] of [["/abuja", "What's on in Abuja"], ["/abuja/cinemas", "Cinemas in Abuja"], ["/abuja/soon", "Starting soon in Abuja"], ["/abuja/yours", "Your cinemas"]] as const) {
     await page.goto(path);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(title);
-    await expect(page.getByTestId("city.coming").locator("h2")).toHaveText("Abuja's cinemas are being added");
-    await expect(page.locator("time")).toHaveCount(0);
   }
   await expect(page.getByTestId("tab.cinemas")).toHaveAttribute("href", "/abuja/cinemas");
-  await page.getByTestId("city.other").click();
-  await expect(page).toHaveURL(/\/lagos$/);
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("What's on in Lagos");
+  await expect(page.getByTestId("tab.films")).toHaveAttribute("href", "/abuja");
 });
 
-test("Abuja has no film, cinema or area pages until it has times", async ({ page }) => {
-  expect((await page.goto("/abuja/film/ramayana"))!.status()).toBe(404);
+test("each cinema and area has a page in its own city only; a film in each city it is showing in", async ({ page }) => {
   expect((await page.goto("/abuja/cinema/ebonylife-vi"))!.status()).toBe(404);
+  expect((await page.goto("/lagos/cinema/silverbird-jabi"))!.status()).toBe(404);
+  expect((await page.goto("/abuja/area/lekki"))!.status()).toBe(404);
+  expect((await page.goto("/lagos/area/jabi"))!.status()).toBe(404);
+  expect((await page.goto("/abuja/film/ramayana"))!.status()).toBe(404); // Ramayana isn't on in Abuja's sample
+  expect((await page.goto("/lagos/film/dear-ajayi"))!.status()).toBe(404); // nor Dear Ajayi in Lagos's
+  expect((await page.goto("/abuja/film/spider-man-brand-new-day"))!.status()).toBe(200);
+  expect((await page.goto("/lagos/film/spider-man-brand-new-day"))!.status()).toBe(200);
 });
 
-test("Enter in search on an Abuja page lists the matches on Lagos's Films", async ({ page }) => {
-  await page.goto("/abuja");
+test("old addresses were Lagos pages: an Abuja cinema has none", async ({ page }) => {
+  expect((await page.goto("/cinema/silverbird-jabi"))!.status()).toBe(404);
+  expect((await page.goto("/area/jabi"))!.status()).toBe(404);
+});
+
+test("Enter in search on an Abuja page lists the matches on Abuja's Films", async ({ page }) => {
+  await page.goto("/abuja/cinemas");
   await page.getByTestId("search.field").click(); // opens search over the page
   await page.getByTestId("search.query").fill("spider");
   await page.keyboard.press("Enter");
-  await expect(page).toHaveURL(/\/lagos\?q=spider$/);
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("What's on in Lagos");
+  await expect(page).toHaveURL(/\/abuja\?q=spider$/);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("What's on in Abuja");
+  await expect(page.getByTestId("film.card.spider-man-brand-new-day")).toBeVisible();
 });
 
 test("with Abuja kept, the 404's button names the city it opens", async ({ page }) => {

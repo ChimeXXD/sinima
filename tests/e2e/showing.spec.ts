@@ -5,7 +5,7 @@ import { dataFile, freeze, sampleTime, shownClock, today } from "./helpers";
 // units 4, 8 and 9); the old panel and its share card went with build unit 9.
 
 test("an old shared link to a showing on a cinema's page (#s=<film>@<start>) opens it in the sheet (D-93 f)", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const now = await sampleTime(request, "18:00");
   const row = today(all, now)[0]!;
   const cinema = all.cinemas.find((c) => c.id === row.cinemaId)!;
@@ -37,7 +37,7 @@ async function asLiveData(page: import("@playwright/test").Page, path: string, r
 }
 
 test("a live showing can be booked on the cinema's own site until the second it starts, never after", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const row = today(all, await sampleTime(request, "18:00")).find((s) => s.cinemaId === "ebonylife-vi")!;
   const now = new Date(Date.parse(row.startsAt) - 60_000);
   await asLiveData(page, "/lagos/cinema/ebonylife-vi", new Date(now.getTime() - 3_600_000));
@@ -60,7 +60,7 @@ test("a live showing can be booked on the cinema's own site until the second it 
 });
 
 test("times read 30 hours ago show the stale banner, and the showing says so in words", async ({ page, request }) => {
-  const all = await dataFile(request, "all");
+  const all = await dataFile(request, "lagos");
   const now = await sampleTime(request, "18:00");
   const row = today(all, now).find((s) => s.cinemaId === "ebonylife-vi")!;
   await asLiveData(page, "/lagos/cinema/ebonylife-vi", new Date(now.getTime() - 30 * 3_600_000));

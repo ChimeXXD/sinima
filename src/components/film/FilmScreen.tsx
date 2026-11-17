@@ -8,6 +8,8 @@ import { Icon } from "@/components/ui/Icon";
 import { PageNotice, TimeChip } from "@/components/ui/Status";
 import { LogoSticker, TicketFaceSticker } from "@/components/ui/Stickers";
 import { useSwapIn } from "@/components/ui/useSwapIn";
+import { CITY_NAMES, type City } from "@/lib/city";
+import { cityWords } from "@/lib/wording/city";
 import { shareLink, useHash, useSavedArea } from "@/lib/browser";
 import { areaGroups, cinemasOn, startedEarlier, type CinemaTimes } from "@/lib/data/filmPage";
 import { formatLabel } from "@/lib/data/format";
@@ -26,9 +28,9 @@ import s from "./film.module.css";
 // city on the day picked, by area: your area first, then the areas next to it. A time opens the
 // showing sheet; a link ending #s=<cinema>@<start> opens one directly.
 
-const CITY = "Lagos"; // one city until the city layer (unit 13, O-16)
-
-export function FilmScreen({ data, areas, bg }: { data: ListData; areas: Area[]; bg: { light: string; dark: string } }) {
+export function FilmScreen({ data, areas, city, bg }: { data: ListData; areas: Area[]; city: City; bg: { light: string; dark: string } }) {
+  const cityName = CITY_NAMES[city];
+  const words = cityWords(city);
   const cityHref = useCityPath();
   const clock = useNow();
   const live = clock !== null;
@@ -56,7 +58,7 @@ export function FilmScreen({ data, areas, bg }: { data: ListData; areas: Area[];
   const on = dayWords(day, dates[day], live).on;
   const today = cinemasOn(data.rows, 0, now);
   const formats = [...new Set(data.rows.map((r) => formatLabel(r.format)).filter((label): label is string => label !== null))];
-  const where = today.cinemas > 0 ? { cinemas: today.cinemas, city: CITY, on: dayWords(0, dates[0], live).on } : { cinemas: cinemasOn(data.rows, 1, now).cinemas, city: CITY, on: dayWords(1, dates[1], live).on };
+  const where = today.cinemas > 0 ? { cinemas: today.cinemas, city: cityName, on: dayWords(0, dates[0], live).on } : { cinemas: cinemasOn(data.rows, 1, now).cinemas, city: cityName, on: dayWords(1, dates[1], live).on };
   const facts = filmFacts(film, formats, where);
   const trailer = film.trailer ? trailerLink(film.title, film.trailer) : null;
   const groups = areaGroups(data.rows, day, now, live, (cinema) => data.cinemas[cinema]!.area, home);
@@ -65,7 +67,7 @@ export function FilmScreen({ data, areas, bg }: { data: ListData; areas: Area[];
   const stay = film.stay.verdict === "stay" || film.stay.verdict === "probably-stay";
 
   async function shareFilm() {
-    const done = await shareLink({ title: film.title, text: shareText({ film: film.title, city: CITY }), url: `${window.location.origin}${cityHref(`/film/${film.id}`)}` });
+    const done = await shareLink({ title: film.title, text: shareText({ film: film.title, city: cityName }), url: `${window.location.origin}${cityHref(`/film/${film.id}`)}` });
     if (done === "copied") {
       setCopied(true);
       clearTimeout(copiedTimer.current);
@@ -75,7 +77,7 @@ export function FilmScreen({ data, areas, bg }: { data: ListData; areas: Area[];
 
   const bar = (
     <>
-      <BarBack href="/" label={`All films in ${CITY}`} testId="film.back" />
+      <BarBack href="/" label={words.allFilms} testId="film.back" />
       <BarTitle>Film</BarTitle>
       <IconButton icon={copied ? "check" : "share-up"} label={copied ? "Link copied" : `Share ${film.title}`} onClick={() => void shareFilm()} testId="film.share" />
     </>
@@ -87,7 +89,7 @@ export function FilmScreen({ data, areas, bg }: { data: ListData; areas: Area[];
         <div className={s.filmColumn}>
           <Link href="/" className={s.crumb}>
             <Icon name="chevron-left" size={18} />
-            All films in {CITY}
+            {words.allFilms}
           </Link>
           <FilmHero film={film} note={heroNote(film.stay.verdict, formats)} />
           <div className={s.details}>
@@ -122,7 +124,7 @@ export function FilmScreen({ data, areas, bg }: { data: ListData; areas: Area[];
         <section className={s.showings} aria-labelledby="film.times">
           <div className={s.heading}>
             <div>
-              <h2 id="film.times">Times in {CITY}</h2>
+              <h2 id="film.times">{words.times}</h2>
               <p>{timesSubtitle(dates[day], home !== null)}</p>
             </div>
             <Segmented label="Day" options={names} value={names[day]!} onChange={(name, how) => {
@@ -170,7 +172,7 @@ export function FilmScreen({ data, areas, bg }: { data: ListData; areas: Area[];
         </section>
       </div>
 
-      {sheet.Sheet && <sheet.Sheet data={sheet.sheetData} row={sheet.row} open={sheet.open} now={clock} areaName={areaName} near={near} city={CITY} onPick={sheet.openRow} onClose={sheet.close} />}
+      {sheet.Sheet && <sheet.Sheet data={sheet.sheetData} row={sheet.row} open={sheet.open} now={clock} areaName={areaName} near={near} city={cityName} onPick={sheet.openRow} onClose={sheet.close} />}
     </AppFrame>
   );
 }

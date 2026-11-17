@@ -21,8 +21,6 @@ export const WHERE = {
   lead: "Showtimes for every cinema in Lagos and Abuja, in one place.",
   asking: "finding your city…",
   fallback: "We couldn't place you in Lagos or Abuja, so here's Lagos. Switch any time in the search bar.",
-  /** Abuja's districts, as Figma names them; its cinemas aren't in the data yet (D-100). */
-  abuja: "Wuse, Maitama, Jabi, Garki, Central Area and more",
   locate: "Use my location",
   /** Under the buttons: on a phone while it asks, on a phone after, and on an iPad or computer. */
   footAsking: "Asked as the site opens. Location stays on the phone; only the city is kept.",

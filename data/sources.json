@@ -128,9 +128,10 @@
       "cinemaIds": [
         "genesis-purple-lekki",
         "genesis-festac",
-        "genesis-maryland"
+        "genesis-maryland",
+        "genesis-ceddi-plaza"
       ],
-      "notes": "15 Nov 2026 (D-77): cleared. robots.txt is Cloudflare's managed file: \"User-agent: * / Content-Signal: search=yes,ai-train=no,use=reference / Allow: /\"; the signals restrict AI training and AI use, and allow search-style listings (links and short excerpts), which is what we do. Booking pages (/<site>/booknow/<id>) carry the times in their HTML (checked: Ceddi Plaza Abuja, 19:20). Booking goes on to ticketing.com/sales/<code>/book. Abuja's Ceddi Plaza is on the same site. Earlier: Booking URL pattern: /<site>/booknow/<id>. 11 Nov: robots.txt carries the same content signal (use=reference) that made Showtimes NG do-not-use, so allowsListing is left null: treat as needing written permission unless Chime decides otherwise. The home page HTML holds /<site>/booknow/<id> links for every location. Audit: needs a written yes (D-29). No fixture committed."
+      "notes": "15 Nov 2026 (D-77): cleared. robots.txt is Cloudflare's managed file: \"User-agent: * / Content-Signal: search=yes,ai-train=no,use=reference / Allow: /\"; the signals restrict AI training and AI use, and allow search-style listings (links and short excerpts), which is what we do. Booking pages (/<site>/booknow/<id>) carry the times in their HTML (checked: Ceddi Plaza Abuja, 19:20). Booking goes on to ticketing.com/sales/<code>/book. Abuja's Ceddi Plaza is on the same site. Earlier: Booking URL pattern: /<site>/booknow/<id>. 11 Nov: robots.txt carries the same content signal (use=reference) that made Showtimes NG do-not-use, so allowsListing is left null: treat as needing written permission unless Chime decides otherwise. The home page HTML holds /<site>/booknow/<id> links for every location. Audit: needs a written yes (D-29). No fixture committed. 17 Nov 2026 (D-120): Ceddi Plaza, Abuja added to cinemaIds."
     },
     {
       "id": "ebonylife",
@@ -171,7 +172,7 @@
       "name": "Silverbird's Veezi page",
       "owner": "Silverbird Cinemas (Veezi ticketing)",
       "homepage": "https://ticketing.eu.veezi.com/",
-      "listingUrlPattern": "https://ticketing.eu.veezi.com/sessions/?siteToken=<token> (Ikeja: 9chn7w68550a7sxgexpdng2ndm, Galleria: 4x3z2wcre0rek2beab5w344ae0)",
+      "listingUrlPattern": "https://ticketing.eu.veezi.com/sessions/?siteToken=<token> (Ikeja: 9chn7w68550a7sxgexpdng2ndm, Galleria: 4x3z2wcre0rek2beab5w344ae0, Abuja SEC: ntfpkgyc0phrmzxb2ctk828vd4, Abuja Jabi Lake Mall: ypr75qx9nh88brqya85qtg3wqc)",
       "method": "public-page",
       "status": "cleared",
       "robots": {
@@ -197,9 +198,11 @@
       "daysAhead": 2,
       "cinemaIds": [
         "silverbird-ikeja",
-        "silverbird-galleria"
+        "silverbird-galleria",
+        "silverbird-sec",
+        "silverbird-jabi"
       ],
-      "notes": "15 Nov 2026 (D-77): cleared on Chime's rule \"read it on their website if it's readable\". Veezi's /sessions/ pages are server-rendered and allowed by Veezi's robots.txt. Known risk: Silverbird's own terms forbid copying its content without written permission; showtimes are facts, and we stop the day Silverbird asks. Earlier: Veezi sessions pages per site token. 11 Nov: Veezi /sessions/ pages are server-rendered and not disallowed; /purchase/ pages are disallowed, so link to them but never fetch them. The Galleria page still says \"No shows currently scheduled\". Silverbird Ikeja's site token is not recorded yet. Silverbird's own site carries the use=reference content signal. Audit: the Ikeja page is server-rendered with the full programme for today and tomorrow (70 times on 11 Nov) plus a few advance dates. Dates carry no year (\"Wednesday 11, November\") and times are 12-hour (\"10:40 AM\"); the parser must add the year from the fetch date. Fixture: tests/fixtures/silverbird/2026-11-11-ikeja.html (cut down, D-24). Silverbird's own terms forbid copying its content and linking to its site without written permission, so treat Silverbird as needing a written yes even though Veezi's robots.txt allows the page (O-12)."
+      "notes": "15 Nov 2026 (D-77): cleared on Chime's rule \"read it on their website if it's readable\". Veezi's /sessions/ pages are server-rendered and allowed by Veezi's robots.txt. Known risk: Silverbird's own terms forbid copying its content without written permission; showtimes are facts, and we stop the day Silverbird asks. Earlier: Veezi sessions pages per site token. 11 Nov: Veezi /sessions/ pages are server-rendered and not disallowed; /purchase/ pages are disallowed, so link to them but never fetch them. The Galleria page still says \"No shows currently scheduled\". Silverbird Ikeja's site token is not recorded yet. Silverbird's own site carries the use=reference content signal. Audit: the Ikeja page is server-rendered with the full programme for today and tomorrow (70 times on 11 Nov) plus a few advance dates. Dates carry no year (\"Wednesday 11, November\") and times are 12-hour (\"10:40 AM\"); the parser must add the year from the fetch date. Fixture: tests/fixtures/silverbird/2026-11-11-ikeja.html (cut down, D-24). Silverbird's own terms forbid copying its content and linking to its site without written permission, so treat Silverbird as needing a written yes even though Veezi's robots.txt allows the page (O-12). 17 Nov 2026 (D-120): Abuja's two Silverbird cinemas added; their pages were saved once each as sample fixtures (tests/fixtures/silverbird/2026-11-17-sec.html and -jabi.html)."
     },
     {
       "id": "syticks",
@@ -534,9 +537,10 @@
       },
       "daysAhead": null,
       "cinemaIds": [
-        "nova-lagos"
+        "nova-lagos",
+        "nova-abuja"
       ],
-      "notes": "15 Nov 2026 (D-77, D-81): cleared. Script-built (Reach Cinema platform, like Ozone, Sky and Viva); a headless browser under our bot name showed 24 times for Nova Lagos and 23 for Nova Abuja. Nova Abuja joins with the city layer (D-79)."
+      "notes": "15 Nov 2026 (D-77, D-81): cleared. Script-built (Reach Cinema platform, like Ozone, Sky and Viva); a headless browser under our bot name showed 24 times for Nova Lagos and 23 for Nova Abuja. Nova Abuja joins with the city layer (D-79). 17 Nov 2026 (D-120): Nova Abuja (nova-abuja) added to cinemaIds."
     }
   ]
 }
