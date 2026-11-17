@@ -70,7 +70,16 @@ export function AboutScreen({ sources, reading, bg }: { sources: SourceRow[]; re
           <tbody>
             {sources.map((source) => (
               <tr key={source.id} data-testid={`about.source.${source.id}`}>
-                <th scope="row">{source.name}</th>
+                <th scope="row">
+                  {/* Each source credited with a link to its own site (D-132). */}
+                  {source.url ? (
+                    <a href={source.url} target="_blank" rel="noopener" className={s.sourceLink}>
+                      {source.name}
+                    </a>
+                  ) : (
+                    source.name
+                  )}
+                </th>
                 <td>{source.cinemas}</td>
                 <td>{sourceStatus(source.status)}</td>
               </tr>

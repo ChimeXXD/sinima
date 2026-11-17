@@ -2,6 +2,12 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 17 Nov 2026 — sources credited with links on About; the Filmhouse stopgap not built (D-132)
+
+- **Changed:** each source's name in the About table links to its own site (new tab, hover gated); Lagocine's 11 Nov yes recorded in `data/sources.json`. `about-screen.spec.ts` changed with it: Lagocine's row is no longer "Permission asked" (red on the old build, then green), and the test checks the link.
+- **Not built:** the "what Filmhouse is showing" stopgap. Filmhouse's home page leaves its Now Showing list empty until CINEsync fills it in the browser; only 9 promoted films are in the HTML (4 showing today, chain-wide), so a list from it would mislead (rule 8). The saved copy is in the git-ignored `tmp/filmhouse/`.
+- **Not sent:** the correction to Paul (Chime: "No need to give him the correction").
+
 ## 17 Nov 2026 — Lagocine's line on every page; Filmhouse outreach (D-128, D-129)
 
 - **Outreach (Chime: "Send the mail for me"):** sent from ekpenduchimezie1@gmail.com to Filmhouse (sales@, cc info@, from its contact page) and CINEsync (inquiries@); FilmOne left as a Gmail draft for Chime (Claude Code's safety check stopped the third send). Replied to Lagocine's 11 Nov yes: our stack, what we read, his link, and whether Filmhouse's times will come back. Instagram and LinkedIn messages drafted for Chime to send. IMAX's site answers our bot with a Cloudflare challenge (403), so it is not a source.

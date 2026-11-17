@@ -197,3 +197,16 @@
     max-width: 760px;
   }
 }
+
+/* A source's name, credited with a link to its own site (D-132): the row's own text, underlined. */
+.sourceLink {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color var(--dur-fast) ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .sourceLink:hover {
+    color: var(--text-brand-deep);
+  }
+}

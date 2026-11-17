@@ -4,9 +4,9 @@
 // permission has no answer yet. Sources marked do-not-use are left out.
 
 export type SourceStatus = { kind: "used" } | { kind: "asked"; on: string } | { kind: "unused" };
-export type SourceRow = { id: string; name: string; cinemas: number; status: SourceStatus };
+export type SourceRow = { id: string; name: string; /** The source's own site, credited with a link (D-132). */ url: string | null; cinemas: number; status: SourceStatus };
 
-type RegistrySource = { id: string; name: string; status: string; cinemaIds?: string[]; permission?: { askedAt?: string | null; repliedAt?: string | null } };
+type RegistrySource = { id: string; name: string; homepage?: string | null; status: string; cinemaIds?: string[]; permission?: { askedAt?: string | null; repliedAt?: string | null } };
 
 /** `read`: the sources the built times name, with how they were read. */
 export function sourceRows(registry: RegistrySource[], read: { id: string; method: string }[]): SourceRow[] {
@@ -16,7 +16,7 @@ export function sourceRows(registry: RegistrySource[], read: { id: string; metho
     .map((source): SourceRow => {
       const asked = source.permission?.askedAt && !source.permission.repliedAt ? source.permission.askedAt : null;
       const status: SourceStatus = used.has(source.id) ? { kind: "used" } : asked ? { kind: "asked", on: asked } : { kind: "unused" };
-      return { id: source.id, name: source.name, cinemas: source.cinemaIds!.length, status };
+      return { id: source.id, name: source.name, url: source.homepage ?? null, cinemas: source.cinemaIds!.length, status };
     })
     .sort((a, b) => b.cinemas - a.cinemas);
 }
