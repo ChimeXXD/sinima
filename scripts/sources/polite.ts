@@ -126,8 +126,33 @@ export function politeRules(options: PoliteOptions): PoliteRules {
 /** The rules given, or new ones for this reader alone. */
 export const rulesFrom = (options: PoliteOptions | { rules: PoliteRules }): PoliteRules => ("rules" in options ? options.rules : politeRules(options));
 
+/** A page that answered with anything but success, with the status it answered. Never retried (D-77). */
+export class PageError extends Error {
+  readonly url: string;
+  readonly status: number;
+  constructor(url: string, status: number) {
+    super(`${url} answered ${status}. A refusal is final: not retried (D-77).`);
+    this.name = "PageError";
+    this.url = url;
+    this.status = status;
+  }
+}
+
 /** The error for a page that answered with anything but success: a refusal is final (D-77). */
-export const refusal = (url: string, status: number) => new Error(`${url} answered ${status}. A refusal is final: not retried (D-77).`);
+export const refusal = (url: string, status: number) => new PageError(url, status);
+
+/** Statuses that say one page is not there, rather than "no" from the site. */
+const MISSING = new Set([404, 410]);
+
+/**
+ * Whether a failed page is one page gone (404, 410) or slow (it did not answer in time), which a
+ * reader of many pages may skip. A refusal (401, 403, 429), a robots.txt rule or anything else is
+ * not: it stops the source's whole read (D-77).
+ */
+export function pageMissingOrSlow(error: unknown): boolean {
+  if (error instanceof PageError) return MISSING.has(error.status);
+  return error instanceof Error && error.name === "TimeoutError";
+}
 
 /** A reader for one run. Calls are expected one after another, as refresh makes them. */
 export function politeFetcher(options: PoliteOptions | { rules: PoliteRules }): FetchText {

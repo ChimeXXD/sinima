@@ -91,6 +91,16 @@ describe("each cinema's own reader (D-76, D-122)", () => {
     expect(given.silverbird!["silverbird-sec"]).toBe("https://ticketing.eu.veezi.com/sessions/?siteToken=ntfpkgyc0phrmzxb2ctk828vd4");
   });
 
+  it("gives Genesis's reader each cinema's name in its booking links, from data/sources.json bookingSites (D-124)", async () => {
+    let sites: Record<string, string> | undefined;
+    const genesis = async (input: { sites?: Record<string, string> }) => {
+      sites = input.sites;
+      return [{ showings: [{ cinemaId: "genesis-festac", filmTitle: "Whalefall", rating: null, startsAt: "2026-11-11T18:30:00Z", format: null, bookingUrl: null }], builtAt: null }];
+    };
+    await refreshLive({ now: NOW, root, fetchText: fakeLagocine().fetchText, readers: { genesis } });
+    expect(sites).toEqual({ "genesis-purple-lekki": "lekki-purple", "genesis-festac": "festival-mall-festac", "genesis-maryland": "maryland-mall-maryland", "genesis-ceddi-plaza": "ceddi-plaza-abuja" });
+  });
+
   it("puts what a reader left out in the run's log, under its source", async () => {
     const row = { cinemaId: "grand-lekki", filmTitle: "Whalefall", rating: null, startsAt: "2026-11-11T18:30:00Z", format: null, bookingUrl: null };
     const grand = async () => [{ showings: [row], builtAt: null, notes: ["https://example.test/film showed no times; that film has today's times only"] }];

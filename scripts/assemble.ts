@@ -11,6 +11,8 @@ export type RegistrySource = {
   id: string; name: string; homepage: string; status: Source["status"]; cinemaIds: string[]; daysAhead?: number;
   /** Each cinema's own listing page on this source, by cinema id (D-122). */
   cinemaPages?: Record<string, string>;
+  /** The name this source's booking links give each cinema, by cinema id (Genesis, D-124). */
+  bookingSites?: Record<string, string>;
 };
 
 export const readJson = <T>(path: string) => JSON.parse(readFileSync(path, "utf8")) as T;

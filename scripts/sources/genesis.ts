@@ -6,6 +6,7 @@
 import * as cheerio from "cheerio";
 import { filmIdFromTitle } from "../pipeline.ts";
 import { clock24h, dateNearest, lagosDay, monthNumber, showStart, withinDays, type Day } from "./dates.ts";
+import { pageMissingOrSlow } from "./polite.ts";
 import { clean, type ParsedPage, type RawShowing, type Reader } from "./raw.ts";
 
 const BOOKING = /^https:\/\/genesiscinemas\.com\/([a-z0-9-]+)\/booknow\/\d+$/;
@@ -109,23 +110,39 @@ export function parseGenesisFilm(html: string, options: { readOn: Day; cinemaByS
   return { title: listed, showings, builtAt: null };
 }
 
+/** The message for a film page skipped because it was gone or slow (D-124). */
+const unread = (url: string, error: unknown) => `${url} could not be read (${error instanceof Error ? error.message : String(error)}); that film has today's times only`;
+
+/**
+ * Each cinema's name in Genesis's booking links, from the data (`bookingSites`, D-124), checked
+ * against the links on its location page when it has any today. Our cinema id by that name.
+ */
+function cinemasBySite(locations: GenesisLocation[], sites: Record<string, string>): Record<string, string> {
+  const bySite: Record<string, string> = {};
+  for (const { cinemaId, site: onPage } of locations) {
+    const site = Object.hasOwn(sites, cinemaId) ? sites[cinemaId] : undefined;
+    if (site === undefined) throw new Error(`Genesis: ${cinemaId} has no entry in bookingSites in data/sources.json.`);
+    if (onPage !== null && onPage !== site) throw new Error(`Genesis: the page for ${cinemaId} books under "${onPage}", but bookingSites in data/sources.json says "${site}".`);
+    if (Object.hasOwn(bySite, site)) throw new Error(`Genesis: ${bySite[site]} and ${cinemaId} are both "${site}". Check bookingSites in data/sources.json.`);
+    bySite[site] = cinemaId;
+  }
+  return bySite;
+}
+
 /**
  * Each location page once (today there), then one film page per film on at any of them (that film
  * at every location, today and the next two days), at most `maxFilmPages`. A film past the cap
  * still has today's times from its location page, as does a film whose page shows no times (the
- * first live run met one); only when no film page shows any does the read fail. Times that appear
- * on both are kept once.
+ * first live run met one) or is gone (404, 410) or slow (D-124); only when no film page shows any
+ * does the read fail. A refusal (401, 403, 429) stops the whole read (D-77). Times that appear on
+ * both are kept once. Which location a film page's link is for comes from the data, so a location
+ * with nothing on today still gets its later days.
  */
 export function genesisReader(maxFilmPages: number): Reader {
-  return async ({ now, days, fetchText, pages }) => {
+  return async ({ now, days, fetchText, pages, sites = {} }) => {
     const locations: GenesisLocation[] = [];
     for (const [cinemaId, url] of Object.entries(pages)) locations.push(parseGenesisLocation(await fetchText(url), { cinemaId }));
-    const cinemaBySite: Record<string, string> = {};
-    for (const { site, cinemaId } of locations) {
-      if (site === null) continue;
-      if (Object.hasOwn(cinemaBySite, site)) throw new Error(`Genesis: ${cinemaBySite[site]} and ${cinemaId} are both "${site}". Check cinemaPages in data/sources.json.`);
-      cinemaBySite[site] = cinemaId;
-    }
+    const cinemaBySite = cinemasBySite(locations, sites);
 
     const rows = locations.flatMap((location) => location.showings);
     const done = new Set<string>();
@@ -134,9 +151,16 @@ export function genesisReader(maxFilmPages: number): Reader {
     for (const film of locations.flatMap((location) => location.films)) {
       if (done.has(film.title)) continue;
       if (read === maxFilmPages) break;
-      const html = await fetchText(film.url);
       read += 1;
       done.add(film.title);
+      let html: string;
+      try {
+        html = await fetchText(film.url);
+      } catch (error) {
+        if (!pageMissingOrSlow(error)) throw error;
+        notes.push(unread(film.url, error));
+        continue;
+      }
       try {
         const page = parseGenesisFilm(html, { readOn: lagosDay(now), cinemaBySite });
         done.add(page.title);

@@ -54,7 +54,9 @@ const dayNumber = (day: Day) => Date.UTC(day.year, day.month - 1, day.day) / 86_
 /**
  * A date a page gives without a year, in the year that puts it nearest the day the page was read:
  * a listing looks ahead, so "4 January" read in November is next year, while "31 December" read
- * just after midnight on New Year's Day is the old one. When the page names the weekday, it must agree.
+ * just after midnight on New Year's Day is the old one. When the page names the weekday, it must
+ * agree; a date more than six months ahead (Veezi sells some films months early) is nearer last
+ * year, so when the nearest year's weekday disagrees, the year after it is tried before giving up.
  */
 export function dateNearest(date: { month: number; day: number; weekday?: string }, readOn: Day): Day {
   const candidates = [readOn.year - 1, readOn.year, readOn.year + 1]
@@ -63,10 +65,14 @@ export function dateNearest(date: { month: number; day: number; weekday?: string
   const name = `${date.day} ${(MONTHS[date.month - 1] ?? "?").replace(/^./, (c) => c.toUpperCase())}`;
   if (candidates.length === 0) throw new Error(`${name} is not a date`);
   const nearest = candidates.reduce((best, next) => (Math.abs(dayNumber(next) - dayNumber(readOn)) < Math.abs(dayNumber(best) - dayNumber(readOn)) ? next : best));
-  if (date.weekday !== undefined) {
-    if (weekdayOf(nearest) !== date.weekday.toLowerCase()) throw new Error(`${name} is not a ${date.weekday} in ${nearest.year}`);
-  }
-  return nearest;
+  if (date.weekday === undefined) return nearest;
+  const weekday = date.weekday.toLowerCase();
+  if (weekdayOf(nearest) === weekday) return nearest;
+  // Only a date behind the day read can mean next year's; one already ahead has no later choice.
+  const ahead = { ...nearest, year: nearest.year + 1 };
+  const tried = dayNumber(nearest) < dayNumber(readOn) && addDays(ahead, 0).day === date.day ? [nearest, ahead] : [nearest];
+  if (tried.length === 2 && weekdayOf(ahead) === weekday) return ahead;
+  throw new Error(`${name} is not a ${date.weekday} in ${tried.map((day) => day.year).join(" or ")}`);
 }
 
 /**

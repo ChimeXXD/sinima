@@ -55,6 +55,14 @@ describe("parseVeeziSessions", () => {
     expect(starts).not.toContain("2026-01-04");
   });
 
+  // Read in November, a booking date in May is nearer last May; its weekday says next May.
+  it("reads a booking date more than six months ahead into next year when the weekday says so", () => {
+    const may = html.replaceAll("Friday 4, December", "Friday 21, May");
+    const starts = parse(may, { year: 2026, month: 11, day: 17 }).showings.map((s) => s.startsAt.slice(0, 10));
+    expect(starts).toContain("2027-05-21");
+    expect(starts.filter((day) => day.startsWith("2026-05"))).toEqual([]);
+  });
+
   it("refuses a date whose weekday does not match, rather than guessing the year", () => {
     expect(() => parse(html.replaceAll("Wednesday 11, November", "Friday 11, November"))).toThrow(
       'Veezi page: "Friday 11, November" is not a Friday in 2026',

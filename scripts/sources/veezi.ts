@@ -3,7 +3,7 @@
 // and its times are on a 12-hour clock ("6:35 PM"), so the caller says which day the page was read.
 import * as cheerio from "cheerio";
 import { lagosLocalToUtc } from "../../src/lib/time/lagos.ts";
-import { clock12, dateNearest, lagosDay, monthNumber, weekdayOf, withinDays, type Day } from "./dates.ts";
+import { clock12, dateNearest, lagosDay, monthNumber, withinDays, type Day } from "./dates.ts";
 import { clean, type ParsedPage, type RawShowing, type Reader } from "./raw.ts";
 
 const DATE = /^([A-Za-z]+) (\d{1,2}), ([A-Za-z]+)$/;
@@ -15,16 +15,19 @@ const VEEZI_HOST = "ticketing.eu.veezi.com";
 
 /**
  * "Wednesday 11, November" as a full date: the year that puts it nearest the day the page was read
- * (a listing looks ahead, but a late show read just after New Year is still December's). The
- * weekday must then agree.
+ * (a listing looks ahead, but a late show read just after New Year is still December's), or the
+ * year after it when only that one's weekday agrees (a booking date more than six months ahead).
  */
 function fullDate(text: string, readOn: Day): Day {
   const found = DATE.exec(text);
   const month = found ? monthNumber(found[3] as string) : 0;
   if (!found || month === 0) throw new Error(`Veezi page: cannot read the date "${text}"`);
-  const date = dateNearest({ month, day: Number(found[2]) }, readOn);
-  if (weekdayOf(date) !== (found[1] as string).toLowerCase()) throw new Error(`Veezi page: "${text}" is not a ${found[1]} in ${date.year}`);
-  return date;
+  try {
+    return dateNearest({ month, day: Number(found[2]), weekday: found[1] as string }, readOn);
+  } catch (error) {
+    const reason = error instanceof Error ? error.message.replace(/^\d+ [A-Za-z]+ /, "") : String(error);
+    throw new Error(`Veezi page: "${text}" ${reason}`);
+  }
 }
 
 /** "6:35 PM" to 18:35; "12:05 AM" is five past midnight. */

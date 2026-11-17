@@ -42,6 +42,14 @@ describe("dateNearest", () => {
     expect(dateNearest({ month: 11, day: 17, weekday: "Tuesday" }, nov11)).toEqual({ year: 2026, month: 11, day: 17 });
     expect(() => dateNearest({ month: 11, day: 17, weekday: "Friday" }, nov11)).toThrow("17 November is not a Friday in 2026");
   });
+  // Veezi sells some films months ahead: "Friday 21, May" read on 17 Nov 2026 is nearer May 2026
+  // (a Thursday), but the weekday says May 2027. Taking the nearest year alone failed all of Silverbird.
+  it("takes next year for a date far ahead when only next year's weekday agrees", () => {
+    const nov17 = { year: 2026, month: 11, day: 17 };
+    expect(dateNearest({ month: 5, day: 21, weekday: "Friday" }, nov17)).toEqual({ year: 2027, month: 5, day: 21 });
+    expect(dateNearest({ month: 5, day: 21 }, nov17)).toEqual({ year: 2026, month: 5, day: 21 });
+    expect(() => dateNearest({ month: 5, day: 21, weekday: "Monday" }, nov17)).toThrow("21 May is not a Monday in 2026 or 2027");
+  });
   it("refuses a day the month does not have", () => {
     expect(() => dateNearest({ month: 2, day: 30 }, nov11)).toThrow("30 February is not a date");
   });

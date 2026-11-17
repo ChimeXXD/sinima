@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { politeFetcher, robotsAllows } from "../../../../scripts/sources/polite.ts";
+import { PageError, pageMissingOrSlow, politeFetcher, robotsAllows } from "../../../../scripts/sources/polite.ts";
 
 // The reading rule (D-77): our real bot name, robots.txt obeyed for the paths we fetch, at most one
 // request per 5 s per host, and a refusal is final: never retried, never worked around.
@@ -109,5 +109,32 @@ describe("politeFetcher", () => {
     const get = politeFetcher({ userAgent: UA, minGapMs: 5000, fetch: net.fetch, wait: net.wait, now: net.now });
     await expect(get("https://example.com/list")).rejects.toThrow(/403/);
     expect(net.requests.filter((r) => r.url === "https://example.com/list")).toHaveLength(1);
+  });
+
+  // A reader of many pages (Genesis's film pages) must tell one page gone from a site saying no.
+  it("says which status a failed page answered, so a missing page (404, 410) is told apart from a refusal", async () => {
+    const net = fakeNet({
+      "https://example.com/robots.txt": { status: 404, body: "" },
+      "https://example.com/gone": { status: 410, body: "" },
+      "https://example.com/denied": { status: 403, body: "" },
+      "https://example.com/slow-down": { status: 429, body: "" },
+    });
+    const get = politeFetcher({ userAgent: UA, minGapMs: 5000, fetch: net.fetch, wait: net.wait, now: net.now });
+    const failed = async (url: string) => get(url).then(() => null, (error: unknown) => error);
+    const missing = await failed("https://example.com/missing");
+    const gone = await failed("https://example.com/gone");
+    const denied = await failed("https://example.com/denied");
+    const slowDown = await failed("https://example.com/slow-down");
+    expect(missing).toBeInstanceOf(PageError);
+    expect([missing, gone, denied, slowDown].map((error) => (error as PageError).status)).toEqual([404, 410, 403, 429]);
+    expect([missing, gone, denied, slowDown].map(pageMissingOrSlow)).toEqual([true, true, false, false]);
+  });
+
+  it("counts a page that did not answer in time as missing, and nothing else", () => {
+    const timedOut = new DOMException("The operation was aborted due to timeout", "TimeoutError");
+    expect(pageMissingOrSlow(timedOut)).toBe(true);
+    expect(pageMissingOrSlow(new Error("robots.txt asks bots not to read this path"))).toBe(false);
+    expect(pageMissingOrSlow(new PageError("https://example.com/x", 401))).toBe(false);
+    expect(pageMissingOrSlow("404")).toBe(false);
   });
 });

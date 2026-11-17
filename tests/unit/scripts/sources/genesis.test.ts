@@ -3,6 +3,7 @@ import { join } from "node:path";
 import * as cheerio from "cheerio";
 import { describe, expect, it } from "vitest";
 import { genesisReader, genesisTitle, parseGenesisFilm, parseGenesisLocation } from "../../../../scripts/sources/genesis";
+import { PageError } from "../../../../scripts/sources/polite";
 
 // Genesis's own site (D-122), saved once on 17 Nov 2026 (01:16-01:18 in Lagos) and cut down
 // (D-24). A location page (/freedom-way-lekki/) holds today's programme there, dated in a hidden
@@ -112,16 +113,19 @@ describe("genesisReader", () => {
     [SPIDER_MAN]: fixture("2026-11-17-film-spiderman-brand-new-day.html"),
   };
   const pages = Object.fromEntries(Object.entries(LOCATIONS).map(([id, { url }]) => [id, url]));
-  const run = (maxFilmPages: number, swap: Record<string, string> = {}) => {
+  // Each cinema's name in Genesis's booking links, from data/sources.json `bookingSites`.
+  const sites = Object.fromEntries(Object.entries(SITES).map(([site, id]) => [id, site]));
+  const run = (maxFilmPages: number, swap: Record<string, string | Error> = {}, given = sites) => {
     const asked: string[] = [];
     const fetchText = async (url: string) => {
       asked.push(url);
       const page = swap[url] ?? served[url];
       if (page === undefined) throw new Error(`unexpected request ${url}`);
+      if (page instanceof Error) throw page;
       return page;
     };
     const renderText = Object.assign(async () => "", { close: async () => {} });
-    return { asked, read: genesisReader(maxFilmPages)({ now: "2026-11-17T00:20:00Z", days: 2, fetchText, renderText, pages }) };
+    return { asked, read: genesisReader(maxFilmPages)({ now: "2026-11-17T00:20:00Z", days: 2, fetchText, renderText, pages, sites: given }) };
   };
   const byCinemaDay = (rows: { cinemaId: string; filmTitle: string; startsAt: string }[]) => rows.map((s) => `${s.cinemaId} ${s.filmTitle} ${s.startsAt}`).sort();
 
@@ -159,6 +163,44 @@ describe("genesisReader", () => {
     const rows = pagesRead.flatMap((page) => page.showings);
     expect(byCinemaDay(rows).filter((row) => row.includes("SPIDER-MAN"))).toEqual(["genesis-ceddi-plaza SPIDER-MAN: BRAND NEW DAY 2026-11-17T08:15:00Z"]);
     expect(pagesRead.flatMap((page) => page.notes ?? [])).toEqual([`${SPIDER_MAN} showed no times; that film has today's times only`]);
+  });
+
+  // One film page gone or slow must not cost all four cinemas their times (code review, D-122).
+  it("skips a film page that answers 404 or 410 or does not answer in time, with a line in the log", async () => {
+    for (const failure of [new PageError(SPIDER_MAN, 404), new PageError(SPIDER_MAN, 410), new DOMException("The operation was aborted due to timeout", "TimeoutError")]) {
+      const { read } = run(30, { [SPIDER_MAN]: failure });
+      const pagesRead = await read;
+      const rows = pagesRead.flatMap((page) => page.showings);
+      expect(byCinemaDay(rows).filter((row) => row.includes("SPIDER-MAN"))).toEqual(["genesis-ceddi-plaza SPIDER-MAN: BRAND NEW DAY 2026-11-17T08:15:00Z"]);
+      expect(rows.filter((row) => row.filmTitle === "STREET FIGHTER")).toHaveLength(8);
+      expect(pagesRead.flatMap((page) => page.notes ?? [])).toEqual([`${SPIDER_MAN} could not be read (${failure.message}); that film has today's times only`]);
+    }
+  });
+
+  // A refusal is final (D-77): Genesis saying no to one page stops the whole read.
+  it("stops the whole read when a film page is refused (401, 403, 429)", async () => {
+    for (const status of [401, 403, 429]) {
+      const { asked, read } = run(30, { [STREET_FIGHTER]: new PageError(STREET_FIGHTER, status) });
+      await expect(read).rejects.toThrow(`${STREET_FIGHTER} answered ${status}`);
+      expect(asked).not.toContain(SPIDER_MAN);
+    }
+  });
+
+  // Each cinema's site comes from the data, not from today's rows: a location with nothing on
+  // today still gets its later days from the film pages.
+  it("keeps tomorrow's times at a location that has nothing on today", async () => {
+    const { read } = run(30, { [LOCATIONS["genesis-festac"].url]: only(fixture(LOCATIONS["genesis-festac"].file), []) });
+    const rows = (await read).flatMap((page) => page.showings);
+    expect(byCinemaDay(rows).filter((row) => row.startsWith("genesis-festac"))).toEqual([
+      "genesis-festac STREET FIGHTER 2026-11-17T20:50:00Z",
+      "genesis-festac STREET FIGHTER 2026-11-18T20:50:00Z",
+    ]);
+  });
+
+  it("refuses to read when a cinema has no site in the data, or its page's links name another", async () => {
+    const withoutFestac = Object.fromEntries(Object.entries(sites).filter(([id]) => id !== "genesis-festac"));
+    await expect(run(30, {}, withoutFestac).read).rejects.toThrow('Genesis: genesis-festac has no entry in bookingSites in data/sources.json.');
+    await expect(run(30, {}, { ...sites, "genesis-festac": "festac" }).read).rejects.toThrow('Genesis: the page for genesis-festac books under "festival-mall-festac", but bookingSites in data/sources.json says "festac".');
   });
 
   it("still fails loudly when no film page shows any times (the layout has changed)", async () => {

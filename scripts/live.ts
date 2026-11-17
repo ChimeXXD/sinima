@@ -109,8 +109,8 @@ export async function refreshLive(input: {
     let pages: ParsedPage[];
     try {
       // Each cinema's own page on this source, for the cinemas it feeds (data/sources.json `cinemaPages`).
-      const own = Object.entries(source.cinemaPages ?? {}).filter(([cinemaId]) => given.has(cinemaId));
-      pages = await reader({ now, days: source.daysAhead ?? 2, fetchText, renderText, pages: Object.fromEntries(own) });
+      const own = (map: Record<string, string> = {}) => Object.fromEntries(Object.entries(map).filter(([cinemaId]) => given.has(cinemaId)));
+      pages = await reader({ now, days: source.daysAhead ?? 2, fetchText, renderText, pages: own(source.cinemaPages), sites: own(source.bookingSites) });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       failures.push(message);

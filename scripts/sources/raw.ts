@@ -27,9 +27,18 @@ export type ParsedPage = {
 /**
  * One source's read for a live run: plain pages through `fetchText`, pages built by script through
  * `renderText`. `pages` is the source's `cinemaPages` in data/sources.json: each cinema's own
- * listing page on that source (D-122).
+ * listing page on that source (D-122). `sites` is its `bookingSites`, where a source has them: the
+ * name its booking links give each cinema (Genesis's "lekki-purple"), so a reader need not learn
+ * it from the day's rows (D-124).
  */
-export type Reader = (input: { now: string; days: number; fetchText: FetchText; renderText: RenderText; pages: Record<string, string> }) => Promise<ParsedPage[]>;
+export type Reader = (input: {
+  now: string;
+  days: number;
+  fetchText: FetchText;
+  renderText: RenderText;
+  pages: Record<string, string>;
+  sites?: Record<string, string>;
+}) => Promise<ParsedPage[]>;
 
 const OFFSET_TIME = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\+01:00$/;
 
