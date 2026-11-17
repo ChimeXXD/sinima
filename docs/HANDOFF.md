@@ -26,12 +26,13 @@ Everything below is committed and pushed (last code commit `83b0217`; the refres
 
 ### For Chime
 
-- Add the GitHub secret `TMDB_READ_TOKEN` (same value as `.env.local`) so new films get posters and trailers in the job.
 - Confirm D-121 (Abuja calls), D-123 (Genesis's ~30 pages a run, Grand's undated tabs), D-127 (Ozone and Sky on Lagocine).
 - Send the Filmhouse and CINEsync emails (OUTREACH §4).
 - Check on the phone: posters on MTN, Abuja's tabs, a trailer.
 
 ### Watch out
+
+- The GitHub secret `TMDB_READ_TOKEN` is set (17 Nov, from `.env.local`): each refresh looks up new films on TMDB; first run with it, 13:47 UTC, rewrote credits.json.
 
 - `npm run build` now builds on live data, so sample-data e2e tests fail on it. Before the gate: `node scripts/refresh.ts --fixtures --now "$(TZ=Africa/Lagos date +%F)T07:00:00Z" && npx --no-install next build`.
 - The proof gate runs the full e2e after each reply; don't start a second Playwright run beside it (port 4173).
