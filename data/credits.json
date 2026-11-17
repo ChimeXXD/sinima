@@ -85,25 +85,6 @@
       ],
       "checkedAt": "2026-11-16T22:32:15Z"
     },
-    "heart-of-the-beast": {
-      "tmdbId": 1263337,
-      "tmdbTitle": "Heart of the Beast",
-      "runtimeMin": 101,
-      "posterPath": "/6sYemVUn79UPKz1ZsSG6kPU4RVy.jpg",
-      "trailerKey": "UkMuGKqAux4",
-      "keywordIds": [
-        9880,
-        15162,
-        15218,
-        162365,
-        190899,
-        239821,
-        249530,
-        336497,
-        372834
-      ],
-      "checkedAt": "2026-11-16T22:32:15Z"
-    },
     "how-to-rob-a-bank": {
       "tmdbId": 1437511,
       "tmdbTitle": "How to Rob a Bank",
@@ -357,20 +338,22 @@
       ],
       "checkedAt": "2026-11-16T22:32:15Z"
     },
-    "ramayana-rise-of-a-legend": {
-      "tmdbId": 656908,
-      "tmdbTitle": "Ramayana: Rise of a Legend",
-      "runtimeMin": 195,
-      "posterPath": "/vBQ7wks68OhJKlb3RnXSl2yXBXK.jpg",
-      "trailerKey": "AYkPRN874m8",
+    "heart-of-the-beast": {
+      "tmdbId": 1263337,
+      "tmdbTitle": "Heart of the Beast",
+      "runtimeMin": 101,
+      "posterPath": "/6sYemVUn79UPKz1ZsSG6kPU4RVy.jpg",
+      "trailerKey": "UkMuGKqAux4",
       "keywordIds": [
-        185316,
-        185343,
-        192159,
-        211227,
-        325810,
-        375250,
-        377433
+        9880,
+        15162,
+        15218,
+        162365,
+        190899,
+        239821,
+        249530,
+        336497,
+        372834
       ],
       "checkedAt": "2026-11-16T22:32:15Z"
     }
