@@ -7,7 +7,7 @@ import "./inputMode"; // which input came last, for no motion on keys (D-112)
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useServiceWorker } from "@/lib/offline";
 import { useSaved } from "@/lib/saved";
-import { ABOUT_LINK, FOOTER_NOTE, LAGOCINE_LINE, LAGOCINE_URL, LOGO_NOTE } from "@/lib/wording/films";
+import { ABOUT_LINK, FOOTER_NOTE, LOGO_NOTE } from "@/lib/wording/films";
 import { Icon } from "./Icon";
 import { SearchBar, type CityChoice } from "./SearchBar";
 import { SectionNav, type SectionId } from "./SectionNav";
@@ -157,12 +157,6 @@ export function AppFrame({ active, search, city: chosen, bg, bar, footer, onAbou
       </main>
       <footer className={s.footer} data-own={footer ? "" : undefined}>
         {footer ?? <p data-testid="footer.note">{FOOTER_NOTE}</p>}
-        {/* Lagocine's condition for its showtimes, on every page, About included (D-129). */}
-        <p>
-          <a href={LAGOCINE_URL} className={s.aboutLink} target="_blank" rel="noopener" data-testid="footer.lagocine">
-            {LAGOCINE_LINE}
-          </a>
-        </p>
         {!onAbout && (
           <p>
             <Link href="/about" className={s.aboutLink} data-testid="footer.about">
