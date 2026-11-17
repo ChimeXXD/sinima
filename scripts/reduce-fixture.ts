@@ -191,29 +191,29 @@ function reduceMarkup(saved: string, rule: Rule): string {
   const listing = $(rule.keep);
   if (listing.length !== 1) {
     fail(`"${rule.keep}" matched ${listing.length} elements in ${input}, expected 1. Has the page layout changed?`);
-}
-const extras = (rule.alsoKeep ?? []).map((selector) => {
-  const found = $(selector);
-  if (found.length !== 1) fail(`"${selector}" matched ${found.length} elements in ${input}, expected 1.`);
-  return $.html(found);
-});
-listing.find([...ALWAYS_DROP, ...rule.drop].join(", ")).remove();
-listing.find("*").addBack().each((_, el) => {
-  if (el.type !== "tag") return;
-  for (const name of Object.keys(el.attribs)) {
-    if (DROP_ATTRS.has(name) || name.startsWith("on")) $(el).removeAttr(name);
   }
-});
-// The page's own comments go too, so the only comment in a fixture is our header.
-listing.find("*").addBack().contents().filter((_, node) => node.type === "comment").remove();
+  const extras = (rule.alsoKeep ?? []).map((selector) => {
+    const found = $(selector);
+    if (found.length !== 1) fail(`"${selector}" matched ${found.length} elements in ${input}, expected 1.`);
+    return $.html(found);
+  });
+  listing.find([...ALWAYS_DROP, ...rule.drop].join(", ")).remove();
+  listing.find("*").addBack().each((_, el) => {
+    if (el.type !== "tag") return;
+    for (const name of Object.keys(el.attribs)) {
+      if (DROP_ATTRS.has(name) || name.startsWith("on")) $(el).removeAttr(name);
+    }
+  });
+  // The page's own comments go too, so the only comment in a fixture is our header.
+  listing.find("*").addBack().contents().filter((_, node) => node.type === "comment").remove();
 
-// Collapse the blank lines the removals leave behind.
-return [...extras, $.html(listing) ?? ""]
-  .join("\n")
-  .split("\n")
-  .map((line) => line.trimEnd())
-  .filter((line) => line.trim() !== "")
-  .join("\n");
+  // Collapse the blank lines the removals leave behind.
+  return [...extras, $.html(listing) ?? ""]
+    .join("\n")
+    .split("\n")
+    .map((line) => line.trimEnd())
+    .filter((line) => line.trim() !== "")
+    .join("\n");
 }
 
 let body: string;

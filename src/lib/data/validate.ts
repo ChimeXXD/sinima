@@ -176,13 +176,16 @@ export function validateShowtimes(input: unknown, options: ValidateOptions = {})
   }
 
   if (featured) {
-    file.featured = (featured as Row[]).flatMap((entry) => {
+    const list = (featured as Row[]).flatMap((entry) => {
       if (!sourceById.has(entry.sourceId)) return (log.push(`Dropped the featured films from ${show(entry.sourceId)}: its source is not in the file`), []);
       const ids = entry.cinemaIds as string[];
       for (const id of ids.filter((id) => !cinemaById.has(id))) log.push(`Featured films from ${String(entry.sourceId)}: dropped the cinema ${show(id)}, which is not in the file`);
       const known = ids.filter((id) => cinemaById.has(id));
       return known.length > 0 ? [{ ...entry, cinemaIds: known }] : [];
     });
+    // Left out when empty, as a file without any is written (DATA.md §Featured films).
+    if (list.length > 0) file.featured = list;
+    else delete file.featured;
   }
 
   let kept = showings.filter((showing) => {

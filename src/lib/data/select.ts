@@ -65,7 +65,8 @@ export function toListData(file: ShowtimesFile, only: { filmId?: string; cinemaI
   });
   // Real times win: the list goes only to cinemas with no showing in the whole file, not just in this cut.
   const timed = new Set(file.showings.map((showing) => showing.cinemaId));
-  const featured = (file.featured ?? [])
+  // A film's page never shows the line, so it is not sent there (page weight, rule 9).
+  const featured = (only.filmId === undefined ? (file.featured ?? []) : [])
     .map((entry): ListFeatured => ({ cinemas: entry.cinemaIds.filter((id) => !timed.has(id) && cinemaAt.has(id)).map((id) => cinemaAt.get(id) as number), day: entry.day, films: entry.films.map((film) => film.title) }))
     .filter((entry) => entry.cinemas.length > 0 && entry.films.length > 0);
   return {
