@@ -66,6 +66,8 @@ chimexd.work
 - 4a to sales@filmhouseng.com, cc info@filmhouseng.com (both from filmhouseng.com/contact-us). Sent.
 - 4c to inquiries@cinesync.io (CINEsync's Trustpilot company profile; its own site shows no address). Sent.
 - 4b to info@filmoneng.com (filmoneng.com/contact): left as a Gmail draft for Chime to send; Claude Code's safety check stopped the third send.
+- LinkedIn InMail to Kene Okwuosa (Group CEO, Filmhouse Group), sent 17 Nov 15:32 from Chime's account (Chime: "send it to my LinkedIn"); 1 of 3 InMail credits.
+- Instagram DM to Filmhouse: not sent; Chime: "Leave Instagram for now" (17 Nov). The draft is in this session's notes.
 - Follow-up (below) on Tue 24 Nov if nobody replies. Lagocine replied on 11 Nov: "you can use it freely as much as you want".
 
 Filmhouse's 7 Lagos cinemas are the only ones we can't read ourselves: its ticketing provider, CINEsync, refuses our bot. Until one of these says yes, Filmhouse's times come through Lagocine. Send all three; find each address or DM on their own contact page or official Instagram, never guessed. Checked with the voice score (100/100) and the banned list; Chime approves before sending.
