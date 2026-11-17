@@ -40,6 +40,10 @@
   border: 0;
 }
 .tab[aria-current] {
+  /* Figma's bar has about 1 px to spare at 360 with "Starting soon" open. Where the name draws
+     wider (another renderer, a phone's larger text) the open tab gives way, not the bar. */
+  flex: 0 1 auto;
+  min-width: 0;
   padding: var(--space-14) 18px var(--space-14) var(--space-14);
   border-color: var(--action-primary-edge);
   background: var(--action-primary);
@@ -50,8 +54,14 @@
   flex: none;
 }
 .label {
+  min-width: 0;
   font: 600 16px/1.2 var(--font-sans); /* Figma: Urbanist SemiBold 16 */
   white-space: nowrap;
+}
+/* Not on the live bar: there the springs open the name, and an ellipsis would show all the way in. */
+.nav:not([data-live]) .tab[aria-current] .label {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 /* On the phone bar only the current tab shows its name; the others keep it for screen readers. */
 .tab:not([aria-current]) .label {

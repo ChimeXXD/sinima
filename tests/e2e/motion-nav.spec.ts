@@ -18,10 +18,18 @@ test("at rest the pill sits exactly on the picked tab", async ({ page }) => {
 test("a tapped tab: the pill is still on its way in the first frames, then lands on the new tab", async ({ page }) => {
   await page.goto("/lagos");
   await expect(page.getByTestId("nav")).toHaveAttribute("data-live", ""); // the springs load just after the page
+  const films = await box(page, "[data-hl]");
+  // The springs run on the page's frames: hold the clock so "the first frames" are the same on any
+  // machine (GitHub's slower runner first looked once the pill was already past the tab's edge).
+  await page.clock.pauseAt((await page.evaluate(() => Date.now())) + 1);
   await page.getByTestId("tab.soon").click();
   await expect(page).toHaveURL(/\/lagos\/soon$/);
+  await page.clock.runFor(48); // three frames
   const soon = await box(page, '[data-testid="tab.soon"]');
-  expect((await box(page, "[data-hl]")).x).toBeLessThan(soon.x); // coming from Films, on the left
+  const pill = await box(page, "[data-hl]");
+  expect(pill.x).toBeGreaterThan(films.x); // on its way from Films…
+  expect(pill.x).toBeLessThan(soon.x); // …and not there yet
+  await page.clock.resume();
   // The tab widens as its name opens, so the two are compared as they are each time.
   await expect.poll(async () => JSON.stringify(await box(page, "[data-hl]")) === JSON.stringify(await box(page, '[data-testid="tab.soon"]')), { timeout: 3000 }).toBe(true);
 });

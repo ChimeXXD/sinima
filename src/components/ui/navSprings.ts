@@ -43,8 +43,19 @@ function tune(s: Spring, reduce: boolean) {
   if (reduce) critical(s);
 }
 
-/** The width a tab's name takes when open: its text (without the padding the spring draws) plus the 8 px gap before it. */
-const fullName = (label: HTMLElement) => label.scrollWidth - (Number.parseFloat(label.style.paddingLeft) || 0) + 8;
+/**
+ * The width a tab's name takes when open: its text plus the 8 px gap before it. The text is measured
+ * to the fraction (scrollWidth rounds, and "Starting soon" at 95.22 px got 95, so its "…" showed),
+ * rounded up to the hundredth the width is written in.
+ */
+const fullName = (label: HTMLElement) => {
+  const text = document.createRange();
+  text.selectNodeContents(label);
+  // The range is measured as drawn: a tab tapped mid-press is still scaled down (.tab:active), so undo its scale.
+  const tab = label.parentElement;
+  const scale = tab ? new DOMMatrixReadOnly(getComputedStyle(tab).transform).a || 1 : 1;
+  return Math.ceil((text.getBoundingClientRect().width / scale) * 100) / 100 + 8;
+};
 
 function render() {
   if (!parts) return;

@@ -1,5 +1,5 @@
 import { expect, test, type Browser, type Page } from "./test";
-import { freeze, sampleTime } from "./helpers";
+import { freeze, live, sampleTime } from "./helpers";
 
 // D-112: the motion audit's picks. Units 1 and 2: small fixes and no motion on keyboard actions.
 
@@ -77,6 +77,7 @@ test.describe("no motion on keyboard actions (F4, F5, C7)", () => {
 
   test("F5: the heart doesn't pop when pressed with Enter", async ({ page }) => {
     await page.goto("/lagos/cinemas");
+    await live(page);
     await page.getByTestId("cinema.keep").first().focus();
     await page.keyboard.press("Enter");
     await expect(page.getByTestId("cinema.keep").first()).toHaveAttribute("aria-pressed", "true");
@@ -237,6 +238,7 @@ test.describe("unit 8: what's added", () => {
 
 test("F3: after Undo the row's heart is empty again", async ({ page }) => {
   await page.goto("/lagos/cinemas");
+  await live(page);
   const heart = page.getByTestId("cinema.keep").first();
   await heart.click();
   await expect(heart).toHaveAttribute("aria-pressed", "true");

@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "./test";
+import { live } from "./helpers";
 
 // M11 (D-103): from the Films grid to a film's page, the poster you tapped travels into the
 // film's hero (a view transition React starts on the navigation). The page records each view
@@ -21,6 +22,7 @@ const transitions = (page: Page) => page.evaluate(() => (window as unknown as { 
 test("tapping a film's poster on Films carries it into the film page's hero", async ({ page }) => {
   await recordTransitions(page);
   await page.goto("/lagos");
+  await live(page); // the grid as the browser's clock orders it, not as it was baked
   const card = page.locator('[data-testid^="film.card."]').first();
   const id = (await card.getAttribute("data-testid"))!.replace("film.card.", "");
   await page.waitForTimeout(1500); // Next prefetches the film page, so it renders with the navigation

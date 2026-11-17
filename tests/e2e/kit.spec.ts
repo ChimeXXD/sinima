@@ -165,6 +165,24 @@ test("on a 360 px phone the tab bar fits whichever tab is open (Figma: 336 at mo
   }
 });
 
+// Figma's bar has about 1 px to spare at 360 with "Starting soon" open. Text drawn a little wider
+// (GitHub's Linux runner drew it 8 px wider; a phone's larger text does the same) must not push the
+// last tab out of the bar: the open tab's name gives way instead.
+test("on a 360 px phone the tab bar still holds every tab when the open tab's name is drawn wider", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 800 });
+  await page.addStyleTag({ content: "[data-testid='nav'] [data-label] { letter-spacing: 1px; }" });
+  const nav = page.getByTestId("nav");
+  for (const id of ["films", "cinemas", "soon", "yours"]) {
+    await nav.evaluate((el, open) => el.querySelectorAll("a").forEach((a) => (a.dataset.testid === `tab.${open}` ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"))), id);
+    const bar = await box(nav);
+    const last = await box(page.getByTestId("tab.yours"));
+    const open = await box(page.getByTestId(`tab.${id}`));
+    expect(bar.width, id).toBeLessThanOrEqual(336);
+    expect(last.x + last.width, id).toBeLessThanOrEqual(bar.x + bar.width - 6);
+    expect(open.width, `${id}: the open tab still shows part of its name`).toBeGreaterThan(80);
+  }
+});
+
 test("each segment of the day switch has a 44 px touch area", async ({ page }) => {
   const segment = page.getByRole("radio", { name: "Tomorrow" });
   const area = await segment.evaluate((el) => {

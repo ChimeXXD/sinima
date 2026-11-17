@@ -6,6 +6,7 @@ import { useDesktop } from "./useDesktop";
 import "./inputMode"; // which input came last, for no motion on keys (D-112)
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useServiceWorker } from "@/lib/offline";
+import { useNow } from "@/lib/time/useNow";
 import { useSaved } from "@/lib/saved";
 import { ABOUT_LINK, FOOTER_NOTE, LOGO_NOTE } from "@/lib/wording/films";
 import { Icon } from "./Icon";
@@ -82,6 +83,19 @@ export function Crumb({ href, children }: { href: string; children: React.ReactN
 }
 
 /**
+ * The page has been drawn again on the browser's clock (rule 3) and answers taps: e2e tests wait for
+ * html[data-now] before they read a list or press a button. Its own component, so the 30 s tick
+ * re-renders only this, not the whole frame.
+ */
+function NowMark() {
+  const now = useNow();
+  useEffect(() => {
+    if (now) document.documentElement.dataset.now = "";
+  }, [now]);
+  return null;
+}
+
+/**
  * A screen below the home screens (Figma Film) passes `bar`: on phones and iPads it takes the
  * header's place, a back button, the screen's name and a share button; the desktop navbar stays.
  */
@@ -149,6 +163,7 @@ export function AppFrame({ active, search, city: chosen, bg, bar, footer, onAbou
         </div>
         <div className={s.nav}>
           <SectionNav active={active} saved={saved} />
+          <NowMark />
         </div>
         <ThemeToggle bg={bg} className={s.theme} />
       </header>

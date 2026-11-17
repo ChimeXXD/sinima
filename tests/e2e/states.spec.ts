@@ -1,5 +1,5 @@
 import { devices, expect, test, type Locator } from "./test";
-import { sampleTime } from "./helpers";
+import { live, sampleTime } from "./helpers";
 
 // Review round 1 (D-106 c, d): a picked state fades in instead of switching in one frame, and on a
 // pointer device every hover answers. Read from the running transitions and computed styles.
@@ -48,10 +48,12 @@ test("films without a poster come in several colours, each film always the same 
   // Noon in the sample day: on the real clock, late in the evening most films have started and gone.
   await page.clock.install({ time: await sampleTime(request, "12:00") });
   await page.goto("/lagos");
+  await live(page);
   const tints = () => page.getByTestId("poster.none").evaluateAll((els) => els.map((el) => getComputedStyle(el).backgroundColor));
   const first = await tints();
   expect(first.length).toBeGreaterThan(3);
   expect(new Set(first).size).toBeGreaterThan(2);
   await page.reload();
+  await live(page);
   expect(await tints()).toEqual(first);
 });

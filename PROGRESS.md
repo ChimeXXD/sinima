@@ -2,6 +2,24 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 17 Nov 2026 — GitHub CI: the tests that failed on Linux every run
+
+CI had failed every listed run (none green in the last 40), on the same tests; all passed on the Mac. Chime: "let's do it".
+
+- **Causes, from CI's trace (run 44158392999) and reproduced here:**
+  - `kit.spec.ts:155` (last tab ends 349 > 342): Figma's bar has about 1 px to spare at 360 with "Starting soon" open (Mac: 340.6 of 341.6); Linux draws the name about 8 px wider (the font had loaded, 9 ms), and `.tab { flex: none }` can't give. A real weakness: a phone's larger text does the same.
+  - `motion-nav.spec.ts:18` (pill at 167, tab at 159): the springs overshoot, and the slower runner first looked mid-overshoot.
+  - `audit.spec.ts:78`, `:238`, `motion-poster.spec.ts:21`, `states.spec.ts:47`: acting before the page is redrawn on the browser's clock. With the CPU slowed 6× here, the first film card is `ramayana` (baked) on load and `tele-x-zikora` 0.6 s later, the film CI opened.
+- **Red:** new test `kit.spec.ts` "…still holds every tab when the open tab's name is drawn wider" (letter-spacing 1px): `Expected: <= 342, Received: 353.21875`.
+- **Changed:**
+  - `nav.module.css`: the open tab may shrink (`flex: 0 1 auto; min-width: 0`); before the springs load its name ends in "…" when short of room; on the live bar it is clipped (no "…" while the springs open it).
+  - `navSprings.ts` `fullName`: measures the name to the fraction with a Range, undoing a tap's press scale. `scrollWidth` rounded 95.22 to 95, so the name was always cut by 0.2 px, which the "…" showed ("Starting so…" at 390).
+  - `AppFrame.tsx`: `NowMark` sets `html[data-now]` once the page has been redrawn on the browser's clock; `live(page)` in `tests/e2e/helpers.ts` waits for it; the four tests call it after `goto`/`reload`.
+  - `motion-nav.spec.ts`: the clock is held around the tap, then three frames (48 ms) run; the pill must be past Films and short of Starting soon (stricter than before: it also fails if the pill never moves).
+- **Checked:** lint (0 errors; the 10 warnings were there before), typecheck, 827 unit tests. Eight e2e specs: 74 pass on a sample build; motion-nav 5 × 4 pass; the touched specs 3 × 47 pass. Nav screenshots at 360 and 390 with each tab open, before vs after: full names, same sizes (only the poster behind the blur differs). proof:verifier: 7 of 9 verified by reading, the 2 runtime ones covered by the runs above. Code review (medium, --fix): 3 fixed (no "…" on the live bar, press scale, `NowMark` so the 30 s tick doesn't redraw the frame); left: `data-now` is never cleared after a client-side move (no test relies on that), and it is a test-only marker on every page.
+- **Gotcha, again:** the code-review agent ran `npm run build` (live data) while the gate's e2e ran, and three unrelated tests failed. Rebuilt on sample: they pass.
+- **Not verified:** GitHub CI on this commit (runs on push).
+
 ## 17 Nov 2026 — e2e always tests sample data; plan brought up to date
 
 Chime: keep the new mockups local, update the plan, fix "tests vs live data", and set up the timer token's renewal.

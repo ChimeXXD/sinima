@@ -1,4 +1,4 @@
-import type { APIRequestContext, Page } from "@playwright/test";
+import { expect, type APIRequestContext, type Page } from "@playwright/test";
 
 // The built site runs on sample data dated the day it was built and the day after (D-20). Tests
 // freeze the browser's clock on the day after, which always holds a full programme whatever time
@@ -51,3 +51,10 @@ export function today(file: DataFile, now: Date): DataFile["showings"] {
 export function cinemasBySoonest(rows: DataFile["showings"]): string[] {
   return [...new Set(rows.map((s) => s.cinemaId))];
 }
+
+/**
+ * Waits until the page has been drawn again on the browser's clock and answers taps (AppFrame sets
+ * html[data-now]). Before that the list is the one baked at build time and a tap can land before
+ * React listens: on GitHub's slower runner a heart pressed too early stayed empty.
+ */
+export const live = (page: Page) => expect(page.locator("html[data-now]")).toBeAttached();
