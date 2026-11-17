@@ -77,6 +77,17 @@ describe("parseGenesisFilm", () => {
     for (const s of page.showings) expect(s.bookingUrl).toMatch(new RegExp(`^https://genesiscinemas\\.com/${Object.entries(SITES).find(([, id]) => id === s.cinemaId)![0]}/booknow/\\d+$`));
   });
 
+  // The location page reads VIP from a time's own text too; the film page must agree, or the
+  // reader keeps one showing twice (once VIP, once not).
+  it("reads a time marked VIP as VIP, as the location page does", () => {
+    const html = fixture("2026-11-17-film-street-fighter.html");
+    const href = /href="(https:\/\/genesiscinemas\.com\/festival-mall-festac\/booknow\/\d+)">([^<]*)</.exec(html);
+    expect(href).not.toBeNull();
+    const marked = html.replace(`${href![1]}">${href![2]}<`, `${href![1]}">${href![2]!.trim()}  VIP<`);
+    const page = parseGenesisFilm(marked, { readOn: nov17, cinemaBySite: SITES });
+    expect(page.showings.find((s) => s.bookingUrl === href![1])?.format).toBe("VIP");
+  });
+
   it("checks each date's weekday and fails loudly when there is nothing to read", () => {
     const wrong = fixture("2026-11-17-film-street-fighter.html").replace("Tuesday, November 17th", "Friday, November 17th");
     expect(() => parseGenesisFilm(wrong, { readOn: nov17, cinemaBySite: SITES })).toThrow("17 November is not a Friday in 2026");

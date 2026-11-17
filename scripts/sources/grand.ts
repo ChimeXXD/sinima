@@ -3,10 +3,9 @@
 // each weekday ("tue-time": "3:00 pm"). Today's and the next days' tabs are read onto today's and
 // the next days' dates. Tickets are sold at the cinema, so there are no booking links.
 import * as cheerio from "cheerio";
-import { clock12, lagosDay, showStart } from "./dates.ts";
+import { clock12, lagosDay, showStart, weekdayOf } from "./dates.ts";
 import { clean, type ParsedPage, type RawShowing, type Reader } from "./raw.ts";
 
-const TABS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 /** Grand's rating for a film not yet classified. */
 const NOT_RATED = "TBC";
 
@@ -18,7 +17,8 @@ export function parseGrand(html: string, options: { cinemaId: string; now: strin
   const showings: RawShowing[] = [];
   for (let offset = 0; offset < options.days; offset += 1) {
     const day = lagosDay(options.now, offset);
-    const name = TABS[new Date(Date.UTC(day.year, day.month - 1, day.day)).getUTCDay()] as string;
+    // The weekday's tab: "tuesday" -> "Tue".
+    const name = weekdayOf(day).slice(0, 3).replace(/^./, (c) => c.toUpperCase());
     const tab = tabs.find(`[id="${name}"]`);
     if (tab.length === 0) throw new Error(`Grand page: no "${name}" tab. Has the page layout changed?`);
     tab.find(".movie-tabs").each((_, film) => {

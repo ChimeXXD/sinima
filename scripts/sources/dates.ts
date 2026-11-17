@@ -46,6 +46,9 @@ export function lagosDay(now: string, days = 0): Day {
   return addDays({ year, month, day }, days);
 }
 
+/** The day's weekday, lower case ("tuesday"). */
+export const weekdayOf = (day: Day) => WEEKDAYS[new Date(Date.UTC(day.year, day.month - 1, day.day)).getUTCDay()] as string;
+
 const dayNumber = (day: Day) => Date.UTC(day.year, day.month - 1, day.day) / 86_400_000;
 
 /**
@@ -61,8 +64,7 @@ export function dateNearest(date: { month: number; day: number; weekday?: string
   if (candidates.length === 0) throw new Error(`${name} is not a date`);
   const nearest = candidates.reduce((best, next) => (Math.abs(dayNumber(next) - dayNumber(readOn)) < Math.abs(dayNumber(best) - dayNumber(readOn)) ? next : best));
   if (date.weekday !== undefined) {
-    const weekday = WEEKDAYS[new Date(Date.UTC(nearest.year, nearest.month - 1, nearest.day)).getUTCDay()];
-    if (weekday !== date.weekday.toLowerCase()) throw new Error(`${name} is not a ${date.weekday} in ${nearest.year}`);
+    if (weekdayOf(nearest) !== date.weekday.toLowerCase()) throw new Error(`${name} is not a ${date.weekday} in ${nearest.year}`);
   }
   return nearest;
 }

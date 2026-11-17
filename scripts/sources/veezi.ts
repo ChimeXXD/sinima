@@ -3,10 +3,9 @@
 // and its times are on a 12-hour clock ("6:35 PM"), so the caller says which day the page was read.
 import * as cheerio from "cheerio";
 import { lagosLocalToUtc } from "../../src/lib/time/lagos.ts";
-import { clock12, dateNearest, lagosDay, monthNumber, withinDays, type Day } from "./dates.ts";
+import { clock12, dateNearest, lagosDay, monthNumber, weekdayOf, withinDays, type Day } from "./dates.ts";
 import { clean, type ParsedPage, type RawShowing, type Reader } from "./raw.ts";
 
-const WEEKDAYS = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
 const DATE = /^([A-Za-z]+) (\d{1,2}), ([A-Za-z]+)$/;
 /** Veezi's placeholder for a film not yet classified. */
 const NOT_RATED = "TBC";
@@ -24,8 +23,7 @@ function fullDate(text: string, readOn: Day): Day {
   const month = found ? monthNumber(found[3] as string) : 0;
   if (!found || month === 0) throw new Error(`Veezi page: cannot read the date "${text}"`);
   const date = dateNearest({ month, day: Number(found[2]) }, readOn);
-  const weekday = WEEKDAYS[new Date(Date.UTC(date.year, date.month - 1, date.day)).getUTCDay()];
-  if (weekday !== (found[1] as string).toLowerCase()) throw new Error(`Veezi page: "${text}" is not a ${found[1]} in ${date.year}`);
+  if (weekdayOf(date) !== (found[1] as string).toLowerCase()) throw new Error(`Veezi page: "${text}" is not a ${found[1]} in ${date.year}`);
   return date;
 }
 

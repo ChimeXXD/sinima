@@ -42,6 +42,9 @@ function siteOf(href: string | undefined): { url: string; site: string } {
 
 const rating = (text: string | undefined) => clean(text)?.toUpperCase() ?? null;
 
+/** A time's format: the film's own (from its title), or VIP when only the time says so ("11:20  VIP"). */
+const linkFormat = (format: string | null, text: string) => format ?? (/\bVIP\b/i.test(text) ? "VIP" : null);
+
 export type GenesisLocation = { cinemaId: string; date: Day; site: string | null; films: { title: string; url: string }[]; showings: RawShowing[] };
 
 /** https://genesiscinemas.com/<location>/ The page does not name our cinema id, so the caller gives it. */
@@ -66,8 +69,7 @@ export function parseGenesisLocation(html: string, options: { cinemaId: string }
     $(row).find(".neworderpf a.perfbtn").each((_, link) => {
       const { url, site } = siteOf($(link).attr("href"));
       sites.add(site);
-      const vip = format ?? (/\bVIP\b/i.test($(link).text()) ? "VIP" : null);
-      showings.push({ cinemaId: options.cinemaId, filmTitle: title, rating: rating($(row).find(".certificate").first().text()), startsAt: showStart(date, time($(link).text())), format: vip, bookingUrl: url });
+      showings.push({ cinemaId: options.cinemaId, filmTitle: title, rating: rating($(row).find(".certificate").first().text()), startsAt: showStart(date, time($(link).text())), format: linkFormat(format, $(link).text()), bookingUrl: url });
     });
   });
   if (sites.size > 1) throw new Error(`Genesis location page for ${options.cinemaId}: booking links for more than one location (${[...sites].join(", ")}). Not read.`);
@@ -100,7 +102,7 @@ export function parseGenesisFilm(html: string, options: { readOn: Day; cinemaByS
       $(row).find("a.perfbtn").each((_, link) => {
         const { url, site } = siteOf($(link).attr("href"));
         if (!Object.hasOwn(options.cinemaBySite, site)) return;
-        showings.push({ cinemaId: options.cinemaBySite[site] as string, filmTitle: title, rating: filmRating, startsAt: showStart(date, time($(link).text())), format, bookingUrl: url });
+        showings.push({ cinemaId: options.cinemaBySite[site] as string, filmTitle: title, rating: filmRating, startsAt: showStart(date, time($(link).text())), format: linkFormat(format, $(link).text()), bookingUrl: url });
       });
     });
   });

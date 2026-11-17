@@ -7,6 +7,7 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import type { ShowtimesFile } from "../src/lib/data/types.ts";
 import { lagosDayKey, lagosLocalToUtc, toLagos, utcMs, utcString } from "../src/lib/time/lagos.ts";
+import { COMPILERS } from "../src/lib/data/about.ts";
 import { validateShowtimes } from "../src/lib/data/validate.ts";
 import { assemble, creditsLookup, readJson, readSources, SAMPLE_PATHS, type Paths } from "./assemble.ts";
 import { splitByArea, type Batch } from "./pipeline.ts";
@@ -46,9 +47,6 @@ export const READERS: Record<string, Reader> = {
   bluepictures: readBluePictures,
 };
 
-/** Listings that compile other sites: their rows say which site they read (DATA §Freshness). */
-const COMPILES_OTHERS = new Set(["lagocine"]);
-
 /** A run with no browser (tests, or no reader that needs one) refuses a page built by script. */
 const noBrowser: RenderText = async (url) => {
   throw new Error(`${url} needs a browser, and this run has none.`);
@@ -79,7 +77,7 @@ function keptBatch(previous: ShowtimesFile | null, sourceId: string, given: Set<
   const fetchedAt = entry?.fetchedAt ?? (rows.map((row) => row.fetchedAt).sort().at(-1) as string);
   const films = new Map(previous.films.map((film) => [film.id, film]));
   return {
-    sourceId, fetchedAt, builtAt: rows.find((row) => row.via)?.via?.fetchedAt ?? null, through: COMPILES_OTHERS.has(sourceId),
+    sourceId, fetchedAt, builtAt: rows.find((row) => row.via)?.via?.fetchedAt ?? null, through: COMPILERS.has(sourceId),
     health: "failing", lastOkAt: entry ? entry.lastOkAt : fetchedAt,
     showings: rows.map((row) => ({
       cinemaId: row.cinemaId, filmTitle: films.get(row.filmId)?.title ?? row.filmId, rating: films.get(row.filmId)?.rating ?? null,
@@ -127,7 +125,7 @@ export async function refreshLive(input: {
     const rows = pages.flatMap((page) => page.showings);
     const kept = rows.filter((row) => given.has(row.cinemaId));
     if (kept.length < rows.length) log.push(`${source.id}: left out ${rows.length - kept.length} showings at cinemas it does not feed`);
-    batches.push({ sourceId: source.id, fetchedAt: now, builtAt: pages.map((page) => page.builtAt).find((stamp) => stamp !== null) ?? null, through: COMPILES_OTHERS.has(source.id), showings: kept });
+    batches.push({ sourceId: source.id, fetchedAt: now, builtAt: pages.map((page) => page.builtAt).find((stamp) => stamp !== null) ?? null, through: COMPILERS.has(source.id), showings: kept });
   }
   // Every source failing is a problem with the run (or the network), not with one site.
   if (read === 0 && failures.length > 0) throw new Error(`No source could be read: ${failures.join("; ")}.`);

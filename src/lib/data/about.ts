@@ -23,8 +23,11 @@ export function sourceRows(registry: RegistrySource[], read: { id: string; metho
 
 /** How a city's cinemas are read in the built times (D-122). */
 export type CityReading = { own: number; through: number; none: number };
-/** Listings that compile other sites: a cinema read only through one is not read from its own site. */
-const COMPILERS = new Set(["lagocine"]);
+/**
+ * Listings that compile other sites: their rows say which site they read (DATA §Freshness), and a
+ * cinema read only through one is not read from its own site. The live run uses it too.
+ */
+export const COMPILERS = new Set(["lagocine"]);
 
 /**
  * Each city's cinemas by how the built times read them: a cinema with a showing from its own source
