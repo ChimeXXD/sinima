@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { formatTag } from "@/lib/data/format";
-import { anchorFor, byCinema, byFilm, dayDates, dayOf, formatsOf, showingOn } from "@/lib/data/programme";
+import { anchorFor, byCinema, byFilm, dayDates, dayOf, formatChoices, formatsOf, showingOn } from "@/lib/data/programme";
 import { formatDate } from "@/lib/time/lagos";
 import type { ListRow } from "@/lib/data/select";
 
@@ -61,6 +61,32 @@ describe("byFilm and byCinema", () => {
   it("lists the formats a set of rows is showing in, biggest first", () => {
     expect(formatsOf([row("a", 0, 0, "2D"), row("a", 0, 0, "MX4D"), row("a", 0, 0, "IMAX 2D"), row("a", 0, 0, "IMAX 2D"), row("a", 0, 0, null)])).toEqual(["IMAX", "4D"]);
     expect(formatsOf([row("a")])).toEqual([]);
+  });
+});
+
+describe("formatChoices: the format chips a day can offer (D-135)", () => {
+  const imaxTonight = row("2026-11-06T19:00:00Z", 0, 0, "IMAX 2D"); // 20:00 tonight
+  const imaxStarted = row("2026-11-06T16:00:00Z", 0, 0, "IMAX 2D"); // 17:00 tonight, started
+  const fourDTomorrow = row("2026-11-07T15:00:00Z", 0, 1, "MX4D");
+  const plain = row("2026-11-06T20:00:00Z", 1, 2, "2D");
+
+  it("offers only the formats of the day's showings still to start", () => {
+    expect(formatChoices([imaxTonight, fourDTomorrow, plain], 0, NOW, true, null)).toEqual(["IMAX"]);
+    expect(formatChoices([imaxTonight, fourDTomorrow, plain], 1, NOW, true, null)).toEqual(["4D"]);
+  });
+
+  it("offers nothing when no showing to come has a format: 2D, VIP and none are not choices", () => {
+    expect(formatChoices([plain, row("2026-11-06T21:00:00Z", 1, 2, "VIP"), row("2026-11-06T21:00:00Z")], 0, NOW, true, null)).toEqual([]);
+    expect(formatChoices([imaxStarted, fourDTomorrow], 0, NOW, true, null)).toEqual([]); // tonight's IMAX has started
+    expect(formatChoices([], 0, NOW, true, null)).toEqual([]);
+  });
+
+  it("keeps the picked format so it can be cleared, even on a day without it", () => {
+    expect(formatChoices([fourDTomorrow], 0, NOW, true, "IMAX")).toEqual(["IMAX"]);
+  });
+
+  it("on sample data (not live) counts the day's started showings too, as the lists do", () => {
+    expect(formatChoices([imaxStarted], 0, NOW, false, null)).toEqual(["IMAX"]);
   });
 });
 

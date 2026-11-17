@@ -10,7 +10,7 @@ import { TicketFaceSticker } from "@/components/ui/Stickers";
 import { useSwapIn, type ChangeHow } from "@/components/ui/useSwapIn";
 import { filmSections, formatCoverage, lastStart, type FilmSection } from "@/lib/data/films";
 import type { FormatTag } from "@/lib/data/format";
-import { dayDates, formatsOf, showingOn, type Day } from "@/lib/data/programme";
+import { dayDates, formatChoices, formatsOf, showingOn, type Day } from "@/lib/data/programme";
 import { matchesTitle } from "@/lib/data/search";
 import { laterName, pageBanner, type ListData } from "@/lib/data/select";
 import { useQuery } from "@/lib/browser";
@@ -52,6 +52,7 @@ export function FilmsScreen({ data, city, bg }: { data: ListData; city: City; bg
     .filter((section) => section.films.length > 0);
   const coverage = format ? formatCoverage(data.rows, day, now, live, (cinema) => data.cinemas[cinema]!.chain) : null;
   const note = coverage ? formatNote(coverage.chains, coverage.silent) : null;
+  const choices = formatChoices(data.rows, day, now, live, format);
 
   const banner = pageBanner(data, clock);
 
@@ -69,16 +70,18 @@ export function FilmsScreen({ data, city, bg }: { data: ListData; city: City; bg
       <FilmsHero city={cityName} live={live && day === 0 && sections.length > 0} />
       <div className={s.controls}>
         <Segmented label="Day" options={names} value={names[day]!} onChange={(name, how) => changeDay(names.indexOf(name) === 1 ? 1 : 0, how)} testId="films.day" />
-        <div className={s.chips} role="group" aria-label="Format">
-          <Chip selected={format === null} onClick={() => setFormat(null)} testId="format.any">
-            Any format
-          </Chip>
-          {formatsOf(data.rows).map((tag) => (
-            <Chip key={tag} selected={format === tag} onClick={() => setFormat(format === tag ? null : tag)} testId={`format.${tag}`}>
-              {tag}
+        {choices.length > 0 && (
+          <div className={s.chips} role="group" aria-label="Format">
+            <Chip selected={format === null} onClick={() => setFormat(null)} testId="format.any">
+              Any format
             </Chip>
-          ))}
-        </div>
+            {choices.map((tag) => (
+              <Chip key={tag} selected={format === tag} onClick={() => setFormat(format === tag ? null : tag)} testId={`format.${tag}`}>
+                {tag}
+              </Chip>
+            ))}
+          </div>
+        )}
         <PageNotice banner={banner} now={clock} className={s.notice} />
       </div>
 

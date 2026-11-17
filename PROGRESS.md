@@ -2,6 +2,17 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 17 Nov 2026 — No lone "Any format" (D-135)
+
+Chime: "what is the point of the Any Format button right now? The button is not performing any action."
+
+- **Why it did nothing:** the chips came from every format in the city's data; live data held only "2D" and "VIP", neither a filter format, so "Any format" stood alone. It also stayed when nothing was left to start today.
+- **Changed:** `formatChoices` in `src/lib/data/programme.ts` (the day's showings still to start, plus the picked one); `FilmsScreen` renders the chip row only when it offers one; `CinemasScreen` passes it to `Pickers`, which drops the Format picker when it is empty.
+- **Red:** `programme.test.ts` "formatChoices…" (`formatChoices is not a function`); e2e "…no format row…" (`films-screen.spec.ts`) and "…no Format picker…" (`cinemas-screen.spec.ts`) on the old build: `Expected: 0, Received: 1`.
+- **Checked:** unit 30 pass; films-screen, cinemas-screen, round2, films, states specs: 49 pass; screenshots after the last showing at 390 and 1440 (scratchpad).
+- **Code review (medium, --fix):** fixed: a Format sheet or menu open when the day runs out of formats now closes with its picker; `afterLastShowing` shared in `tests/e2e/helpers.ts`; the day's showings filtered once for the counts. Left: the row can appear or go just after load (the static page can't know the time, rule 3); the helper finds 'today' by calendar day, not by evening.
+- **Not verified:** the live site after deploy.
+
 ## 17 Nov 2026 — Sinima's own scrollbars on a computer (D-134)
 
 Chime's recording of the side panel and page: the system's grey bar "doesn't follow our design principle"; remove it or make our own.

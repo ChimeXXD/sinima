@@ -41,6 +41,15 @@ export const shownClock = (iso: string) => {
 /** The Lagos calendar day, "2026-11-12", of a UTC instant. */
 export const lagosDay = (iso: string) => new Date(Date.parse(iso) + HOUR).toISOString().slice(0, 10);
 
+/** One minute after the last showing on the sample's first (or last) Lagos day has started. */
+export async function afterLastShowing(request: APIRequestContext, first: boolean): Promise<Date> {
+  const all = await dataFile(request, "lagos");
+  const days = [...new Set(all.showings.map((s) => lagosDay(s.startsAt)))].sort();
+  const day = first ? days[0]! : days.at(-1)!;
+  const last = all.showings.filter((s) => lagosDay(s.startsAt) === day).map((s) => s.startsAt).sort().at(-1)!;
+  return new Date(Date.parse(last) + 60_000);
+}
+
 /** The showings that have not started at `now` and fall on the same Lagos day, in time order. */
 export function today(file: DataFile, now: Date): DataFile["showings"] {
   const day = lagosDay(now.toISOString());

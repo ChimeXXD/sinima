@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "./test";
-import { cinemasBySoonest, dataFile, freeze, sampleTime, shownClock, today, type DataFile } from "./helpers";
+import { afterLastShowing, cinemasBySoonest, dataFile, freeze, sampleTime, shownClock, today, type DataFile } from "./helpers";
 
 // The Cinemas tab as Figma draws it (Figma Cinemas 200:6415, build unit 6): your area first, then
 // the areas next to it, then the rest; a picker row; every cinema in the city, at three widths.
@@ -204,4 +204,14 @@ test("the footer says the logos are the chains' own and how to have one removed"
   await page.goto("/lagos/cinemas");
   await expect(page.getByTestId("footer.logos")).toContainText("Cinema logos belong to their owners");
   await expect(page.getByTestId("footer.logos").getByRole("link")).toHaveAttribute("href", "https://github.com/ChimeXXD/sinima/issues");
+});
+
+test("with nothing left to start today there is no Format picker; tomorrow's formats bring it back (D-135)", async ({ page, request }) => {
+  await freeze(page, await afterLastShowing(request, true));
+  await page.goto("/lagos/cinemas");
+  await expect(page.getByTestId("pick.day")).toBeVisible();
+  await expect(page.getByTestId("pick.format")).toHaveCount(0); // no lone "Any format" that filters nothing
+  await page.getByTestId("pick.day").click();
+  await page.getByTestId("day.option.tomorrow").click();
+  await expect(page.getByTestId("pick.format")).toBeVisible();
 });

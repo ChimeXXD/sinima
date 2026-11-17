@@ -71,3 +71,14 @@ export function formatsOf(rows: ListRow[]): FormatTag[] {
   const found = new Set(rows.map((row) => formatTag(row.format)));
   return FORMAT_TAGS.filter((tag) => found.has(tag));
 }
+
+/**
+ * The format chips a day can offer (D-135): the formats of its showings still to start (on sample
+ * data, all of the day's, as the lists show them). None means no format row at all, not a lone
+ * "Any format" that filters nothing. The picked format stays so it can be cleared on any day.
+ */
+export function formatChoices(rows: ListRow[], day: Day, now: string, live: boolean, picked: FormatTag | null): FormatTag[] {
+  const found = new Set(showingOn(rows, day, now, null, !live).map((row) => formatTag(row.format)));
+  if (picked) found.add(picked);
+  return FORMAT_TAGS.filter((tag) => found.has(tag));
+}

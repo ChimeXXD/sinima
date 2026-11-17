@@ -11,9 +11,9 @@ import { rememberArea } from "@/lib/area";
 import { useSavedArea } from "@/lib/browser";
 import { cinemaSections, type CinemaSection } from "@/lib/data/cinemas";
 import { formatCoverage } from "@/lib/data/films";
-import type { FormatTag } from "@/lib/data/format";
+import { formatTag, type FormatTag } from "@/lib/data/format";
 import type { Area } from "@/lib/data/load";
-import { byFilm, dayDates, formatsOf, showingOn, type Day } from "@/lib/data/programme";
+import { byFilm, dayDates, formatChoices, formatsOf, showingOn, type Day } from "@/lib/data/programme";
 import { laterName, pageBanner, type ListData } from "@/lib/data/select";
 import { toggleSaved, useSaved } from "@/lib/saved";
 import { useNow } from "@/lib/time/useNow";
@@ -63,7 +63,8 @@ export function CinemasScreen({ data, areas, city, bg }: { data: ListData; areas
   const banner = pageBanner(data, clock);
   const coverage = format ? formatCoverage(data.rows, day, now, live, (cinema) => data.cinemas[cinema]!.chain) : null;
   const note = coverage ? formatNote(coverage.chains, coverage.silent) : null;
-  const formats = formatsOf(data.rows).map((tag) => ({ tag, cinemas: new Set(showingOn(data.rows, day, now, tag, !live).map((row) => row.cinema)).size }));
+  const onDay = showingOn(data.rows, day, now, null, !live);
+  const formats = formatChoices(data.rows, day, now, live, format).map((tag) => ({ tag, cinemas: new Set(onDay.filter((row) => formatTag(row.format) === tag).map((row) => row.cinema)).size }));
   const unread = sections.some((section) => section.cinemas.some((entry) => !entry.listed));
   const when = !live ? null : day === 1 ? "tomorrow" : laterName(now) === "Later tonight" ? "tonight" : "today";
 

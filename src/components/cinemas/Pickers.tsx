@@ -16,6 +16,8 @@ import s from "./pickers.module.css";
 // by tap rolls into it. On a phone the row scrolls under a fade at its edge.
 
 export type Which = "area" | "day" | "format";
+const WITH_FORMAT: readonly Which[] = ["area", "day", "format"];
+const WITHOUT_FORMAT: readonly Which[] = ["area", "day"];
 
 // The computer's menus are loaded only on a computer, as the page starts: a phone never downloads them.
 type MenusModule = typeof import("./PickerMenus").default;
@@ -41,7 +43,10 @@ export type PickersProps = { areas: AreaChoice[]; area: string | null; onArea: (
 
 export function Pickers(props: PickersProps) {
   const { areas, area, onArea, days, day, onDay, formats, format, onFormat } = props;
-  const [open, setOpen] = useState<Which | null>(null);
+  const [chosen, setOpen] = useState<Which | null>(null);
+  // The Format picker leaves the row when the day has no format left (D-135); a sheet or menu open
+  // from it closes with it rather than hanging from a picker that is gone.
+  const open = chosen === "format" && formats.length === 0 ? null : chosen;
   const [rolled, setRolled] = useState<Which | null>(null);
   /** Opened with Enter or Space: the menu appears at once (no motion on keyboard actions). */
   const [keys, setKeys] = useState(false);
@@ -73,7 +78,8 @@ export function Pickers(props: PickersProps) {
     <>
       <div className={s.wrap}>
         <div className={s.row} role="group" aria-label="Filters">
-          {(["area", "day", "format"] as const).map((which) => (
+          {/* No Format picker when the day has no format to pick (D-135): a lone "Any format" filters nothing. */}
+          {(formats.length > 0 ? WITH_FORMAT : WITHOUT_FORMAT).map((which) => (
             <button
               key={which}
               ref={refs[which]}

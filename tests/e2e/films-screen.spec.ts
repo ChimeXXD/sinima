@@ -1,5 +1,5 @@
 import { expect, test } from "./test";
-import { dataFile, freeze, lagosDay, sampleTime, today } from "./helpers";
+import { afterLastShowing, dataFile, freeze, sampleTime, today } from "./helpers";
 
 // The Films screen as Figma draws it (Figma Films 175:3480, build unit 3): the next 2 hours, then
 // later tonight; IMAX chosen; nothing more today; at phone, iPad and desktop widths.
@@ -49,14 +49,6 @@ test("choosing IMAX leaves only IMAX films, and says which cinemas were left out
 });
 
 // The sample holds two days: on the first, tomorrow's times are in; on the second, they are not.
-async function afterLastShowing(request: Parameters<typeof dataFile>[0], first: boolean): Promise<Date> {
-  const all = await dataFile(request, "lagos");
-  const days = [...new Set(all.showings.map((s) => lagosDay(s.startsAt)))].sort();
-  const day = first ? days[0]! : days.at(-1)!;
-  const last = all.showings.filter((s) => lagosDay(s.startsAt) === day).map((s) => s.startsAt).sort().at(-1)!;
-  return new Date(Date.parse(last) + 60_000);
-}
-
 test("after the last showing has started, the page says so and offers tomorrow", async ({ page, request }) => {
   await freeze(page, await afterLastShowing(request, true));
   await page.goto("/lagos");
@@ -66,6 +58,16 @@ test("after the last showing has started, the page says so and offers tomorrow",
   await page.getByTestId("films.tomorrow").click();
   await expect(page.getByTestId("section.day").getByRole("heading", { level: 2 })).toHaveText("Tomorrow");
   await expect(page.getByRole("radio", { name: "Tomorrow" })).toHaveAttribute("aria-checked", "true");
+});
+
+test("with nothing left to start today there is no format row; tomorrow's formats bring it back (D-135)", async ({ page, request }) => {
+  await freeze(page, await afterLastShowing(request, true));
+  await page.goto("/lagos");
+  await expect(page.getByTestId("films.empty")).toBeVisible();
+  await expect(page.getByRole("group", { name: "Format" })).toHaveCount(0); // no lone "Any format" that filters nothing
+  await page.getByRole("radio", { name: "Tomorrow" }).click();
+  await expect(page.getByTestId("format.any")).toBeVisible();
+  await expect(page.getByTestId("format.IMAX")).toBeVisible();
 });
 
 test("with no times for tomorrow yet, it says so and offers nothing it cannot show", async ({ page, request }) => {
