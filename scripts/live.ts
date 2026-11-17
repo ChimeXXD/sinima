@@ -120,7 +120,8 @@ export async function refreshLive(input: {
   let previous: ShowtimesFile | null | undefined;
   for (const source of readSources(root)) {
     const reader = readers[source.id];
-    if (source.status !== "cleared" || !reader) continue;
+    // A source that feeds no cinema is not read: Ozone refused us, so its reader waits (D-127).
+    if (source.status !== "cleared" || !reader || source.cinemaIds.length === 0) continue;
     // A compiled listing also lists cinemas we read elsewhere; it only feeds the ones it is given.
     const given = new Set(source.cinemaIds);
     let pages: ParsedPage[];

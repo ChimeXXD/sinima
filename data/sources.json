@@ -40,7 +40,9 @@
         "filmhouse-palms-lekki",
         "filmhouse-oniru",
         "filmhouse-landmark",
-        "filmworld-idimu"
+        "filmworld-idimu",
+        "ozone-yaba",
+        "sky-sangotedo"
       ],
       "notes": "D-76 (15 Nov 2026): fallback only, for each cinema we cannot read directly yet; a cinema leaves this list the day its own reader is built and cleared (Genesis and Silverbird Ikeja are cleared on 15 Nov but have no reader yet, so they stay until theirs runs). Filmhouse's 7 stay on it for the long run, because Filmhouse's ticketing provider (CINEsync) answers our named bot with 403 Access Denied. Booking links still go to Filmhouse's own site, never to Lagocine (it now sells tickets: \"Lagocine sells this ticket on its own site\", 15 Nov). To be credited on /about and on each cinema page it feeds (not built yet). Its own \"last read\" time sets the showings' age. Dropped for any cinema the day we can read that cinema directly. Earlier: Preferred source if it agrees (D-07). Says it reads each cinema's own pages daily, sells nothing, takes no commission. 11 Nov: home page is static HTML (build stamp lagocine-built 2026-11-11T00:05:05+01:00). Still needs permission: robots allowing crawling is not a licence to republish (PRD). Audit: cinema and day pages are static HTML with the times in the page. The sitemap lists day pages for today plus six days and some December dates; the Silverbird Ikeja page carried a full programme for today and tomorrow only. No fixture committed: waiting for the reply to the 11 Nov email. D-33 (11 Nov): becomes the live source on Day 6 with full credit unless it objects first; status stays pending until Chime confirms cleared that day. 17 Nov 2026 (D-122): Genesis's three Lagos cinemas, Silverbird Ikeja, Grand and Blue Pictures left this list, read from their own sites now. It still feeds Filmhouse's 7 (CINEsync 403), Filmworld (its Veezi page showed no shows while Lagocine listed 22 times) and the script-built sites whose readers come next (EbonyLife, Ozone, Sky, Viva, THC, Magnificent). 17 Nov 2026 (D-125): EbonyLife, Ozone, Sky, Viva, THC and Magnificent left this list (14 → 8), read from their own script-built sites now. It feeds Filmhouse's 7 (CINEsync 403) and Filmworld (its Veezi page still showed no shows at 02:52)."
     },
@@ -306,19 +308,8 @@
         "maxRunsPerDay": 3
       },
       "daysAhead": null,
-      "cinemaIds": [
-        "ozone-yaba",
-        "sky-sangotedo"
-      ],
-      "cinemaPages": {
-        "ozone-yaba": "https://ozone.reachcinema.io/showtimes?cinemaId=ozo-a4239533",
-        "sky-sangotedo": "https://skycinemas.reachcinema.io/showtimes"
-      },
-      "pageNames": {
-        "ozone-yaba": "Ozone Cinemas",
-        "sky-sangotedo": "Sky Cinema"
-      },
-      "notes": "15 Nov 2026: Viva and Nova run on the same platform (api.reachcinema.io, Fusion Intelligence): any showtimes page opens a cinema with ?cinemaId=<id>, so one reader covers Ozone, Sky, Viva and Nova. The \"Terms of Service\" links on these sites point back to the home page. 15 Nov 2026 (D-77): cleared. Headless browser under our bot name: Ozone 19 times, Sky 20 times, with films, halls and Book Now links. 15 Nov 2026: script-built page (Next.js). A headless browser under our bot name showed 19 times with films and halls (\"11:00 AM Hall 1 Book Now\"). Ozone and Sky share the platform, so one reader covers both. Found through Lagocine's cinema pages. Terms not read yet. 17 Nov 2026 (D-125): read live by scripts/sources/reach.ts through the headless browser: Ozone by each day's own address (cinemaPages + &date=Wed+Nov+18+2026, cinemaId ozo-a4239533), Sky (no address per day) by clicking each day's tab (\"Nov 18th\"); each page must name the cinema in pageNames. Two page loads per cinema a run. Live 02:06 UTC: Ozone 20 + 20, Sky 21 + 21. Booking links: each film's Book Now page (/movies/<uuid>). Left Lagocine."
+      "cinemaIds": [],
+      "notes": "17 Nov 2026 (D-127): Ozone answered our bot with 403 from GitHub's servers (its page for tomorrow), although the same pages read from Chime's Mac. A refusal is final (D-77), so Ozone and Sky (same source) are read through Lagocine again (D-76) and this reader feeds no cinema; To read them again, put back in cinemaIds, cinemaPages and pageNames: {\"cinemaPages\": {\"ozone-yaba\": \"https://ozone.reachcinema.io/showtimes?cinemaId=ozo-a4239533\", \"sky-sangotedo\": \"https://skycinemas.reachcinema.io/showtimes\"}, \"pageNames\": {\"ozone-yaba\": \"Ozone Cinemas\", \"sky-sangotedo\": \"Sky Cinema\"}}. 15 Nov 2026: Viva and Nova run on the same platform (api.reachcinema.io, Fusion Intelligence): any showtimes page opens a cinema with ?cinemaId=<id>, so one reader covers Ozone, Sky, Viva and Nova. The \"Terms of Service\" links on these sites point back to the home page. 15 Nov 2026 (D-77): cleared. Headless browser under our bot name: Ozone 19 times, Sky 20 times, with films, halls and Book Now links. 15 Nov 2026: script-built page (Next.js). A headless browser under our bot name showed 19 times with films and halls (\"11:00 AM Hall 1 Book Now\"). Ozone and Sky share the platform, so one reader covers both. Found through Lagocine's cinema pages. Terms not read yet. 17 Nov 2026 (D-125): read live by scripts/sources/reach.ts through the headless browser: Ozone by each day's own address (cinemaPages + &date=Wed+Nov+18+2026, cinemaId ozo-a4239533), Sky (no address per day) by clicking each day's tab (\"Nov 18th\"); each page must name the cinema in pageNames. Two page loads per cinema a run. Live 02:06 UTC: Ozone 20 + 20, Sky 21 + 21. Booking links: each film's Book Now page (/movies/<uuid>). Left Lagocine."
     },
     {
       "id": "filmworld",

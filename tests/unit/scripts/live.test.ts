@@ -96,11 +96,11 @@ describe("each cinema's own reader (D-76, D-122)", () => {
     const given: Record<string, Record<string, string> | undefined> = {};
     const spy = (id: string) => async (input: { names?: Record<string, string> }) => {
       given[id] = input.names;
-      return [{ showings: [{ cinemaId: "ozone-yaba", filmTitle: "Whalefall", rating: null, startsAt: "2026-11-11T18:30:00Z", format: null, bookingUrl: null }], builtAt: null }];
+      return [{ showings: [{ cinemaId: "viva-ikeja", filmTitle: "Whalefall", rating: null, startsAt: "2026-11-11T18:30:00Z", format: null, bookingUrl: null }], builtAt: null }];
     };
     await refreshLive({ now: NOW, root, fetchText: fakeLagocine().fetchText, readers: { reachcinema: spy("reachcinema"), viva: spy("viva"), nova: spy("nova") } });
+    // Ozone and Sky's own source feeds no cinema since Ozone refused us (D-127), so it is not run.
     expect(given).toEqual({
-      reachcinema: { "ozone-yaba": "Ozone Cinemas", "sky-sangotedo": "Sky Cinema" },
       viva: { "viva-ikeja": "Viva Ikeja" },
       nova: { "nova-lagos": "Nova Lagos", "nova-abuja": "Nova Abuja" },
     });
@@ -126,6 +126,17 @@ describe("each cinema's own reader (D-76, D-122)", () => {
     };
     await refreshLive({ now: NOW, root, fetchText: fakeLagocine().fetchText, readers: { genesis } });
     expect(sites).toEqual({ "genesis-purple-lekki": "lekki-purple", "genesis-festac": "festival-mall-festac", "genesis-maryland": "maryland-mall-maryland", "genesis-ceddi-plaza": "ceddi-plaza-abuja" });
+  });
+
+  it("does not run a reader whose source feeds no cinema (Ozone and Sky back on Lagocine, D-127)", async () => {
+    const ran: string[] = [];
+    const spy = (id: string) => async () => {
+      ran.push(id);
+      return [{ showings: id === "grand" ? [{ cinemaId: "grand-lekki", filmTitle: "Whalefall", rating: null, startsAt: "2026-11-11T18:30:00Z", format: null, bookingUrl: null }] : [], builtAt: null }];
+    };
+    const { log } = await refreshLive({ now: NOW, root, fetchText: fakeLagocine().fetchText, readers: { reachcinema: spy("reachcinema"), grand: spy("grand") } });
+    expect(ran).toEqual(["grand"]);
+    expect(log.join("\n")).not.toMatch(/reachcinema: could not be read/);
   });
 
   it("puts what a reader left out in the run's log, under its source", async () => {
