@@ -1,8 +1,8 @@
 # Handoff: read this first when you pick the project back up
 
-## Now: session of 16–17 Nov 2026: posters on MTN, 12-hour clock, live data in both cities (latest)
+## Now: session of 16–17 Nov 2026: posters on MTN, 12-hour clock, live data in both cities, Filmhouse outreach (latest)
 
-Everything below is committed and pushed (last code commit `83b0217`; the refresh job commits data on its own). The full gate passed on each commit.
+Everything below is committed and pushed (last code commit `57a1c9d`; the refresh job commits data on its own). The full gate passed on each commit. Nothing is running.
 
 ### What Chime asked, and what was done
 
@@ -18,25 +18,36 @@ Everything below is committed and pushed (last code commit `83b0217`; the refres
    - **Data budget per city** (D-126): pages load `lagos.json` or `abuja.json`, each ≤ 20 KB gzipped.
    - **Trailers** (D-117): "Watch the trailer" on a film's page opens YouTube; `scripts/tmdb.ts` keeps one official trailer per film and looks up the live films too.
    - **Tests** run on a fixed clock (D-118): every e2e spec imports `test` from `tests/e2e/test.ts` (noon on the sample day); offline tests opt out.
+5. **Refresh timer "now, not at 4 PM" (D-128):** GitHub's schedule never fired, so cron-job.org (in Chime's Brave) calls `workflow_dispatch` at 06:17, 12:17 and 16:17 Lagos. Chime pasted only the token; it needed Actions read **and write** (Chime said yes) before GitHub answered 204. The 16:17 run (15:17 UTC, 6 m 42 s) started and succeeded on its own.
+6. **TMDB secret:** `TMDB_READ_TOKEN` copied from `.env.local` into GitHub Secrets with `gh secret set` (never printed), on Chime's "copy it".
+7. **Filmhouse outreach (OUTREACH §4):** emails 4a (Filmhouse sales, cc info) and 4c (CINEsync) sent from Chime's Gmail; 4b (FilmOne) is a Gmail draft (the safety check stopped the third send); LinkedIn InMail to Kene Okwuosa (Group CEO) sent 15:32; Instagram on hold ("Leave Instagram for now").
+8. **Lagocine (D-129 → D-130 → D-132):** Claude's reply to Paul Sergent promised his line on every page without Chime seeing it, and built it (D-129). Chime: "I'm not going to add that." Reverted (D-130). Chime's call: no correction email; Lagocine is credited on /about, where every source's name now links to its own site (new tab), and Lagocine's 11 Nov yes is recorded so it shows "In use" (D-132, closes O-18). Memory saved: `no-promises-without-review`.
+9. **Alternatives that need no manual entry → option B, Filmhouse's featured films (D-131):** source `filmhouse-home` (Filmhouse's public home page, one request a run) reads the banner films whose next show is today. Shown only on a Filmhouse cinema with no showing at all, only that day: "Filmhouse's home page features … today." on its Cinemas row, area card and page ("All times are on Filmhouse's site."). Never times, never "is showing".
+10. **Cinema page with no films** (`57a1c9d`): `filmsNote` returns nothing when a cinema has no films, never "0 films today · all started".
 
-### Live state (17 Nov, 10:14 UTC run)
+### Live state (17 Nov, after the 16:17 Lagos run)
 
-- Lagos: 520 showings, 14 cinemas with times. Abuja: 181 showings, 4 cinemas. No Sample banner.
-- **Filmhouse has no times:** CINEsync refuses our bot (403), and Lagocine's own Filmhouse pages went almost empty (Lekki IMAX: 4 showings, all on 20 Nov). Its cinemas say "Times not available yet". The fix is permission: `docs/OUTREACH.md` §4 (Filmhouse, CINEsync), for Chime to send.
+- Lagos: 446 showings across 21 cinemas, Filmhouse included (89 showings: Lagocine lists Filmhouse's times again). Abuja: 129 showings, 4 cinemas. No Sample banner.
+- Not readable: Filmworld's and Silverbird Galleria's Veezi pages are empty; The Jays has no times online.
+- The featured-films line appears only if Filmhouse's times drop off Lagocine again.
 
 ### For Chime
 
-- Confirm D-121 (Abuja calls), D-123 (Genesis's ~30 pages a run, Grand's undated tabs), D-127 (Ozone and Sky on Lagocine).
-- Send the Filmhouse and CINEsync emails (OUTREACH §4).
+- Send the FilmOne email from Gmail Drafts (or say drop it).
+- Confirm D-121 (Abuja's areas), D-123 (Genesis's ~30 pages a run, Grand's undated tabs), D-127 (Ozone and Sky on Lagocine).
 - Check on the phone: posters on MTN, Abuja's tabs, a trailer.
+
+### Waiting on replies
+
+- Filmhouse, CINEsync, Kene Okwuosa (LinkedIn), FilmOne once sent. **Tue 24 Nov:** if nobody has replied, draft the follow-ups in OUTREACH §4 and show Chime the exact text before anything goes.
 
 ### Watch out
 
 - The GitHub secret `TMDB_READ_TOKEN` is set (17 Nov, from `.env.local`): each refresh looks up new films on TMDB; first run with it, 13:47 UTC, rewrote credits.json.
-
-- `npm run build` now builds on live data, so sample-data e2e tests fail on it. Before the gate: `node scripts/refresh.ts --fixtures --now "$(TZ=Africa/Lagos date +%F)T07:00:00Z" && npx --no-install next build`.
+- `npm run build` now builds on live data, so sample-data e2e tests fail on it. Before the gate: `node scripts/refresh.ts --fixtures --now "$(TZ=Africa/Lagos date +%F)T07:00:00Z" && npx --no-install next build`. Review agents that rebuild `out/` on live data break the sample tests the same way: rebuild on sample before committing.
 - The proof gate runs the full e2e after each reply; don't start a second Playwright run beside it (port 4173).
 - The refresh job is started by cron-job.org at 06:17, 12:17 and 16:17 Lagos (D-128); GitHub's own schedule never fired and was removed. The token `sinima-refresh-timer` (Actions read and write on this repo only) expires on 17 Nov 2027: renew it and paste the new one into the cron-job.org job's Authorization header before then.
+- Never send or promise anything in Chime's name that Chime hasn't read: quote every new "I'll…" line first.
 - Review leftovers worth doing: Sky's day check needs the live page looked at; the 30 s wait after a click in browser.ts; tmdb.ts and the pipeline find a film's spellings two ways.
 
 ## Earlier: session of 16 Nov 2026 (afternoon), round 2, lighter hovers and the motion audit
