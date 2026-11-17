@@ -21,6 +21,7 @@ import { toggleSaved, useSaved } from "@/lib/saved";
 import { useNow } from "@/lib/time/useNow";
 import { areaHeading, areaShareText, cardBody, cardLine, locality, nextAreaLine, quietTitle, quietWhy } from "@/lib/wording/areaPage";
 import { NO_TIMES_NOTE } from "@/lib/wording/cinemas";
+import { featuredFor } from "@/lib/wording/featured";
 import { FOOTER_NOTE } from "@/lib/wording/films";
 import { AreaHero } from "./AreaHero";
 import { CinemaCard, NextAreaCard } from "./AreaCards";
@@ -88,6 +89,7 @@ export function AreaScreen({ data, areas, slug, city, bg }: { data: ListData; ar
         now={clock}
         line={entry.listed ? cardLine({ films, formats: formatsOf(entry.rows), when, place, tomorrow: tomorrow?.from ?? null, next: nextDay }) : (place ?? "")}
         body={cardBody({ listed: entry.listed, when, tomorrow, date, next: nextDay })}
+        featured={featuredFor(data, entry.cinema, clock)}
         saved={saved}
         onLetGo={() => {
           if (!byKeys()) flip(cinema.id); // a key press: the cards move at once (D-112 F5)

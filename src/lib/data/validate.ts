@@ -138,6 +138,18 @@ export function validateShowtimes(input: unknown, options: ValidateOptions = {})
     }
   });
 
+  // Films a chain's own page features, without times (D-131): optional, and never a showing.
+  const featured = file.featured === undefined ? undefined : Array.isArray(file.featured) ? file.featured : (errors.push("featured must be a list"), []);
+  (featured ?? []).forEach((entry, i) => {
+    const at = `featured[${i}]`;
+    if (!isRow(entry)) return errors.push(`${at} must be an object, got ${show(entry)}`);
+    needText(entry.sourceId, `${at}.sourceId`);
+    if (!(typeof entry.day === "string" && isUtc(`${entry.day}T00:00:00Z`))) errors.push(`${at}.day must be a Lagos date like 2026-11-17, got ${show(entry.day)}`);
+    needUtc(entry.fetchedAt, `${at}.fetchedAt`);
+    if (!(Array.isArray(entry.cinemaIds) && entry.cinemaIds.every(isText))) errors.push(`${at}.cinemaIds must be a list of cinema ids, got ${show(entry.cinemaIds)}`);
+    if (!(Array.isArray(entry.films) && entry.films.every((f) => isRow(f) && isText(f.id) && isText(f.title)))) errors.push(`${at}.films must be a list of { id, title }, got ${show(entry.films)}`);
+  });
+
   if (errors.length > 0) return { ok: false, errors };
 
   // From here the file is sound; single rows are dropped or repaired, and the log says so.
@@ -161,6 +173,16 @@ export function validateShowtimes(input: unknown, options: ValidateOptions = {})
       if (credits.during !== "yes" && credits.after !== "yes") credits.confidence = "unknown";
       log.push(`Film ${String(film.id)}: credits "no" has no source, so it is now "unknown"`);
     }
+  }
+
+  if (featured) {
+    file.featured = (featured as Row[]).flatMap((entry) => {
+      if (!sourceById.has(entry.sourceId)) return (log.push(`Dropped the featured films from ${show(entry.sourceId)}: its source is not in the file`), []);
+      const ids = entry.cinemaIds as string[];
+      for (const id of ids.filter((id) => !cinemaById.has(id))) log.push(`Featured films from ${String(entry.sourceId)}: dropped the cinema ${show(id)}, which is not in the file`);
+      const known = ids.filter((id) => cinemaById.has(id));
+      return known.length > 0 ? [{ ...entry, cinemaIds: known }] : [];
+    });
   }
 
   let kept = showings.filter((showing) => {

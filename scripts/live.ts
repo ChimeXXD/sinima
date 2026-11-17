@@ -15,6 +15,7 @@ import { readBluePictures } from "./sources/bluepictures.ts";
 import type { RenderText } from "./sources/browser.ts";
 import { genesisReader, MAX_FILM_PAGES } from "./sources/genesis.ts";
 import { readEbonyLife } from "./sources/ebonylife.ts";
+import { readFilmhouseHome } from "./sources/filmhouse.ts";
 import { readGrand } from "./sources/grand.ts";
 import { parseLagocineDay } from "./sources/lagocine.ts";
 import { readMagnificent } from "./sources/magnificent.ts";
@@ -62,6 +63,8 @@ export const READERS: Record<string, Reader> = {
   ebonylife: readEbonyLife,
   thc: readThc,
   magnificent: readMagnificent,
+  // Filmhouse's home page: the films it features today, no times, for Filmhouse's 7 (D-131).
+  "filmhouse-home": readFilmhouseHome,
 };
 
 /** A run with no browser (tests, or no reader that needs one) refuses a page built by script. */
@@ -81,17 +84,20 @@ function previousLive(root: string): ShowtimesFile | null {
 
 /**
  * A source's showings from the previous run, as a batch again: only the cinemas it still feeds,
- * only from today on in Lagos, dated when they were really read, the source marked failing. Null
- * when nothing is left to keep.
+ * only from today on in Lagos, dated when they were really read, the source marked failing. Its
+ * featured films too (D-131), for the cinemas it still features them for, only while their day
+ * lasts. Null when nothing is left to keep.
  */
-function keptBatch(previous: ShowtimesFile | null, sourceId: string, given: Set<string>, now: string): Batch | null {
+function keptBatch(previous: ShowtimesFile | null, sourceId: string, given: Set<string>, featuredFor: Set<string>, now: string): Batch | null {
   if (!previous) return null;
   const today = toLagos(now);
   const dayStart = lagosLocalToUtc({ year: today.year, month: today.month, day: today.day, hour: 0, minute: 0 });
   const rows = previous.showings.filter((row) => row.sourceId === sourceId && given.has(row.cinemaId) && row.startsAt >= dayStart);
-  if (rows.length === 0) return null;
+  const list = previous.featured?.find((entry) => entry.sourceId === sourceId && entry.day >= lagosDayKey(now) && entry.cinemaIds.some((id) => featuredFor.has(id)));
+  const featured = list ? { cinemaIds: list.cinemaIds.filter((id) => featuredFor.has(id)), day: list.day, titles: list.films.map((film) => film.title) } : undefined;
+  if (rows.length === 0 && !featured) return null;
   const entry = previous.sources.find((source) => source.id === sourceId);
-  const fetchedAt = entry?.fetchedAt ?? (rows.map((row) => row.fetchedAt).sort().at(-1) as string);
+  const fetchedAt = entry?.fetchedAt ?? list?.fetchedAt ?? (rows.map((row) => row.fetchedAt).sort().at(-1) as string);
   const films = new Map(previous.films.map((film) => [film.id, film]));
   return {
     sourceId, fetchedAt, builtAt: rows.find((row) => row.via)?.via?.fetchedAt ?? null, through: COMPILERS.has(sourceId),
@@ -100,6 +106,7 @@ function keptBatch(previous: ShowtimesFile | null, sourceId: string, given: Set<
       cinemaId: row.cinemaId, filmTitle: films.get(row.filmId)?.title ?? row.filmId, rating: films.get(row.filmId)?.rating ?? null,
       startsAt: row.startsAt, format: row.format, bookingUrl: row.bookingUrl,
     })),
+    ...(featured ? { featured } : {}),
   };
 }
 
@@ -120,8 +127,10 @@ export async function refreshLive(input: {
   let previous: ShowtimesFile | null | undefined;
   for (const source of readSources(root)) {
     const reader = readers[source.id];
-    // A source that feeds no cinema is not read: Ozone refused us, so its reader waits (D-127).
-    if (source.status !== "cleared" || !reader || source.cinemaIds.length === 0) continue;
+    // A source that feeds no cinema is not read: Ozone refused us, so its reader waits (D-127). One
+    // that features films for some cinemas, without times, is read for those (D-131).
+    const featuredFor = new Set(source.featuredFor ?? []);
+    if (source.status !== "cleared" || !reader || (source.cinemaIds.length === 0 && featuredFor.size === 0)) continue;
     // A compiled listing also lists cinemas we read elsewhere; it only feeds the ones it is given.
     const given = new Set(source.cinemaIds);
     let pages: ParsedPage[];
@@ -133,9 +142,9 @@ export async function refreshLive(input: {
       const message = error instanceof Error ? error.message : String(error);
       failures.push(message);
       previous ??= previousLive(root);
-      const kept = keptBatch(previous, source.id, given, now);
+      const kept = keptBatch(previous, source.id, given, featuredFor, now);
       if (kept) batches.push(kept);
-      log.push(`${source.id}: could not be read (${message}); ${kept ? `kept its last good showings from ${kept.fetchedAt}` : "no earlier showings to keep"}`);
+      log.push(`${source.id}: could not be read (${message}); ${kept ? `kept its last good ${kept.showings.length > 0 ? "showings" : "featured films"} from ${kept.fetchedAt}` : "no earlier showings to keep"}`);
       continue;
     }
     read += 1;
@@ -143,7 +152,9 @@ export async function refreshLive(input: {
     const rows = pages.flatMap((page) => page.showings);
     const kept = rows.filter((row) => given.has(row.cinemaId));
     if (kept.length < rows.length) log.push(`${source.id}: left out ${rows.length - kept.length} showings at cinemas it does not feed`);
-    batches.push({ sourceId: source.id, fetchedAt: now, builtAt: pages.map((page) => page.builtAt).find((stamp) => stamp !== null) ?? null, through: COMPILERS.has(source.id), showings: kept });
+    const list = pages.find((page) => page.featured)?.featured;
+    const featured = list && featuredFor.size > 0 ? { featured: { cinemaIds: [...featuredFor], day: list.day, titles: list.films.map((film) => film.title) } } : {};
+    batches.push({ sourceId: source.id, fetchedAt: now, builtAt: pages.map((page) => page.builtAt).find((stamp) => stamp !== null) ?? null, through: COMPILERS.has(source.id), showings: kept, ...featured });
   }
   // Every source failing is a problem with the run (or the network), not with one site.
   if (read === 0 && failures.length > 0) throw new Error(`No source could be read: ${failures.join("; ")}.`);

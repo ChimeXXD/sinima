@@ -10,9 +10,10 @@ import { fileURLToPath } from "node:url";
 import { gzipSync } from "node:zlib";
 import type { ShowtimesFile } from "../src/lib/data/types.ts";
 import { lagosDayKey, toLagos } from "../src/lib/time/lagos.ts";
-import { assemble, readJson, SAMPLE_PATHS } from "./assemble.ts";
+import { assemble, readJson, readSources, SAMPLE_PATHS } from "./assemble.ts";
 import { LIVE_DIR, liveBuildFiles, refreshLive } from "./live.ts";
 import { toSampleDays, type Batch } from "./pipeline.ts";
+import { parseFilmhouseHome } from "./sources/filmhouse.ts";
 import { parseLagocineCinema, parseLagocineDay } from "./sources/lagocine.ts";
 import { parseVeeziSessions } from "./sources/veezi.ts";
 import { politeBrowser } from "./sources/browser.ts";
@@ -27,13 +28,19 @@ import type { ParsedPage } from "./sources/raw.ts";
  */
 export const DATA_FILE_LIMIT_KB = 20;
 
-type FixtureEntry = { file: string; sourceId: string; page: string; cinemaId?: string; savedAt: string; sample: boolean };
+type FixtureEntry = {
+  file: string; sourceId: string; page: string; cinemaId?: string; savedAt: string; sample: boolean;
+  /** Cinemas whose rows on this page the sample leaves out, with the reason in the entry's `why` (D-131). */
+  leaveOut?: string[];
+};
 
 /** Our bot's name and contact page, on every request (D-77). */
 const USER_AGENT = "SinimaBot/0.1 (+https://github.com/ChimeXXD/sinima)";
 
 function parseFixture(entry: FixtureEntry, html: string): ParsedPage {
   if (entry.page === "lagocine-day") return parseLagocineDay(html);
+  // The films featured on the day the page was saved (D-131).
+  if (entry.page === "filmhouse-home") return parseFilmhouseHome(html, { now: entry.savedAt });
   if (entry.page === "lagocine-cinema" && entry.cinemaId) return parseLagocineCinema(html, entry.cinemaId);
   // Veezi's dates carry no year: the page was read on the Lagos day it was saved (Abuja's clock too).
   if (entry.page === "veezi-sessions" && entry.cinemaId) {
@@ -47,20 +54,29 @@ function parseFixture(entry: FixtureEntry, html: string): ParsedPage {
 export function refreshFromFixtures(options: { now: string; root: string }): { files: Map<string, ShowtimesFile>; log: string[] } {
   const { now, root } = options;
   const entries = readJson<{ fixtures: FixtureEntry[] }>(join(root, "tests/fixtures/index.json")).fixtures.filter((entry) => entry.sample);
+  const registry = readSources(root);
 
   // One batch per source: its pages were saved in one sitting, and a cinema's tomorrow may be on
   // a different page from its today.
   const batches: Batch[] = [];
   for (const sourceId of new Set(entries.map((entry) => entry.sourceId))) {
     const pages = entries.filter((entry) => entry.sourceId === sourceId);
-    const parsed = pages.map((entry) => parseFixture(entry, readFileSync(join(root, "tests/fixtures", entry.file), "utf8")));
+    const parsed = pages.map((entry) => {
+      const page = parseFixture(entry, readFileSync(join(root, "tests/fixtures", entry.file), "utf8"));
+      const leaveOut = new Set(entry.leaveOut ?? []);
+      return { ...page, showings: page.showings.filter((row) => !leaveOut.has(row.cinemaId)) };
+    });
     const savedAt = pages.map((entry) => entry.savedAt).sort().at(-1) as string;
+    // Featured films (D-131) move from the day the page was saved onto today, as showings do (D-20).
+    const list = parsed.find((page) => page.featured)?.featured;
+    const featuredFor = registry.find((source) => source.id === sourceId)?.featuredFor ?? [];
     batches.push({
       sourceId,
       fetchedAt: savedAt,
       builtAt: parsed.map((page) => page.builtAt).find((stamp) => stamp !== null) ?? null,
       through: sourceId === "lagocine",
       showings: toSampleDays(parsed.flatMap((page) => page.showings), lagosDayKey(savedAt), now),
+      ...(list && featuredFor.length > 0 ? { featured: { cinemaIds: featuredFor, day: lagosDayKey(now), titles: list.films.map((film) => film.title) } } : {}),
     });
   }
   return assemble({ now, root, batches, method: "fixture", paths: SAMPLE_PATHS });

@@ -2,6 +2,59 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 17 Nov 2026 — Filmhouse: what's showing, without times (D-131)
+
+Chime approved the stopgap in the honest form proposed after the first look (the entry below): only the banner films Filmhouse's home page has on today, chain-wide, never "and N more".
+
+- **Changed:**
+  - New `scripts/sources/filmhouse.ts`. It reads the banner data in the home page's `self.__next_f` scripts, keeps only films whose `nearest_show_times_date` is today in Lagos, and gives each one's runtime and rating. It throws on a missing banner, a banner that is not for "All" locations, no films, a missing title or a date that is not yyyy-mm-dd. The page's `is_coming_soon` is not used. One request a run.
+  - `reduce-fixture.ts` gets an `extract` mode and a `filmhouse-home` rule. The fixture `tests/fixtures/filmhouse/2026-11-17-home.html` is cut from the one saved copy (15:59 UTC). It keeps only the banner fields (3.3 KB), with no images, trailers or markup.
+  - Data:
+    - Schema `featured` (types, `validate.ts`, new `src/lib/data/featured.ts`).
+    - `pipeline.ts`: titles are matched to the showings' films without changing them, and `only` cuts the list.
+    - `cities.ts` cuts it too.
+    - `live.ts`: a new reader `filmhouse-home`. A source with `featuredFor` is read even with no `cinemaIds`. A failed read keeps the last good list while its day lasts.
+    - `refresh.ts`: the fixture becomes sample data, moved onto today. A new `leaveOut` drops Palms Lekki's 2 rows from the 11 Nov Lagocine sample.
+    - `assemble.ts`: the `featuredFor` type.
+  - `data/sources.json`: new `filmhouse-home` entry (cleared, `cinemaIds: []`, `featuredFor` = Filmhouse's 7, robots and why it's allowed under D-77). `filmhouse` stays pending.
+  - `tests/fixtures/index.json`: the fixture entry and `leaveOut`.
+  - UI: `toListData` sends the list only for cinemas with no showing in the city file (real times win), and `featuredAt` gives it only on its own Lagos day. `lib/wording/featured.ts` writes "Filmhouse's home page features … today." and "All times are on Filmhouse's site." It appears:
+    - on the cinema page under "No times listed today.", with the Book button kept;
+    - on the Cinemas row under "Times not available yet" (Today only);
+    - on the area card.
+  - New CSS classes use existing tokens only (`--text-secondary`, `--type-caption`/`--type-meta`).
+  - DATA.md (§Featured films without times) and D-131.
+- **Existing tests changed because behaviour changed:**
+  - `live.test.ts` READERS key list gains `filmhouse-home`.
+  - `refresh.test.ts`: three sample counts 294 → 292, and the per-cinema loop now expects Palms Lekki to have none (`leaveOut`).
+  - `film-screen.spec.ts`: the "Started earlier today" line no longer names Palms Lekki at 2:00 PM. Its "not listed as a venue" check moved from Palms Lekki (now vacuous) to Genesis Purple Mall, which is in Lekki and in the earlier line. The verifier flagged this; fixed.
+  - No test was weakened otherwise.
+- **Red runs:**
+  - `tests/unit/scripts/sources/filmhouse.test.ts`: `Error: Cannot find module '../../../../scripts/sources/filmhouse'`.
+  - `tests/unit/lib/data/featured.test.ts` and `tests/unit/lib/wording/featured.test.ts`: `Cannot find package '@/lib/data/featured'` / `'@/lib/wording/featured'`.
+  - `tests/unit/scripts/featured.test.ts` › "is cleared, feeds no cinema's times …": `AssertionError: expected undefined to match object { status: 'cleared', …(3) }`.
+  - `tests/e2e/featured.spec.ts` › "a Filmhouse cinema with no times …": `expect(locator).toHaveText(...)` on `films.featured`: `element(s) not found` (sample build before the UI).
+- **Checked:**
+  - Lint 0 errors; typecheck clean.
+  - Vitest: 65 files, 826 tests pass.
+  - Sample build. Full e2e `CI=true … --max-failures=1`: 273 passed, 3 flaky, 0 failed. The flaky three (audit F5, audit F3, states D-106 j) also fail on a first attempt on a clean build of HEAD `c19cca2` (repeat-each 3, no retries: F5 2/3, F3 1/3, states 3/3), so they predate this unit.
+  - Budget passes (`lagos/cinemas.html` 223.9 of 225 KB).
+  - Screenshots at 390×844 and 360×800 on the sample's first day at noon:
+    - Palms Lekki's cinema page: the line spans 16–374 at 390 and 16–344 at 360, 3 lines, 53 px.
+    - Its Cinemas row: 4 lines at 390 (62 px) and 5 lines at 360 (78 px). The text column is narrow beside the heart and chevron, but nothing overflows.
+    - The Lekki area card: 2 lines at 390 and 3 at 360.
+    - No page scrolls sideways at either width.
+- **Live run** (`refresh --live`, 16:40 UTC, the one run at the end):
+  - Filmhouse's home page read OK. It features Ghost Soldier, How to Rob a Bank, Five Figurines and Dear Ajayi for 17 Nov, for all 7 cinemas, matched to the showings' titles.
+  - Lagocine listed Filmhouse times again this run (89 rows: Lekki IMAX 14, Surulere 18, Circle Mall 12, Ikota 15, Palms 6, Oniru 9, Landmark 15), so on the live site the line shows nowhere until Lagocine drops them again. Real times win.
+  - 575 showings; lagos.json 15.9 KB, abuja.json 4.5 KB.
+- **Motion skills:** none ran. The unit adds one static line of text that comes with the page and has no state change, so no motion has a purpose here (rules: no animation without one).
+- **Not verified:**
+  - Chime's phone.
+  - The line on the live site: Lagocine has Filmhouse times right now.
+  - Whether Filmhouse's banner lists every film it shows. It does not: it is a promotion, so the wording never says so.
+- **Next:** the coordinator's code review. Keep asking Filmhouse/CINEsync for the real times.
+
 ## 17 Nov 2026 — sources credited with links on About; the Filmhouse stopgap not built (D-132)
 
 - **Changed:** each source's name in the About table links to its own site (new tab, hover gated); Lagocine's 11 Nov yes recorded in `data/sources.json`. `about-screen.spec.ts` changed with it: Lagocine's row is no longer "Permission asked" (red on the old build, then green), and the test checks the link.

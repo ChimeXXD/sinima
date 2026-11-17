@@ -157,9 +157,10 @@ describe("refresh --fixtures", () => {
     for (const cinemaId of new Set(dayFixture.map((s) => s.cinemaId))) {
       // Lagocine lists some Genesis showings two or three times over; each is one showing here.
       const saved = [...new Set(dayFixture.filter((s) => s.cinemaId === cinemaId).map((s) => `${s.filmTitle} ${clock(s.startsAt)}`))];
-      expect(times(all, cinemaId, "2026-11-20"), cinemaId).toEqual(saved.map((s) => s.slice(-5)).sort());
+      // The sample leaves Filmhouse Palms Lekki's 2 out (tests/fixtures/index.json leaveOut, D-131).
+      expect(times(all, cinemaId, "2026-11-20"), cinemaId).toEqual(cinemaId === "filmhouse-palms-lekki" ? [] : saved.map((s) => s.slice(-5)).sort());
     }
-    expect(all.showings.filter((s) => s.sourceId === "lagocine" && lagosDayKey(s.startsAt) === "2026-11-20")).toHaveLength(294);
+    expect(all.showings.filter((s) => s.sourceId === "lagocine" && lagosDayKey(s.startsAt) === "2026-11-20")).toHaveLength(294 - 2);
     // Lagocine writes Ramayana two ways; data/film-aliases.json keeps it one film at /film/ramayana (D-119).
     // Abuja's Veezi pages write "AGBARA NLA", Lagocine "Agbara Nla: The Return": one film (D-119, D-120).
     // 59 repeats on the day page, the same 59 again tomorrow, and Silverbird's 28 on both pages.
@@ -174,7 +175,8 @@ describe("refresh --fixtures", () => {
     expect(times(all, "silverbird-ikeja", "2026-11-21")).toHaveLength(28);
     expect(times(all, "ebonylife-vi", "2026-11-21")).toEqual(times(all, "ebonylife-vi", "2026-11-20"));
     // Lagos's, then Abuja's two Silverbird pages: 30 + 30 at SEC, 27 + 24 at Jabi Lake Mall (D-120).
-    expect(all.showings).toHaveLength(294 + 28 + (294 - 28) + 30 + 30 + 27 + 24);
+    // Lagocine's 294 less Palms Lekki's 2, left out of the sample (D-131).
+    expect(all.showings).toHaveLength(292 + 28 + (292 - 28) + 30 + 30 + 27 + 24);
   });
 
   it("gives each showing its id, its film and its source through the cinema's own site", () => {
@@ -227,7 +229,7 @@ describe("refresh --fixtures", () => {
     const today = evening.showings.filter((s) => lagosDayKey(s.startsAt) === "2026-11-20").map((s) => clock(s.startsAt)).sort();
     expect(today[0]! >= "17:30").toBe(true); // 19:00 less 90 min
     expect(evening.showings.length).toBeLessThan(588 + 111);
-    expect(evening.showings.filter((s) => lagosDayKey(s.startsAt) === "2026-11-21")).toHaveLength(294 + 30 + 24); // Lagos, then Abuja (D-120)
+    expect(evening.showings.filter((s) => lagosDayKey(s.startsAt) === "2026-11-21")).toHaveLength(292 + 30 + 24); // Lagos (less Palms Lekki's 2, D-131), then Abuja (D-120)
   });
 
   // Abuja's sample times are Silverbird's two Veezi pages saved on 17 Nov (D-120): 30 and 27 on the

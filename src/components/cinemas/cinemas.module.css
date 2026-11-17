@@ -137,6 +137,11 @@
 .next[data-quiet] {
   color: var(--text-secondary);
 }
+/* A chain's featured films under "Times not available yet" (D-131): quiet, and allowed to wrap. */
+.featured {
+  color: var(--text-secondary);
+  font: var(--type-caption);
+}
 .tags {
   display: flex;
   flex-wrap: wrap;

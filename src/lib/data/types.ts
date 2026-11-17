@@ -85,6 +85,21 @@ export type Showing = {
   fetchedAt: string;
 };
 
+/**
+ * Films a chain's own public page features for one day, with no times (D-131): Filmhouse's home
+ * page, whose times we can't read. Never a showing; shown only on its cinemas with no times.
+ */
+export type Featured = {
+  sourceId: string;
+  /** The cinemas the page speaks for: the whole chain's, cut to the file's. */
+  cinemaIds: string[];
+  /** The Lagos date the page features them for ("2026-11-17"). */
+  day: string;
+  fetchedAt: string;
+  /** In the page's order, each matched to the showings' films (D-119). */
+  films: { id: string; title: string }[];
+};
+
 export type ShowtimesFile = {
   schemaVersion: 1;
   generatedAt: string;
@@ -95,4 +110,6 @@ export type ShowtimesFile = {
   cinemas: Cinema[];
   films: Film[];
   showings: Showing[];
+  /** Left out when no chain's page features any film (D-131). */
+  featured?: Featured[];
 };

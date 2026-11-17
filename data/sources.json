@@ -87,6 +87,47 @@
       "notes": "15 Nov 2026: the showtimes page carries no times; the browser loads them from filmhouseng.api.cinesync.io, which answers plain requests with 403 (its robots.txt too). A headless browser under our bot name got \"Access Denied … Error 403 · Cinema Solution By CINEsync\". We do not disguise the bot or work around the block (D-77), so Filmhouse is read through Lagocine (D-76) until Filmhouse or CINEsync says yes. Earlier: Booking URL pattern: /movies/<film>/showtimes/<date>/<site>/select-tickets?showtime=<id>. robots.txt could not be read on 6 Nov. 11 Nov: robots.txt read at www.filmhouseng.com. Public pages are allowed, but /api/ and every /select-tickets page are disallowed, so we may link to a booking page but never fetch one. The home page HTML carries no showtimes (drawn by script); if the times come from /api/, they are off limits without permission. Contact addresses on the home page: onlinesupport@filmhouseng.com, sales@filmhouseng.com. Audit: the film page and the showtimes page (/movies/whalefall-2026/showtimes/2026-11-11?location=all) are skeletons with no times and no booking links in the HTML; the times load in the browser after the page opens. That data path is not readable under robots.txt (/api/ is disallowed), so Filmhouse needs a yes or a feed. No fixture possible."
     },
     {
+      "id": "filmhouse-home",
+      "name": "Filmhouse's home page",
+      "owner": "Filmhouse Cinemas (FilmOne)",
+      "homepage": "https://www.filmhouseng.com/",
+      "listingUrlPattern": "https://www.filmhouseng.com/ (the home page only)",
+      "method": "public-page",
+      "status": "cleared",
+      "robots": {
+        "checkedAt": "2026-11-17",
+        "allowsListing": true,
+        "quote": "User-Agent: * / Allow: / / Disallow: /api/ / Disallow: /*/select-tickets / Disallow: /*/seat-plan / Disallow: /*/select-guest / Disallow: /*/select-movie (plus account, order and reservation paths)"
+      },
+      "terms": {
+        "url": "https://www.filmhouseng.com/terms-conditions",
+        "checkedAt": "2026-11-11",
+        "allowsAutomated": null,
+        "quote": "Read in full (about 17,500 characters). No clause on scraping, crawling, automated access, reproduction or linking was found."
+      },
+      "permission": {
+        "askedAt": "2026-11-11",
+        "repliedAt": null,
+        "summary": "The same request as the filmhouse entry (email to onlinesupport@filmhouseng.com, 11 Nov 2026); no reply yet. Not needed for a public page under D-77."
+      },
+      "rateLimit": {
+        "minSecondsBetweenRequests": 5,
+        "maxRunsPerDay": 3
+      },
+      "daysAhead": null,
+      "cinemaIds": [],
+      "featuredFor": [
+        "filmhouse-lekki-imax",
+        "filmhouse-surulere",
+        "filmhouse-circle-mall",
+        "filmhouse-ikota",
+        "filmhouse-palms-lekki",
+        "filmhouse-oniru",
+        "filmhouse-landmark"
+      ],
+      "notes": "D-131 (17 Nov 2026): a stopgap while Filmhouse's times can't be read. One request a run to the public home page, which answers our named bot with 200 (robots.txt allows /; it disallows /api/ and every /select-tickets page, which we never fetch). Its \"Now Showing\" list is empty in the HTML: the browser fills it from filmhouseng.api.cinesync.io, the CINEsync host that refuses our bot (403), so we never call it (D-77). What the page itself carries is its banner's data: 9 films on 17 Nov, each with runtime, rating and the nearest date it has showtimes (its is_coming_soon flag was false for all 9, Avengers: Doomsday included, so it is not used). A film whose nearest date is today in Lagos is featured today: 4 on 17 Nov (Ghost Soldier, How to Rob a Bank, Five Figurines, Dear Ajayi). The banner is a promotion, not the whole programme, and it is for every location (\"All\"), so the site says \"Filmhouse's home page features ... today\", never \"Filmhouse is showing\", never \"and N more\", never per cinema. Feeds no showings (`cinemaIds` is empty), only the featured films for the cinemas in `featuredFor`, shown only on those with no times (Lagocine's times win). The filmhouse entry stays pending and Lagocine stays the source of Filmhouse's times."
+    },
+    {
       "id": "genesis",
       "name": "Genesis's site",
       "owner": "Genesis Deluxe Cinemas",

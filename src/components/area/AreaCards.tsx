@@ -24,6 +24,8 @@ type CardProps = {
   line: string;
   /** In place of the times, when there are none to show. */
   body: string;
+  /** Under it, for a cinema with no times: its chain's featured films (D-131). */
+  featured?: string | null;
   saved: boolean;
   /** The filled heart lets the cinema go (kept cards only). */
   onLetGo?: () => void;
@@ -31,7 +33,7 @@ type CardProps = {
 };
 
 /** One cinema: its logo, name and line, its next three times with their films, and a link to all of them. */
-export function CinemaCard({ cinema, entry, films, now, line, body, saved, onLetGo, onOpen }: CardProps) {
+export function CinemaCard({ cinema, entry, films, now, line, body, featured = null, saved, onLetGo, onOpen }: CardProps) {
   const rows = entry.rows.slice(0, SHOWN);
   const first = soonest(entry.rows, now);
   return (
@@ -68,9 +70,16 @@ export function CinemaCard({ cinema, entry, films, now, line, body, saved, onLet
           ))}
         </ul>
       ) : (
-        <p className={s.none} data-testid="cinema.none">
-          {body}
-        </p>
+        <>
+          <p className={s.none} data-testid="cinema.none">
+            {body}
+          </p>
+          {featured && (
+            <p className={s.featured} data-testid="cinema.featured">
+              {featured}
+            </p>
+          )}
+        </>
       )}
       <Link href={`/cinema/${cinema.id}`} className={s.more} data-testid="cinema.all">
         All times

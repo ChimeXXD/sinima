@@ -7,7 +7,11 @@
       "page": "lagocine-day",
       "pageUrl": "https://lagocine.com/day/2026-11-11/",
       "savedAt": "2026-11-11T00:36:34Z",
-      "sample": true
+      "sample": true,
+      "leaveOut": [
+        "filmhouse-palms-lekki"
+      ],
+      "why": "leaveOut (D-131): Lagocine listed every Filmhouse cinema on 11 Nov, but none on 17 Nov, when Filmhouse's 7 showed \"Times not available yet\". Leaving one out keeps that case in the sample, where Filmhouse's featured films show."
     },
     {
       "file": "lagocine/2026-11-11-cinema-silverbird-ikeja.html",
@@ -284,6 +288,15 @@
       "savedAt": "2026-11-17T01:45:18Z",
       "sample": false,
       "why": "Parser and reader tests only (D-125), rendered once through politeBrowser under our bot name. Not sample data: the sample's Lagocine day page (11 Nov) still lists this cinema, so both would list the same showings. Rendered after clicking the 18th."
+    },
+    {
+      "file": "filmhouse/2026-11-17-home.html",
+      "sourceId": "filmhouse-home",
+      "page": "filmhouse-home",
+      "pageUrl": "https://www.filmhouseng.com/",
+      "savedAt": "2026-11-17T15:59:08Z",
+      "sample": true,
+      "why": "Sample data (D-131): the films Filmhouse's home page featured for the day it was saved, moved onto today. No showings: the page has no times."
     }
   ]
 }

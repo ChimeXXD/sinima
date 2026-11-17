@@ -50,9 +50,11 @@ test("your area first, then the areas next to it, then the rest soonest first (F
   await expect(first).toHaveAccessibleName("6:00 PM, IMAX, starts in 30 minutes");
   await expect(page.getByTestId(`time.filmhouse-ikota.${await startOf(request, "filmhouse-ikota", "19:00")}`)).not.toHaveAttribute("data-state", "soonest");
 
-  // Cinemas whose times have all started are named under the list, not listed.
-  await expect(page.getByTestId("film.earlier")).toHaveText("Started earlier today: Viva Cinemas Ikeja at 11:40 AM, Filmhouse Palms Mall Lekki at 2:00 PM, Genesis Deluxe Purple Mall at 4:50 PM and Filmworld Cinemas Idimu at 5:00 PM.");
-  await expect(page.getByTestId("venue.filmhouse-palms-lekki")).toHaveCount(0);
+  // Cinemas whose times have all started are named under the list, not listed. (Filmhouse Palms
+  // Lekki's 2:00 PM is no longer in the sample: its rows are left out so it has no times, D-131.)
+  await expect(page.getByTestId("film.earlier")).toHaveText("Started earlier today: Viva Cinemas Ikeja at 11:40 AM, Genesis Deluxe Purple Mall at 4:50 PM and Filmworld Cinemas Idimu at 5:00 PM.");
+  // Genesis Purple Mall is in Lekki, so it would be listed there if a started cinema were.
+  await expect(page.getByTestId("venue.genesis-purple-lekki")).toHaveCount(0);
 });
 
 test("with no area kept, every area is in order of its soonest time, with no tags", async ({ page, request }) => {

@@ -1,3 +1,4 @@
+import type { ListFeatured } from "@/lib/data/featured";
 import type { CreditsInfo, ShowtimesFile, SourceMethod, Via } from "@/lib/data/types";
 import { EVENING_ENDS_HOUR, eveningDayKey, toLagos, utcMs, utcString } from "@/lib/time/lagos";
 import { isBeforeStart, showingState } from "@/lib/time/showingState";
@@ -21,6 +22,8 @@ export type ListData = {
   cinemas: ListCinema[];
   fresh: ListFresh[];
   rows: ListRow[];
+  /** Films a chain's page features today for its cinemas with no times at all (D-131); left out when none. */
+  featured?: ListFeatured[];
 };
 
 const UNKNOWN_CREDITS: CreditsInfo = { during: "unknown", after: "unknown", confidence: "unknown", sources: [], count: null };
@@ -60,7 +63,13 @@ export function toListData(file: ShowtimesFile, only: { filmId?: string; cinemaI
       fresh: freshAt.get(key) as number,
     };
   });
+  // Real times win: the list goes only to cinemas with no showing in the whole file, not just in this cut.
+  const timed = new Set(file.showings.map((showing) => showing.cinemaId));
+  const featured = (file.featured ?? [])
+    .map((entry): ListFeatured => ({ cinemas: entry.cinemaIds.filter((id) => !timed.has(id) && cinemaAt.has(id)).map((id) => cinemaAt.get(id) as number), day: entry.day, films: entry.films.map((film) => film.title) }))
+    .filter((entry) => entry.cinemas.length > 0 && entry.films.length > 0);
   return {
+    ...(featured.length > 0 ? { featured } : {}),
     sample: file.sample,
     at: file.generatedAt,
     films: films.map((film) => {

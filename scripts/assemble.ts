@@ -17,6 +17,8 @@ export type RegistrySource = {
   bookingSites?: Record<string, string>;
   /** The name this source's pages show for each cinema, by cinema id (Reach Cinema, D-125). */
   pageNames?: Record<string, string>;
+  /** The cinemas whose featured films this source gives, without times (D-131); it then feeds no showings. */
+  featuredFor?: string[];
 };
 
 export const readJson = <T>(path: string) => JSON.parse(readFileSync(path, "utf8")) as T;

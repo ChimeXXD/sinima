@@ -19,6 +19,7 @@ import { toggleSaved, useSaved } from "@/lib/saved";
 import { useNow } from "@/lib/time/useNow";
 import { SAVED_TOAST } from "@/lib/wording/cinemaPage";
 import { NO_TIMES_NOTE, cinemaLine, cinemasHeading } from "@/lib/wording/cinemas";
+import { featuredFor } from "@/lib/wording/featured";
 import { dayWords } from "@/lib/wording/day";
 import { formatNote } from "@/lib/wording/films";
 import { CinemaRow } from "./CinemaRow";
@@ -123,6 +124,7 @@ export function CinemasScreen({ data, areas, city, bg }: { data: ListData; areas
                     area={areas.find((area) => area.slug === cinema.area)?.name ?? cinema.area}
                     line={cinemaLine({ next, films: byFilm(entry.rows).length, listed: entry.listed, when })}
                     at={next}
+                    featured={day === 0 ? featuredFor(data, entry.cinema, clock) : null}
                     formats={formatsOf(entry.rows)}
                     saved={kept.includes(cinema.id)}
                     onSave={() => keep(cinema.id)}

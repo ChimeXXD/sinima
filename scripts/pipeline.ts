@@ -1,6 +1,7 @@
 // The pure steps between a parser's rows and the data files: film ids, sample dates (D-20),
 // building and validating schema v1, and the per-area split (D-18). No file or network access.
-import type { Cinema, Film, Showing, ShowtimesFile, Source, SourceHealth } from "../src/lib/data/types.ts";
+import { cutFeatured, withFeatured } from "../src/lib/data/featured.ts";
+import type { Cinema, Featured, Film, Showing, ShowtimesFile, Source, SourceHealth } from "../src/lib/data/types.ts";
 import { validateShowtimes } from "../src/lib/data/validate.ts";
 import { EVENING_ENDS_HOUR, lagosDaysFrom, lagosLocalToUtc, toLagos } from "../src/lib/time/lagos.ts";
 import type { RawShowing } from "./sources/raw.ts";
@@ -19,6 +20,8 @@ export type Batch = {
   health?: SourceHealth;
   /** When the source was last read without a problem, if not `fetchedAt`. */
   lastOkAt?: string | null;
+  /** Films the source's page features for `day` (Lagos), without times, for `cinemaIds` (D-131). */
+  featured?: { cinemaIds: string[]; day: string; titles: string[] };
 };
 
 // "(IMAX)", "[3D]", "(IMAX 2D)" at the end of a title: a format, not part of the film's name.
@@ -221,27 +224,51 @@ export function buildShowtimes(input: {
   }
 
   showings.sort((a, b) => a.startsAt.localeCompare(b.startsAt) || a.id.localeCompare(b.id));
+  const featured = featuredFilms(input.batches, titles, matched.films, films, input.aliases ?? {});
   const result = validateShowtimes({
     schemaVersion: 1, generatedAt: input.generatedAt, timeZone: "Africa/Lagos",
     sources: input.sources, cinemas: input.cinemas, films: [...films.values()].sort((a, b) => a.id.localeCompare(b.id)), showings,
+    ...(featured.length > 0 ? { featured } : {}),
   });
   if (!result.ok) throw new Error(`The data file was refused:\n${result.errors.join("\n")}`);
   return { file: only(result.file, result.file.cinemas, () => true), log: [...log, ...result.log] };
 }
 
-/** The file cut down to some cinemas and showings, with only the films and sources those showings use. */
+/**
+ * Each batch's featured films (D-131), matched like the showings' films (D-119) without changing
+ * them: titles are matched with the showings' titles, and a featured film that is one of the
+ * showings' takes that film's id and title. A film twice in one list is listed once.
+ */
+function featuredFilms(batches: Batch[], showingTitles: string[], showingFilms: Map<string, { id: string; title: string }>, films: Map<string, Film>, aliases: Record<string, string>): Featured[] {
+  const lists = batches.filter((batch) => batch.featured);
+  if (lists.length === 0) return [];
+  const both = matchFilms([...showingTitles, ...lists.flatMap((batch) => batch.featured!.titles)], aliases).films;
+  const toShowing = new Map(showingTitles.map((title) => [both.get(title)!.id, showingFilms.get(title)!.id]));
+  return lists.map((batch) => {
+    const picked = new Map<string, string>();
+    for (const title of batch.featured!.titles) {
+      const matched = both.get(title)!;
+      const id = toShowing.get(matched.id) ?? matched.id;
+      if (!picked.has(id)) picked.set(id, films.get(id)?.title ?? matched.title);
+    }
+    return { sourceId: batch.sourceId, cinemaIds: batch.featured!.cinemaIds, day: batch.featured!.day, fetchedAt: batch.fetchedAt, films: [...picked].map(([id, title]) => ({ id, title })) };
+  });
+}
+
+/** The file cut down to some cinemas and showings, with only the films and sources those showings (and featured films) use. */
 function only(file: ShowtimesFile, cinemas: Cinema[], keep: (showing: Showing) => boolean): ShowtimesFile {
   const cinemaIds = new Set(cinemas.map((cinema) => cinema.id));
   const showings = file.showings.filter((showing) => cinemaIds.has(showing.cinemaId) && keep(showing));
+  const featured = cutFeatured(file, cinemaIds);
   const filmIds = new Set(showings.map((showing) => showing.filmId));
-  const sourceIds = new Set(showings.map((showing) => showing.sourceId));
-  return {
+  const sourceIds = new Set([...showings, ...featured].map((row) => row.sourceId));
+  return withFeatured({
     ...file,
     sources: file.sources.filter((source) => sourceIds.has(source.id)),
     cinemas,
     films: file.films.filter((film) => filmIds.has(film.id)),
     showings,
-  };
+  }, featured);
 }
 
 /**

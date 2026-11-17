@@ -18,7 +18,7 @@ import s from "./cinemas.module.css";
  * whole list, slow on a cheap phone) runs just after that frame is drawn. `shown` holds the tapped
  * state until `saved` moves on from where it was.
  */
-export function CinemaRow({ href, name, chain, area, line, at, formats, saved, onSave, testId }: { href: string; name: string; chain: string; area: string; line: { lead: string; time: string | null; rest: string }; /** The instant `line.time` shows. */ at: string | null; formats: string[]; saved: boolean; /** Keep or let go (the heart has already popped). */ onSave: () => void; testId: string }) {
+export function CinemaRow({ href, name, chain, area, line, at, featured = null, formats, saved, onSave, testId }: { href: string; name: string; chain: string; area: string; line: { lead: string; time: string | null; rest: string }; /** The instant `line.time` shows. */ at: string | null; /** Its chain's featured films, for a cinema with no times (D-131). */ featured?: string | null; formats: string[]; saved: boolean; /** Keep or let go (the heart has already popped). */ onSave: () => void; testId: string }) {
   const [shown, setShown] = useState<{ to: boolean; from: boolean } | null>(null);
   // `saved` has moved on (the tap was kept, or Undo or another screen changed it): it speaks again.
   if (shown && shown.from !== saved) setShown(null);
@@ -58,6 +58,11 @@ export function CinemaRow({ href, name, chain, area, line, at, formats, saved, o
           )}
           {line.rest}
         </span>
+        {featured && (
+          <span className={s.featured} data-testid="cinema.featured">
+            {featured}
+          </span>
+        )}
         <span className={s.tags} data-testid="cinema.tags">
           <span className={s.area}>{area}</span>
           {formats.length > 0 && <FormatBadge formats={formats} />}

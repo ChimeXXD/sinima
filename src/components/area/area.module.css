@@ -133,6 +133,11 @@
   color: var(--text-secondary);
   font: var(--type-body-m);
 }
+/* A chain's featured films under "Times not available yet" (D-131). */
+.featured {
+  color: var(--text-secondary);
+  font: var(--type-meta);
+}
 /* "All times" and "Show all": Label/Strong in the accent; the link's touch area reaches 44. */
 .more {
   display: inline-flex;

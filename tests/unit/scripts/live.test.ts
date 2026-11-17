@@ -88,8 +88,8 @@ describe("refreshLive", () => {
 });
 
 describe("each cinema's own reader (D-76, D-122)", () => {
-  it("reads Silverbird's Veezi pages, Genesis, Grand, Blue Pictures and the script-built sites from their own sites, beside Lagocine", () => {
-    expect(Object.keys(READERS).sort()).toEqual(["bluepictures", "ebonylife", "genesis", "grand", "lagocine", "magnificent", "nova", "reachcinema", "silverbird", "thc", "viva"]);
+  it("reads Silverbird's Veezi pages, Genesis, Grand, Blue Pictures and the script-built sites from their own sites, beside Lagocine; and Filmhouse's home page for its featured films (D-131)", () => {
+    expect(Object.keys(READERS).sort()).toEqual(["bluepictures", "ebonylife", "filmhouse-home", "genesis", "grand", "lagocine", "magnificent", "nova", "reachcinema", "silverbird", "thc", "viva"]);
   });
 
   it("gives the Reach Cinema readers each cinema's name on its page, from data/sources.json pageNames (D-125)", async () => {

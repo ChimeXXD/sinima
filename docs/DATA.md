@@ -20,6 +20,8 @@ Written 6 Nov 2026. `data/showtimes.json` is what the pages build from. `data/ci
 | `price` | Only when the source lists it. `amountNgn` is an integer. | Drop the price |
 | Size | Within the budget set on Day 0 (D-21, supersedes D-12's 60 KB). Showings that ended more than 1 hour before `generatedAt` are removed. | CI fails |
 
+`featured` (optional) lists films a chain's page features without times; see §Featured films without times (D-131).
+
 Unknown keys are ignored, so a newer writer can add fields without breaking an older reader. Any change that breaks a reader bumps `schemaVersion`.
 
 How the validator reads the table (D-45):
@@ -272,6 +274,34 @@ A rendered page's days: a page with an address per day is opened at that address
 A page whose times can't be found throws ("Has the page layout changed?"), so the source keeps its last good showings (D-119) instead of emptying silently. A Veezi page that says "No shows currently scheduled" is read as no showings. A Genesis film page that shows no times, answers 404 or 410, or does not answer in time is skipped with a line in the log (that film keeps today's times from its location page); a refusal (401, 403, 429) stops the whole Genesis read (D-77, D-124); if no film page shows any times, the read fails. Which Genesis location a link is for comes from `bookingSites`. Dates without a year take the year nearest the day of the read, and a weekday the page gives must agree, or else the year after when the nearest date is behind the day read (a booking date more than six months ahead, D-124); a time before 04:00 is a late show of the evening it is listed under (SPEC §3). All times reach UTC through `lagosLocalToUtc` (`scripts/sources/dates.ts`). A cinema leaves Lagocine's `cinemaIds` the day its own reader has worked live; no cinema is fed by both (a test). Filmworld's Veezi page is read by the same code but not run yet (D-122; still empty at 02:52 on 17 Nov, D-125).
 
 Before a build, `npm run build` runs `refresh --build`: it copies `data/live/showtimes.json` to `data/showtimes.json` and splits it again into `public/data/` against the current `data/cinemas.json` (so an area added since the last live run still gets its file), or makes sample data when `data/live/` is missing. Tests and CI call `refresh --fixtures` themselves, so they always run on sample data.
+
+## Featured films without times (D-131)
+
+`featured` (optional, left out when empty): the films a chain's own public page features for one day, with no times. Today only Filmhouse's home page (`filmhouse-home`), because Filmhouse's times sit behind CINEsync, which refuses our bot (D-77).
+
+```json
+"featured": [
+  { "sourceId": "filmhouse-home", "cinemaIds": ["filmhouse-lekki-imax", "…"], "day": "2026-11-17", "fetchedAt": "2026-11-17T15:59:08Z",
+    "films": [{ "id": "ghost-soldier", "title": "Ghost Soldier" }, { "id": "dear-ajayi", "title": "Dear Ajayi" }] }
+]
+```
+
+| Field | Rule | If broken |
+| --- | --- | --- |
+| `featured` | A list, when present. Never showings: it adds no times and no rows. | Refuse the file |
+| `day` | The Lagos date the page features them for, `yyyy-mm-dd`. | Refuse the file |
+| `fetchedAt` | UTC with `Z`, as everywhere. | Refuse the file |
+| `films` | `{ id, title }` each, in the page's order; ids matched with the showings' films (D-119): a film a showing has takes that film's id and title, otherwise the page's own title. | Refuse the file |
+| `cinemaIds` | Cinemas in the file. | Drop the unknown ones, log it; drop the entry when none is left |
+| `sourceId` | A source in the file. | Drop the entry, log it |
+
+**Source entry.** `filmhouse-home` in `data/sources.json` is `cleared` (a public page, D-77), has `cinemaIds: []` (it feeds no showings, so the "no cinema fed twice" test still holds) and `featuredFor` (Filmhouse's 7). `refresh --live` reads a cleared source that has a reader and either `cinemaIds` or `featuredFor`. The `filmhouse` entry stays `pending`, and Lagocine stays the source of Filmhouse's times.
+
+**What is read.** One request a run to `https://www.filmhouseng.com/` (`scripts/sources/filmhouse.ts`). Its "Now Showing" list is empty in the HTML (the browser fills it from CINEsync, never called), so the parser reads the banner's data in the page's `self.__next_f` scripts: each film's title, runtime, rating and `nearest_show_times_date`. A film whose date is today in Lagos is featured; the page's `is_coming_soon` flag is not used (false for all 9 on 17 Nov, Avengers: Doomsday included). The banner must be for every location ("All"), or the read fails. No banner, no films in it, a film with no title or a date that is not `yyyy-mm-dd` fails the read ("Has the page layout changed?"); a failed read keeps the last good list while its day lasts (D-119).
+
+**What a page shows.** `toListData` sends the list only for cinemas with no showing in the city's file at all, so real times always win; `featuredAt` gives it only on its own Lagos day (before the page knows the time, the line gives the date, rule 3). Words through `lib/wording/featured.ts`: "Filmhouse's home page features Ghost Soldier, How to Rob a Bank, Five Figurines and Dear Ajayi today." on the Cinemas row (today only) and the area card, plus "All times are on Filmhouse's site." on the cinema's page, beside its Book button. Never "Filmhouse is showing", never "and N more", never per cinema: the banner is a chain-wide promotion, not the programme.
+
+**Sample data.** `tests/fixtures/filmhouse/2026-11-17-home.html` (the banner's data only) is sample data: its films for the day it was saved go on today. The 11 Nov Lagocine day page's rows for Filmhouse Palms Lekki are left out of the sample (`leaveOut` on its entry in `tests/fixtures/index.json`), so the sample holds a Filmhouse cinema with no times, as all 7 were live on 17 Nov.
 
 ## Sample data (D-20, D-45)
 

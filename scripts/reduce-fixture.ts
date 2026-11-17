@@ -6,6 +6,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { basename, dirname, resolve } from "node:path";
 import * as cheerio from "cheerio";
+import { bannerData } from "./sources/filmhouse.ts";
 
 type Rule = {
   /** The one element that holds the listing. */
@@ -17,7 +18,20 @@ type Rule = {
   /** Said in the fixture's header comment. */
   kept: string;
   removed: string;
+  /** For a page whose listing is data in its scripts, not markup: the fixture's body, made from the saved page. */
+  extract?: (saved: string) => string;
 };
+
+/** The banner fields the Filmhouse parser reads; images, trailers and genres are left out. */
+const FILMHOUSE_FIELDS = ["type", "movie_id", "movie_name", "url_key", "page_link", "duration", "movie_certification_short_code", "is_booking_open", "is_coming_soon", "nearest_show_times_date"];
+
+/** Filmhouse's banner data again, as the page ships it (one `self.__next_f` string), cut to FILMHOUSE_FIELDS. */
+function filmhouseBanner(saved: string): string {
+  const { location, list } = bannerData(saved);
+  const items = list.map((item) => Object.fromEntries(FILMHOUSE_FIELDS.filter((key) => key in item).map((key) => [key, item[key]])));
+  const payload = `"widgetId":"banner","widgetData":${JSON.stringify({ page_location: { cinema_location_name: location }, list: items })}`;
+  return `<script>self.__next_f.push([1,${JSON.stringify(payload)}])</script>`;
+}
 
 // Never needed by a parser, whatever the source: code, styling and media (posters, D-08).
 const ALWAYS_DROP = [
@@ -107,6 +121,15 @@ const RULES: Record<string, Rule> = {
     kept: "the day tabs, the day's heading, titles, times and cinemas",
     removed: "page chrome, scripts, styles, every poster image, the category filter and the date box",
   },
+  // Filmhouse's home page (D-131): its banner's data, the only films the HTML carries (its "Now
+  // Showing" list is filled in the browser from CINEsync, which refuses our bot).
+  "filmhouse-home": {
+    keep: 'the banner\'s data in self.__next_f ("widgetId":"banner")',
+    drop: [],
+    extract: filmhouseBanner,
+    kept: "where the banner is for, and each banner film's title, page, runtime, rating, booking and coming-soon flags and nearest showtimes date",
+    removed: "all the markup (the empty Now Showing and Coming Soon sections, the menus), every image, trailer link and genre, and every other script",
+  },
   // Lagocine's day page: one card per film, with every showing in Lagos that day (D-33).
   "lagocine-day": {
     keep: ".movie-grid",
@@ -163,10 +186,11 @@ try {
   fail(`cannot read ${input}: ${error instanceof Error ? error.message : String(error)}`);
 }
 
-const $ = cheerio.load(saved);
-const listing = $(rule.keep);
-if (listing.length !== 1) {
-  fail(`"${rule.keep}" matched ${listing.length} elements in ${input}, expected 1. Has the page layout changed?`);
+function reduceMarkup(saved: string, rule: Rule): string {
+  const $ = cheerio.load(saved);
+  const listing = $(rule.keep);
+  if (listing.length !== 1) {
+    fail(`"${rule.keep}" matched ${listing.length} elements in ${input}, expected 1. Has the page layout changed?`);
 }
 const extras = (rule.alsoKeep ?? []).map((selector) => {
   const found = $(selector);
@@ -184,18 +208,26 @@ listing.find("*").addBack().each((_, el) => {
 listing.find("*").addBack().contents().filter((_, node) => node.type === "comment").remove();
 
 // Collapse the blank lines the removals leave behind.
-const body = [...extras, $.html(listing) ?? ""]
+return [...extras, $.html(listing) ?? ""]
   .join("\n")
   .split("\n")
   .map((line) => line.trimEnd())
   .filter((line) => line.trim() !== "")
   .join("\n");
+}
+
+let body: string;
+try {
+  body = rule.extract ? rule.extract(saved) : reduceMarkup(saved, rule);
+} catch (error) {
+  fail(error instanceof Error ? error.message : String(error));
+}
 
 const header = [
   "<!--",
   `  FIXTURE. A cut-down copy of ${pageUrl}`,
   `  Saved on ${savedOn} (Africa/Lagos) with one manual request. Not live data.`,
-  `  Kept: the listing element ${rule.keep} (${rule.kept}).`,
+  `  Kept: ${rule.extract ? "" : "the listing element "}${rule.keep} (${rule.kept}).`,
   `  Removed: ${rule.removed}.`,
   "  Made by scripts/reduce-fixture.ts (D-24).",
   "-->",
