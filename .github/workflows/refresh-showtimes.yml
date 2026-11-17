@@ -1,6 +1,7 @@
 # ---------------------------------------------------------------------------------------------
-# Live showtimes (D-116): reads every cleared source that has a reader (`refresh --live`, today
-# Lagocine for the cinemas data/sources.json gives it), writes data/live/, and commits it; Vercel
+# Live showtimes (D-116): reads every cleared source that has a reader (`refresh --live`: each
+# cinema's own site where we can read it, D-122, and Lagocine for the cinemas data/sources.json
+# still gives it, D-76), writes data/live/, and commits it; Vercel
 # deploys the commit, and the build's `refresh --build` puts that data where the pages read it.
 #
 # A source that can't be read keeps its last good showings, marked failing and dated when they

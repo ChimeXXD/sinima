@@ -182,6 +182,8 @@ Filled on Day 0 by the data-source audit. One entry per source.
 }
 ```
 
+`cinemaPages` (D-122, optional): each cinema's own listing page on that source, by cinema id, for the readers in `scripts/live.ts`. Only cinemas in the source's `cinemaIds` may have one (`tests/unit/registry.test.ts`), and every cinema a reader-run source feeds must (`tests/unit/scripts/live.test.ts`). A Veezi page's address carries the cinema's own `siteToken` (`https://ticketing.eu.veezi.com/sessions/?siteToken=<token>`); the reader reads the token from there, so no token is written in code. Lagocine has none: it reads its day pages.
+
 `status` becomes `cleared` only when **either** `permission.summary` records a yes, **or** `robots.allowsListing` is `true` **and** `terms.allowsAutomated` is not `false` with the clause quoted. Chime confirms each change to `cleared` (log it in DECISIONS).
 
 ## Freshness: rules and wording (D-04)
@@ -247,6 +249,17 @@ A listing built by script is read with `scripts/sources/browser.ts` (`politeBrow
 **One source failing (D-119).** A source whose read throws keeps its showings from the previous `data/live/showtimes.json`: only the cinemas it still feeds, only from today on in Lagos, with their original `fetchedAt` (and `via`), so the freshness words say how old they are. Its source entry gets `health: "failing"` and keeps its `fetchedAt` and `lastOkAt`. The log says "`<id>`: could not be read (`<message>`); kept its last good showings from `<fetchedAt>`", or "no earlier showings to keep", and then its cinemas have no rows. The run fails, and nothing is written, only when every source fails.
 
 **One film across sources (D-119).** Before film ids are made, `matchFilms` in `scripts/pipeline.ts` matches titles across all sources: titles that make the same id are one film, and a short title joins the longer one that is it plus a subtitle (after ":", " - ", " – " or " — "), never on a bare prefix ("Ikenga" stays apart from "Ikenga 2"), and only when exactly one longer film starts that way. The film takes the longer title's id, so `data/credits.json` keeps lining up, and that title is shown (in mixed case if any source writes it so). Matches it can't make, or a film whose id must stay put, go in `data/film-aliases.json`: `{ "aliases": { "<source title or id>": "<film id>" } }`. It holds one alias today, `"ramayana-rise-of-a-legend": "ramayana"`: Lagocine writes the film both ways (TMDB 656908), and the alias keeps it at `/film/ramayana`, shown as "Ramayana", whichever spellings a run sees (without it, the id would change on the day a second spelling appears, and shared links would stop working). A merged film's credits, poster and trailer are looked up under its own id first, then under each merged spelling's id (`credits.json`, `credits-manual.json`); `tmdb.ts` does the same for `tmdb-overrides.json` and its saved answers, using the spelling before a subtitle separator only when no other film showing starts with it.
+
+**Each cinema's own reader (D-76, D-122).** One reader per platform, each in `scripts/sources/<source>.ts`, tested on saved pages:
+
+| Source | Pages one run reads | Days | Booking links |
+| --- | --- | --- | --- |
+| `silverbird` (Veezi) | one sessions page per cinema (4) | today and tomorrow | Veezi `/purchase/` links, which must carry the cinema's own `siteToken` or the read fails (Veezi is shared, so the host proves nothing); `/purchase/` pages are linked to, never fetched |
+| `genesis` | each location page (4: today there), then one film page per film on at any of them (that film at every Genesis location for three days), at most 30 (`MAX_FILM_PAGES`) | today and tomorrow | `genesiscinemas.com/<site>/booknow/<id>` |
+| `grand` | the home page (weekday tabs, no dates) | today's and tomorrow's tabs | none (tickets at the cinema) |
+| `bluepictures` | the home page ("Movies Now Showing", times with no date) | today only: tomorrow's are not on the page (rule 8) | none (online sale unconfirmed) |
+
+A page whose times can't be found throws ("Has the page layout changed?"), so the source keeps its last good showings (D-119) instead of emptying silently. A Veezi page that says "No shows currently scheduled" is read as no showings. A Genesis film page that shows no times is skipped with a line in the log (that film keeps today's times from its location page); if no film page shows any, the read fails. Dates without a year take the year nearest the day of the read, and a weekday the page gives must agree; a time before 04:00 is a late show of the evening it is listed under (SPEC §3). All times reach UTC through `lagosLocalToUtc` (`scripts/sources/dates.ts`). A cinema leaves Lagocine's `cinemaIds` the day its own reader has worked live; no cinema is fed by both (a test). Filmworld's Veezi page is read by the same code but not run yet (D-122).
 
 Before a build, `npm run build` runs `refresh --build`: it copies `data/live/showtimes.json` to `data/showtimes.json` and splits it again into `public/data/` against the current `data/cinemas.json` (so an area added since the last live run still gets its file), or makes sample data when `data/live/` is missing. Tests and CI call `refresh --fixtures` themselves, so they always run on sample data.
 

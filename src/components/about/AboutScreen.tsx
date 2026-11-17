@@ -5,14 +5,17 @@ import { useState } from "react";
 import { Button } from "@/components/ui/Actions";
 import { AppFrame } from "@/components/ui/AppFrame";
 import { CitySticker } from "@/components/ui/Stickers";
-import type { SourceRow } from "@/lib/data/about";
-import { ABOUT, ISSUES_URL, REPO_URL, STEPS, sourceStatus } from "@/lib/wording/about";
+import type { City } from "@/lib/city";
+import type { CityReading, SourceRow } from "@/lib/data/about";
+import { ABOUT, ISSUES_URL, REPO_URL, STEPS, cityReadingLine, sourceStatus } from "@/lib/wording/about";
 import s from "./about.module.css";
 
 // About (Figma 208:9122): how it works, where each city's times come from with each source's real
 // status (data/sources.json), the TMDB notice, and how a cinema has its times or logo taken down.
 
-export function AboutScreen({ sources, bg }: { sources: SourceRow[]; bg: { light: string; dark: string } }) {
+const NONE: CityReading = { own: 0, through: 0, none: 0 };
+
+export function AboutScreen({ sources, reading, bg }: { sources: SourceRow[]; reading: Partial<Record<City, CityReading>>; bg: { light: string; dark: string } }) {
   const router = useRouter();
   const [typed, setTyped] = useState("");
   const footer = (
@@ -52,7 +55,7 @@ export function AboutScreen({ sources, bg }: { sources: SourceRow[]; bg: { light
         <h2 id="about.sources">{ABOUT.sources}</h2>
         <p className={s.city}>
           <CitySticker city="lagos" tilt={0} />
-          <span>{ABOUT.lagos}</span>
+          <span data-testid="about.reading.lagos">{cityReadingLine("lagos", reading.lagos ?? NONE)}</span>
         </p>
         <table className={s.table} data-testid="about.sources">
           <thead>
@@ -76,7 +79,7 @@ export function AboutScreen({ sources, bg }: { sources: SourceRow[]; bg: { light
         </table>
         <p className={s.abuja}>
           <CitySticker city="abuja" tilt={0} />
-          <span>{ABOUT.abuja}</span>
+          <span data-testid="about.reading.abuja">{cityReadingLine("abuja", reading.abuja ?? NONE)}</span>
         </p>
       </section>
 

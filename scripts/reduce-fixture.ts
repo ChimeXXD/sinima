@@ -35,6 +35,43 @@ const RULES: Record<string, Rule> = {
     kept: "titles, ratings, dates, times, links",
     removed: "page chrome, scripts, styles, the cinema banner and every poster image",
   },
+  // A Veezi sessions page with nothing on: only its "No shows currently scheduled" line.
+  "veezi-empty": {
+    keep: "p.empty",
+    drop: [],
+    alsoKeep: ["h2.times-header"],
+    kept: "the heading and the line saying no shows are scheduled",
+    removed: "page chrome, scripts, styles and the cinema banner",
+  },
+  // A Genesis location page (/<location>/): today's programme there, and the date it is for.
+  "genesis-location": {
+    keep: "#film_section",
+    drop: ["p", ".innercatdived", ".col-md-2"],
+    alsoKeep: ["#film_date"],
+    kept: "titles, ratings, today's times, booking and film links, and the page's date",
+    removed: "page chrome, scripts, styles, the date and cinema menus, every poster image, the synopses and the hidden copy of each time list",
+  },
+  // A Genesis film page (/<location>/film/<id>/<slug>): the film's times at every location for a few days.
+  "genesis-film": {
+    keep: ".fw-main-row:has(.cinema-block-group)",
+    drop: ["p", ".poster"],
+    kept: "the title, rating, each location's dated times and booking links",
+    removed: "page chrome, scripts, styles, the poster and the synopsis",
+  },
+  // Grand Cinemas' home page: the week's programme, one tab per weekday.
+  grand: {
+    keep: ".fw-tabs.movies",
+    drop: ["p", ".col-md-2"],
+    kept: "the weekday tabs, titles, ratings and each weekday's times",
+    removed: "page chrome, scripts, styles, the coming-soon slider, every poster image, the synopses and ticket prices",
+  },
+  // Blue Pictures' home page: the "Movies Now Showing" list, with each film's times.
+  bluepictures: {
+    keep: '.elementor-widget-wrap:has(> .elementor-widget-movie_list):has(h2.title:contains("Movies Now Showing"))',
+    drop: [".movie-image"],
+    kept: "the heading, titles, times and the ticket links",
+    removed: "page chrome, scripts, styles, the other sections, the coming-soon list and every poster image",
+  },
   // Lagocine's day page: one card per film, with every showing in Lagos that day (D-33).
   "lagocine-day": {
     keep: ".movie-grid",

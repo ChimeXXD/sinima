@@ -14,7 +14,11 @@ test("About: how it works, every source with cinemas and its real status, TMDB, 
   const listed = registry.sources.filter((s) => s.status !== "do-not-use" && (s.cinemaIds?.length ?? 0) > 0).sort((a, b) => b.cinemaIds!.length - a.cinemaIds!.length);
   const rows = page.getByTestId("about.sources").locator("tbody tr");
   await expect(rows).toHaveCount(listed.length);
-  await expect(rows.first()).toHaveText(/^Lagocine\s*20\s*Permission asked 11 Nov$/);
+  await expect(rows.first()).toHaveText(new RegExp(`^Lagocine\\s*${listed[0]!.cinemaIds!.length}\\s*Permission asked 11 Nov$`));
+  // How each city is read, counted from the times the site is built on (D-122): the sample build
+  // reads Lagos through Lagocine's saved page and Abuja through Silverbird's two saved Veezi pages.
+  await expect(page.getByTestId("about.reading.lagos")).toHaveText(/^In Lagos, \d+ cinemas are read through Lagocine\. \d+ (has|have) no times online yet\.$/);
+  await expect(page.getByTestId("about.reading.abuja")).toHaveText("In Abuja, 2 cinemas are read from their own sites. 3 have no times online yet.");
   await expect(page.getByTestId("about.source.filmhouse")).toContainText("Permission asked 11 Nov");
   // The site runs on saved samples, so no source is in use yet.
   await expect(page.getByTestId("about.sources")).not.toContainText("In use");

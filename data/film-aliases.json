@@ -1,6 +1,10 @@
 {
-  "about": "Film aliases (D-119): a source's film title, or the id it would make, to the film id it really is. scripts/pipeline.ts already treats titles that differ only in case or punctuation as one film, and joins a short title to the one longer film that is it plus a subtitle (that film's id); an alias settles the rest, or keeps a film's id steady. \"ramayana-rise-of-a-legend\" -> \"ramayana\": Lagocine lists Filmhouse's \"Ramayana\" and the others' \"Ramayana: Rise of a Legend\" (one film, TMDB 656908), and this keeps it at /film/ramayana, shown as \"Ramayana\", whichever spellings a run sees, so shared links keep working and the Figma example stays as drawn. Check each alias by hand.",
+  "about": "Film aliases (D-119): a source's film title, or the id it would make, to the film id it really is. scripts/pipeline.ts already treats titles that differ only in case or punctuation as one film, and joins a short title to the one longer film that is it plus a subtitle (that film's id); an alias settles the rest, or keeps a film's id steady. \"ramayana-rise-of-a-legend\" -> \"ramayana\": Lagocine lists Filmhouse's \"Ramayana\" and the others' \"Ramayana: Rise of a Legend\" (one film, TMDB 656908), and this keeps it at /film/ramayana, shown as \"Ramayana\", whichever spellings a run sees, so shared links keep working and the Figma example stays as drawn. Check each alias by hand. 17 Nov 2026 (D-122), once cinemas' own sites were read beside Lagocine: \"Issakaba Returns\" (Genesis), \"Issakaba Return\" (Silverbird's Veezi) and \"Isakaba Return\" (Blue Pictures) are Lagocine's \"Isakaba: The Returns\", one film; \"TELE & ZIKORA\" (Genesis) is \"Tele X Zikora\". \"Maybe Or Maybe Not\" (Silverbird Ikeja) is left apart from \"Maybe… Maybe Not\" until Chime checks it.",
   "aliases": {
-    "ramayana-rise-of-a-legend": "ramayana"
+    "ramayana-rise-of-a-legend": "ramayana",
+    "issakaba-returns": "isakaba-the-returns",
+    "issakaba-return": "isakaba-the-returns",
+    "isakaba-return": "isakaba-the-returns",
+    "tele-and-zikora": "tele-x-zikora"
   }
 }

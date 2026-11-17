@@ -63,9 +63,22 @@ describe("matchFilms", () => {
   it("keeps Ramayana at /film/ramayana through data/film-aliases.json, both spellings one film", () => {
     const file = JSON.parse(readFileSync(join(import.meta.dirname, "../../../data/film-aliases.json"), "utf8")) as { about: string; aliases: Record<string, string> };
     expect(file.about).toMatch(/D-119/);
-    expect(file.aliases).toEqual({ "ramayana-rise-of-a-legend": "ramayana" });
+    // D-122 adds the spellings cinemas' own sites use for two films Lagocine already lists.
+    expect(file.aliases).toEqual({
+      "ramayana-rise-of-a-legend": "ramayana",
+      "issakaba-returns": "isakaba-the-returns",
+      "issakaba-return": "isakaba-the-returns",
+      "isakaba-return": "isakaba-the-returns",
+      "tele-and-zikora": "tele-x-zikora",
+    });
     const { films } = matchFilms(["Ramayana", "Ramayana: Rise of a Legend"], file.aliases);
     expect([...films.values()]).toEqual([{ id: "ramayana", title: "Ramayana" }, { id: "ramayana", title: "Ramayana" }]);
+  });
+
+  it("makes Genesis's, Veezi's, Blue Pictures' and Lagocine's spellings of Isakaba one film, and Tele & Zikora one (D-122)", () => {
+    const file = JSON.parse(readFileSync(join(import.meta.dirname, "../../../data/film-aliases.json"), "utf8")) as { aliases: Record<string, string> };
+    const { films } = matchFilms(["ISSAKABA RETURNS", "Issakaba Return", "Isakaba Return", "Isakaba: The Returns", "TELE & ZIKORA", "Tele X Zikora"], file.aliases);
+    expect(new Set([...films.values()].map((film) => `${film.id} ${film.title}`))).toEqual(new Set(["isakaba-the-returns Isakaba: The Returns", "tele-x-zikora Tele X Zikora"]));
   });
 });
 

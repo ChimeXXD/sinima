@@ -27,6 +27,14 @@ describe("data registries", () => {
     const unknown = sources.sources.flatMap((s) => s.cinemaIds.filter((id) => !ids.has(id)));
     expect(unknown).toEqual([]);
   });
+
+  it("gives a cinema's own page only for the cinemas its source feeds, each an https address (D-122)", () => {
+    for (const source of sources.sources as { id: string; cinemaIds: string[]; cinemaPages?: Record<string, string> }[]) {
+      const pages = Object.entries(source.cinemaPages ?? {});
+      expect(pages.filter(([id]) => !source.cinemaIds.includes(id)).map(([id]) => id), source.id).toEqual([]);
+      for (const [id, url] of pages) expect(new URL(url).protocol, `${source.id} ${id}`).toBe("https:");
+    }
+  });
 });
 
 describe("one cinema, one entry (D-56)", () => {

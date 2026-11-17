@@ -40,21 +40,15 @@
         "filmhouse-palms-lekki",
         "filmhouse-oniru",
         "filmhouse-landmark",
-        "genesis-purple-lekki",
-        "genesis-festac",
-        "genesis-maryland",
-        "silverbird-ikeja",
         "ebonylife-vi",
-        "blue-pictures-onikan",
         "filmworld-idimu",
-        "grand-lekki",
         "magnificent-ikorodu-road",
         "ozone-yaba",
         "sky-sangotedo",
         "thc-agege",
         "viva-ikeja"
       ],
-      "notes": "D-76 (15 Nov 2026): fallback only, for each cinema we cannot read directly yet; a cinema leaves this list the day its own reader is built and cleared (Genesis and Silverbird Ikeja are cleared on 15 Nov but have no reader yet, so they stay until theirs runs). Filmhouse's 7 stay on it for the long run, because Filmhouse's ticketing provider (CINEsync) answers our named bot with 403 Access Denied. Booking links still go to Filmhouse's own site, never to Lagocine (it now sells tickets: \"Lagocine sells this ticket on its own site\", 15 Nov). To be credited on /about and on each cinema page it feeds (not built yet). Its own \"last read\" time sets the showings' age. Dropped for any cinema the day we can read that cinema directly. Earlier: Preferred source if it agrees (D-07). Says it reads each cinema's own pages daily, sells nothing, takes no commission. 11 Nov: home page is static HTML (build stamp lagocine-built 2026-11-11T00:05:05+01:00). Still needs permission: robots allowing crawling is not a licence to republish (PRD). Audit: cinema and day pages are static HTML with the times in the page. The sitemap lists day pages for today plus six days and some December dates; the Silverbird Ikeja page carried a full programme for today and tomorrow only. No fixture committed: waiting for the reply to the 11 Nov email. D-33 (11 Nov): becomes the live source on Day 6 with full credit unless it objects first; status stays pending until Chime confirms cleared that day."
+      "notes": "D-76 (15 Nov 2026): fallback only, for each cinema we cannot read directly yet; a cinema leaves this list the day its own reader is built and cleared (Genesis and Silverbird Ikeja are cleared on 15 Nov but have no reader yet, so they stay until theirs runs). Filmhouse's 7 stay on it for the long run, because Filmhouse's ticketing provider (CINEsync) answers our named bot with 403 Access Denied. Booking links still go to Filmhouse's own site, never to Lagocine (it now sells tickets: \"Lagocine sells this ticket on its own site\", 15 Nov). To be credited on /about and on each cinema page it feeds (not built yet). Its own \"last read\" time sets the showings' age. Dropped for any cinema the day we can read that cinema directly. Earlier: Preferred source if it agrees (D-07). Says it reads each cinema's own pages daily, sells nothing, takes no commission. 11 Nov: home page is static HTML (build stamp lagocine-built 2026-11-11T00:05:05+01:00). Still needs permission: robots allowing crawling is not a licence to republish (PRD). Audit: cinema and day pages are static HTML with the times in the page. The sitemap lists day pages for today plus six days and some December dates; the Silverbird Ikeja page carried a full programme for today and tomorrow only. No fixture committed: waiting for the reply to the 11 Nov email. D-33 (11 Nov): becomes the live source on Day 6 with full credit unless it objects first; status stays pending until Chime confirms cleared that day. 17 Nov 2026 (D-122): Genesis's three Lagos cinemas, Silverbird Ikeja, Grand and Blue Pictures left this list, read from their own sites now. It still feeds Filmhouse's 7 (CINEsync 403), Filmworld (its Veezi page showed no shows while Lagocine listed 22 times) and the script-built sites whose readers come next (EbonyLife, Ozone, Sky, Viva, THC, Magnificent)."
     },
     {
       "id": "filmhouse",
@@ -131,7 +125,13 @@
         "genesis-maryland",
         "genesis-ceddi-plaza"
       ],
-      "notes": "15 Nov 2026 (D-77): cleared. robots.txt is Cloudflare's managed file: \"User-agent: * / Content-Signal: search=yes,ai-train=no,use=reference / Allow: /\"; the signals restrict AI training and AI use, and allow search-style listings (links and short excerpts), which is what we do. Booking pages (/<site>/booknow/<id>) carry the times in their HTML (checked: Ceddi Plaza Abuja, 19:20). Booking goes on to ticketing.com/sales/<code>/book. Abuja's Ceddi Plaza is on the same site. Earlier: Booking URL pattern: /<site>/booknow/<id>. 11 Nov: robots.txt carries the same content signal (use=reference) that made Showtimes NG do-not-use, so allowsListing is left null: treat as needing written permission unless Chime decides otherwise. The home page HTML holds /<site>/booknow/<id> links for every location. Audit: needs a written yes (D-29). No fixture committed. 17 Nov 2026 (D-120): Ceddi Plaza, Abuja added to cinemaIds."
+      "cinemaPages": {
+        "genesis-purple-lekki": "https://genesiscinemas.com/freedom-way-lekki/",
+        "genesis-festac": "https://genesiscinemas.com/festival-mall-festac-lagos/",
+        "genesis-maryland": "https://genesiscinemas.com/maryland-mall-maryland/",
+        "genesis-ceddi-plaza": "https://genesiscinemas.com/ceddi-plaza-abuja/"
+      },
+      "notes": "15 Nov 2026 (D-77): cleared. robots.txt is Cloudflare's managed file: \"User-agent: * / Content-Signal: search=yes,ai-train=no,use=reference / Allow: /\"; the signals restrict AI training and AI use, and allow search-style listings (links and short excerpts), which is what we do. Booking pages (/<site>/booknow/<id>) carry the times in their HTML (checked: Ceddi Plaza Abuja, 19:20). Booking goes on to ticketing.com/sales/<code>/book. Abuja's Ceddi Plaza is on the same site. Earlier: Booking URL pattern: /<site>/booknow/<id>. 11 Nov: robots.txt carries the same content signal (use=reference) that made Showtimes NG do-not-use, so allowsListing is left null: treat as needing written permission unless Chime decides otherwise. The home page HTML holds /<site>/booknow/<id> links for every location. Audit: needs a written yes (D-29). No fixture committed. 17 Nov 2026 (D-120): Ceddi Plaza, Abuja added to cinemaIds. 17 Nov 2026 (D-122): read live by scripts/sources/genesis.ts: each location page in cinemaPages (today's programme, dated, 24-hour clock), then one film page per film on at any of them (/<site>/film/<id>/<slug>: that film at every Genesis location for three days), at most 30 a run. Date tabs load through admin-ajax.php, which we don't call. VIP is read as a format. All four left (or never joined) Lagocine."
     },
     {
       "id": "ebonylife",
@@ -202,7 +202,13 @@
         "silverbird-sec",
         "silverbird-jabi"
       ],
-      "notes": "15 Nov 2026 (D-77): cleared on Chime's rule \"read it on their website if it's readable\". Veezi's /sessions/ pages are server-rendered and allowed by Veezi's robots.txt. Known risk: Silverbird's own terms forbid copying its content without written permission; showtimes are facts, and we stop the day Silverbird asks. Earlier: Veezi sessions pages per site token. 11 Nov: Veezi /sessions/ pages are server-rendered and not disallowed; /purchase/ pages are disallowed, so link to them but never fetch them. The Galleria page still says \"No shows currently scheduled\". Silverbird Ikeja's site token is not recorded yet. Silverbird's own site carries the use=reference content signal. Audit: the Ikeja page is server-rendered with the full programme for today and tomorrow (70 times on 11 Nov) plus a few advance dates. Dates carry no year (\"Wednesday 11, November\") and times are 12-hour (\"10:40 AM\"); the parser must add the year from the fetch date. Fixture: tests/fixtures/silverbird/2026-11-11-ikeja.html (cut down, D-24). Silverbird's own terms forbid copying its content and linking to its site without written permission, so treat Silverbird as needing a written yes even though Veezi's robots.txt allows the page (O-12). 17 Nov 2026 (D-120): Abuja's two Silverbird cinemas added; their pages were saved once each as sample fixtures (tests/fixtures/silverbird/2026-11-17-sec.html and -jabi.html)."
+      "cinemaPages": {
+        "silverbird-ikeja": "https://ticketing.eu.veezi.com/sessions/?siteToken=9chn7w68550a7sxgexpdng2ndm",
+        "silverbird-galleria": "https://ticketing.eu.veezi.com/sessions/?siteToken=4x3z2wcre0rek2beab5w344ae0",
+        "silverbird-sec": "https://ticketing.eu.veezi.com/sessions/?siteToken=ntfpkgyc0phrmzxb2ctk828vd4",
+        "silverbird-jabi": "https://ticketing.eu.veezi.com/sessions/?siteToken=ypr75qx9nh88brqya85qtg3wqc"
+      },
+      "notes": "15 Nov 2026 (D-77): cleared on Chime's rule \"read it on their website if it's readable\". Veezi's /sessions/ pages are server-rendered and allowed by Veezi's robots.txt. Known risk: Silverbird's own terms forbid copying its content without written permission; showtimes are facts, and we stop the day Silverbird asks. Earlier: Veezi sessions pages per site token. 11 Nov: Veezi /sessions/ pages are server-rendered and not disallowed; /purchase/ pages are disallowed, so link to them but never fetch them. The Galleria page still says \"No shows currently scheduled\". Silverbird Ikeja's site token is not recorded yet. Silverbird's own site carries the use=reference content signal. Audit: the Ikeja page is server-rendered with the full programme for today and tomorrow (70 times on 11 Nov) plus a few advance dates. Dates carry no year (\"Wednesday 11, November\") and times are 12-hour (\"10:40 AM\"); the parser must add the year from the fetch date. Fixture: tests/fixtures/silverbird/2026-11-11-ikeja.html (cut down, D-24). Silverbird's own terms forbid copying its content and linking to its site without written permission, so treat Silverbird as needing a written yes even though Veezi's robots.txt allows the page (O-12). 17 Nov 2026 (D-120): Abuja's two Silverbird cinemas added; their pages were saved once each as sample fixtures (tests/fixtures/silverbird/2026-11-17-sec.html and -jabi.html). 17 Nov 2026 (D-122): read live by scripts/sources/veezi.ts (readVeezi), one sessions page per cinema from cinemaPages, today and tomorrow; every booking link must carry that cinema's own siteToken or the read fails. Galleria's page still says \"No shows currently scheduled\" (read as no showings). Ikeja left Lagocine."
     },
     {
       "id": "syticks",
@@ -335,7 +341,10 @@
       "cinemaIds": [
         "filmworld-idimu"
       ],
-      "notes": "15 Nov 2026 (D-77): cleared; the copying clause is recorded as a risk (showtimes are facts), and we stop if asked. Booking links must carry Filmworld's own siteToken (327ra3p1mr5tzhta0g0s8ajf8m): Veezi is shared with Silverbird, so the host alone does not prove whose link it is. 15 Nov 2026: Veezi sessions page is server-rendered (10 distinct times in the HTML). Same reader as Silverbird. filmworldcinemas.com/showtime/daily-showtime/ did not load for us. Terms not read yet."
+      "cinemaPages": {
+        "filmworld-idimu": "https://ticketing.eu.veezi.com/sessions/?siteToken=327ra3p1mr5tzhta0g0s8ajf8m"
+      },
+      "notes": "15 Nov 2026 (D-77): cleared; the copying clause is recorded as a risk (showtimes are facts), and we stop if asked. Booking links must carry Filmworld's own siteToken (327ra3p1mr5tzhta0g0s8ajf8m): Veezi is shared with Silverbird, so the host alone does not prove whose link it is. 15 Nov 2026: Veezi sessions page is server-rendered (10 distinct times in the HTML). Same reader as Silverbird. filmworldcinemas.com/showtime/daily-showtime/ did not load for us. Terms not read yet. 17 Nov 2026 (D-122): the Veezi reader works for this page, but it is not run: at 01:18 Lagos on 17 Nov the page said \"No shows currently scheduled\" while Lagocine, reading filmworldcinemas.com, listed 22 times for the day. Filmworld stays on Lagocine until its Veezi page is shown to carry its programme (tests/fixtures/filmworld/2026-11-17-idimu-empty.html)."
     },
     {
       "id": "grand",
@@ -369,7 +378,10 @@
       "cinemaIds": [
         "grand-lekki"
       ],
-      "notes": "15 Nov 2026 (D-77): cleared; the copying clause is a recorded risk, and at a few visits a day we cannot debilitate the site. No online booking link found: tickets at the cinema. 15 Nov 2026: WordPress; the home page HTML carries the times (12 distinct). Terms not read yet."
+      "cinemaPages": {
+        "grand-lekki": "https://grandcinemas.com.ng/"
+      },
+      "notes": "15 Nov 2026 (D-77): cleared; the copying clause is a recorded risk, and at a few visits a day we cannot debilitate the site. No online booking link found: tickets at the cinema. 15 Nov 2026: WordPress; the home page HTML carries the times (12 distinct). Terms not read yet. 17 Nov 2026 (D-122): read live by scripts/sources/grand.ts: the home page's weekday tabs (#Mon to #Sun, no dates), today's and tomorrow's put on today's and tomorrow's dates. Mondays showed no times. Left Lagocine."
     },
     {
       "id": "bluepictures",
@@ -403,7 +415,10 @@
       "cinemaIds": [
         "blue-pictures-onikan"
       ],
-      "notes": "15 Nov 2026 (D-77): cleared. \"Get Ticket\" buttons are on the page, but online sale is not confirmed, so no booking host is recorded. 15 Nov 2026: WordPress; the home page HTML carries the times (25 distinct). Terms not read yet."
+      "cinemaPages": {
+        "blue-pictures-onikan": "https://bluepicturesng.com/"
+      },
+      "notes": "15 Nov 2026 (D-77): cleared. \"Get Ticket\" buttons are on the page, but online sale is not confirmed, so no booking host is recorded. 15 Nov 2026: WordPress; the home page HTML carries the times (25 distinct). Terms not read yet. 17 Nov 2026 (D-122): read live by scripts/sources/bluepictures.ts: the home page's \"Movies Now Showing\" list (\"4:20pm & 6:20pm\", no date), read as today's times only. Left Lagocine."
     },
     {
       "id": "viva",

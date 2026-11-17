@@ -10,19 +10,27 @@ import { lagosDayKey, lagosLocalToUtc, toLagos, utcMs, utcString } from "../src/
 import { validateShowtimes } from "../src/lib/data/validate.ts";
 import { assemble, creditsLookup, readJson, readSources, SAMPLE_PATHS, type Paths } from "./assemble.ts";
 import { splitByArea, type Batch } from "./pipeline.ts";
+import { readBluePictures } from "./sources/bluepictures.ts";
 import type { RenderText } from "./sources/browser.ts";
+import { genesisReader, MAX_FILM_PAGES } from "./sources/genesis.ts";
+import { readGrand } from "./sources/grand.ts";
 import { parseLagocineDay } from "./sources/lagocine.ts";
 import type { FetchText } from "./sources/polite.ts";
-import type { ParsedPage } from "./sources/raw.ts";
+import type { ParsedPage, Reader } from "./sources/raw.ts";
+import { readVeezi } from "./sources/veezi.ts";
 
 export const LIVE_DIR = "data/live";
 const LIVE_PATHS: Paths = { main: `${LIVE_DIR}/showtimes.json`, part: (slug) => (slug === "all" ? `${LIVE_DIR}/all.json` : `${LIVE_DIR}/area/${slug}.json`) };
 const DAY = 86_400_000;
 
-/** One source's read: plain pages through `fetchText`, pages built by script through `renderText`. */
-export type Reader = (input: { now: string; days: number; fetchText: FetchText; renderText: RenderText }) => Promise<ParsedPage[]>;
+export type { Reader };
 
-/** The sources we can read live. A cleared source with no reader here is not read yet. */
+/**
+ * The sources we can read live. A cleared source with no reader here is not read yet. Each cinema
+ * is read from its own site where it can be (D-76, D-122), and from Lagocine only while it can't.
+ * Filmworld's Veezi page (the same reader as Silverbird's) is not read yet: on 17 Nov it said "No
+ * shows currently scheduled" while Filmworld's own site, through Lagocine, listed 22 times (D-122).
+ */
 export const READERS: Record<string, Reader> = {
   // One day page holds every showing in Lagos that day.
   lagocine: async ({ now, days, fetchText }) => {
@@ -30,6 +38,12 @@ export const READERS: Record<string, Reader> = {
     for (let day = 0; day < days; day += 1) pages.push(parseLagocineDay(await fetchText(`https://lagocine.com/day/${lagosDayKey(utcString(utcMs(now) + day * DAY))}/`)));
     return pages;
   },
+  // Each cinema's own Veezi sessions page (Lagos and Abuja); the siteToken is in data/sources.json.
+  silverbird: readVeezi,
+  // Each location page, then one page per film for tomorrow's times (D-122).
+  genesis: genesisReader(MAX_FILM_PAGES),
+  grand: readGrand,
+  bluepictures: readBluePictures,
 };
 
 /** Listings that compile other sites: their rows say which site they read (DATA §Freshness). */
@@ -96,7 +110,9 @@ export async function refreshLive(input: {
     const given = new Set(source.cinemaIds);
     let pages: ParsedPage[];
     try {
-      pages = await reader({ now, days: source.daysAhead ?? 2, fetchText, renderText });
+      // Each cinema's own page on this source, for the cinemas it feeds (data/sources.json `cinemaPages`).
+      const own = Object.entries(source.cinemaPages ?? {}).filter(([cinemaId]) => given.has(cinemaId));
+      pages = await reader({ now, days: source.daysAhead ?? 2, fetchText, renderText, pages: Object.fromEntries(own) });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       failures.push(message);
@@ -107,6 +123,7 @@ export async function refreshLive(input: {
       continue;
     }
     read += 1;
+    for (const note of pages.flatMap((page) => page.notes ?? [])) log.push(`${source.id}: ${note}`);
     const rows = pages.flatMap((page) => page.showings);
     const kept = rows.filter((row) => given.has(row.cinemaId));
     if (kept.length < rows.length) log.push(`${source.id}: left out ${rows.length - kept.length} showings at cinemas it does not feed`);

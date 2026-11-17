@@ -47,6 +47,104 @@
       "savedAt": "2026-11-16T23:38:21Z",
       "sample": true,
       "why": "Abuja sample data (D-120): Silverbird Jabi Lake Mall, read only through its own Veezi page."
+    },
+    {
+      "file": "genesis/2026-11-17-lekki-purple.html",
+      "sourceId": "genesis",
+      "page": "genesis-location",
+      "cinemaId": "genesis-purple-lekki",
+      "pageUrl": "https://genesiscinemas.com/freedom-way-lekki/",
+      "savedAt": "2026-11-17T00:16:13Z",
+      "sample": false,
+      "why": "Parser and reader tests only (D-122). Not sample data: the sample's Lagocine day page (11 Nov) still lists this cinema, so both would list the same showings."
+    },
+    {
+      "file": "genesis/2026-11-17-festac.html",
+      "sourceId": "genesis",
+      "page": "genesis-location",
+      "cinemaId": "genesis-festac",
+      "pageUrl": "https://genesiscinemas.com/festival-mall-festac-lagos/",
+      "savedAt": "2026-11-17T00:18:00Z",
+      "sample": false,
+      "why": "Parser and reader tests only (D-122). Not sample data: the sample's Lagocine day page (11 Nov) still lists this cinema, so both would list the same showings."
+    },
+    {
+      "file": "genesis/2026-11-17-maryland.html",
+      "sourceId": "genesis",
+      "page": "genesis-location",
+      "cinemaId": "genesis-maryland",
+      "pageUrl": "https://genesiscinemas.com/maryland-mall-maryland/",
+      "savedAt": "2026-11-17T00:18:06Z",
+      "sample": false,
+      "why": "Parser and reader tests only (D-122). Not sample data: the sample's Lagocine day page (11 Nov) still lists this cinema, so both would list the same showings."
+    },
+    {
+      "file": "genesis/2026-11-17-ceddi-plaza.html",
+      "sourceId": "genesis",
+      "page": "genesis-location",
+      "cinemaId": "genesis-ceddi-plaza",
+      "pageUrl": "https://genesiscinemas.com/ceddi-plaza-abuja/",
+      "savedAt": "2026-11-17T00:18:11Z",
+      "sample": false,
+      "why": "Parser and reader tests only (D-122). Kept out of the sample so the sample's counts stay as they are; a later unit can make it Abuja's Genesis sample."
+    },
+    {
+      "file": "genesis/2026-11-17-film-spiderman-brand-new-day.html",
+      "sourceId": "genesis",
+      "page": "genesis-film",
+      "pageUrl": "https://genesiscinemas.com/ceddi-plaza-abuja/film/2769/spiderman-brand-new-day",
+      "savedAt": "2026-11-17T00:16:01Z",
+      "sample": false,
+      "why": "Parser and reader tests only (D-122): one film's times at every Genesis location for three days."
+    },
+    {
+      "file": "genesis/2026-11-17-film-street-fighter.html",
+      "sourceId": "genesis",
+      "page": "genesis-film",
+      "pageUrl": "https://genesiscinemas.com/lekki-purple/film/2854/street-fighter",
+      "savedAt": "2026-11-17T00:16:58Z",
+      "sample": false,
+      "why": "Parser and reader tests only (D-122): one film's times at every Genesis location for three days."
+    },
+    {
+      "file": "grand/2026-11-17-home.html",
+      "sourceId": "grand",
+      "page": "grand-home",
+      "cinemaId": "grand-lekki",
+      "pageUrl": "https://grandcinemas.com.ng/",
+      "savedAt": "2026-11-17T00:14:54Z",
+      "sample": false,
+      "why": "Parser and reader tests only (D-122). Not sample data: the sample's Lagocine day page (11 Nov) still lists this cinema, so both would list the same showings."
+    },
+    {
+      "file": "bluepictures/2026-11-17-home.html",
+      "sourceId": "bluepictures",
+      "page": "bluepictures-home",
+      "cinemaId": "blue-pictures-onikan",
+      "pageUrl": "https://bluepicturesng.com/",
+      "savedAt": "2026-11-17T00:15:03Z",
+      "sample": false,
+      "why": "Parser and reader tests only (D-122). Not sample data: the sample's Lagocine day page (11 Nov) still lists this cinema, so both would list the same showings."
+    },
+    {
+      "file": "silverbird/2026-11-17-galleria-empty.html",
+      "sourceId": "silverbird",
+      "page": "veezi-sessions",
+      "cinemaId": "silverbird-galleria",
+      "pageUrl": "https://ticketing.eu.veezi.com/sessions/?siteToken=4x3z2wcre0rek2beab5w344ae0",
+      "savedAt": "2026-11-17T00:18:22Z",
+      "sample": false,
+      "why": "Parser test only (D-122): a Veezi page with no shows scheduled."
+    },
+    {
+      "file": "filmworld/2026-11-17-idimu-empty.html",
+      "sourceId": "filmworld",
+      "page": "veezi-sessions",
+      "cinemaId": "filmworld-idimu",
+      "pageUrl": "https://ticketing.eu.veezi.com/sessions/?siteToken=327ra3p1mr5tzhta0g0s8ajf8m",
+      "savedAt": "2026-11-17T00:18:27Z",
+      "sample": false,
+      "why": "Evidence for D-122: Filmworld's Veezi page said no shows were scheduled while Lagocine listed 22 times from Filmworld's own site, so Filmworld stays on Lagocine."
     }
   ]
 }

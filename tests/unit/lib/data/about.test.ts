@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { sourceRows } from "@/lib/data/about";
+import { cityReading, sourceRows } from "@/lib/data/about";
 
 // About › Where the times come from (Figma 208:9122): each source we may read, how many cinemas it
 // covers and its real status, from data/sources.json and the times the site is built from.
@@ -30,5 +30,19 @@ describe("sourceRows", () => {
 
   it("an answered request is no longer 'asked'", () => {
     expect(sourceRows([src("filmhouse", 7, "cleared", "2026-11-11", "2026-11-20")], [])[0]!.status).toEqual({ kind: "unused" });
+  });
+});
+
+// Each city's cinemas by how the built times read them (D-122): a cinema with a showing from its
+// own source is read from its own site; one whose showings all come through Lagocine is read
+// through it; one with none has no times yet.
+describe("cityReading", () => {
+  const file = {
+    cinemas: [{ id: "g", area: "lekki" }, { id: "f", area: "lekki" }, { id: "x", area: "lekki" }, { id: "s", area: "jabi" }, { id: "j", area: "kuje" }],
+    showings: [{ cinemaId: "g", sourceId: "genesis" }, { cinemaId: "f", sourceId: "lagocine" }, { cinemaId: "f", sourceId: "lagocine" }, { cinemaId: "s", sourceId: "silverbird" }],
+  };
+  const cityOf = (area: string) => (area === "lekki" ? "lagos" : "abuja") as "lagos" | "abuja";
+  it("counts each city's cinemas read from their own sites, through Lagocine, and with no times", () => {
+    expect(cityReading(file, cityOf)).toEqual({ lagos: { own: 1, through: 1, none: 1 }, abuja: { own: 1, through: 0, none: 1 } });
   });
 });

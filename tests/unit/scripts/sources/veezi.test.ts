@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { parseVeeziSessions } from "../../../../scripts/sources/veezi";
+import { parseVeeziSessions, readVeezi } from "../../../../scripts/sources/veezi";
 
 // Silverbird Ikeja's Veezi listing, saved on 11 Nov 2026 and cut down (D-24). Its dates have no
 // year ("Wednesday 11, November") and its times are on a 12-hour clock ("6:35 PM").
@@ -105,5 +105,84 @@ describe("parseVeeziSessions: Silverbird Abuja", () => {
     expect(byDay(rows)).toEqual({ "2026-11-17": 27, "2026-11-18": 24, "2026-11-19": 27, ...december });
     expect(new Set(rows.map((s) => s.filmTitle)).size).toBe(12);
     expect(rows[0]).toMatchObject({ filmTitle: "Street Fighter", rating: "12A", startsAt: "2026-11-17T09:05:00Z" });
+  });
+});
+
+describe("parseVeeziSessions: dates near New Year and empty pages (D-122)", () => {
+  it("a date at the end of December read just after New Year stays in the old year", () => {
+    const late = html.replaceAll("Wednesday 11, November", "Thursday 31, December");
+    const starts = parse(late, { year: 2027, month: 1, day: 1 }).showings.map((s) => s.startsAt.slice(0, 10));
+    expect(starts).toContain("2026-12-31");
+    expect(starts).not.toContain("2027-12-31");
+  });
+
+  it("reads a page that says no shows are scheduled as no showings, not as a broken page", () => {
+    const empty = readFileSync(join(import.meta.dirname, "../../../fixtures/silverbird/2026-11-17-galleria-empty.html"), "utf8");
+    expect(parseVeeziSessions(empty, { cinemaId: "silverbird-galleria", readOn: { year: 2026, month: 11, day: 17 } }).showings).toEqual([]);
+  });
+});
+
+describe("readVeezi: each cinema's own sessions page (D-122)", () => {
+  const fixture = (file: string) => readFileSync(join(import.meta.dirname, `../../../fixtures/${file}`), "utf8");
+  const VEEZI = "https://ticketing.eu.veezi.com/sessions/?siteToken=";
+  const pages = {
+    "silverbird-sec": `${VEEZI}ntfpkgyc0phrmzxb2ctk828vd4`,
+    "silverbird-jabi": `${VEEZI}ypr75qx9nh88brqya85qtg3wqc`,
+    "silverbird-galleria": `${VEEZI}4x3z2wcre0rek2beab5w344ae0`,
+  };
+  const saved: Record<string, string> = {
+    [pages["silverbird-sec"]]: fixture("silverbird/2026-11-17-sec.html"),
+    [pages["silverbird-jabi"]]: fixture("silverbird/2026-11-17-jabi.html"),
+    [pages["silverbird-galleria"]]: fixture("silverbird/2026-11-17-galleria-empty.html"),
+  };
+  const NOW = "2026-11-16T23:40:00Z"; // 00:40 on 17 Nov in Lagos, when the pages were saved
+  const run = (served: Record<string, string> = saved, given: Record<string, string> = pages) => {
+    const asked: string[] = [];
+    const fetchText = async (url: string) => {
+      asked.push(url);
+      const page = served[url];
+      if (page === undefined) throw new Error(`unexpected request ${url}`);
+      return page;
+    };
+    const renderText = Object.assign(async () => "", { close: async () => {} });
+    return { asked, read: readVeezi({ now: NOW, days: 2, fetchText, renderText, pages: given }) };
+  };
+
+  it("reads each cinema's sessions page once, nothing else, and keeps today and tomorrow", async () => {
+    const { asked, read } = run();
+    const pagesRead = await read;
+    expect(asked).toEqual(Object.values(pages));
+    expect(asked.every((url) => url.startsWith(VEEZI))).toBe(true);
+    const days = (cinemaId: string) => {
+      const out: Record<string, number> = {};
+      for (const s of pagesRead.flatMap((p) => p.showings).filter((s) => s.cinemaId === cinemaId)) out[s.startsAt.slice(0, 10)] = (out[s.startsAt.slice(0, 10)] ?? 0) + 1;
+      return out;
+    };
+    expect(days("silverbird-sec")).toEqual({ "2026-11-17": 30, "2026-11-18": 30 });
+    expect(days("silverbird-jabi")).toEqual({ "2026-11-17": 27, "2026-11-18": 24 });
+    expect(days("silverbird-galleria")).toEqual({});
+  });
+
+  it("every booking link carries the cinema's own siteToken (Veezi is shared, so the host proves nothing)", async () => {
+    const rows = (await run().read).flatMap((p) => p.showings);
+    for (const row of rows) {
+      const link = new URL(row.bookingUrl!);
+      expect(link.host).toBe("ticketing.eu.veezi.com");
+      expect(`${VEEZI}${link.searchParams.get("siteToken")}`).toBe(pages[row.cinemaId as keyof typeof pages]);
+    }
+  });
+
+  it("refuses a page whose booking links belong to another cinema", async () => {
+    const swapped = { ...saved, [pages["silverbird-sec"]]: fixture("silverbird/2026-11-17-jabi.html") };
+    await expect(run(swapped).read).rejects.toThrow(
+      "Veezi page for silverbird-sec: a booking link (https://ticketing.eu.veezi.com/purchase/",
+    );
+    await expect(run(swapped).read).rejects.toThrow("is not this cinema's (siteToken ntfpkgyc0phrmzxb2ctk828vd4)");
+  });
+
+  it("reads only sessions pages: a purchase page (disallowed by robots.txt) is refused before any request", async () => {
+    const { asked, read } = run(saved, { "silverbird-sec": "https://ticketing.eu.veezi.com/purchase/323428?siteToken=ntfpkgyc0phrmzxb2ctk828vd4" });
+    await expect(read).rejects.toThrow("silverbird-sec: https://ticketing.eu.veezi.com/purchase/323428?siteToken=ntfpkgyc0phrmzxb2ctk828vd4 is not a Veezi sessions page with a siteToken");
+    expect(asked).toEqual([]);
   });
 });

@@ -1,6 +1,8 @@
 // What every source parser returns: showings as the page gives them, with the start time already
 // in UTC. Film titles are the source's own; matching them to film ids happens when the file is built.
 import { lagosLocalToUtc } from "../../src/lib/time/lagos.ts";
+import type { RenderText } from "./browser.ts";
+import type { FetchText } from "./polite.ts";
 
 export type RawShowing = {
   /** The id in data/cinemas.json. */
@@ -18,7 +20,16 @@ export type ParsedPage = {
   showings: RawShowing[];
   /** When the listing says it was built, in UTC; null when it does not say. */
   builtAt: string | null;
+  /** What the reader left out and why, for the run's log (D-122). */
+  notes?: string[];
 };
+
+/**
+ * One source's read for a live run: plain pages through `fetchText`, pages built by script through
+ * `renderText`. `pages` is the source's `cinemaPages` in data/sources.json: each cinema's own
+ * listing page on that source (D-122).
+ */
+export type Reader = (input: { now: string; days: number; fetchText: FetchText; renderText: RenderText; pages: Record<string, string> }) => Promise<ParsedPage[]>;
 
 const OFFSET_TIME = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\+01:00$/;
 

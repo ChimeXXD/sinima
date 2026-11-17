@@ -10,6 +10,9 @@ import type { ShowtimesFile } from "@/lib/data/types";
 const root = join(import.meta.dirname, "../../..");
 const dayPage = readFileSync(join(root, "tests/fixtures/lagocine/2026-11-11-day.html"), "utf8");
 const NOW = "2026-11-11T07:00:00Z"; // 08:00 in Lagos
+// Only Lagocine's reader, so these tests read nothing but the saved day page (the other readers are
+// tested on their own pages in tests/unit/scripts/sources/).
+const LAGOCINE_ONLY = { lagocine: READERS.lagocine! };
 
 function fakeLagocine() {
   const asked: string[] = [];
@@ -24,12 +27,12 @@ function fakeLagocine() {
 describe("refreshLive", () => {
   it("reads Lagocine's day pages for today and tomorrow in Lagos, nothing else", async () => {
     const net = fakeLagocine();
-    await refreshLive({ now: NOW, root, fetchText: net.fetchText });
+    await refreshLive({ now: NOW, root, fetchText: net.fetchText, readers: LAGOCINE_ONLY });
     expect(net.asked).toEqual(["https://lagocine.com/day/2026-11-11/", "https://lagocine.com/day/2026-11-12/"]);
   });
 
   it("writes real data: not sample, read from a public page now, with the cinemas' own booking links", async () => {
-    const { files } = await refreshLive({ now: NOW, root, fetchText: fakeLagocine().fetchText });
+    const { files } = await refreshLive({ now: NOW, root, fetchText: fakeLagocine().fetchText, readers: LAGOCINE_ONLY });
     const all = files.get(`${LIVE_DIR}/showtimes.json`) as ShowtimesFile;
     expect(all.sample).toBe(false);
     expect(all.sources).toEqual([expect.objectContaining({ id: "lagocine", method: "public-page", fetchedAt: NOW, health: "ok" })]);
@@ -49,16 +52,16 @@ describe("refreshLive", () => {
     lagocine.cinemaIds = lagocine.cinemaIds.filter((id) => id !== "ebonylife-vi");
     writeFileSync(join(dir, "data/sources.json"), JSON.stringify(registry));
 
-    const before = (await refreshLive({ now: NOW, root, fetchText: fakeLagocine().fetchText })).files.get(`${LIVE_DIR}/showtimes.json`) as ShowtimesFile;
+    const before = (await refreshLive({ now: NOW, root, fetchText: fakeLagocine().fetchText, readers: LAGOCINE_ONLY })).files.get(`${LIVE_DIR}/showtimes.json`) as ShowtimesFile;
     expect(before.showings.some((s) => s.cinemaId === "ebonylife-vi")).toBe(true); // the page lists EbonyLife
-    const { files, log } = await refreshLive({ now: NOW, root: dir, fetchText: fakeLagocine().fetchText });
+    const { files, log } = await refreshLive({ now: NOW, root: dir, fetchText: fakeLagocine().fetchText, readers: LAGOCINE_ONLY });
     const after = files.get(`${LIVE_DIR}/showtimes.json`) as ShowtimesFile;
     expect(after.showings.some((s) => s.cinemaId === "ebonylife-vi")).toBe(false);
     expect(log).toContainEqual(expect.stringMatching(/^lagocine: left out \d+ showings at cinemas it does not feed$/));
   });
 
   it("writes the page files too: all of the city and one per area", async () => {
-    const { files } = await refreshLive({ now: NOW, root, fetchText: fakeLagocine().fetchText });
+    const { files } = await refreshLive({ now: NOW, root, fetchText: fakeLagocine().fetchText, readers: LAGOCINE_ONLY });
     expect(files.has(`${LIVE_DIR}/all.json`)).toBe(true);
     expect(files.has(`${LIVE_DIR}/area/lekki.json`)).toBe(true);
   });
@@ -67,7 +70,46 @@ describe("refreshLive", () => {
     const failing = async () => {
       throw new Error("lagocine.com answered 503");
     };
-    await expect(refreshLive({ now: NOW, root, fetchText: failing })).rejects.toThrow(/503/);
+    await expect(refreshLive({ now: NOW, root, fetchText: failing, readers: LAGOCINE_ONLY })).rejects.toThrow(/503/);
+  });
+});
+
+describe("each cinema's own reader (D-76, D-122)", () => {
+  it("reads Silverbird's Veezi pages, Genesis, Grand and Blue Pictures from their own sites, beside Lagocine", () => {
+    expect(Object.keys(READERS).sort()).toEqual(["bluepictures", "genesis", "grand", "lagocine", "silverbird"]);
+  });
+
+  it("gives each reader its source's own pages for the cinemas it feeds, from data/sources.json", async () => {
+    const given: Record<string, Record<string, string>> = {};
+    const spy = (id: string) => async (input: { pages: Record<string, string> }) => {
+      given[id] = input.pages;
+      return [{ showings: id === "grand" ? [{ cinemaId: "grand-lekki", filmTitle: "Whalefall", rating: null, startsAt: "2026-11-11T18:30:00Z", format: null, bookingUrl: null }] : [], builtAt: null }];
+    };
+    await refreshLive({ now: NOW, root, fetchText: fakeLagocine().fetchText, readers: { silverbird: spy("silverbird"), grand: spy("grand") } });
+    expect(given.grand).toEqual({ "grand-lekki": "https://grandcinemas.com.ng/" });
+    expect(Object.keys(given.silverbird!)).toEqual(["silverbird-ikeja", "silverbird-galleria", "silverbird-sec", "silverbird-jabi"]);
+    expect(given.silverbird!["silverbird-sec"]).toBe("https://ticketing.eu.veezi.com/sessions/?siteToken=ntfpkgyc0phrmzxb2ctk828vd4");
+  });
+
+  it("puts what a reader left out in the run's log, under its source", async () => {
+    const row = { cinemaId: "grand-lekki", filmTitle: "Whalefall", rating: null, startsAt: "2026-11-11T18:30:00Z", format: null, bookingUrl: null };
+    const grand = async () => [{ showings: [row], builtAt: null, notes: ["https://example.test/film showed no times; that film has today's times only"] }];
+    const { log } = await refreshLive({ now: NOW, root, fetchText: fakeLagocine().fetchText, readers: { grand } });
+    expect(log).toContain("grand: https://example.test/film showed no times; that film has today's times only");
+  });
+
+  it("every cinema a reader feeds has its own page in the source's cinemaPages (Lagocine reads its day pages instead)", () => {
+    const registry = JSON.parse(readFileSync(join(root, "data/sources.json"), "utf8")) as { sources: { id: string; cinemaIds: string[]; cinemaPages?: Record<string, string> }[] };
+    for (const source of registry.sources.filter((s) => s.id !== "lagocine" && Object.hasOwn(READERS, s.id))) {
+      expect(Object.keys(source.cinemaPages ?? {}), source.id).toEqual(source.cinemaIds);
+    }
+  });
+
+  it("no cinema is fed by Lagocine and by its own reader at once, so no showing is listed twice", () => {
+    const registry = JSON.parse(readFileSync(join(root, "data/sources.json"), "utf8")) as { sources: { id: string; status: string; cinemaIds: string[] }[] };
+    const lagocine = new Set(registry.sources.find((s) => s.id === "lagocine")!.cinemaIds);
+    const own = registry.sources.filter((s) => s.id !== "lagocine" && s.status === "cleared" && Object.hasOwn(READERS, s.id)).flatMap((s) => s.cinemaIds);
+    expect(own.filter((id) => lagocine.has(id))).toEqual([]);
   });
 });
 
@@ -75,7 +117,7 @@ describe("refreshLive when one source fails (D-119)", () => {
   // Two sources, as when each cinema has its own reader: Lagocine (no longer feeding Genesis) and
   // Genesis's own site, faked here with one showing at Festac.
   const GENESIS_ROW = { cinemaId: "genesis-festac", filmTitle: "Whalefall", rating: null, startsAt: "2026-11-11T18:30:00Z", format: null, bookingUrl: null };
-  const readers = { ...READERS, genesis: async () => [{ showings: [GENESIS_ROW], builtAt: null }] };
+  const readers = { ...LAGOCINE_ONLY, genesis: async () => [{ showings: [GENESIS_ROW], builtAt: null }] };
   const failing = async (url: string) => {
     throw new Error(`${new URL(url).host} answered 503`);
   };
@@ -159,7 +201,7 @@ describe("refreshLive when one source fails (D-119)", () => {
 describe("liveBuildFiles (the build step)", () => {
   // A live set read before "abuja-wuse" was added to data/cinemas.json.
   const live = async (dir: string) => {
-    const { files } = await refreshLive({ now: NOW, root, fetchText: fakeLagocine().fetchText });
+    const { files } = await refreshLive({ now: NOW, root, fetchText: fakeLagocine().fetchText, readers: LAGOCINE_ONLY });
     mkdirSync(join(dir, LIVE_DIR), { recursive: true });
     writeFileSync(join(dir, LIVE_DIR, "showtimes.json"), JSON.stringify(files.get(`${LIVE_DIR}/showtimes.json`)));
     const registry = JSON.parse(readFileSync(join(root, "data/cinemas.json"), "utf8")) as { areas: { slug: string }[] };
