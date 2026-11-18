@@ -1,8 +1,29 @@
 # Handoff: read this first when you pick the project back up
 
-## Now: session of 18 Nov 2026 (01:00–04:00 Lagos): answers to the open calls, sinima wording, dark-mode fixes, the domain, five days (latest)
+## Now: session of 18 Nov 2026 (12:50–15:00 Lagos): domain live, light by default, five days units 1–2, share card board, day row picked (latest)
 
-**Where we stopped, exactly:** Chime said "go ahead" to five days (D-142). Step 1, measuring how many days each source publishes, ran this session (a one-off script, `scripts/.probe-days.ts`, untracked: it reads every cleared source with the real readers and polite rules, asking for 7 days, and writes nothing). Its results are below (finished 03:45). **Next:** rerun it for Lagocine (5 days) and EbonyLife, Viva and Nova, then report the per-sinima table and a proposed cut-off for "enough sinimas have listed this day" to Chime, get a yes, then build (readers to `daysAhead` 5, a data file per day, the day row in place of Today | Tomorrow; design first). Then delete `scripts/.probe-days.ts`.
+**Where we stopped, exactly:** five days units 1 and 2 are committed (`d14bcc0`, `38ee393`). **Next: unit 3**, the day row on the pages: date tiles (D-148, Figma Design System › Doc · Actions › "Block · Day row": Day tile 290:86, Day row 290:87) replacing Today | Tomorrow on Films, a film's page and a sinima's page; days three to five fetched from `/data/<city>/<date>.json` when picked (D-147; the page lists the days on disk and how many sinimas list each); the sentence "7 of 21 sinimas have put up Saturday's times so far." through `lib/wording/` (D-146); Sinimas' Day menu with five days. "Two days" is fixed in ~15 places (`Day = 0 | 1` in `src/lib/data/programme.ts`, `select.ts`, the wording files, `Pickers.tsx` and `PickerMenus.tsx`, the e2e specs that use `films.day`, `film.day`, `pick.day`, `sheet.day`). Sample data has a later day only in Abuja (Sun after "now"); Lagos's fixtures hold two days, so e2e for later days uses Abuja or a new fixture. Then delete `scripts/.probe-days.ts` (untracked; never commit it).
+
+**Waiting on Chime:** answers on the share card board (`docs/design/reference-board/round7-share.html`, 57 refs; "Copy all answers" and paste). Then: directions pick page → Figma → build (D-145). Coming soon (D-144) comes after.
+
+**Check at 16:17 Lagos today:** the first five-day refresh (`gh run list --workflow refresh-showtimes.yml`): its run time (limit now 30 min; last two-day run 9 m 26 s), the day files in `data/live/<city>/`, their sizes in the log (20 KB each), and any "stopped at" / "no day page … yet" notes.
+
+### What Chime asked this session, and what was done
+
+1. **"Where did we stop?"**, then **"Check the domain"**: sinima.com.ng is live (200; www 308 to it; certificates to 16 Feb 2027). One of the registry's two name servers, nsc.go54.com, answers REFUSED; nsd answers. **Recheck Fri 20 Nov** (`dig A sinima.com.ng @nsc.go54.com`); still refused → draft a Whogohost ticket for Chime.
+2. **Light by default** ("I want the default to be light mode, then you can pull it if you want dark"): D-143. The phone's setting is no longer read; the cord still switches and is remembered. `07e74b2`.
+3. **"What's next? What feature would help?"**, Chime proposed Coming soon: agreed (D-144, O-21 closed). Claude proposed share cards; Chime: yes, from Mobbin references (D-145). Order: five days, share card, Coming soon (PLAN week 3).
+4. **Five days cut-off:** "Do your recommendation" (D-146): every day any sinima lists is shown, later days say how complete they are. Measured counts in PROGRESS.
+5. **Day row:** "B" (D-148): date tiles. Mockup `mockup/day-row/` (local). In Figma.
+
+### Watch out
+
+- A verifier agent ran the full gate itself despite being told not to, and the Stop hook's gate collided with it on port 4173 twice. Tell verifiers explicitly "do not run gate.mjs".
+- Grand: its weekday tabs are this week's; the reader stops at Sunday, so on Sundays Grand has no Monday times (correct, rule 8).
+
+## Earlier: session of 18 Nov 2026 (01:00–04:00 Lagos): answers to the open calls, sinima wording, dark-mode fixes, the domain, five days
+
+**Where that session stopped:** Chime said "go ahead" to five days (D-142). Step 1, measuring how many days each source publishes, ran this session (a one-off script, `scripts/.probe-days.ts`, untracked: it reads every cleared source with the real readers and polite rules, asking for 7 days, and writes nothing). Its results are below (finished 03:45). **Next:** rerun it for Lagocine (5 days) and EbonyLife, Viva and Nova, then report the per-sinima table and a proposed cut-off for "enough sinimas have listed this day" to Chime, get a yes, then build (readers to `daysAhead` 5, a data file per day, the day row in place of Today | Tomorrow; design first). Then delete `scripts/.probe-days.ts`.
 
 Everything else below is committed and pushed (last commit after `9f4a843`). Nothing is running.
 
