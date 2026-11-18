@@ -36,6 +36,9 @@ test("Abuja's Cinemas lists its five cinemas; The Jays says in words that it has
   // The title's logo stickers are chains Abuja has: no Filmhouse or EbonyLife (D-120).
   await expect(page.locator('img[src="/logos/filmhouse.png"], img[src="/logos/ebonylife.png"]')).toHaveCount(0);
   await expect(page.locator('img[src="/logos/nova.png"]').first()).toBeAttached();
+  // Four stickers like Lagos's, The Jays in the fourth place (D-141).
+  await expect(page.getByTestId("cinemas.hero.art").locator("img")).toHaveCount(4);
+  await expect(page.getByTestId("cinemas.hero.art").locator('img[src="/logos/jays.png"]')).toHaveCount(1);
   expect((await cards(page, "cinema")).sort()).toEqual([...ABUJA_CINEMAS].sort());
   await expect(page.getByTestId("cinema.card.jays-kuje").getByTestId("cinema.next")).toHaveText("Times not available yet");
   await expect(page.getByTestId("cinema.card.jays-kuje")).toContainText("Kuje");

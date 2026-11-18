@@ -2,6 +2,12 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 18 Nov 2026 — The Jays fills Abuja's fourth sticker (D-141)
+
+- **Changed:** `CinemasHero.tsx` Abuja's stickers: Nova, Genesis, Silverbird, The Jays (Lagos's fourth position); `data-testid="cinemas.hero.art"`.
+- **Red:** `abuja.spec.ts` "Abuja's Cinemas lists its five cinemas…": `Expected: 4, Received: 3`. **Green:** abuja and cinemas-screen specs 22 pass; screenshots at 390 and 1440 (scratchpad `sinima/abuja-*.png`).
+- **Also this session (D-139, D-140):** sinima.com.ng bought (₦3,225 with VAT, invoice #2428227); added to the Vercel project `lagos-showtimes` (bare name to Production, www 308 to it). Whogohost's DNS zone would not create (twice, no error) while the .ng registry still had no record of the name (RDAP 404). Records to add once it does: A @ 216.198.79.1; CNAME www a8592d53f44e5350.vercel-dns-017.com.
+
 ## 18 Nov 2026 — "Sinima" in place of "cinema" (D-138)
 
 Chime: "anywhere we write cinema, can we change it to SINIMA? … So we can be on brand."
