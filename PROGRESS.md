@@ -2,6 +2,17 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 18 Nov 2026 (12:55 Lagos) — sinima.com.ng is live (D-140)
+
+Chime: "Check the domain, please."
+
+- **Changed:** nothing in Whogohost or Vercel; the DNS zone exists after all (one of the night's "Create DNS Zone" tries took: SOA serial 2026111801). Docs only (HANDOFF, this entry).
+- **Checked:** the .ng registry delegates to nsc.go54.com and nsd.go54.com; the zone holds A @ 216.198.79.1 and www CNAME → sinima.com.ng (Whogohost's default, not the Vercel CNAME planned; it reaches the same Vercel address, so it was left). 1.1.1.1, 8.8.8.8 and 9.9.9.9 all answer 216.198.79.1. `https://sinima.com.ng` 200 (title "Where are you watching? · Sinima"); `https://www.sinima.com.ng` 308 → `https://sinima.com.ng/`; sinima-app.vercel.app 200. Let's Encrypt certificates for both names, valid to 16 Feb 2027 (Vercel renews them).
+- **Found:** nsc.go54.com answers REFUSED for sinima.com.ng (nsd and Whogohost's nsa/nsb answer correctly). Resolvers fall back to nsd, so the site loads; a first lookup can be a little slower until Whogohost's nsc carries the zone.
+- **Also found:** Whogohost added its default mail records (MX → sinima.com.ng, an SPF TXT). Harmless (no mail is sent or received on this name); left, as removing records needs Chime's OK.
+- **Code:** nothing names the site's address yet (no link card, no canonical URL; the bot's contact URL is the repo). The address goes into the code with the launch kit's link card (PLAN §Launch kit).
+- **Not verified:** the Vercel dashboard's Domains page (not opened; the issued certificates mean Vercel saw both names point at it). The registry's RDAP answers 500 for this name (200 for others); delegation itself is checked above.
+
 ## 18 Nov 2026 — The Jays fills Abuja's fourth sticker (D-141)
 
 - **Changed:** `CinemasHero.tsx` Abuja's stickers: Nova, Genesis, Silverbird, The Jays (Lagos's fourth position); `data-testid="cinemas.hero.art"`.

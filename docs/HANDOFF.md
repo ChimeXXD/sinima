@@ -17,7 +17,11 @@ Everything else below is committed and pushed (last commit after `9f4a843`). Not
 7. **Why only two days**: readers fetch 2 (`daysAhead`), page files keep 2, the switch has two places; Lagos's two days are 16.3 of the 20 KB data budget. Chime asked which is better; Claude: five, each day shown only once enough sinimas list it (D-142).
 8. **A $5 domain** (D-139) → **sinima.com.ng** (D-140). See "The domain" below.
 
-### The domain (sinima.com.ng), state when the session ended
+### The domain (sinima.com.ng): live since 18 Nov (checked 12:55 Lagos)
+
+`https://sinima.com.ng` 200, `https://www.sinima.com.ng` 308 to it, certificates valid to 16 Feb 2027 (Vercel renews them). The zone was created after all. **Open:** nsc.go54.com, one of the two name servers the registry lists, answers REFUSED for the name (nsd answers); recheck with `dig A sinima.com.ng @nsc.go54.com` and if it's still REFUSED on 20 Nov, Claude drafts a Whogohost ticket for Chime to send. The address goes into the code with the launch kit's link card. Details in PROGRESS. The notes below are the night's history.
+
+### The domain (sinima.com.ng), state when the night session ended
 
 - **Bought** by Chime at Whogohost (GO54): invoice #2428227, ₦3,225 with VAT (Paystack ₦3,375.64), 18 Nov 02:54 Lagos. Panel: Active, auto-renews 18 Nov 2027 at ₦7,200. **No ID protection** (₦9,000 upsell): the .ng registry already redacts every owner's details (checked google, jumia, whogohost, qservers, truehost .com.ng). Domain lock and ID protection in the panel's "Action needed" box are upsells; nothing is needed.
 - **Vercel: done** (Chime approved in chat). The Vercel project is **`lagos-showtimes`** (not `sinima-app`; it serves sinima-app.vercel.app) in team `ekpenduchimezie1-gmailcoms-projects`. Added `sinima.com.ng` → Production (Vercel's "redirect apex to www" unticked) and `www.sinima.com.ng` → 308 to `sinima.com.ng` ("include apex and www variants" unticked). Both show Invalid Configuration until DNS exists.
@@ -56,7 +60,7 @@ Read at 02:43 UTC on Wed 18 Nov, each source asked for 7 days. Showings per day 
 ### For Chime
 
 - Answer when the days table is ready: the cut-off and the day row design.
-- Say "check the domain" in a few hours.
+- ~~Say "check the domain"~~: live 18 Nov 12:55 (one name server still refusing; recheck 20 Nov).
 - Phone checks still waiting: review rounds 1 and 2, the motion audit, both cities, a trailer, the side panel and scrollbars on the computer, and now dark mode, The Jays' sticker and the sinima wording.
 - **Tue 24 Nov:** if Filmhouse, CINEsync, the Filmhouse Group CEO or FilmOne haven't replied, draft the follow-ups (OUTREACH §4) and show Chime the text first.
 
