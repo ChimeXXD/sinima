@@ -4,10 +4,11 @@
 //   node scripts/refresh.ts --fixtures [--now 2026-11-20T18:00:00Z]   sample data from tests/fixtures/ (D-20)
 //   node scripts/refresh.ts --live                                     the cleared sources, read now, into data/live/ (D-116)
 //   node scripts/refresh.ts --build                                    before a build: data/live/ if it is there, else sample data
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, unlinkSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { gzipSync } from "node:zlib";
+import { CITIES } from "../src/lib/city.ts";
 import type { ShowtimesFile } from "../src/lib/data/types.ts";
 import { lagosDayKey, toLagos } from "../src/lib/time/lagos.ts";
 import { assemble, readJson, readSources, SAMPLE_PATHS } from "./assemble.ts";
@@ -100,9 +101,16 @@ export const overBudget = (files: Map<string, ShowtimesFile>) => overIn(sizes(fi
 const serialise = (path: string, file: ShowtimesFile) => (path.endsWith("showtimes.json") ? `${JSON.stringify(file, null, 2)}\n` : JSON.stringify(file));
 const withoutStamp = (file: ShowtimesFile) => JSON.stringify({ ...file, generatedAt: null });
 
-/** Writes each file under `root`, skipping one whose content is the same apart from generatedAt. */
-export function writeFiles(files: Map<string, ShowtimesFile>, root: string): { written: string[]; unchanged: number } {
+const DAY_FILE = /^\d{4}-\d{2}-\d{2}\.json$/;
+
+/**
+ * Writes each file under `root`, skipping one whose content is the same apart from generatedAt.
+ * Then removes the later-day files (D-147) beside each city file written this run that are no
+ * longer among the days ahead, so the folder holds only the days a page can ask for.
+ */
+export function writeFiles(files: Map<string, ShowtimesFile>, root: string): { written: string[]; unchanged: number; removed: string[] } {
   const written: string[] = [];
+  const removed: string[] = [];
   for (const [path, file] of files) {
     const target = join(root, path);
     if (existsSync(target)) {
@@ -118,7 +126,17 @@ export function writeFiles(files: Map<string, ShowtimesFile>, root: string): { w
     writeFileSync(target, serialise(path, file));
     written.push(path);
   }
-  return { written, unchanged: files.size - written.length };
+  for (const path of files.keys()) {
+    if (!CITIES.some((city) => path.endsWith(`/${city}.json`))) continue;
+    const folder = path.slice(0, -".json".length);
+    if (!existsSync(join(root, folder))) continue;
+    for (const name of readdirSync(join(root, folder))) {
+      if (!DAY_FILE.test(name) || files.has(`${folder}/${name}`)) continue;
+      unlinkSync(join(root, folder, name));
+      removed.push(`${folder}/${name}`);
+    }
+  }
+  return { written, unchanged: files.size - written.length, removed };
 }
 
 /** Checks each file a page loads against the budget, then writes them all; returns the exit code. */
@@ -140,8 +158,8 @@ function writeChecked(files: Map<string, ShowtimesFile>, log: string[], root: st
     console.error("refresh: a data file is over the budget (D-21). Nothing was written.");
     return 1;
   }
-  const { written, unchanged } = writeFiles(files, root);
-  console.log(`refresh: ${what}. Wrote ${written.length} files, ${unchanged} unchanged.`);
+  const { written, unchanged, removed } = writeFiles(files, root);
+  console.log(`refresh: ${what}. Wrote ${written.length} files, ${unchanged} unchanged, ${removed.length} past days removed.`);
   return 0;
 }
 
@@ -178,7 +196,7 @@ export function main(argv: string[]): number | Promise<number> {
   const live = argv.includes("--build") ? liveBuildFiles(root, now) : null;
   if (live) return writeChecked(live, [], root, `the live data in ${LIVE_DIR}/, read at ${live.get(SAMPLE_PATHS.main)?.generatedAt}`);
   const { files, log } = refreshFromFixtures({ now, root });
-  return writeChecked(files, log, root, `sample data for ${lagosDayKey(now)} and the day after (Lagos)`);
+  return writeChecked(files, log, root, `sample data for ${lagosDayKey(now)} and the next four days (Lagos)`);
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) process.exit(await main(process.argv.slice(2)));

@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { gzipSync } from "node:zlib";
@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest";
 import registry from "../../../data/cinemas.json";
 import { validateShowtimes } from "@/lib/data/validate";
 import type { CreditsInfo, ShowtimesFile } from "@/lib/data/types";
-import { clock24 as clock, lagosDayKey } from "@/lib/time/lagos";
+import { clock24 as clock, eveningDayKey, lagosDayKey } from "@/lib/time/lagos";
 import { freshness } from "@/lib/wording/freshness";
 import { buildShowtimes, filmIdFromTitle, titleFormat, toSampleDays } from "../../../scripts/pipeline";
 import { DATA_FILE_LIMIT_KB, main, overBudget, pageLoads, refreshFromFixtures, writeFiles } from "../../../scripts/refresh";
@@ -89,9 +89,15 @@ describe("toSampleDays (D-20)", () => {
     expect(toSampleDays([row("a", "2026-11-11T18:30:00Z")], "2026-11-11", EARLY)[0]?.startsAt).toBe("2026-11-20T18:30:00Z");
   });
 
-  it("drops days past tomorrow and days before the saved day", () => {
-    const moved = toSampleDays([row("a", "2026-12-04T17:00:00Z"), row("a", "2026-11-10T17:00:00Z"), row("a", "2026-11-11T17:00:00Z")], "2026-11-11", EVENING);
-    expect(moved.map((r) => r.startsAt.slice(0, 10))).toEqual(["2026-11-20", "2026-11-21"]);
+  it("keeps the saved day and the next four on today and the next four (D-142), dropping later days and days before the saved day", () => {
+    const moved = toSampleDays([row("a", "2026-12-04T17:00:00Z"), row("a", "2026-11-10T17:00:00Z"), row("a", "2026-11-11T17:00:00Z"), row("a", "2026-11-12T17:00:00Z"), row("a", "2026-11-14T17:00:00Z"), row("a", "2026-11-15T17:00:00Z"), row("a", "2026-11-16T17:00:00Z")], "2026-11-11", EVENING);
+    expect(moved.map((r) => r.startsAt.slice(0, 10))).toEqual(["2026-11-20", "2026-11-21", "2026-11-23", "2026-11-24"]);
+  });
+
+  it("keeps the last day's shows after midnight with its evening (SPEC §3)", () => {
+    // 00:30 in Lagos on the sixth saved day belongs to the fifth day's evening; 04:30 does not.
+    const moved = toSampleDays([row("a", "2026-11-12T17:00:00Z"), row("a", "2026-11-15T23:30:00Z"), row("a", "2026-11-16T03:30:00Z")], "2026-11-11", EVENING);
+    expect(moved.map((r) => r.startsAt)).toEqual(["2026-11-21T17:00:00Z", "2026-11-24T23:30:00Z"]);
   });
 
   it("repeats a cinema's saved day tomorrow only when the fixtures hold no tomorrow for it", () => {
@@ -120,9 +126,9 @@ describe("refresh --fixtures", () => {
   const early = refreshFromFixtures({ now: EARLY, root });
   const all = early.files.get("public/data/all.json") as ShowtimesFile;
 
-  it("writes showtimes.json, all.json, one file per city and one per area", () => {
+  it("writes showtimes.json, all.json, one file per city and one per area, besides the later days' files (D-147)", () => {
     const expected = ["data/showtimes.json", "public/data/all.json", "public/data/lagos.json", "public/data/abuja.json", ...registry.areas.map((a) => `public/data/area/${a.slug}.json`)];
-    expect([...early.files.keys()].sort()).toEqual(expected.sort());
+    expect([...early.files.keys()].filter((path) => !/\/\d{4}-\d{2}-\d{2}\.json$/.test(path)).sort()).toEqual(expected.sort());
     expect(registry.areas).toHaveLength(16); // 12 in Lagos, 4 in Abuja (D-120)
   });
 
@@ -271,8 +277,30 @@ describe("refresh --fixtures", () => {
     expect(new Set(abuja.films.map((f) => f.id))).toEqual(new Set(abuja.showings.map((s) => s.filmId)));
   });
 
+  // D-147: days three to five are one file per city per day, fetched when a visitor picks the day.
+  it("cuts each later day into its own file per city, holding only that day's showings there; none for a day nobody lists", () => {
+    const dayFiles = [...early.files.keys()].filter((path) => /^public\/data\/(lagos|abuja)\/\d{4}-\d{2}-\d{2}\.json$/.test(path)).sort();
+    expect(dayFiles.length).toBeGreaterThan(0);
+    const later = ["2026-11-22", "2026-11-23", "2026-11-24"]; // Fri 20 is today: Sun to Tue
+    for (const path of dayFiles) {
+      const [, city, day] = /data\/(\w+)\/([\d-]+)\.json$/.exec(path)!;
+      expect(later).toContain(day);
+      const file = early.files.get(path) as ShowtimesFile;
+      expect(file.showings.length, path).toBeGreaterThan(0);
+      // A show after midnight stays with its evening (SPEC §3): a day runs to 04:00 the morning after.
+      expect(file.showings.every((s) => eveningDayKey(s.startsAt) === day), path).toBe(true);
+      const areaCity = new Map(registry.areas.map((a) => [a.slug, a.city]));
+      expect(file.cinemas.every((c) => areaCity.get(c.area) === city), path).toBe(true);
+      expect(file.featured ?? [], path).toEqual([]);
+      expect(validateShowtimes(file).ok, path).toBe(true);
+    }
+    // The city files keep today and tomorrow only, as before.
+    const lagos = early.files.get("public/data/lagos.json") as ShowtimesFile;
+    expect(new Set(lagos.showings.map((s) => eveningDayKey(s.startsAt)))).toEqual(new Set(["2026-11-20", "2026-11-21"]));
+  });
+
   it("budgets each file a page loads (each city's and each area's), and not all.json or showtimes.json", () => {
-    expect(["public/data/lagos.json", "public/data/abuja.json", "public/data/area/lekki.json", "data/live/lagos.json", "data/live/area/jabi.json"].every(pageLoads)).toBe(true);
+    expect(["public/data/lagos.json", "public/data/abuja.json", "public/data/area/lekki.json", "data/live/lagos.json", "data/live/area/jabi.json", "public/data/lagos/2026-11-22.json", "data/live/abuja/2026-11-23.json"].every(pageLoads)).toBe(true);
     expect(["public/data/all.json", "data/live/all.json", "data/showtimes.json", "data/live/showtimes.json"].some(pageLoads)).toBe(false);
     // A file too big for the budget: a city file over it stops the write; all.json over it does not.
     const big = (file: ShowtimesFile): ShowtimesFile => ({ ...file, showings: Array.from({ length: 30 }, () => file.showings).flat().map((s, i) => ({ ...s, id: `${s.id}-${i}`, bookingUrl: `https://example.com/${i}/${Math.random()}` })) });
@@ -282,12 +310,23 @@ describe("refresh --fixtures", () => {
 
   it("writes the files to disk, and only rewrites one whose content has changed", () => {
     const out = mkdtempSync(join(tmpdir(), "sinima-refresh-"));
-    expect(writeFiles(early.files, out).written).toHaveLength(20);
+    expect(writeFiles(early.files, out).written).toHaveLength(early.files.size);
     const onDisk = JSON.parse(readFileSync(join(out, "public/data/area/lekki.json"), "utf8")) as ShowtimesFile;
     expect(onDisk).toEqual(early.files.get("public/data/area/lekki.json"));
     // A minute later the showings are the same; only generatedAt differs, so nothing is rewritten.
     const later = refreshFromFixtures({ now: "2026-11-19T23:31:00Z", root });
-    expect(writeFiles(later.files, out)).toEqual({ written: [], unchanged: 20 });
+    expect(writeFiles(later.files, out)).toEqual({ written: [], unchanged: early.files.size, removed: [] });
+  });
+
+  it("removes a later day's file once that day is no longer ahead, and nothing else in the folder", () => {
+    const out = mkdtempSync(join(tmpdir(), "sinima-refresh-"));
+    writeFiles(early.files, out);
+    mkdirSync(join(out, "public/data/lagos"), { recursive: true });
+    writeFileSync(join(out, "public/data/lagos/2026-11-01.json"), "{}");
+    writeFileSync(join(out, "public/data/lagos/notes.txt"), "kept");
+    expect(writeFiles(early.files, out).removed).toEqual(["public/data/lagos/2026-11-01.json"]);
+    expect(existsSync(join(out, "public/data/lagos/2026-11-01.json"))).toBe(false);
+    expect(existsSync(join(out, "public/data/lagos/notes.txt"))).toBe(true);
   });
 
   it("needs a mode: with none (--fixtures, --live or --build) it stops with an error", () => {

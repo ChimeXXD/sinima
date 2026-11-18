@@ -3,7 +3,7 @@
 import { cutFeatured, withFeatured } from "../src/lib/data/featured.ts";
 import type { Cinema, Featured, Film, Showing, ShowtimesFile, Source, SourceHealth } from "../src/lib/data/types.ts";
 import { validateShowtimes } from "../src/lib/data/validate.ts";
-import { EVENING_ENDS_HOUR, lagosDaysFrom, lagosLocalToUtc, toLagos } from "../src/lib/time/lagos.ts";
+import { EVENING_ENDS_HOUR, lagosDayKey, lagosDaysFrom, lagosLocalToUtc, toLagos } from "../src/lib/time/lagos.ts";
 import type { RawShowing } from "./sources/raw.ts";
 
 /** One read of one source: its rows and when they were read. */
@@ -127,8 +127,8 @@ function lagosDate(now: string, days: number): { year: number; month: number; da
 
 /**
  * Sample data sits on today's dates (D-20): rows from the day the fixtures were saved move onto
- * today and rows from the day after onto tomorrow, keeping their wall-clock times. Later days are
- * dropped. A cinema with no saved tomorrow gets its saved day again (D-45). Booking links go: they
+ * today, the day after onto tomorrow and so on for five days (D-142), keeping their wall-clock
+ * times. Later days are dropped. A cinema with no saved tomorrow gets its saved day again (D-45). Booking links go: they
  * point at a session on the day the page was saved.
  */
 export function toSampleDays(rows: RawShowing[], savedDay: string, now: string): RawShowing[] {
@@ -141,7 +141,12 @@ export function toSampleDays(rows: RawShowing[], savedDay: string, now: string):
   // A show after midnight belongs to the evening before (SPEC §3): on its own it is not a saved tomorrow.
   const isTomorrow = (row: RawShowing) => dayOf(row) === 1 && toLagos(row.startsAt).hour >= EVENING_ENDS_HOUR;
   const hasTomorrow = new Set(rows.filter(isTomorrow).map((row) => row.cinemaId));
-  const moved = rows.filter((row) => dayOf(row) === 0 || dayOf(row) === 1).map((row) => move(row, dayOf(row)));
+  // The last day's evening runs past midnight too, so its 00:30 shows stay with it.
+  const shown = (row: RawShowing, day: number) => day >= 0 && (day < DAYS_SHOWN || (day === DAYS_SHOWN && toLagos(row.startsAt).hour < EVENING_ENDS_HOUR));
+  const moved = rows.flatMap((row) => {
+    const day = dayOf(row);
+    return shown(row, day) ? [move(row, day)] : [];
+  });
   const repeated = rows.filter((row) => dayOf(row) === 0 && !hasTomorrow.has(row.cinemaId)).map((row) => move(row, 1));
   return [...moved, ...repeated];
 }
@@ -269,6 +274,27 @@ function only(file: ShowtimesFile, cinemas: Cinema[], keep: (showing: Showing) =
     films: file.films.filter((film) => filmIds.has(film.id)),
     showings,
   }, featured);
+}
+
+/** How many days the site shows, today first (D-142): today and tomorrow in each page, the rest in day files (D-147). */
+export const DAYS_SHOWN = 5;
+
+/**
+ * Days three to five (D-147), each its own file keyed by its Lagos date ("2026-11-22"), holding that
+ * day's showings at every cinema: a day runs from 04:00 to 04:00 the morning after, so a 00:30
+ * show stays with its evening. A day no cinema lists has no file. Featured films are today's only.
+ */
+export function laterDays(file: ShowtimesFile, now: string): Map<string, ShowtimesFile> {
+  const days = new Map<string, ShowtimesFile>();
+  const withoutFeatured: ShowtimesFile = { ...file, featured: undefined };
+  for (let offset = 2; offset < DAYS_SHOWN; offset += 1) {
+    const date = lagosDate(now, offset);
+    const start = lagosLocalToUtc({ ...date, hour: EVENING_ENDS_HOUR, minute: 0 });
+    const end = lagosLocalToUtc({ ...lagosDate(now, offset + 1), hour: EVENING_ENDS_HOUR, minute: 0 });
+    const day = only(withoutFeatured, file.cinemas, (showing) => showing.startsAt >= start && showing.startsAt < end);
+    if (day.showings.length > 0) days.set(lagosDayKey(start), day);
+  }
+  return days;
 }
 
 /**

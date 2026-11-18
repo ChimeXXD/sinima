@@ -2,6 +2,14 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 18 Nov 2026 (afternoon, Lagos) — Five days, unit 2: a file per later day (D-147)
+
+- **Changed:** `laterDays` (`scripts/pipeline.ts`, `DAYS_SHOWN = 5`) cuts days three to five from the whole file, each 04:00 to 04:00, featured films left out (today's only); `pageFiles` writes each one per city as `public/data/<city>/<yyyy-mm-dd>.json` (live: `data/live/<city>/…`), only for a day some sinima in that city lists. City and area files are unchanged (today and tomorrow). Each day file is held to the 20 KB budget (`pageLoads`). `writeFiles` removes day files beside a city file that are no longer among the days ahead (the refresh job's `git add -A -- data/live` commits the removals). Sample data keeps the fixtures' saved day and the next four (`toSampleDays`).
+- **Red:** `refresh.test.ts` "keeps the saved day and the next four…", "cuts each later day into its own file per city…", "removes a later day's file once that day is no longer ahead…", and the write-count test (`removed` missing). **Green:** `npx vitest run` 841 pass; tsc and eslint clean. Tests changed with the requirement: the sample test that dropped days past tomorrow now keeps five; the file-list test leaves the day files to their own test.
+- **Sample data:** only Abuja has a later day in the saved pages (Sun 22 with "now" Fri 20: 57 showings at 2 sinimas); Lagos's saved pages hold two days.
+- **Review:** proof:verifier PASS 8 of 8 (day windows meet `splitByArea` with no gap or overlap; nothing in `src/` reads the day files yet). /code-review: 6 findings, 4 fixed: the sample's fifth day keeps its after-midnight shows (new test), `laterDays` keys days with `lagosDayKey`, one constant for the days (`DAYS_SHOWN`; `DAYS_AHEAD` went), the log says how many past day files were removed; skipped: the untracked probe script, the day files under `data/live/` being rebuilt by the build anyway (as area files are). `npx vitest run` 842 pass; full gate passed.
+- **Not verified:** a live run's day files and sizes (after the 16:17 Lagos run).
+
 ## 18 Nov 2026 (afternoon, Lagos) — Five days, unit 1: every source read for five days (D-142, D-146, D-147)
 
 Chime: "let's do the five days, the share card, and the coming soon", then on the cut-off: "Do your recommendation" (D-146); day row: "B" (D-148, `mockup/day-row/`, local).

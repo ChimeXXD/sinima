@@ -6,7 +6,7 @@ import { CITIES, isCity, type City } from "../src/lib/city.ts";
 import { inCity } from "../src/lib/data/cities.ts";
 import type { Cinema, ShowtimesFile, Source } from "../src/lib/data/types.ts";
 import { mergeCredits, type FilmCredits, type ManualEntry, type TmdbFilm } from "./credits.ts";
-import { buildShowtimes, splitByArea, type Batch } from "./pipeline.ts";
+import { buildShowtimes, laterDays, splitByArea, type Batch } from "./pipeline.ts";
 
 export type RegistryCinema = Omit<Cinema, "sourceIds"> & Record<string, unknown>;
 export type RegistrySource = {
@@ -25,16 +25,18 @@ export const readJson = <T>(path: string) => JSON.parse(readFileSync(path, "utf8
 export const readSources = (root: string) => readJson<{ sources: RegistrySource[] }>(join(root, "data/sources.json")).sources;
 
 /** Where each file goes: the whole file, then "all" and each area slug, then each city (D-126). */
-export type Paths = { main: string; part: (slug: string) => string; city: (city: City) => string };
+export type Paths = { main: string; part: (slug: string) => string; city: (city: City) => string; day: (city: City, date: string) => string };
 export const SAMPLE_PATHS: Paths = {
   main: "data/showtimes.json",
   part: (slug) => (slug === "all" ? "public/data/all.json" : `public/data/area/${slug}.json`),
   city: (city) => `public/data/${city}.json`,
+  day: (city, date) => `public/data/${city}/${date}.json`,
 };
 
 /**
  * The page files cut from the whole file: "all" and each area's (the next two days), then each
- * city's cut from "all" (D-126), the file that city's pages are built from.
+ * city's cut from "all" (D-126), the file that city's pages are built from; then each later day's
+ * file per city (D-147), fetched by a page when a visitor picks that day.
  */
 export function pageFiles(file: ShowtimesFile, areas: { slug: string; city: string }[], now: string, paths: Paths): Map<string, ShowtimesFile> {
   const files = new Map<string, ShowtimesFile>();
@@ -43,6 +45,12 @@ export function pageFiles(file: ShowtimesFile, areas: { slug: string; city: stri
   const cities = new Map(areas.flatMap((area) => (isCity(area.city) ? [[area.slug, area.city] as const] : [])));
   const cityOfArea = (slug: string) => cities.get(slug);
   for (const city of CITIES) files.set(paths.city(city), inCity(parts.get("all") as ShowtimesFile, city, cityOfArea));
+  for (const [date, day] of laterDays(file, now)) {
+    for (const city of CITIES) {
+      const part = inCity(day, city, cityOfArea);
+      if (part.showings.length > 0) files.set(paths.day(city, date), part);
+    }
+  }
   return files;
 }
 

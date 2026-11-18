@@ -10,7 +10,7 @@ import { lagosDayKey, lagosLocalToUtc, toLagos, utcMs, utcString } from "../src/
 import { COMPILERS } from "../src/lib/data/about.ts";
 import { validateShowtimes } from "../src/lib/data/validate.ts";
 import { assemble, creditsLookup, pageFiles, readJson, readSources, SAMPLE_PATHS, type Paths } from "./assemble.ts";
-import type { Batch } from "./pipeline.ts";
+import { DAYS_SHOWN, type Batch } from "./pipeline.ts";
 import { readBluePictures } from "./sources/bluepictures.ts";
 import type { RenderText } from "./sources/browser.ts";
 import { genesisReader, MAX_FILM_PAGES } from "./sources/genesis.ts";
@@ -30,13 +30,14 @@ const LIVE_PATHS: Paths = {
   main: `${LIVE_DIR}/showtimes.json`,
   part: (slug) => (slug === "all" ? `${LIVE_DIR}/all.json` : `${LIVE_DIR}/area/${slug}.json`),
   city: (city) => `${LIVE_DIR}/${city}.json`,
+  day: (city, date) => `${LIVE_DIR}/${city}/${date}.json`,
 };
 const DAY = 86_400_000;
 
 export type { Reader };
 
 /** How many days each source is asked for, today first (D-142, D-146). */
-export const DAYS_AHEAD = 5;
+export const DAYS_AHEAD = DAYS_SHOWN;
 
 /**
  * The sources we can read live. A cleared source with no reader here is not read yet. Each cinema
