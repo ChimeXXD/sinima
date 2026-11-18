@@ -11,9 +11,9 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { Film } from "../src/lib/data/types.ts";
+import type { Coming, Film, Showing } from "../src/lib/data/types.ts";
 import { lagosDayKey } from "../src/lib/time/lagos.ts";
-import { answerShare, mergeCredits, pickMatch, pickTrailer, type ManualEntry, type TmdbFilm, type TmdbResult, type TmdbVideo } from "./credits.ts";
+import { answerShare, mergeCredits, pickComingMatch, pickMatch, pickTrailer, type ManualEntry, type TmdbFilm, type TmdbResult, type TmdbVideo } from "./credits.ts";
 import { subtitleHeadIds } from "./pipeline.ts";
 import { refreshFromFixtures } from "./refresh.ts";
 
@@ -27,14 +27,28 @@ export type Deps = { root: string; env: Record<string, string | undefined>; fetc
 
 const readJson = <T>(path: string, fallback: T): T => (existsSync(path) ? (JSON.parse(readFileSync(path, "utf8")) as T) : fallback);
 
-/** The films in the live data (D-116) and in the built (or else sample) data, once each: both need posters and trailers. */
-function filmsShowing(root: string, now: string): Film[] {
-  const liveFilms = readJson<{ films: Film[] }>(join(root, "data/live/showtimes.json"), { films: [] }).films;
+type DataFile = { films: Film[]; showings?: Showing[]; coming?: Coming[] };
+
+/**
+ * The films in the live data (D-116) and in the built (or else sample) data, once each: both need
+ * posters and trailers. With them, the first date of each film that is only coming (D-151), which
+ * no showing has in either file, for its own match rule.
+ */
+function filmsShowing(root: string, now: string): { films: Film[]; comingOn: Map<string, string> } {
+  const live = readJson<DataFile>(join(root, "data/live/showtimes.json"), { films: [] });
   const onDisk = join(root, "data/showtimes.json");
-  const sampleFilms = existsSync(onDisk) ? readJson<{ films: Film[] }>(onDisk, { films: [] }).films : (refreshFromFixtures({ now, root }).files.get("data/showtimes.json") as { films: Film[] }).films;
+  const sample = existsSync(onDisk) ? readJson<DataFile>(onDisk, { films: [] }) : (refreshFromFixtures({ now, root }).files.get("data/showtimes.json") as DataFile);
   const byId = new Map<string, Film>();
-  for (const film of [...liveFilms, ...sampleFilms]) if (!byId.has(film.id)) byId.set(film.id, film);
-  return [...byId.values()];
+  for (const film of [...live.films, ...sample.films]) if (!byId.has(film.id)) byId.set(film.id, film);
+  // A file with no showings list (an old one) counts every film as showing.
+  const showing = new Set([live, sample].flatMap((file) => (file.showings ?? file.films.map((film) => ({ filmId: film.id }))).map((row) => row.filmId)));
+  const comingOn = new Map<string, string>();
+  for (const entry of [live, sample].flatMap((file) => file.coming ?? [])) {
+    if (showing.has(entry.filmId) || entry.firstDay === null) continue;
+    const known = comingOn.get(entry.filmId);
+    if (known === undefined || entry.firstDay < known) comingOn.set(entry.filmId, entry.firstDay);
+  }
+  return { films: [...byId.values()], comingOn };
 }
 
 /**
@@ -67,7 +81,7 @@ async function ask<T>(path: string, deps: Deps, token: string): Promise<T> {
 export async function main(argv: string[], deps: Deps): Promise<number> {
   const { root, now } = deps;
   const dryRun = argv.includes("--dry-run");
-  const films = filmsShowing(root, now);
+  const { films, comingOn } = filmsShowing(root, now);
   const overrides = readJson<{ films: Record<string, number | null> }>(join(root, "data/tmdb-overrides.json"), { films: {} }).films;
   const manual = readJson<{ films: Record<string, ManualEntry> }>(join(root, "data/credits-manual.json"), { films: {} }).films;
   const cachePath = join(root, "data/credits.json");
@@ -113,7 +127,9 @@ export async function main(argv: string[], deps: Deps): Promise<number> {
     let tmdbId = typeof byHand === "number" ? byHand : null;
     if (tmdbId === null) {
       const found = await ask<{ results: TmdbResult[] }>(`/search/movie?query=${encodeURIComponent(film.title)}&include_adult=false`, deps, token);
-      tmdbId = pickMatch(film.title, found.results ?? [], lagosDayKey(now));
+      // A film only coming is matched against the sinima's first date (D-151); one with no date, or showing, against today.
+      const firstDay = comingOn.get(film.id);
+      tmdbId = firstDay ? pickComingMatch(film.title, found.results ?? [], firstDay) : pickMatch(film.title, found.results ?? [], lagosDayKey(now));
     }
     if (tmdbId === null) {
       console.log(`tmdb: no sure match for "${film.title}"; it stays "not known yet"`);

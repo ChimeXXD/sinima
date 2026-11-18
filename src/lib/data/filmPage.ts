@@ -17,18 +17,19 @@ const upcoming = (row: ListRow, now: string) => isBeforeStart(showingState(row.a
 const recent = (row: ListRow, now: string) => showingState(row.at, now) !== "ended";
 
 /** The cinemas listed on a day, each with its times. */
-function cinemaTimes(rows: ListRow[], day: Day, now: string, live: boolean): CinemaTimes[] {
-  if (!live || day === 1) return byCinema(showingOn(rows, day, now, null, !live));
+function cinemaTimes(rows: ListRow[], day: Day, now: string, live: boolean, anchor?: string): CinemaTimes[] {
+  if (!live || day !== 0) return byCinema(showingOn(rows, day, now, null, !live, anchor));
   const today = showingOn(rows, 0, now, null, true);
   const open = byCinema(today.filter((row) => upcoming(row, now)));
   // Ordered by their next showing, with the recently started ones put back in front of it.
   return open.map(({ cinema }) => ({ cinema, rows: today.filter((row) => row.cinema === cinema && recent(row, now)) }));
 }
 
-export function areaGroups(rows: ListRow[], day: Day, now: string, live: boolean, areaOf: (cinema: number) => string, home: Home | null): AreaGroup[] {
+/** `anchor`: the page's, for a later day's rows (showingOn). */
+export function areaGroups(rows: ListRow[], day: Day, now: string, live: boolean, areaOf: (cinema: number) => string, home: Home | null, anchor?: string): AreaGroup[] {
   const groups = new Map<string, CinemaTimes[]>();
   // Cinemas come soonest first, so each area's first cinema sets the area's place.
-  for (const times of cinemaTimes(rows, day, now, live)) groups.set(areaOf(times.cinema), [...(groups.get(areaOf(times.cinema)) ?? []), times]);
+  for (const times of cinemaTimes(rows, day, now, live, anchor)) groups.set(areaOf(times.cinema), [...(groups.get(areaOf(times.cinema)) ?? []), times]);
   const rank = (area: string) => (home === null ? 2 : area === home.slug ? 0 : home.neighbours.includes(area) ? 1 : 2);
   const tag = (area: string) => (["home", "next", null] as const)[rank(area)]!;
   return [...groups]

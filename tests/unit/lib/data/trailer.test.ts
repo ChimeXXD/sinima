@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import example from "../../../../docs/examples/showtimes-v1.example.json";
 import type { ShowtimesFile } from "@/lib/data/types";
-import { toListData } from "@/lib/data/select";
+import { toListData } from "@/lib/data/listData";
 import { validateShowtimes } from "@/lib/data/validate";
 import { trailerLink } from "@/lib/wording/filmPage";
 

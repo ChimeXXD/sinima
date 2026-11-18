@@ -1,3 +1,5 @@
+import { lagosDayKey } from "../time/lagos.ts";
+import { stillComing } from "./coming.ts";
 import type { ShowtimesFile } from "./types.ts";
 
 // Enforces every rule in docs/DATA.md §Rules. A broken file is refused with every problem named;
@@ -37,6 +39,9 @@ function isUtc(value: unknown): value is string {
   const ms = Date.parse(value);
   return !Number.isNaN(ms) && new Date(ms).toISOString() === value.replace("Z", ".000Z");
 }
+
+/** A real calendar date, "yyyy-mm-dd". */
+const isDate = (value: unknown): value is string => typeof value === "string" && isUtc(`${value}T00:00:00Z`);
 
 const bareHost = (host: string) => host.toLowerCase().replace(/^www\./, "");
 
@@ -144,10 +149,22 @@ export function validateShowtimes(input: unknown, options: ValidateOptions = {})
     const at = `featured[${i}]`;
     if (!isRow(entry)) return errors.push(`${at} must be an object, got ${show(entry)}`);
     needText(entry.sourceId, `${at}.sourceId`);
-    if (!(typeof entry.day === "string" && isUtc(`${entry.day}T00:00:00Z`))) errors.push(`${at}.day must be a Lagos date like 2026-11-17, got ${show(entry.day)}`);
+    if (!isDate(entry.day)) errors.push(`${at}.day must be a Lagos date like 2026-11-17, got ${show(entry.day)}`);
     needUtc(entry.fetchedAt, `${at}.fetchedAt`);
     if (!(Array.isArray(entry.cinemaIds) && entry.cinemaIds.every(isText))) errors.push(`${at}.cinemaIds must be a list of cinema ids, got ${show(entry.cinemaIds)}`);
     if (!(Array.isArray(entry.films) && entry.films.every((f) => isRow(f) && isText(f.id) && isText(f.title)))) errors.push(`${at}.films must be a list of { id, title }, got ${show(entry.films)}`);
+  });
+
+  // Films a sinima lists as coming (D-151): optional, each film also in `films`.
+  const coming = file.coming === undefined ? undefined : Array.isArray(file.coming) ? file.coming : (errors.push("coming must be a list"), []);
+  (coming ?? []).forEach((entry, i) => {
+    const at = `coming[${i}]`;
+    if (!isRow(entry)) return errors.push(`${at} must be an object, got ${show(entry)}`);
+    needText(entry.sourceId, `${at}.sourceId`);
+    needText(entry.filmId, `${at}.filmId`);
+    if (!(entry.firstDay === null || isDate(entry.firstDay))) errors.push(`${at}.firstDay must be a Lagos date like 2026-12-18 or null, got ${show(entry.firstDay)}`);
+    needUtc(entry.fetchedAt, `${at}.fetchedAt`);
+    if (!(Array.isArray(entry.cinemaIds) && entry.cinemaIds.every(isText))) errors.push(`${at}.cinemaIds must be a list of cinema ids, got ${show(entry.cinemaIds)}`);
   });
 
   if (errors.length > 0) return { ok: false, errors };
@@ -186,6 +203,24 @@ export function validateShowtimes(input: unknown, options: ValidateOptions = {})
     // Left out when empty, as a file without any is written (DATA.md §Featured films).
     if (list.length > 0) file.featured = list;
     else delete file.featured;
+  }
+
+  if (coming) {
+    // A film whose first date has come is on now, not coming: its showings, if any, carry it.
+    const today = lagosDayKey(file.generatedAt as string);
+    const list = (coming as Row[]).flatMap((entry) => {
+      const what = `the coming film ${show(entry.filmId)} from`;
+      if (!sourceById.has(entry.sourceId)) return (log.push(`Dropped ${what} ${show(entry.sourceId)}: its source is not in the file`), []);
+      if (!filmById.has(entry.filmId)) return (log.push(`Dropped ${what} ${String(entry.sourceId)}: the film is not in the file`), []);
+      if (!stillComing(entry as { firstDay: string | null }, today)) return (log.push(`Dropped ${what} ${String(entry.sourceId)}: its first date ${String(entry.firstDay)} is not after ${today}`), []);
+      const ids = entry.cinemaIds as string[];
+      for (const id of ids.filter((id) => !cinemaById.has(id))) log.push(`Coming film ${show(entry.filmId)} from ${String(entry.sourceId)}: dropped the cinema ${show(id)}, which is not in the file`);
+      const known = ids.filter((id) => cinemaById.has(id));
+      return known.length > 0 ? [{ ...entry, cinemaIds: known }] : [];
+    });
+    // Left out when empty, as a file without any is written (DATA.md §Coming films).
+    if (list.length > 0) file.coming = list;
+    else delete file.coming;
   }
 
   let kept = showings.filter((showing) => {

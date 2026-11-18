@@ -1,5 +1,5 @@
 import { CITY_NAMES, type City } from "@/lib/city";
-import { list } from "@/lib/wording/credits";
+import { list } from "@/lib/wording/list";
 
 // Every sentence on Where are you watching? (Figma 162:215, 162:262, 162:302 and their iPad and
 // desktop frames).

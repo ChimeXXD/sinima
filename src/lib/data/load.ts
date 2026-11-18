@@ -1,8 +1,10 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import registry from "../../../data/cinemas.json";
 import { isCity, type City } from "@/lib/city";
 import { cityOfCinema } from "@/lib/data/cities";
+import { cityDays, type LaterFile } from "@/lib/data/cityDays";
+import type { DayInfo } from "@/lib/data/days";
 import type { ShowtimesFile } from "@/lib/data/types";
 
 // Build-time only: pages read the files `npm run refresh` wrote (DATA §Per-area files). Each page
@@ -46,6 +48,25 @@ export const loadAll = () => read("all.json");
 /** One city's cinemas, showings, films and sources (D-120): what a city's page is built from, its own file (D-126). */
 export const loadCity = (city: City) => read(`${city}.json`);
 export const loadArea = (slug: string) => read(`area/${slug}.json`);
+
+/** Every later day's file on disk for a city (D-147): `public/data/<city>/<yyyy-mm-dd>.json`. */
+function laterFiles(city: City): LaterFile[] {
+  const dir = join(process.cwd(), "public/data", city);
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir)
+    .filter((name) => /^\d{4}-\d{2}-\d{2}\.json$/.test(name))
+    .map((name) => ({ date: name.slice(0, 10), file: read(`${city}/${name}`) }));
+}
+
+/** The later days a city's pages offer: only those from the third to the fifth day after its file was made. */
+export function loadLater(city: City): LaterFile[] {
+  const files = laterFiles(city);
+  const shown = new Set(cityDays(loadCity(city), files).filter((day) => day.later).map((day) => day.date));
+  return files.filter((later) => shown.has(later.date));
+}
+
+/** The days a city's page lists, with the sinimas listing each (D-146): what the date tiles and the sentence under them need. */
+export const loadDays = (city: City): DayInfo[] => cityDays(loadCity(city), laterFiles(city));
 
 /** A page's city from its address (D-98); a static page is only ever built for a known one. */
 export function cityParam(slug: string): City {

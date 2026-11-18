@@ -21,6 +21,7 @@ Written 6 Nov 2026. `data/showtimes.json` is what the pages build from. `data/ci
 | Size | Within the budget set on Day 0 (D-21, supersedes D-12's 60 KB). Showings that ended more than 1 hour before `generatedAt` are removed. | CI fails |
 
 `featured` (optional) lists films a chain's page features without times; see §Featured films without times (D-131).
+`coming` (optional) lists films a sinima lists as coming, with its first date; see §Coming films (D-151).
 
 Unknown keys are ignored, so a newer writer can add fields without breaking an older reader. Any change that breaks a reader bumps `schemaVersion`.
 
@@ -299,11 +300,37 @@ Before a build, `npm run build` runs `refresh --build`: it copies `data/live/sho
 
 **Source entry.** `filmhouse-home` in `data/sources.json` is `cleared` (a public page, D-77), has `cinemaIds: []` (it feeds no showings, so the "no cinema fed twice" test still holds) and `featuredFor` (Filmhouse's 7). `refresh --live` reads a cleared source that has a reader and either `cinemaIds` or `featuredFor`. The `filmhouse` entry stays `pending`, and Lagocine stays the source of Filmhouse's times.
 
-**What is read.** One request a run to `https://www.filmhouseng.com/` (`scripts/sources/filmhouse.ts`). Its "Now Showing" list is empty in the HTML (the browser fills it from CINEsync, never called), so the parser reads the banner's data in the page's `self.__next_f` scripts: each film's title, runtime, rating and `nearest_show_times_date`. A film whose date is today in Lagos is featured; the page's `is_coming_soon` flag is not used (false for all 9 on 17 Nov, Avengers: Doomsday included). The banner must be for every location ("All"), or the read fails. No banner, no films in it, a film with no title or a date that is not `yyyy-mm-dd` fails the read ("Has the page layout changed?"); a failed read keeps the last good list while its day lasts (D-119).
+**What is read.** One request a run to `https://www.filmhouseng.com/` (`scripts/sources/filmhouse.ts`). Its "Now Showing" list is empty in the HTML (the browser fills it from CINEsync, never called), so the parser reads the banner's data in the page's `self.__next_f` scripts: each film's title, runtime, rating and `nearest_show_times_date`. A film whose date is today in Lagos is featured; one whose date is after today is coming (§Coming films). The page's `is_coming_soon` flag was false for all 9 on 17 Nov (Avengers: Doomsday included), so the date decides; the flag counts only for a film with no date. The banner must be for every location ("All"), or the read fails. No banner, no films in it, a film with no title or a date that is not `yyyy-mm-dd` fails the read ("Has the page layout changed?"); a failed read keeps the last good list while its day lasts (D-119).
 
 **What a page shows.** `toListData` sends the list only for cinemas with no showing in the city's file at all, so real times always win; `featuredAt` gives it only on its own Lagos day (before the page knows the time, the line gives the date, rule 3). Words through `lib/wording/featured.ts`: "Filmhouse's home page features Ghost Soldier, How to Rob a Bank, Five Figurines and Dear Ajayi today." on the Cinemas row (today only) and the area card, plus "All times are on Filmhouse's site." on the cinema's page, beside its Book button. Never "Filmhouse is showing", never "and N more", never per cinema: the banner is a chain-wide promotion, not the programme.
 
 **Sample data.** `tests/fixtures/filmhouse/2026-11-17-home.html` (the banner's data only) is sample data: its films for the day it was saved go on today. The 11 Nov Lagocine day page's rows for Filmhouse Palms Lekki are left out of the sample (`leaveOut` on its entry in `tests/fixtures/index.json`), so the sample holds a Filmhouse cinema with no times, as all 7 were live on 17 Nov.
+
+## Coming films (D-144, D-151)
+
+`coming` (optional, left out when empty): the films a sinima's own page lists as coming, each once per source, by first date with undated ones last. Today only Filmhouse's home page (`filmhouse-home`): a banner film whose `nearest_show_times_date` is after today in Lagos is coming from that date; a banner film with no date that the page flags `is_coming_soon` is coming with no date ("Date not announced", D-144). Each coming film is also in `films` (its id matched with the showings' films, D-119), so its poster, credits and trailer are looked up like any other film's; a coming film no showing has gets the page's rating, `runtimeMin` from TMDB only, and the page's title without a space before a colon ("DUNE : PART THREE" is shown "DUNE: PART THREE"; the id is `dune-part-three` either way).
+
+```json
+"coming": [
+  { "sourceId": "filmhouse-home", "filmId": "avengers-doomsday", "firstDay": "2026-12-18", "cinemaIds": ["filmhouse-lekki-imax", "…"], "fetchedAt": "2026-11-17T15:59:08Z" }
+]
+```
+
+| Field | Rule | If broken |
+| --- | --- | --- |
+| `coming` | A list, when present. Never showings: it adds no times and no rows. | Refuse the file |
+| `firstDay` | The sinima's first date, a Lagos date `yyyy-mm-dd`, never TMDB's; or `null` when the sinima gives none. | Refuse the file |
+| `firstDay` on or before the Lagos day of `generatedAt` | The film is on now, not coming. | Drop the entry, log it |
+| `filmId` | A film in the file. | Drop the entry, log it |
+| `sourceId` | A source in the file. | Drop the entry, log it |
+| `cinemaIds` | Cinemas in the file (the ones the page speaks for: `featuredFor` in `data/sources.json`). | Drop the unknown ones, log it; drop the entry when none is left |
+| `fetchedAt` | UTC with `Z`. | Refuse the file |
+
+**Page files.** Each city's and area's file keeps the entries for its own cinemas, and the films and sources they use (Abuja has none while only Filmhouse's page gives coming films). An entry whose first date is not after the build's today (Lagos) leaves the page files. The later day files (D-147) carry none. A failed read keeps the last good list (D-119), each film while its date is still ahead.
+
+**TMDB (D-151).** A film that is only coming (no showing in the live or sample data) is matched by `pickComingMatch`: the same title, a TMDB release year within one year of `firstDay`'s (TMDB's dates differ from Nigeria's: Doomsday 16 Dec there, 18 Dec at Filmhouse), and exactly one such film; otherwise no poster, and the UI shows the NoPoster face. Checked against TMDB on 18 Nov 2026: Doomsday, Dune: Part Three and Jumanji: Open World match; "THE FOUR" finds "The Fantastic 4: First Steps" and stays unmatched. An undated coming film is matched like a showing film (`pickMatch`, from today).
+
+**Sample data.** The saved home page's coming films keep their distance from the day it was saved (17 Nov): a film first on 18 Dec opens 31 days after the sample's today (`sampleDay`).
 
 ## Sample data (D-20, D-45)
 

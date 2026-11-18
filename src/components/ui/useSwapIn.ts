@@ -14,12 +14,15 @@ export type ChangeHow = "tap" | "keys";
  * (so a section the new day adds enters too). Reduced motion: a fade only.
  *
  * Returns `swap(direction, how)`: call it in the change handler before setting the new value.
+ * `ready` false holds the swap until the new day's times are there (a later day's file, D-147):
+ * the list slides in when it arrives, not the loading line before it.
  */
-export function useSwapIn(value: unknown): (direction: 1 | -1, how: ChangeHow) => void {
+export function useSwapIn(value: unknown, ready = true): (direction: 1 | -1, how: ChangeHow) => void {
   /** Set by a change: 1 or -1 slides in from that side, 0 (the arrow keys) only stops a running swap. */
   const pending = useRef<1 | -1 | 0 | null>(null);
 
   useLayoutEffect(() => {
+    if (!ready) return;
     const direction = pending.current;
     pending.current = null;
     if (direction === null) return;
@@ -30,7 +33,7 @@ export function useSwapIn(value: unknown): (direction: 1 | -1, how: ChangeHow) =
     const frames: Keyframe[] = m.reduce ? [{ opacity: 0 }, { opacity: 1 }] : [{ opacity: 0, transform: `translateX(${8 * direction}px)` }, { opacity: 1, transform: "none" }];
     const timing = { id: "swap", duration: m.reduce ? m.fast : m.base, easing: m.easeOut };
     for (const el of document.querySelectorAll<HTMLElement>("[data-swap]")) el.animate(frames, timing);
-  }, [value]);
+  }, [value, ready]);
 
   return useCallback((direction: 1 | -1, how: ChangeHow) => {
     pending.current = how === "tap" ? direction : 0;

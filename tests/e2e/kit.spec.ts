@@ -42,8 +42,9 @@ test("the chip toggles and the segmented control follows the arrow keys", async 
   await chip.click();
   await expect(chip).toHaveAttribute("aria-pressed", "false");
 
-  const today = page.getByRole("radio", { name: "Today" });
-  const tomorrow = page.getByRole("radio", { name: "Tomorrow" });
+  // The Segmented's own radios: the Day row below it has a Today and a Tomorrow tile too.
+  const today = page.getByTestId("kit.segmented").getByRole("radio", { name: "Today" });
+  const tomorrow = page.getByTestId("kit.segmented").getByRole("radio", { name: "Tomorrow" });
   await today.focus();
   await page.keyboard.press("ArrowRight");
   await expect(tomorrow).toHaveAttribute("aria-checked", "true");
@@ -184,13 +185,52 @@ test("on a 360 px phone the tab bar still holds every tab when the open tab's na
 });
 
 test("each segment of the day switch has a 44 px touch area", async ({ page }) => {
-  const segment = page.getByRole("radio", { name: "Tomorrow" });
+  const segment = page.getByTestId("kit.segmented").getByRole("radio", { name: "Tomorrow" });
   const area = await segment.evaluate((el) => {
     const after = getComputedStyle(el, "::after");
     return el.getBoundingClientRect().height - parseFloat(after.top) - parseFloat(after.bottom);
   });
   expect(area).toBeGreaterThanOrEqual(44);
 });
+
+// Block · Day row (Figma 290:87, Day tile 290:86, D-148): five date tiles, the picked one raised.
+test("the Day row: Figma's sizes, each tile named as its whole day, the sentence under it", async ({ page }) => {
+  const row = page.getByTestId("kit.dayrow");
+  const tiles = row.getByRole("radio");
+  await expect(tiles).toHaveCount(5);
+  near((await box(row)).width, 358);
+  near((await box(tiles.nth(0))).height, 59);
+  near((await box(row)).height, 67);
+  await expect(tiles.nth(0)).toHaveAccessibleName("Today, Friday 6 November");
+  await expect(tiles.nth(1)).toHaveAccessibleName("Tomorrow, Saturday 7 November");
+  await expect(tiles.nth(3)).toHaveAccessibleName("Monday 9 November");
+  await expect(tiles.nth(0)).toHaveText("Today6");
+  await expect(tiles.nth(3)).toHaveText("Mon9");
+  await expect(tiles.nth(3)).toHaveAttribute("aria-checked", "true");
+  // Picked: the weekday turns the accent, the date the primary text; the others stay secondary.
+  const colour = (tile: Locator, part: number) => tile.locator("span").nth(part).evaluate((el) => getComputedStyle(el).color);
+  const accent = await page.evaluate(() => { const probe = document.createElement("i"); probe.style.color = "var(--text-accent)"; document.body.append(probe); const c = getComputedStyle(probe).color; probe.remove(); return c; });
+  await expect.poll(() => colour(tiles.nth(3), 0)).toBe(accent);
+  expect(await tiles.nth(0).locator("span").nth(1).evaluate((el) => getComputedStyle(el).fontSize)).toBe("22px");
+  expect(await tiles.nth(0).locator("span").nth(0).evaluate((el) => getComputedStyle(el).fontSize)).toBe("12px");
+  await expect(page.getByTestId("kit.dayrow.listed")).toHaveText("7 of 21 sinimas have put up Monday's times so far.");
+  await tiles.nth(1).click();
+  await expect(page.getByTestId("kit.dayrow.listed")).toHaveText("20 of 21 sinimas have put up tomorrow's times so far.");
+  await tiles.nth(0).click();
+  await expect(page.getByTestId("kit.dayrow.listed")).toHaveText(""); // every sinima has listed today: no sentence, its line kept
+});
+
+for (const width of [320, 360, 390]) {
+  test(`at ${width} px all five day tiles fit, whole`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 800 });
+    const row = page.getByTestId("kit.dayrow");
+    const { x, width: w } = await box(row);
+    expect(x + w).toBeLessThanOrEqual(width - 15.5);
+    expect(await row.locator("span, [role=radio]").evaluateAll((els) => els.filter((el) => el.scrollWidth > el.clientWidth + 0.5).length)).toBe(0);
+    for (const tile of await row.getByRole("radio").all()) expect((await box(tile)).width).toBeGreaterThanOrEqual(44);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+  });
+}
 
 test("after midnight a time says its day in small type, and keeps the pill and chip shapes", async ({ page }) => {
   const chip = page.getByTestId("kit.timechips").getByTestId("time-chip").nth(3);

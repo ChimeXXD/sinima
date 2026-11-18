@@ -124,3 +124,13 @@ describe("nextNearby: after a showing has started, the next times near it", () =
     expect(nextNearby([picked], picked, at, areaOf, () => []).rows).toEqual([]);
   });
 });
+
+describe("a later day (D-142)", () => {
+  it("lists every cinema showing it that day with all its times, soonest first", () => {
+    const sun = [row(2, "2026-11-15T18:00:00Z"), row(0, "2026-11-15T13:00:00Z"), row(0, "2026-11-15T19:00:00Z")];
+    expect(areaGroups(sun, 2, NOW, true, areaOf, null).map((g) => [g.area, g.cinemas.map((c) => [c.cinema, c.rows.length])])).toEqual([
+      ["lekki", [[0, 2]]],
+      ["victoria-island", [[2, 1]]],
+    ]);
+  });
+});

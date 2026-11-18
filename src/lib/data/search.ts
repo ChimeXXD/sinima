@@ -1,8 +1,6 @@
 import type { FormatTag } from "@/lib/data/format";
 import { byFilm, formatsOf, showingOn, type Day } from "@/lib/data/programme";
-import { cityOfCinema, type CityOfArea } from "@/lib/data/cities";
-import { toListData, type ListFresh, type ListRow } from "@/lib/data/select";
-import type { ShowtimesFile } from "@/lib/data/types";
+import type { ListFresh, ListRow } from "@/lib/data/select";
 
 // Search (Figma Search and city, 192:7519): the films whose title matches, per city, each with its
 // next showing. The pages fetch a small index (/data/search.json) the first time search opens, so
@@ -20,18 +18,6 @@ export type SearchIndex = { sample: boolean; fresh: ListFresh[]; films: SearchFi
 
 export type SearchResult = { film: SearchFilm; next: { at: string; cinema: string }; cinemas: number; formats: FormatTag[]; day: Day };
 export type SearchGroup = { city: City; results: SearchResult[] };
-
-/** The index the pages fetch, both cities in one: each cinema with its area's city (D-120). */
-export function searchIndex(file: ShowtimesFile, cityOfArea: CityOfArea): SearchIndex {
-  const list = toListData(file);
-  return {
-    sample: list.sample,
-    fresh: list.fresh,
-    films: list.films.map(({ id, title, poster, rating, runtimeMin }) => ({ id, title, poster, rating, runtimeMin })),
-    cinemas: list.cinemas.map((cinema) => ({ name: cinema.name, city: cityOfCinema(cinema, cityOfArea) })),
-    rows: list.rows.map((row) => [row.at, row.film, row.cinema, row.format]),
-  };
-}
 
 /** True when the index has a cinema in the city: a live set read before Abuja was added has none (D-120). */
 export const hasCinemas = (index: SearchIndex, city: City) => index.cinemas.some((cinema) => cinema.city === city);

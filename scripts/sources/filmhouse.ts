@@ -4,9 +4,11 @@
 // CINEsync. What the page does carry is its banner's data: each film's title, runtime, rating and
 // the nearest date it has showtimes. A film whose nearest date is today (Lagos) is featured today.
 // The banner is a promotion, not the whole programme, so this is never "everything Filmhouse shows"
-// (rule 8). No times, so no showings; one request a run, and no CINEsync call.
+// (rule 8). No times, so no showings; one request a run, and no CINEsync call. A banner film whose
+// nearest date is after today is coming (D-151), from that date; one the page flags `is_coming_soon`
+// with no date is coming with no date. The flag was false for all 9 on 17 Nov, so the date decides.
 import { lagosDayKey } from "../../src/lib/time/lagos.ts";
-import { clean, type FeaturedFilm, type ParsedPage, type Reader } from "./raw.ts";
+import { clean, type ComingFilm, type FeaturedFilm, type ParsedPage, type Reader } from "./raw.ts";
 
 export const FILMHOUSE_HOME = "https://www.filmhouseng.com/";
 
@@ -73,16 +75,17 @@ export function parseFilmhouseHome(html: string, options: { now: string }): Pars
 
   const day = lagosDayKey(options.now);
   const films: FeaturedFilm[] = [];
+  const coming: ComingFilm[] = [];
   for (const item of movies) {
     const title = clean(typeof item.movie_name === "string" ? item.movie_name : undefined);
     if (!title) return fail("a banner film has no title. Has the page layout changed?");
     const date = item.nearest_show_times_date;
     if (date !== null && !(typeof date === "string" && DATE.test(date))) fail(`"${title}" has the showtimes date ${JSON.stringify(date)}, not yyyy-mm-dd`);
-    if (date !== day) continue;
     const rating = clean(typeof item.movie_certification_short_code === "string" ? item.movie_certification_short_code : undefined);
-    films.push({ title, runtimeMin: runtimeMinutes(item.duration), rating });
+    if (date === day) films.push({ title, runtimeMin: runtimeMinutes(item.duration), rating });
+    else if (typeof date === "string" ? date > day : item.is_coming_soon === true) coming.push({ title, firstDay: typeof date === "string" ? date : null, rating });
   }
-  return { showings: [], builtAt: null, featured: { day, films } };
+  return { showings: [], builtAt: null, featured: { day, films }, coming };
 }
 
 /** The one home page; `days` does not apply: the page says only which films are on today. */

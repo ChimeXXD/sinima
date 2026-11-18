@@ -66,6 +66,26 @@ export function pickMatch(title: string, results: TmdbResult[], today: string): 
   return current.length === 1 ? (current[0] as TmdbResult).id : null;
 }
 
+/** How far a coming film's TMDB release year may be from the year of the sinima's first date (D-151). */
+const COMING_YEARS = 1;
+
+/**
+ * The TMDB id for a coming film (D-151), or null: the same title (however it is written), released
+ * within a year of the sinima's first date (`firstDay`, yyyy-mm-dd; TMDB's dates differ from
+ * Nigeria's), and only one such film. A wrong match would put another film's poster on it, so
+ * anything else ("THE FOUR" finding "The Fantastic 4: First Steps") stays unmatched.
+ */
+export function pickComingMatch(title: string, results: TmdbResult[], firstDay: string): number | null {
+  const ours = filmIdFromTitle(title);
+  const year = Number(firstDay.slice(0, 4));
+  const near = results.filter(
+    (result) =>
+      (sameTitle(ours, result.title) || sameTitle(ours, result.original_title)) &&
+      /^\d{4}-/.test(result.release_date ?? "") && Math.abs(Number(result.release_date!.slice(0, 4)) - year) <= COMING_YEARS,
+  );
+  return near.length === 1 ? (near[0] as TmdbResult).id : null;
+}
+
 /** A keyword is a person's statement that there is a scene. No keyword says nothing: never "no". */
 export function creditsFromKeywords(tmdbId: number, keywordIds: number[], checkedAt: string): CreditsInfo {
   const after: CreditsAnswer = keywordIds.includes(AFTER_CREDITS) ? "yes" : "unknown";

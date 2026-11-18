@@ -39,7 +39,11 @@ function Option({ icon, label, count, selected, onPick, testId }: { icon?: IconN
   );
 }
 
-export type PickersProps = { areas: AreaChoice[]; area: string | null; onArea: (slug: string) => void; days: [string, string]; day: Day; onDay: (day: Day, how: ChangeHow) => void; formats: { tag: FormatTag; cinemas: number }[]; format: FormatTag | null; onFormat: (tag: FormatTag | null) => void };
+/** A day in the Day picker (D-148): its name and its id (`today`, `tomorrow`, or the date for a later day). */
+export type DayChoice = { day: Day; label: string; id: string };
+export const dayChoiceId = (day: Day, key: string) => (day === 0 ? "today" : day === 1 ? "tomorrow" : key);
+
+export type PickersProps = { areas: AreaChoice[]; area: string | null; onArea: (slug: string) => void; days: DayChoice[]; day: Day; onDay: (day: Day, how: ChangeHow) => void; formats: { tag: FormatTag; cinemas: number }[]; format: FormatTag | null; onFormat: (tag: FormatTag | null) => void };
 
 export function Pickers(props: PickersProps) {
   const { areas, area, onArea, days, day, onDay, formats, format, onFormat } = props;
@@ -58,7 +62,7 @@ export function Pickers(props: PickersProps) {
   }, [desktop]);
   const refs = { area: useRef<HTMLButtonElement>(null), day: useRef<HTMLButtonElement>(null), format: useRef<HTMLButtonElement>(null) };
   const name = areas.find((candidate) => candidate.slug === area)?.name ?? null;
-  const values: Record<Which, string> = { area: pickerValue.area(name), day: days[day], format: pickerValue.format(format) };
+  const values: Record<Which, string> = { area: pickerValue.area(name), day: days.find((choice) => choice.day === day)?.label ?? "", format: pickerValue.format(format) };
   const labels: Record<Which, string> = { area: "Area", day: "Day", format: "Format" };
   // Enter or Space on an option is a click with no pointer (detail 0): the change it makes doesn't animate.
   const pick = (choose: (how: ChangeHow) => void) => (event: React.MouseEvent) => (choose(event.detail === 0 ? "keys" : "tap"), setOpen(null));
@@ -119,7 +123,7 @@ export function Pickers(props: PickersProps) {
           )}
           {sheet(
             "day",
-            ([0, 1] as const).map((option) => <Option key={option} label={days[option]} selected={day === option} onPick={pick((how) => onDay(option, how))} testId={`day.option.${option === 0 ? "today" : "tomorrow"}`} />),
+            days.map((choice) => <Option key={choice.id} label={choice.label} selected={day === choice.day} onPick={pick((how) => onDay(choice.day, how))} testId={`day.option.${choice.id}`} />),
           )}
           {sheet(
             "format",

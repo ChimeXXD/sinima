@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import example from "../../../../docs/examples/showtimes-v1.example.json";
 import type { ShowtimesFile } from "@/lib/data/types";
-import { bannerFor, filmCounts, groupShowings, laterName, nextDayName, soonCount, toListData, type ListData } from "@/lib/data/select";
+import { toListData } from "@/lib/data/listData";
+import { bannerFor, filmCounts, groupShowings, laterName, nextDayName, soonCount, type ListData } from "@/lib/data/select";
 
 // Fri 6 Nov 2026, 18:00 in Lagos.
 const NOW = "2026-11-06T17:00:00Z";

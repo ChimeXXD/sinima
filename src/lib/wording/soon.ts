@@ -1,5 +1,5 @@
 import { formatDate, formatLateTime } from "@/lib/time/lagos";
-import { list } from "@/lib/wording/credits";
+import { list } from "@/lib/wording/list";
 import { runtimeText, shortCountdown } from "@/lib/wording/film";
 import { spokenTime } from "@/lib/wording/showing";
 import { formatLabel } from "@/lib/data/format";

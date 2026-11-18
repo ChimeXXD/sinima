@@ -69,3 +69,11 @@ describe("lastStart", () => {
     expect(lastStart([], NOW)).toBeNull();
   });
 });
+
+describe("a later day (D-142)", () => {
+  const SUN = [row(0, 0, "2026-11-15T14:00:00Z"), row(1, 1, "2026-11-15T19:00:00Z"), row(0, 1, "2026-11-15T16:00:00Z")];
+
+  it("is one list of the whole day, soonest film first, even once the time is known", () => {
+    expect(filmSections(SUN, 2, NOW, true, null).map((s) => [s.key, s.films.map((f) => [f.film, f.cinemas])])).toEqual([["day", [[0, 2], [1, 1]]]]);
+  });
+});

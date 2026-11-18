@@ -12,6 +12,7 @@ import { CITIES } from "../src/lib/city.ts";
 import type { ShowtimesFile } from "../src/lib/data/types.ts";
 import { lagosDayKey, toLagos } from "../src/lib/time/lagos.ts";
 import { assemble, readJson, readSources, SAMPLE_PATHS } from "./assemble.ts";
+import { sampleDay } from "./coming.ts";
 import { LIVE_DIR, liveBuildFiles, refreshLive } from "./live.ts";
 import { toSampleDays, type Batch } from "./pipeline.ts";
 import { parseFilmhouseHome } from "./sources/filmhouse.ts";
@@ -71,6 +72,8 @@ export function refreshFromFixtures(options: { now: string; root: string }): { f
     // Featured films (D-131) move from the day the page was saved onto today, as showings do (D-20).
     const list = parsed.find((page) => page.featured)?.featured;
     const featuredFor = registry.find((source) => source.id === sourceId)?.featuredFor ?? [];
+    // Coming films (D-151) keep their distance from the day the page was saved.
+    const coming = parsed.flatMap((page) => page.coming ?? []).map((film) => ({ ...film, firstDay: sampleDay(film.firstDay, lagosDayKey(savedAt), now) }));
     batches.push({
       sourceId,
       fetchedAt: savedAt,
@@ -78,6 +81,7 @@ export function refreshFromFixtures(options: { now: string; root: string }): { f
       through: sourceId === "lagocine",
       showings: toSampleDays(parsed.flatMap((page) => page.showings), lagosDayKey(savedAt), now),
       ...(list && featuredFor.length > 0 ? { featured: { cinemaIds: featuredFor, day: lagosDayKey(now), titles: list.films.map((film) => film.title) } } : {}),
+      ...(coming.length > 0 && featuredFor.length > 0 ? { coming: { cinemaIds: featuredFor, films: coming } } : {}),
     });
   }
   return assemble({ now, root, batches, method: "fixture", paths: SAMPLE_PATHS });

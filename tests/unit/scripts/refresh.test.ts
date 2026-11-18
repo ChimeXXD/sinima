@@ -205,9 +205,10 @@ describe("refresh --fixtures", () => {
       via: { name: "Magnificent's site", url: "https://magnificentcinemas.com/" },
     });
     // Lagos: 31 titles, 30 films: "Ramayana" and "Ramayana: Rise of a Legend" are one (D-119).
-    // Abuja adds five films Lagos isn't showing (D-120).
+    // Abuja adds five films Lagos isn't showing (D-120), and Filmhouse's home page five coming films (D-151).
     expect(new Set(all.showings.filter((s) => s.sourceId === "lagocine").map((s) => s.filmId)).size).toBe(30);
-    expect(all.films).toHaveLength(35);
+    expect(all.films).toHaveLength(35 + 5);
+    expect(all.coming).toHaveLength(5);
   });
 
   it("holds only one area's cinemas, showings, films and sources in an area file", () => {

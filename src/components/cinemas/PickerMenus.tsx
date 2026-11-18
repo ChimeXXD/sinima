@@ -40,7 +40,7 @@ export default function PickerMenus({ open, triggers, instant, onRolled, onClose
       )}
       {menu(
         "day",
-        ([0, 1] as const).map((day) => ({ id: String(day), label: p.days[day], selected: p.day === day, testId: `day.option.${day === 0 ? "today" : "tomorrow"}`, choose: (how: ChangeHow) => p.onDay(day, how) })),
+        p.days.map((choice) => ({ id: choice.id, label: choice.label, selected: p.day === choice.day, testId: `day.option.${choice.id}`, choose: (how: ChangeHow) => p.onDay(choice.day, how) })),
         1,
         240,
       )}

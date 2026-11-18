@@ -39,7 +39,10 @@ test("the cinema, then its films tonight soonest first, each with its times stil
   const { left, order } = filmsOn(all, ID, now);
   await expect(page.getByTestId("films.title")).toHaveText("Films tonight");
   await expect(page.getByTestId("films.note")).toHaveText(`${order.length} films today · ${new Set(left.map((s) => s.filmId)).size} still to start`);
-  await expect(page.getByTestId("films.day").getByRole("radio")).toHaveText([/^Today · \w{3} \d+$/, /^Tomorrow · \w{3} \d+$/]);
+  // Date tiles (D-148): the weekday small over the date, each named as its whole day.
+  await expect(page.getByTestId("films.day").getByRole("radio")).toHaveText([/^Today\d+$/, /^\w{3}\d+$/]);
+  await expect(page.getByTestId("films.day").getByRole("radio").nth(0)).toHaveAccessibleName(/^Today, \w+day \d+ \w+$/);
+  await expect(page.getByTestId("films.day").getByRole("radio").nth(1)).toHaveAccessibleName(/^Tomorrow, \w+day \d+ \w+$/);
   expect(await cards(page)).toEqual(order);
 
   for (const film of order) {

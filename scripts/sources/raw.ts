@@ -19,10 +19,18 @@ export type RawShowing = {
 /** A film a chain's own page features for a day, without times (D-131). */
 export type FeaturedFilm = { title: string; runtimeMin: number | null; rating: string | null };
 
+/**
+ * A film a sinima's own page lists as coming (D-151): its first date there, a Lagos date, or null
+ * when the page flags it as coming without one ("Date not announced").
+ */
+export type ComingFilm = { title: string; firstDay: string | null; rating: string | null };
+
 export type ParsedPage = {
   showings: RawShowing[];
   /** The films the page features for `day` (a Lagos date), when it gives films but no times (D-131). */
   featured?: { day: string; films: FeaturedFilm[] };
+  /** The films the page lists as coming, after the day it was read (D-151). */
+  coming?: ComingFilm[];
   /** When the listing says it was built, in UTC; null when it does not say. */
   builtAt: string | null;
   /** What the reader left out and why, for the run's log (D-122). */

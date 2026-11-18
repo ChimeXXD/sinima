@@ -6,9 +6,6 @@
   gap: var(--space-12);
   padding-block: var(--space-4);
 }
-.controls > :first-child {
-  display: grid;
-}
 .chips {
   display: flex;
   flex-wrap: wrap;
@@ -16,6 +13,9 @@
 }
 .notice {
   display: flex;
+}
+.sentence {
+  margin-top: var(--space-12);
 }
 
 .section {

@@ -1,8 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Chip, IconButton, Segmented } from "@/components/ui/Actions";
+import { Button, Chip, IconButton } from "@/components/ui/Actions";
+import { Segmented } from "@/components/ui/Segmented";
 import { CinemaFolder, FilmCard, NoPoster, ShowingCard, type FolderTint } from "@/components/ui/Cards";
+import { DaySentence } from "@/components/ui/DayParts";
+import { DayRow } from "@/components/ui/DayRow";
 import { SearchBar, type CityChoice } from "@/components/ui/SearchBar";
 import { SectionNav } from "@/components/ui/SectionNav";
 import { OptionRow, Sheet } from "@/components/ui/Sheet";
@@ -10,6 +13,8 @@ import { CountdownBadge, CountdownPill, FormatBadge, Freshness, SampleNote, Time
 import { CitySticker, DrinkSticker, LogoSticker, NotFoundTicket, TicketFace, TicketFaceSticker } from "@/components/ui/Stickers";
 import { countdown } from "@/lib/time/countdown";
 import { useNow } from "@/lib/time/useNow";
+import type { Day } from "@/lib/data/programme";
+import { listedSentence, tileWords } from "@/lib/wording/day";
 import { freshness } from "@/lib/wording/freshness";
 import s from "./kit.module.css";
 
@@ -27,6 +32,9 @@ const FOLDERS: [string, string, string, number, FolderTint][] = [
   ["Genesis Deluxe Maryland Mall", "Genesis", "Maryland", 6, "pink"],
   ["Ozone Cinemas Yaba", "Ozone", "Yaba", 7, "green"],
 ];
+// The Day row (D-148) with the mockup's example counts: sinimas with times on each of five days, of 21.
+const DAYS_LISTED = [21, 20, 15, 7, 7] as const;
+const DAY_ROW: Day[] = [0, 1, 2, 3, 4];
 const CHAINS = ["EbonyLife", "Filmhouse", "Genesis", "Ozone", "Silverbird", "Blue Pictures", "Filmworld", "Grand", "Magnificent", "Sky", "THC", "Viva", "Nova"];
 
 function Section({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
@@ -43,6 +51,7 @@ function Section({ id, title, children }: { id: string; title: string; children:
 export function KitDemo() {
   const now = useNow() === null ? null : NOW;
   const [day, setDay] = useState<"Today" | "Tomorrow">("Today");
+  const [tile, setTile] = useState<Day>(3);
   const [imax, setImax] = useState(true);
   const [city, setCity] = useState<CityChoice>("lagos");
   const [query, setQuery] = useState("");
@@ -74,6 +83,10 @@ export function KitDemo() {
           <Chip>4D</Chip>
           <Chip disabled>MX4D</Chip>
           <Segmented label="Day" options={["Today", "Tomorrow"] as const} value={day} onChange={setDay} testId="kit.segmented" />
+        </div>
+        <div className={s.stack}>
+          <DayRow tiles={DAY_ROW.map((d) => ({ day: d, ...tileWords(d, at(d * 24 * 60), now !== null) }))} value={tile} onChange={setTile} testId="kit.dayrow" />
+          <DaySentence text={listedSentence({ listed: DAYS_LISTED[tile], total: 21, day: tile, date: at(tile * 24 * 60), live: now !== null })} keep testId="kit.dayrow.listed" />
         </div>
       </Section>
 

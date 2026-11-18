@@ -1,0 +1,59 @@
+/* Segmented control: equal segments; the raised pill slides to the picked one. */
+.segmented {
+  position: relative;
+  display: inline-grid;
+  grid-auto-columns: 1fr;
+  grid-auto-flow: column;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border-radius: 14px;
+  background: var(--bg-surface);
+}
+.thumb {
+  position: absolute;
+  top: var(--space-4);
+  bottom: var(--space-4);
+  left: var(--space-4);
+  width: calc((100% - var(--space-8) - (var(--n) - 1) * var(--space-4)) / var(--n));
+  border-radius: 11px;
+  background: var(--segment-thumb);
+  box-shadow: var(--fx-shadow-segment);
+  transform: translateX(calc(var(--i) * (100% + var(--space-4))));
+  transition: transform var(--dur-base) var(--ease-in-out);
+}
+/* A keyboard change moves at once: no motion on keyboard actions. */
+.segmented[data-instant] .thumb {
+  transition: none;
+}
+.segment {
+  position: relative; /* above the thumb */
+  padding: var(--space-10) 28px;
+  border: 0;
+  border-radius: 11px;
+  background: none;
+  color: var(--text-secondary);
+  font: 600 15px/1.2 var(--font-sans);
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  transition: color var(--dur-base) var(--ease-out);
+}
+/* 38 px tall in Figma; the touch area grows into the track's padding. */
+.segment::after {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--space-4)) 0;
+}
+.segment[aria-checked="true"] {
+  color: var(--text-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thumb {
+    transition-duration: 0ms;
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .segment:hover:not([aria-checked="true"]) {
+    color: var(--text-primary);
+  }
+}

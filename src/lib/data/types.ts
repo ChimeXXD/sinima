@@ -100,6 +100,20 @@ export type Featured = {
   films: { id: string; title: string }[];
 };
 
+/**
+ * A film a sinima lists as coming (D-144, D-151): Filmhouse's home page, a banner film whose first
+ * showing date is after today. The film is also in `films`; never a showing.
+ */
+export type Coming = {
+  sourceId: string;
+  filmId: string;
+  /** The sinima's first date for it, a Lagos date ("2026-12-18"), never TMDB's; null when the sinima gives none ("Date not announced"). */
+  firstDay: string | null;
+  /** The cinemas the page speaks for: the whole chain's, cut to the file's. */
+  cinemaIds: string[];
+  fetchedAt: string;
+};
+
 export type ShowtimesFile = {
   schemaVersion: 1;
   generatedAt: string;
@@ -112,4 +126,6 @@ export type ShowtimesFile = {
   showings: Showing[];
   /** Left out when no chain's page features any film (D-131). */
   featured?: Featured[];
+  /** Left out when no sinima lists a film as coming (D-151). By first date, undated last. */
+  coming?: Coming[];
 };

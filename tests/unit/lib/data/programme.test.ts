@@ -16,13 +16,17 @@ describe("formatTag: the format as the app says it (D-50)", () => {
   });
 });
 
-describe("dayOf: today or tomorrow, by the evening (SPEC §3)", () => {
+describe("dayOf: today to four days on, by the evening (SPEC §3, D-142)", () => {
   it.each([
     ["2026-11-06T17:30:00Z", 0], // 18:30 tonight
     ["2026-11-06T23:30:00Z", 0], // 00:30 on Saturday still belongs to Friday evening
     ["2026-11-07T03:00:00Z", 1], // 04:00 on Saturday starts tomorrow
     ["2026-11-07T20:00:00Z", 1],
-    ["2026-11-08T09:00:00Z", null], // past tomorrow
+    ["2026-11-08T09:00:00Z", 2], // Sunday, the third day (D-142)
+    ["2026-11-10T20:00:00Z", 4], // Tuesday, the fifth
+    ["2026-11-11T02:30:00Z", 4], // 03:30 on Wednesday is still Tuesday evening
+    ["2026-11-11T03:00:00Z", null], // 04:00 on Wednesday starts the sixth day
+    ["2026-11-11T09:00:00Z", null], // past the fifth day
     ["2026-11-05T20:00:00Z", null], // yesterday
   ] as const)("%s -> %s", (at, day) => {
     expect(dayOf(at, NOW)).toBe(day);
@@ -117,10 +121,10 @@ describe("after midnight (D-54)", () => {
   it("dates each day by the evening its rows belong to", () => {
     const dates = (rows: ListRow[], now: string) => dayDates(rows, now).map(formatDate);
     // A late show is left: today is still Friday, and "Tomorrow" holds Saturday's rows.
-    expect(dates([lateShow, saturday, sunday], LATE)).toEqual(["Fri 6 Nov", "Sat 7 Nov"]);
+    expect(dates([lateShow, saturday, sunday], LATE)).toEqual(["Fri 6 Nov", "Sat 7 Nov", "Sun 8 Nov", "Mon 9 Nov", "Tue 10 Nov"]);
     // Nothing left of Friday evening: today is Saturday.
-    expect(dates([saturday, sunday], LATE)).toEqual(["Sat 7 Nov", "Sun 8 Nov"]);
-    expect(dates([saturday, sunday], NOW)).toEqual(["Fri 6 Nov", "Sat 7 Nov"]);
-    expect(dates([saturday], "2026-11-07T03:00:00Z")).toEqual(["Sat 7 Nov", "Sun 8 Nov"]); // 04:00 on Saturday
+    expect(dates([saturday, sunday], LATE)).toEqual(["Sat 7 Nov", "Sun 8 Nov", "Mon 9 Nov", "Tue 10 Nov", "Wed 11 Nov"]);
+    expect(dates([saturday, sunday], NOW).slice(0, 2)).toEqual(["Fri 6 Nov", "Sat 7 Nov"]);
+    expect(dates([saturday], "2026-11-07T03:00:00Z").slice(0, 2)).toEqual(["Sat 7 Nov", "Sun 8 Nov"]); // 04:00 on Saturday
   });
 });

@@ -67,3 +67,22 @@ describe("cinemaSections", () => {
     expect(sections.map((s) => s.key)).toEqual(["area", "rest"]);
   });
 });
+
+describe("a later day (D-146)", () => {
+  // Sunday's file: only cinema 1 lists it. Cinemas 0, 2, 3 and 5 have times in the page, 4 none at all.
+  const SUN = [row(1, "2026-11-15T14:00:00Z")];
+
+  it("a sinima with times on other days is listed, not 'times not available'", () => {
+    const sections = cinemaSections({ ...base, rows: SUN, known: [...ROWS, ...SUN], day: 2 });
+    const entries = sections.flatMap((s) => s.cinemas);
+    expect(entries.map((e) => [e.cinema, e.rows.length, e.listed])).toEqual([[1, 1, true], [0, 0, true], [2, 0, true], [3, 0, true], [5, 0, true], [4, 0, false]]);
+  });
+});
+
+describe("a sinima that has listed only a later day (D-146)", () => {
+  it("is listed on today too: it has times, just not today", () => {
+    const entry = (sections: ReturnType<typeof cinemaSections>) => sections.flatMap((s) => s.cinemas).find((e) => e.cinema === 4)!;
+    expect(entry(cinemaSections({ ...base, day: 0 })).listed).toBe(false);
+    expect(entry(cinemaSections({ ...base, day: 0, alsoListed: [4] })).listed).toBe(true);
+  });
+});

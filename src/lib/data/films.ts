@@ -16,11 +16,12 @@ const entry = (group: { film: number; rows: ListRow[] }): FilmEntry => ({
   rows: group.rows,
 });
 
-export function filmSections(rows: ListRow[], day: Day, now: string, live: boolean, format: FormatTag | null): FilmSection[] {
-  const groups = byFilm(showingOn(rows, day, now, format, !live));
+/** `anchor`: the page's, for a later day's rows (showingOn). */
+export function filmSections(rows: ListRow[], day: Day, now: string, live: boolean, format: FormatTag | null, anchor?: string): FilmSection[] {
+  const groups = byFilm(showingOn(rows, day, now, format, !live, anchor));
   if (groups.length === 0) return [];
   if (format !== null) return [{ key: "format", films: groups.map((group) => entry(group)) }];
-  if (!live || day === 1) return [{ key: "day", films: groups.map((group) => entry(group)) }];
+  if (!live || day !== 0) return [{ key: "day", films: groups.map((group) => entry(group)) }];
 
   const soon: FilmEntry[] = [];
   const later: FilmEntry[] = [];
@@ -36,8 +37,8 @@ export function filmSections(rows: ListRow[], day: Day, now: string, live: boole
  * With a format chosen: the chains whose cinemas say which format a showing is in, and how many
  * cinemas showing films that day give no format at all (they are left out, not guessed).
  */
-export function formatCoverage(rows: ListRow[], day: Day, now: string, live: boolean, chainOf: (cinema: number) => string): { chains: string[]; silent: number } {
-  const cinemas = byCinema(showingOn(rows, day, now, null, !live));
+export function formatCoverage(rows: ListRow[], day: Day, now: string, live: boolean, chainOf: (cinema: number) => string, anchor?: string): { chains: string[]; silent: number } {
+  const cinemas = byCinema(showingOn(rows, day, now, null, !live, anchor));
   const telling = cinemas.filter((group) => group.rows.some((row) => row.format !== null));
   return { chains: [...new Set(telling.map((group) => chainOf(group.cinema)))].sort(), silent: cinemas.length - telling.length };
 }

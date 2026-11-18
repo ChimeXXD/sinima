@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { matchesTitle, searchFilms, searchIndex, type SearchIndex } from "@/lib/data/search";
+import { matchesTitle, searchFilms, type SearchIndex } from "@/lib/data/search";
+import { searchIndex } from "@/lib/data/searchIndex";
 import type { ShowtimesFile } from "@/lib/data/types";
 
 // Search and city (Figma 192:7519). Times are UTC; Lagos is UTC+1.

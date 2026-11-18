@@ -5,6 +5,8 @@ import { useCallback, useState } from "react";
 import { AppFrame, LogoNote } from "@/components/ui/AppFrame";
 import { PageNotice } from "@/components/ui/Status";
 import { Toast } from "@/components/ui/Toast";
+import { DayLoad, DaySentence } from "@/components/ui/DayParts";
+import { useDayPicker } from "@/components/ui/useDayPicker";
 import { useSwapIn } from "@/components/ui/useSwapIn";
 import { CITY_NAMES, type City } from "@/lib/city";
 import { rememberArea } from "@/lib/area";
@@ -13,18 +15,18 @@ import { cinemaSections, type CinemaSection } from "@/lib/data/cinemas";
 import { formatCoverage } from "@/lib/data/films";
 import { formatTag, type FormatTag } from "@/lib/data/format";
 import type { Area } from "@/lib/data/load";
-import { byFilm, dayDates, formatChoices, formatsOf, showingOn, type Day } from "@/lib/data/programme";
+import { byFilm, formatChoices, formatsOf, showingOn } from "@/lib/data/programme";
 import { laterName, pageBanner, type ListData } from "@/lib/data/select";
 import { toggleSaved, useSaved } from "@/lib/saved";
 import { useNow } from "@/lib/time/useNow";
 import { SAVED_TOAST } from "@/lib/wording/cinemaPage";
 import { NO_TIMES_NOTE, cinemaLine, cinemasHeading } from "@/lib/wording/cinemas";
 import { featuredFor } from "@/lib/wording/featured";
-import { dayWords } from "@/lib/wording/day";
+import { dayWords, weekdayName } from "@/lib/wording/day";
 import { formatNote } from "@/lib/wording/films";
 import { CinemaRow } from "./CinemaRow";
 import { CinemasHero } from "./CinemasHero";
-import { Pickers } from "./Pickers";
+import { Pickers, dayChoiceId } from "./Pickers";
 import s from "./cinemas.module.css";
 
 // The Cinemas tab (Figma Cinemas 200:6415): every cinema in the city. With an area kept on this
@@ -36,8 +38,10 @@ export function CinemasScreen({ data, areas, city, bg }: { data: ListData; areas
   const clock = useNow();
   const live = clock !== null;
   const now = clock ?? data.at;
-  const [day, setDay] = useState<Day>(0);
-  const swap = useSwapIn(day);
+  const days = useDayPicker(data, city, now, live);
+  const { day, current } = days;
+  const view = days.view ?? { ...data, rows: [] };
+  const swap = useSwapIn(day, days.status === "ready");
   const [format, setFormat] = useState<FormatTag | null>(null);
   const [search, setSearch] = useState("");
   const router = useRouter();
@@ -56,15 +60,17 @@ export function CinemasScreen({ data, areas, city, bg }: { data: ListData; areas
   };
   const home = areas.find((area) => area.slug === (picked ?? saved)) ?? null;
 
-  const dates = dayDates(data.rows, now);
-  const days: [string, string] = [dayWords(0, dates[0], live).name, dayWords(1, dates[1], live).name];
+  const choices = days.shown.map((shown) => ({ day: shown.day, label: dayWords(shown.day, shown.date, live).name, id: dayChoiceId(shown.day, shown.key) }));
   const areaOf = (cinema: number) => data.cinemas[cinema]!.area;
-  const sections = cinemaSections({ rows: data.rows, cinemas: data.cinemas.length, areaOf, day, now, live, format, home });
+  // A later day's rows are only that day's (D-147): a sinima with times on another day is still listed.
+  // A sinima listing only a later day has times too: "nothing today", not "not available" (D-146).
+  const alsoListed = days.shown.flatMap((shown) => shown.cinemas ?? []);
+  const sections = days.load ? [] : cinemaSections({ rows: view.rows, known: data.rows, alsoListed, cinemas: data.cinemas.length, areaOf, day, now, live, format, home, anchor: days.anchor });
   const banner = pageBanner(data, clock);
-  const coverage = format ? formatCoverage(data.rows, day, now, live, (cinema) => data.cinemas[cinema]!.chain) : null;
+  const coverage = format ? formatCoverage(view.rows, day, now, live, (cinema) => data.cinemas[cinema]!.chain, days.anchor) : null;
   const note = coverage ? formatNote(coverage.chains, coverage.silent) : null;
-  const onDay = showingOn(data.rows, day, now, null, !live);
-  const formats = formatChoices(data.rows, day, now, live, format).map((tag) => ({ tag, cinemas: new Set(onDay.filter((row) => formatTag(row.format) === tag).map((row) => row.cinema)).size }));
+  const onDay = showingOn(view.rows, day, now, null, !live, days.anchor);
+  const formats = formatChoices(view.rows, day, now, live, format, days.anchor).map((tag) => ({ tag, cinemas: new Set(onDay.filter((row) => formatTag(row.format) === tag).map((row) => row.cinema)).size }));
   const unread = sections.some((section) => section.cinemas.some((entry) => !entry.listed));
   const when = !live ? null : day === 1 ? "tomorrow" : laterName(now) === "Later tonight" ? "tonight" : "today";
 
@@ -91,18 +97,20 @@ export function CinemasScreen({ data, areas, city, bg }: { data: ListData; areas
         areas={areas}
         area={home?.slug ?? null}
         onArea={(slug) => (rememberArea(slug), setPicked(slug))}
-        days={days}
+        days={choices}
         day={day}
         onDay={(next, how) => {
           if (next === day) return;
           swap(next > day ? 1 : -1, how);
-          setDay(next);
+          days.pick(next);
         }}
         formats={formats}
         format={format}
         onFormat={setFormat}
       />
+      <DaySentence text={days.sentence} keep={days.keep} className={s.sentence} testId="cinemas.listed" />
       <PageNotice banner={banner} now={clock} className={s.notice} />
+      {days.load && <DayLoad {...days.load} />}
 
       {sections.map((section) => {
         const { title, note: line } = heading(section);
@@ -123,7 +131,7 @@ export function CinemasScreen({ data, areas, city, bg }: { data: ListData; areas
                     name={cinema.name}
                     chain={cinema.chain}
                     area={areas.find((area) => area.slug === cinema.area)?.name ?? cinema.area}
-                    line={cinemaLine({ next, films: byFilm(entry.rows).length, listed: entry.listed, when })}
+                    line={cinemaLine({ next, films: byFilm(entry.rows).length, listed: entry.listed, when, weekday: day > 1 ? weekdayName(current.date) : undefined })}
                     at={next}
                     featured={day === 0 ? featuredFor(data, entry.cinema, clock) : null}
                     formats={formatsOf(entry.rows)}
@@ -142,9 +150,9 @@ export function CinemasScreen({ data, areas, city, bg }: { data: ListData; areas
           {note}
         </p>
       )}
-      {sections.length === 0 && (
+      {!days.load && sections.length === 0 && (
         <p className={s.none} data-testid="cinemas.none" data-swap>
-          {`No sinima is showing a film in ${format} ${dayWords(day, dates[day], live).on}.`}
+          {`No sinima is showing a film in ${format} ${dayWords(day, current.date, live).on}.`}
         </p>
       )}
       {toast && <Toast stamp={toast} icon="heart" text={SAVED_TOAST} onUndo={() => (toggleSaved(toast), setToast(null))} onDone={hideToast} />}

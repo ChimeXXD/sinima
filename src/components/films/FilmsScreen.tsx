@@ -2,15 +2,19 @@
 
 import { useState } from "react";
 import { Poster } from "@/components/Poster";
-import { Button, Chip, Segmented } from "@/components/ui/Actions";
+import { Button, Chip } from "@/components/ui/Actions";
 import { AppFrame } from "@/components/ui/AppFrame";
 import { FilmCard, NoPoster } from "@/components/ui/Cards";
+import { DayLoad, DaySentence } from "@/components/ui/DayParts";
+import { DayRow, dayTiles } from "@/components/ui/DayRow";
 import { PageNotice } from "@/components/ui/Status";
 import { TicketFaceSticker } from "@/components/ui/Stickers";
+import { useDayPicker } from "@/components/ui/useDayPicker";
+import { dayHref } from "@/lib/data/days";
 import { useSwapIn, type ChangeHow } from "@/components/ui/useSwapIn";
 import { filmSections, formatCoverage, lastStart, type FilmSection } from "@/lib/data/films";
 import type { FormatTag } from "@/lib/data/format";
-import { dayDates, formatChoices, formatsOf, showingOn, type Day } from "@/lib/data/programme";
+import { formatChoices, formatsOf, showingOn, type Day } from "@/lib/data/programme";
 import { matchesTitle } from "@/lib/data/search";
 import { laterName, pageBanner, type ListData } from "@/lib/data/select";
 import { useQuery } from "@/lib/browser";
@@ -31,12 +35,15 @@ export function FilmsScreen({ data, city, bg }: { data: ListData; city: City; bg
   const clock = useNow();
   const live = clock !== null;
   const now = clock ?? data.at;
-  const [day, setDay] = useState<Day>(0);
-  const swap = useSwapIn(day);
+  const days = useDayPicker(data, city, now, live);
+  const { day, current } = days;
+  // The picked day's rows: the page's own, or a later day's file once it has come (D-147).
+  const view = days.view ?? { ...data, rows: [] };
+  const swap = useSwapIn(day, days.status === "ready");
   const changeDay = (next: Day, how: ChangeHow) => {
     if (next === day) return;
     swap(next > day ? 1 : -1, how);
-    setDay(next);
+    days.pick(next);
   };
   const [format, setFormat] = useState<FormatTag | null>(null);
   // Search on another page sends its text here as ?q=; typing here takes over.
@@ -44,15 +51,13 @@ export function FilmsScreen({ data, city, bg }: { data: ListData; city: City; bg
   const [typed, setTyped] = useState<string | null>(null);
   const query = typed ?? sent ?? "";
 
-  const dates = dayDates(data.rows, now);
-  const names = [dayWords(0, dates[0], live).name, dayWords(1, dates[1], live).name];
-  const on = dayWords(day, dates[day], live).on;
-  const sections = filmSections(data.rows, day, now, live, format)
-    .map((section) => ({ ...section, films: section.films.filter((entry) => !query.trim() || matchesTitle(data.films[entry.film]!.title, query)) }))
+  const on = dayWords(day, current.date, live).on;
+  const sections = filmSections(view.rows, day, now, live, format, days.anchor)
+    .map((section) => ({ ...section, films: section.films.filter((entry) => !query.trim() || matchesTitle(view.films[entry.film]!.title, query)) }))
     .filter((section) => section.films.length > 0);
-  const coverage = format ? formatCoverage(data.rows, day, now, live, (cinema) => data.cinemas[cinema]!.chain) : null;
+  const coverage = format ? formatCoverage(view.rows, day, now, live, (cinema) => view.cinemas[cinema]!.chain, days.anchor) : null;
   const note = coverage ? formatNote(coverage.chains, coverage.silent) : null;
-  const choices = formatChoices(data.rows, day, now, live, format);
+  const choices = formatChoices(view.rows, day, now, live, format, days.anchor);
 
   const banner = pageBanner(data, clock);
 
@@ -69,7 +74,7 @@ export function FilmsScreen({ data, city, bg }: { data: ListData; city: City; bg
     <AppFrame active="films" search={{ value: query, onChange: setTyped }} bg={bg}>
       <FilmsHero city={cityName} live={live && day === 0 && sections.length > 0} />
       <div className={s.controls}>
-        <Segmented label="Day" options={names} value={names[day]!} onChange={(name, how) => changeDay(names.indexOf(name) === 1 ? 1 : 0, how)} testId="films.day" />
+        <DayRow tiles={dayTiles(days.shown, live)} value={day} onChange={changeDay} onPress={days.press} testId="films.day" />
         {choices.length > 0 && (
           <div className={s.chips} role="group" aria-label="Format">
             <Chip selected={format === null} onClick={() => setFormat(null)} testId="format.any">
@@ -84,6 +89,7 @@ export function FilmsScreen({ data, city, bg }: { data: ListData; city: City; bg
         )}
         <PageNotice banner={banner} now={clock} className={s.notice} />
       </div>
+      <DaySentence text={days.sentence} keep={days.keep} className={s.sentence} testId="films.listed" />
 
       {sections.map((section) => {
         const { title, note: line } = words(section);
@@ -95,12 +101,13 @@ export function FilmsScreen({ data, city, bg }: { data: ListData; city: City; bg
             </div>
             <div className={s.grid}>
               {section.films.map((entry) => {
-                const film = data.films[entry.film]!;
+                const film = view.films[entry.film]!;
                 return (
                   <FilmCard
                     film={film.id}
                     key={film.id}
-                    href={`/film/${film.id}`}
+                    // A later day opens the film's page on that day (D-147).
+                    href={dayHref(`/film/${film.id}`, current)}
                     title={film.title}
                     meta={filmMeta(film)}
                     poster={film.poster ? <Poster film={film} /> : <NoPoster title={film.title} />}
@@ -119,13 +126,14 @@ export function FilmsScreen({ data, city, bg }: { data: ListData; city: City; bg
         );
       })}
 
-      {sections.length === 0 && <Empty data={data} cityName={cityName} day={day} now={now} live={live} format={format} query={query.trim()} on={on} onTomorrow={() => changeDay(1, "tap")} />}
+      {days.load && <DayLoad {...days.load} />}
+      {!days.load && sections.length === 0 && <Empty data={data} cityName={cityName} day={day} now={now} live={live} format={format} query={query.trim()} on={on} onTomorrow={() => changeDay(1, "tap")} />}
     </AppFrame>
   );
 }
 
 function Empty({ data, cityName, day, now, live, format, query, on, onTomorrow }: { data: ListData; cityName: string; day: Day; now: string; live: boolean; format: FormatTag | null; query: string; on: string; onTomorrow: () => void }) {
-  if (query || format || day === 1 || !live) {
+  if (query || format || day !== 0 || !live) {
     const text = noFilms({ query, format, on });
     return (
       <p className={s.none} data-testid="films.none" data-swap>

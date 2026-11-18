@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { inCity } from "@/lib/data/cities";
 import { featuredAt } from "@/lib/data/featured";
-import { toListData } from "@/lib/data/select";
+import { toListData } from "@/lib/data/listData";
 import type { Featured, ShowtimesFile } from "@/lib/data/types";
 import { validateShowtimes } from "@/lib/data/validate";
 

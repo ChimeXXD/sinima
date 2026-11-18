@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { CITIES } from "@/lib/city";
-import { cityParam, loadCity } from "@/lib/data/load";
+import { cityParam, loadCity, loadDays } from "@/lib/data/load";
 import { FilmsScreen } from "@/components/films/FilmsScreen";
-import { toListData } from "@/lib/data/select";
+import { toListData } from "@/lib/data/listData";
 import { pageColours } from "@/lib/theme/pageColours";
 import { sectionTitle } from "@/lib/wording/city";
 
@@ -20,5 +20,5 @@ export async function generateMetadata({ params }: CityProps): Promise<Metadata>
 /** Home: every film showing in the city, as posters. A visitor picks a film, then sees where it is on (D-55). */
 export default async function FilmsPage({ params }: CityProps) {
   const city = cityParam((await params).city);
-  return <FilmsScreen data={toListData(loadCity(city))} city={city} bg={pageColours()} />;
+  return <FilmsScreen data={{ ...toListData(loadCity(city)), days: loadDays(city) }} city={city} bg={pageColours()} />;
 }

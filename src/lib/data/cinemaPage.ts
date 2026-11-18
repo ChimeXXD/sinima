@@ -11,11 +11,12 @@ export type FilmTimes = { film: number; rows: ListRow[]; earlier: ListRow[]; nex
 /** `total` films on the day, `left` with a time still to start, `tomorrow` whether tomorrow has any times. */
 export type CinemaFilms = { films: FilmTimes[]; total: number; left: number; tomorrow: boolean };
 
-export function cinemaFilms(input: { rows: ListRow[]; day: Day; now: string; live: boolean }): CinemaFilms {
-  const { rows, day, now, live } = input;
-  const tomorrow = showingOn(rows, 1, now);
-  const whole = showingOn(rows, day, now, null, true);
-  const keepAll = !live || day === 1;
+/** `anchor`: the page's, for a later day's rows (showingOn). */
+export function cinemaFilms(input: { rows: ListRow[]; day: Day; now: string; live: boolean; anchor?: string }): CinemaFilms {
+  const { rows, day, now, live, anchor } = input;
+  const tomorrow = showingOn(rows, 1, now, null, false, anchor);
+  const whole = showingOn(rows, day, now, null, true, anchor);
+  const keepAll = !live || day !== 0;
   const films = byFilm(whole).map(({ film, rows: all }): FilmTimes => {
     const left = keepAll ? all : all.filter((row) => isBeforeStart(showingState(row.at, now)));
     return { film, rows: left, earlier: left.length === 0 ? all : [], next: left.length === 0 ? tomorrow.filter((row) => row.film === film) : [] };

@@ -120,20 +120,6 @@
   color: var(--text-secondary);
   font: var(--type-meta);
 }
-.heading > :last-child {
-  display: grid; /* the toggle runs full width on a phone */
-}
-/* Figma's segments here are 16 in from each side ("Today · Fri 13" is longer than "Today"). */
-.heading [role="radio"] {
-  min-width: 0;
-  padding-inline: var(--space-16);
-}
-@media (max-width: 359px) {
-  .heading [role="radio"] {
-    padding-inline: var(--space-8);
-    font-size: 13px; /* a 320 phone: both days still whole */
-  }
-}
 /* Nothing listed for tomorrow: today alone, in a pill, with why (Figma: Times a day old). */
 .heading > .alone {
   display: flex;
@@ -245,13 +231,6 @@
     flex-direction: row;
     align-items: flex-start;
     justify-content: space-between;
-  }
-  .heading > :last-child {
-    display: inline-grid;
-    width: 364px;
-  }
-  .heading > .alone {
-    width: auto;
   }
   .rows {
     grid-template-columns: repeat(2, minmax(0, 1fr));

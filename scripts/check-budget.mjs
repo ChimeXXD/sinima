@@ -24,10 +24,13 @@ const BUDGET = {
     })),
   // Raised for the Figma build (D-87, Chime 15 Nov 2026): old and new screens live side by side, and
   // old pages still carry the old components. Re-measure after build unit 12 and set it tighter.
-  jsKb: 165,
+  // 167 for five days (D-153, Chime 19 Nov 2026): the day row and the later-day fetch put the
+  // Cinemas, cinema and film pages 0.3-0.8 KB over 165.
+  jsKb: 167,
   // 225 from the motion pass (D-104, Chime 16 Nov 2026): Starting soon was 217.1 before any motion,
   // and the twelve motions (D-103) need about 4-6 KB; the day's data moves pages a few tenths too.
-  totalKb: 225,
+  // 228 for five days (D-153): Cinemas measured 226.8 and Films 225.5.
+  totalKb: 228,
 };
 
 /** The largest page in a folder of out/, e.g. "area/lekki.html". Pages of one kind share their scripts. */

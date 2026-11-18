@@ -1,10 +1,13 @@
 // The pure steps between a parser's rows and the data files: film ids, sample dates (D-20),
 // building and validating schema v1, and the per-area split (D-18). No file or network access.
+import { cutComing, stillComing, withComing } from "../src/lib/data/coming.ts";
 import { cutFeatured, withFeatured } from "../src/lib/data/featured.ts";
-import type { Cinema, Featured, Film, Showing, ShowtimesFile, Source, SourceHealth } from "../src/lib/data/types.ts";
+import type { Cinema, Film, Showing, ShowtimesFile, Source, SourceHealth } from "../src/lib/data/types.ts";
 import { validateShowtimes } from "../src/lib/data/validate.ts";
 import { EVENING_ENDS_HOUR, lagosDayKey, lagosDaysFrom, lagosLocalToUtc, toLagos } from "../src/lib/time/lagos.ts";
-import type { RawShowing } from "./sources/raw.ts";
+import { comingFilms } from "./coming.ts";
+import { featuredFilms, listedTitles, listMatcher } from "./lists.ts";
+import type { ComingFilm, RawShowing } from "./sources/raw.ts";
 
 /** One read of one source: its rows and when they were read. */
 export type Batch = {
@@ -22,6 +25,8 @@ export type Batch = {
   lastOkAt?: string | null;
   /** Films the source's page features for `day` (Lagos), without times, for `cinemaIds` (D-131). */
   featured?: { cinemaIds: string[]; day: string; titles: string[] };
+  /** Films the source's page lists as coming, with the sinima's first date, for `cinemaIds` (D-151). */
+  coming?: { cinemaIds: string[]; films: ComingFilm[] };
 };
 
 // "(IMAX)", "[3D]", "(IMAX 2D)" at the end of a title: a format, not part of the film's name.
@@ -229,51 +234,45 @@ export function buildShowtimes(input: {
   }
 
   showings.sort((a, b) => a.startsAt.localeCompare(b.startsAt) || a.id.localeCompare(b.id));
-  const featured = featuredFilms(input.batches, titles, matched.films, films, input.aliases ?? {});
+  // Titles are matched again with the lists' only when some batch has a list (the match is not free).
+  const lists = listedTitles(input.batches);
+  const match = lists.length === 0 ? () => { throw new Error("No list to match"); } : listMatcher(matchFilms([...titles, ...lists], input.aliases ?? {}).films, titles, matched.films, films);
+  const featured = featuredFilms(input.batches, match);
+  // A coming film no showing has joins `films` with the sinima's rating, unknown credits and what credits.json says.
+  const coming = comingFilms(input.batches, match, ({ id, title, spelling, rating }) => {
+    const known = films.get(id);
+    if (known) {
+      known.rating ??= rating;
+      return;
+    }
+    const own = filmIdFromTitle(spelling);
+    films.set(id, { id, title, runtimeMin: null, rating, origin: null, tmdbId: null, credits: { ...UNKNOWN_CREDITS, sources: [] }, ...input.creditsFor?.(id, own === id ? [] : [own]) });
+  });
   const result = validateShowtimes({
     schemaVersion: 1, generatedAt: input.generatedAt, timeZone: "Africa/Lagos",
     sources: input.sources, cinemas: input.cinemas, films: [...films.values()].sort((a, b) => a.id.localeCompare(b.id)), showings,
     ...(featured.length > 0 ? { featured } : {}),
+    ...(coming.length > 0 ? { coming } : {}),
   });
   if (!result.ok) throw new Error(`The data file was refused:\n${result.errors.join("\n")}`);
   return { file: only(result.file, result.file.cinemas, () => true), log: [...log, ...result.log] };
 }
 
-/**
- * Each batch's featured films (D-131), matched like the showings' films (D-119) without changing
- * them: titles are matched with the showings' titles, and a featured film that is one of the
- * showings' takes that film's id and title. A film twice in one list is listed once.
- */
-function featuredFilms(batches: Batch[], showingTitles: string[], showingFilms: Map<string, { id: string; title: string }>, films: Map<string, Film>, aliases: Record<string, string>): Featured[] {
-  const lists = batches.filter((batch) => batch.featured);
-  if (lists.length === 0) return [];
-  const both = matchFilms([...showingTitles, ...lists.flatMap((batch) => batch.featured!.titles)], aliases).films;
-  const toShowing = new Map(showingTitles.map((title) => [both.get(title)!.id, showingFilms.get(title)!.id]));
-  return lists.map((batch) => {
-    const picked = new Map<string, string>();
-    for (const title of batch.featured!.titles) {
-      const matched = both.get(title)!;
-      const id = toShowing.get(matched.id) ?? matched.id;
-      if (!picked.has(id)) picked.set(id, films.get(id)?.title ?? matched.title);
-    }
-    return { sourceId: batch.sourceId, cinemaIds: batch.featured!.cinemaIds, day: batch.featured!.day, fetchedAt: batch.fetchedAt, films: [...picked].map(([id, title]) => ({ id, title })) };
-  });
-}
-
-/** The file cut down to some cinemas and showings, with only the films and sources those showings (and featured films) use. */
+/** The file cut down to some cinemas and showings, with only the films and sources those showings (and featured and coming films) use. */
 function only(file: ShowtimesFile, cinemas: Cinema[], keep: (showing: Showing) => boolean): ShowtimesFile {
   const cinemaIds = new Set(cinemas.map((cinema) => cinema.id));
   const showings = file.showings.filter((showing) => cinemaIds.has(showing.cinemaId) && keep(showing));
   const featured = cutFeatured(file, cinemaIds);
-  const filmIds = new Set(showings.map((showing) => showing.filmId));
-  const sourceIds = new Set([...showings, ...featured].map((row) => row.sourceId));
-  return withFeatured({
+  const coming = cutComing(file, cinemaIds);
+  const filmIds = new Set([...showings, ...coming].map((row) => row.filmId));
+  const sourceIds = new Set([...showings, ...featured, ...coming].map((row) => row.sourceId));
+  return withComing(withFeatured({
     ...file,
     sources: file.sources.filter((source) => sourceIds.has(source.id)),
     cinemas,
     films: file.films.filter((film) => filmIds.has(film.id)),
     showings,
-  }, featured);
+  }, featured), coming);
 }
 
 /** How many days the site shows, today first (D-142): today and tomorrow in each page, the rest in day files (D-147). */
@@ -282,11 +281,12 @@ export const DAYS_SHOWN = 5;
 /**
  * Days three to five (D-147), each its own file keyed by its Lagos date ("2026-11-22"), holding that
  * day's showings at every cinema: a day runs from 04:00 to 04:00 the morning after, so a 00:30
- * show stays with its evening. A day no cinema lists has no file. Featured films are today's only.
+ * show stays with its evening. A day no cinema lists has no file. Featured films are today's only,
+ * and coming films live in the city's own file (D-151).
  */
 export function laterDays(file: ShowtimesFile, now: string): Map<string, ShowtimesFile> {
   const days = new Map<string, ShowtimesFile>();
-  const withoutFeatured: ShowtimesFile = { ...file, featured: undefined };
+  const withoutFeatured: ShowtimesFile = { ...file, featured: undefined, coming: undefined };
   for (let offset = 2; offset < DAYS_SHOWN; offset += 1) {
     const date = lagosDate(now, offset);
     const start = lagosLocalToUtc({ ...date, hour: EVENING_ENDS_HOUR, minute: 0 });
@@ -299,11 +299,13 @@ export function laterDays(file: ShowtimesFile, now: string): Map<string, Showtim
 
 /**
  * One file per area plus "all" (D-18), each holding today's and tomorrow's showings. Tomorrow
- * runs to 04:00 the morning after, so a 00:30 show stays with its evening.
+ * runs to 04:00 the morning after, so a 00:30 show stays with its evening. Coming films stay
+ * while their first date is after today (D-151).
  */
-export function splitByArea(file: ShowtimesFile, areaSlugs: string[], now: string): Map<string, ShowtimesFile> {
+export function splitByArea(whole: ShowtimesFile, areaSlugs: string[], now: string): Map<string, ShowtimesFile> {
   const end = lagosLocalToUtc({ ...lagosDate(now, 2), hour: EVENING_ENDS_HOUR, minute: 0 });
   const soon = (showing: Showing) => showing.startsAt < end;
+  const file = { ...whole, coming: whole.coming?.filter((entry) => stillComing(entry, lagosDayKey(now))) };
   const files = new Map([["all", only(file, file.cinemas, soon)]]);
   for (const slug of areaSlugs) files.set(slug, only(file, file.cinemas.filter((cinema) => cinema.area === slug), soon));
   return files;

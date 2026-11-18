@@ -263,6 +263,32 @@ describe("refreshLive when one source fails (D-119)", () => {
     expect(log).toContain("lagocine: could not be read (lagocine.com answered 503); no earlier showings to keep");
   });
 
+  it("keeps a failing source's coming films while their first date is still ahead (D-151)", async () => {
+    const dir = setup();
+    const coming = [
+      { title: "Dune: Part Three", firstDay: "2026-11-12", rating: "15" },
+      { title: "Avengers: Doomsday", firstDay: "2026-12-18", rating: null },
+      { title: "The Four", firstDay: null, rating: null },
+    ];
+    const home = { ...readers, "filmhouse-home": async () => [{ showings: [], builtAt: null, coming }] };
+    const homeFails = { ...readers, "filmhouse-home": async () => failing("https://www.filmhouseng.com/") };
+    const listed = (file: ShowtimesFile) => (file.coming ?? []).filter((c) => c.sourceId === "filmhouse-home").map((c) => [c.filmId, c.firstDay, c.fetchedAt]);
+    const before = main((await refreshLive({ now: NOW, root: dir, fetchText: fakeLagocine().fetchText, readers: home })).files);
+    expect(listed(before)).toEqual([["dune-part-three", "2026-11-12", NOW], ["avengers-doomsday", "2026-12-18", NOW], ["the-four", null, NOW]]);
+    save(dir, before);
+
+    const { files, log } = await refreshLive({ now: LATER, root: dir, fetchText: fakeLagocine().fetchText, readers: homeFails });
+    expect(listed(main(files))).toEqual(listed(before));
+    expect(log).toContain(`filmhouse-home: could not be read (www.filmhouseng.com answered 503); kept its last good coming films from ${NOW}`);
+    expect(main(files).coming!.every((c) => c.cinemaIds.length > 0 && c.cinemaIds.every((id) => id.startsWith("filmhouse-")))).toBe(true);
+    expect(main(files).films.find((f) => f.id === "dune-part-three")?.rating).toBe("15");
+
+    // The next day Dune's date has come: it is on now, not coming, so only the other two are kept.
+    save(dir, main(files));
+    const nextDay = main((await refreshLive({ now: "2026-11-12T07:00:00Z", root: dir, fetchText: fakeLagocine().fetchText, readers: homeFails })).files);
+    expect(listed(nextDay)).toEqual([["avengers-doomsday", "2026-12-18", NOW], ["the-four", null, NOW]]);
+  });
+
   it("fails as a whole when every source fails, even with earlier data to keep", async () => {
     const dir = setup();
     save(dir, main((await refreshLive({ now: NOW, root: dir, fetchText: fakeLagocine().fetchText, readers })).files));

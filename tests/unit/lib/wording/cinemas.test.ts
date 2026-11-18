@@ -29,6 +29,14 @@ describe("cinemaLine", () => {
   });
 });
 
+describe("cinemaLine on a later day (D-146)", () => {
+  it("names the day, and says so when the sinima hasn't listed it", () => {
+    expect(cinemaLine({ next: AT, films: 2, listed: true, when: null, weekday: "Sunday" })).toEqual({ lead: "First at", time: "6:00\u00a0PM", rest: " · 2 films on Sunday" });
+    expect(cinemaLine({ next: null, films: 0, listed: true, when: null, weekday: "Sunday" })).toEqual({ lead: "Hasn't listed Sunday yet", time: null, rest: "" });
+    expect(cinemaLine({ next: null, films: 0, listed: false, when: null, weekday: "Sunday" }).lead).toBe("Times not available yet");
+  });
+});
+
 describe("cinemasHeading", () => {
   it.each([
     [{ key: "area", area: "Lekki", count: 6 }, "In Lekki", "Your area · 6 sinimas, soonest first"],

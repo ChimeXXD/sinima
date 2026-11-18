@@ -98,9 +98,6 @@
   color: var(--text-secondary);
   font: var(--type-meta);
 }
-.heading > :last-child {
-  display: grid; /* the toggle runs full width on a phone */
-}
 
 .areas {
   display: flex;
@@ -212,10 +209,6 @@
     align-items: center;
     justify-content: space-between;
     gap: var(--space-12);
-  }
-  .heading > :last-child {
-    display: inline-grid;
-    width: 264px;
   }
   .areas {
     display: grid;

@@ -11,6 +11,7 @@ describe("filmsTitle", () => {
     expect(filmsTitle({ day: 0, when: "tonight", date: FRI })).toBe("Films tonight");
     expect(filmsTitle({ day: 0, when: "today", date: FRI })).toBe("Films today");
     expect(filmsTitle({ day: 1, when: "tonight", date: SAT })).toBe("Films tomorrow");
+    expect(filmsTitle({ day: 2, when: "tonight", date: "2026-11-15T11:00:00Z" })).toBe("Films on Sunday");
   });
   it("names the date before it knows the time (rule 3)", () => {
     expect(filmsTitle({ day: 0, when: null, date: FRI })).toBe("Films on Fri 13 Nov");
@@ -77,5 +78,9 @@ describe("noFilms", () => {
     expect(noFilms({ day: 1, live: true, date: SAT })).toBe("No times listed for tomorrow yet.");
     expect(noFilms({ day: 0, live: true, date: FRI })).toBe("No times listed today.");
     expect(noFilms({ day: 0, live: false, date: FRI })).toBe("No times on Fri 13 Nov.");
+  });
+
+  it("on a later day, names its weekday (D-146)", () => {
+    expect(noFilms({ day: 2, live: true, date: "2026-11-15T11:00:00Z" })).toBe("No times listed for Sunday yet.");
   });
 });

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { AreaScreen } from "@/components/area/AreaScreen";
 import { areaBySlug, areas, areasIn, cityParam, loadCity } from "@/lib/data/load";
-import { toListData } from "@/lib/data/select";
+import { toListData } from "@/lib/data/listData";
 import { pageColours } from "@/lib/theme/pageColours";
 import { areaTitle } from "@/lib/wording/areaPage";
 

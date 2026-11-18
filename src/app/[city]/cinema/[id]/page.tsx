@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { CinemaScreen } from "@/components/cinema/CinemaScreen";
 import { CITIES, type City } from "@/lib/city";
-import { areaBySlug, cityParam, loadCity } from "@/lib/data/load";
-import { toListData } from "@/lib/data/select";
+import { areaBySlug, cityParam, loadCity, loadDays } from "@/lib/data/load";
+import { toListData } from "@/lib/data/listData";
 import type { ShowtimesFile } from "@/lib/data/types";
 import { pageColours } from "@/lib/theme/pageColours";
 
@@ -31,5 +31,5 @@ export default async function CinemaPage({ params }: Props) {
   const file = loadCity(city);
   const cinema = cinemaById(file, city, id);
   const area = areaBySlug(cinema.area);
-  return <CinemaScreen data={toListData(file, { cinemaId: cinema.id })} id={cinema.id} area={{ slug: area.slug, name: area.name }} city={city} bg={pageColours()} />;
+  return <CinemaScreen data={{ ...toListData(file, { cinemaId: cinema.id }), days: loadDays(city) }} id={cinema.id} area={{ slug: area.slug, name: area.name }} city={city} bg={pageColours()} />;
 }

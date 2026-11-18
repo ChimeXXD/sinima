@@ -1,6 +1,6 @@
 import { featuredAt, type ListFeatured } from "@/lib/data/featured";
 import { formatDate } from "@/lib/time/lagos";
-import { list } from "@/lib/wording/credits";
+import { list } from "@/lib/wording/list";
 
 // The line on a chain's cinema whose times we can't read (D-131): the films the chain's own home
 // page features today. Every film it features, never "and N more", and never "everything it shows":

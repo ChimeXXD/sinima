@@ -47,6 +47,39 @@ describe("parseFilmhouseHome", () => {
   });
 });
 
+describe("parseFilmhouseHome: coming films (D-144, D-151)", () => {
+  it("lists the banner films whose nearest showtimes are after today, with that Lagos date and the rating, in the page's order", () => {
+    expect(parseFilmhouseHome(html, { now: NOW }).coming).toEqual([
+      { title: "The Hunger Games: Sunrise on the Reaping", firstDay: "2026-11-20", rating: "PG 12" },
+      { title: "THE FOUR", firstDay: "2026-12-11", rating: null },
+      { title: "DUNE : PART THREE", firstDay: "2026-12-18", rating: null },
+      { title: "AVENGERS: DOOMSDAY", firstDay: "2026-12-18", rating: "PG-13" },
+      { title: "JUMANJI: OPEN WORLD", firstDay: "2026-12-25", rating: "PG 12" },
+    ]);
+  });
+
+  it("drops a film once its date is today (it is featured then) and takes today in Lagos", () => {
+    expect(parseFilmhouseHome(html, { now: "2026-11-20T10:00:00Z" }).coming!.map((film) => film.title)).not.toContain("The Hunger Games: Sunrise on the Reaping");
+    expect(parseFilmhouseHome(html, { now: "2026-11-19T22:59:59Z" }).coming!.map((film) => film.title)).toContain("The Hunger Games: Sunrise on the Reaping"); // 23:59 on the 19th
+    expect(parseFilmhouseHome(html, { now: "2026-11-19T23:00:00Z" }).coming!.map((film) => film.title)).not.toContain("The Hunger Games: Sunrise on the Reaping"); // 00:00 on the 20th
+  });
+
+  it("counts a film the page flags as coming soon with no date as coming, date not announced; the flag alone never makes a dated film today coming", () => {
+    const flagged = html
+      .replace('is_coming_soon\\":false,\\"nearest_show_times_date\\":\\"2026-12-11\\"', 'is_coming_soon\\":true,\\"nearest_show_times_date\\":null')
+      .replace('is_coming_soon\\":false,\\"nearest_show_times_date\\":\\"2026-11-17\\"', 'is_coming_soon\\":true,\\"nearest_show_times_date\\":\\"2026-11-17\\"');
+    const page = parseFilmhouseHome(flagged, { now: NOW });
+    expect(page.coming).toContainEqual({ title: "THE FOUR", firstDay: null, rating: null });
+    expect(page.coming!.map((film) => film.title)).not.toContain("GHOST SOLDIER");
+    expect(page.featured!.films.map((film) => film.title)).toContain("GHOST SOLDIER");
+  });
+
+  it("leaves out a film with no date that the page does not flag as coming soon", () => {
+    const undated = html.replace('is_coming_soon\\":false,\\"nearest_show_times_date\\":\\"2026-12-11\\"', 'is_coming_soon\\":false,\\"nearest_show_times_date\\":null');
+    expect(parseFilmhouseHome(undated, { now: NOW }).coming!.map((film) => film.title)).not.toContain("THE FOUR");
+  });
+});
+
 describe("runtimeMinutes", () => {
   it("reads Filmhouse's runtimes, and nothing it can't read", () => {
     expect([runtimeMinutes("1h 30m"), runtimeMinutes("2h 0m"), runtimeMinutes("45m"), runtimeMinutes("2h"), runtimeMinutes(""), runtimeMinutes(null), runtimeMinutes("TBC")]).toEqual([90, 120, 45, 120, null, null, null]);

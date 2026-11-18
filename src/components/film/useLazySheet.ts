@@ -21,13 +21,19 @@ function loadSheet(): Promise<SheetPart> {
 /** `linked` is a showing named in the page's address (a shared link): it opens once. */
 export function useLazySheet(data: ListData, linked: ListRow | null = null) {
   const [Sheet, setSheet] = useState<SheetPart | null>(null);
-  const [row, setRow] = useState<ListRow | null>(null);
+  // The row with the list it came from: a later day's rows index that day's own films (D-147), so
+  // the sheet keeps the list it was opened from even if the page moves to another day.
+  const [picked, setPicked] = useState<{ row: ListRow; from: ListData } | null>(null);
   const [open, setOpen] = useState(false);
-  const sheetData = useMemo(() => (row ? { ...data, rows: data.rows.filter((other) => other.film === row.film) } : data), [data, row]);
-  const openRow = useCallback((next: ListRow) => {
-    setRow(next);
-    void loadSheet().then((loaded) => (setSheet(() => loaded), setOpen(true)), () => {});
-  }, []);
+  const row = picked?.row ?? null;
+  const sheetData = useMemo(() => (picked ? { ...picked.from, rows: picked.from.rows.filter((other) => other.film === picked.row.film) } : data), [data, picked]);
+  const openRow = useCallback(
+    (next: ListRow) => {
+      setPicked({ row: next, from: data });
+      void loadSheet().then((loaded) => (setSheet(() => loaded), setOpen(true)), () => {});
+    },
+    [data],
+  );
   const opened = useRef<ListRow | null>(null);
   useEffect(() => {
     if (linked && opened.current !== linked) {

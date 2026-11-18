@@ -1,5 +1,6 @@
 import type { City } from "@/lib/city";
 import type { ShowtimesFile } from "@/lib/data/types";
+import { cutComing, withComing } from "./coming.ts";
 import { cutFeatured, withFeatured } from "./featured.ts";
 
 // The city layer (D-98, D-120): a cinema's city is its area's, from data/cinemas.json. Each city's
@@ -15,19 +16,20 @@ export function cityOfCinema(cinema: { area: string }, cityOfArea: CityOfArea): 
   return city;
 }
 
-/** The file cut to one city's cinemas (with or without times), their showings and featured films (D-131), and the films and sources those use. */
+/** The file cut to one city's cinemas (with or without times), their showings, featured films (D-131) and coming films (D-151), and the films and sources those use. */
 export function inCity(file: ShowtimesFile, city: City, cityOfArea: CityOfArea): ShowtimesFile {
   const cinemas = file.cinemas.filter((cinema) => cityOfCinema(cinema, cityOfArea) === city);
   const ids = new Set(cinemas.map((cinema) => cinema.id));
   const showings = file.showings.filter((showing) => ids.has(showing.cinemaId));
-  const films = new Set(showings.map((showing) => showing.filmId));
   const featured = cutFeatured(file, ids);
-  const sources = new Set([...showings, ...featured].map((row) => row.sourceId));
-  return withFeatured({
+  const coming = cutComing(file, ids);
+  const films = new Set([...showings, ...coming].map((row) => row.filmId));
+  const sources = new Set([...showings, ...featured, ...coming].map((row) => row.sourceId));
+  return withComing(withFeatured({
     ...file,
     sources: file.sources.filter((source) => sources.has(source.id)),
     cinemas,
     films: file.films.filter((film) => films.has(film.id)),
     showings,
-  }, featured);
+  }, featured), coming);
 }

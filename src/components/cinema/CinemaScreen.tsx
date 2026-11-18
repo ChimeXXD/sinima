@@ -3,19 +3,22 @@
 import { useCityRouter as useRouter, useCityPath } from "@/components/ui/CityLink";
 import { useCallback, useRef, useState } from "react";
 import { useLazySheet } from "@/components/film/useLazySheet";
-import { Button, IconButton, Segmented } from "@/components/ui/Actions";
+import { Button, IconButton } from "@/components/ui/Actions";
 import { AppFrame, BarBack, BarTitle, Crumb, LogoNote } from "@/components/ui/AppFrame";
+import { DayLoad, DaySentence } from "@/components/ui/DayParts";
+import { DayRow, dayTiles } from "@/components/ui/DayRow";
 import { Icon } from "@/components/ui/Icon";
 import { FormatBadge, PageNotice } from "@/components/ui/Status";
 import { LogoSticker } from "@/components/ui/Stickers";
 import { Toast } from "@/components/ui/Toast";
 import { pop } from "@/components/ui/motion";
+import { useDayPicker } from "@/components/ui/useDayPicker";
 import { useSwapIn } from "@/components/ui/useSwapIn";
 import { CITY_NAMES, type City } from "@/lib/city";
 import { cityWords } from "@/lib/wording/city";
 import { shareLink, useHash } from "@/lib/browser";
 import { cinemaFilms } from "@/lib/data/cinemaPage";
-import { dayDates, formatsOf, type Day } from "@/lib/data/programme";
+import { dayDates, formatsOf } from "@/lib/data/programme";
 import { laterName, nextDayName, pageBanner, type ListData } from "@/lib/data/select";
 import { toggleSaved, useSaved } from "@/lib/saved";
 import { useNow } from "@/lib/time/useNow";
@@ -40,34 +43,38 @@ export function CinemaScreen({ data, id, area, city, bg }: { data: ListData; id:
   const now = clock ?? data.at;
   const router = useRouter();
   const [typed, setTyped] = useState("");
-  const [picked, setDay] = useState<Day>(0);
-  const swap = useSwapIn(picked);
+  const days = useDayPicker(data, city, now, live, { cinemaId: id });
+  const swap = useSwapIn(days.day, days.status === "ready");
   const [toast, setToast] = useState(false);
   const [copied, setCopied] = useState(false);
   const copiedTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const cinema = data.cinemas.find((candidate) => candidate.id === id)!;
+  const near = () => [];
+  // Nothing listed after today, tomorrow or any later day (D-146): today stands alone (Figma: Times
+  // a day old). A day picked before its times went away (past midnight) falls back to today: the
+  // row is gone.
+  const me = data.cinemas.indexOf(cinema);
+  const later = days.shown.some((shown) => (shown.day > 1 || shown.later) && shown.cinemas?.includes(me));
+  const alone = live && !later && !cinemaFilms({ rows: data.rows, day: 0, now, live }).tomorrow;
+  const day = alone ? 0 : days.day;
+  const view = alone ? data : (days.view ?? { ...data, rows: [] });
   // A shared link names its showing after the #, as the old cinema page did: #s=<film>@<start>.
   const hash = useHash();
   const linked = hash.startsWith("#s=") ? (data.rows.find((row) => hash === `#s=${data.films[row.film]!.id}@${row.at}`) ?? null) : null;
-  const sheet = useLazySheet(data, linked);
+  const sheet = useLazySheet(view, linked);
   const saved = useSaved().includes(id);
   const hideToast = useCallback(() => setToast(false), []);
 
-  const cinema = data.cinemas.find((candidate) => candidate.id === id)!;
-  const near = () => [];
-  // Nothing listed for tomorrow: today stands alone (Figma: Times a day old). Tomorrow, if it was
-  // picked before its times went away (past midnight), falls back to today: the toggle is gone.
-  const onPicked = cinemaFilms({ rows: data.rows, day: picked, now, live });
-  const alone = live && !onPicked.tomorrow;
-  const day: Day = alone ? 0 : picked;
-  const films = day === picked ? onPicked : cinemaFilms({ rows: data.rows, day, now, live });
+  const films = cinemaFilms({ rows: view.rows, day, now, live, anchor: days.anchor });
   const dates = dayDates(data.rows, now);
+  const date = alone ? dates[0] : days.current.date;
   const when = !live ? null : laterName(now) === "Later tonight" ? "tonight" : "today";
   const banner = pageBanner(data, clock);
   const warning = banner && banner.kind !== "sample" ? rowWarning(banner.kind) : null;
   const note = filmsNote({ day, live, total: films.total, left: films.left, warning });
   // A cinema whose times we can't read: the films its chain's home page features today (D-131).
-  const featured = featuredFor(data, data.cinemas.indexOf(cinema), clock);
-  const options = [dayOption({ day: 0, date: dates[0], live }), dayOption({ day: 1, date: dates[1], live })] as const;
+  const featured = featuredFor(data, me, clock);
+  const today = dayOption({ day: 0, date: dates[0], live });
 
   function save(event: React.MouseEvent<HTMLButtonElement>) {
     if (!saved) pop(event.currentTarget.querySelector("svg"));
@@ -137,36 +144,42 @@ export function CinemaScreen({ data, id, area, city, bg }: { data: ListData; id:
           <div className={s.heading}>
             <div>
               <h2 id="films.title" data-testid="films.title">
-                {filmsTitle({ day, when, date: dates[day] })}
+                {filmsTitle({ day, when, date })}
               </h2>
               {note && <p data-testid="films.note">{note}</p>}
             </div>
             {alone ? (
               <p className={s.alone}>
                 <span className={s.today} data-testid="films.today">
-                  {options[0]}
+                  {today}
                 </span>
                 <span data-testid="films.not-listed">{notListedYet(cinema.chain, dates[1])}</span>
               </p>
             ) : (
-              <Segmented label="Day" options={options} value={options[day]} onChange={(name, how) => {
-                  const next = name === options[1] ? 1 : 0;
+              <DayRow
+                tiles={dayTiles(days.shown, live)}
+                value={day}
+                onChange={(next, how) => {
                   if (next === day) return;
                   swap(next > day ? 1 : -1, how);
-                  setDay(next);
+                  days.pick(next);
                 }}
-                testId="films.day" />
+                onPress={days.press}
+                testId="films.day"
+              />
             )}
           </div>
+          {!alone && <DaySentence text={days.sentence} keep={days.keep} testId="films.listed" />}
           {warning && (
             <p className={s.warning} data-testid="films.warning">
               <Icon name="alert" size={18} />
               {warning}
             </p>
           )}
-          {films.total === 0 && (
+          {!alone && days.load && <DayLoad {...days.load} />}
+          {!(days.load && !alone) && films.total === 0 && (
             <p className={s.none} data-testid="films.none" data-swap>
-              {noFilms({ day, live, date: dates[day] })}
+              {noFilms({ day, live, date })}
             </p>
           )}
           {featured && (
@@ -178,7 +191,7 @@ export function CinemaScreen({ data, id, area, city, bg }: { data: ListData; id:
             {films.films.map((times) => (
               <FilmRow
                 key={times.film}
-                film={data.films[times.film]!}
+                film={view.films[times.film]!}
                 times={times}
                 now={day === 0 ? clock : null}
                 earlier={times.earlier.length > 0 ? earlierLine(times.earlier.map((row) => row.at), times.next.map((row) => row.at), nextDayName(now)) : null}

@@ -6,15 +6,20 @@ import type { ListRow } from "@/lib/data/select";
 // areas next to it, then the rest. Inside a group, the soonest next showing first; then the
 // cinemas with nothing left that day; then the ones whose times we cannot read yet.
 
-/** `rows` are the cinema's showings on the day still to start (the whole day before the time is known). `listed` is false when the data has no times for it at all. */
+/** `rows` are the cinema's showings on the day still to start (the whole day before the time is known). `listed` is false when the data has no times for it on any day. */
 export type CinemaEntry = { cinema: number; rows: ListRow[]; listed: boolean };
 export type CinemaSection = { key: "area" | "next" | "rest" | "all"; cinemas: CinemaEntry[] };
 export type Home = { slug: string; neighbours: string[] };
 
-export function cinemaSections(input: { rows: ListRow[]; cinemas: number; areaOf: (cinema: number) => string; day: Day; now: string; live: boolean; format: FormatTag | null; home: Home | null }): CinemaSection[] {
-  const { rows, cinemas, areaOf, day, now, live, format, home } = input;
-  const on = showingOn(rows, day, now, format, !live);
-  const listed = new Set(rows.map((row) => row.cinema));
+/**
+ * `known` are every row the page has (a later day's `rows` are only that day's, D-147) and
+ * `alsoListed` the cinemas listing a later day: a cinema in either has times, just not that day
+ * (D-146). `anchor`: the page's, for a later day's rows (showingOn).
+ */
+export function cinemaSections(input: { rows: ListRow[]; known?: ListRow[]; alsoListed?: number[]; cinemas: number; areaOf: (cinema: number) => string; day: Day; now: string; live: boolean; format: FormatTag | null; home: Home | null; anchor?: string }): CinemaSection[] {
+  const { rows, known = rows, alsoListed = [], cinemas, areaOf, day, now, live, format, home, anchor } = input;
+  const on = showingOn(rows, day, now, format, !live, anchor);
+  const listed = new Set([...[...known, ...rows].map((row) => row.cinema), ...alsoListed]);
   const entries = Array.from({ length: cinemas }, (_, cinema): CinemaEntry => ({ cinema, rows: on.filter((row) => row.cinema === cinema), listed: listed.has(cinema) }))
     // With a format chosen, only the cinemas showing in it.
     .filter((entry) => format === null || entry.rows.length > 0);

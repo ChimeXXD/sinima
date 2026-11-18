@@ -65,3 +65,15 @@ describe("cinemaFilms", () => {
     expect(page.films.map((f) => f.film)).toEqual([1, 3, 0, 2]); // by when each first started
   });
 });
+
+describe("a later day (D-142)", () => {
+  it("lists every film with all its times, nothing struck as started", () => {
+    const sun = [row(1, "2026-11-15T18:00:00Z"), row(0, "2026-11-15T13:00:00Z"), row(0, "2026-11-15T16:00:00Z")];
+    const films = cinemaFilms({ rows: sun, day: 2, now: NOW, live: true });
+    expect(films.films.map((f) => [f.film, ats(f.rows), f.earlier.length])).toEqual([
+      [0, ["2026-11-15T13:00:00Z", "2026-11-15T16:00:00Z"], 0],
+      [1, ["2026-11-15T18:00:00Z"], 0],
+    ]);
+    expect([films.total, films.left]).toEqual([2, 2]);
+  });
+});

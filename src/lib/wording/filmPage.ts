@@ -1,6 +1,6 @@
 import { formatTime, toLagos, utcMs, utcString } from "@/lib/time/lagos";
 import type { CreditsVerdict } from "@/lib/wording/credits";
-import { list } from "@/lib/wording/credits";
+import { list } from "@/lib/wording/list";
 import { runtimeText } from "@/lib/wording/film";
 
 // Words on a film's page and its showing sheet (Figma Film 185:3558).

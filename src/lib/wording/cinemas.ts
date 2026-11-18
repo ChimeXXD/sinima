@@ -1,5 +1,5 @@
 import { formatLateTime } from "@/lib/time/lagos";
-import { list } from "@/lib/wording/credits";
+import { list } from "@/lib/wording/list";
 
 // Every sentence on the Cinemas tab (Figma Cinemas 200:6415).
 
@@ -14,10 +14,12 @@ export const cinemasTitleNote = (n: number) => `${n} of them!`;
 /**
  * A cinema row's second line, in pieces so the time can be a <time>: "Next at 6:00 PM · 3 films
  * tonight". `when` is null before the page knows the time (rule 3): "First at 6:00 PM · 3 films".
+ * On a later day `weekday` names it ("Sunday"), and a sinima that hasn't put it up says so (D-146).
  */
-export function cinemaLine(input: { next: string | null; films: number; listed: boolean; when: "tonight" | "today" | "tomorrow" | null }): { lead: string; time: string | null; rest: string } {
-  const { next, films, listed, when } = input;
+export function cinemaLine(input: { next: string | null; films: number; listed: boolean; when: "tonight" | "today" | "tomorrow" | null; weekday?: string }): { lead: string; time: string | null; rest: string } {
+  const { next, films, listed, when, weekday } = input;
   if (!listed) return { lead: "Times not available yet", time: null, rest: "" };
+  if (weekday) return next === null ? { lead: `Hasn't listed ${weekday} yet`, time: null, rest: "" } : { lead: "First at", time: formatLateTime(next), rest: ` · ${plural(films, "film")} on ${weekday}` };
   if (next === null) {
     const lead = when === "tonight" || when === "today" ? "Nothing more today" : when === "tomorrow" ? "No times tomorrow" : "No times listed";
     return { lead, time: null, rest: "" };

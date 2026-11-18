@@ -2,21 +2,25 @@
 
 import { Link, useCityPath, useCityRouter as useRouter } from "@/components/ui/CityLink";
 import { useRef, useState } from "react";
-import { Button, IconButton, Segmented } from "@/components/ui/Actions";
+import { Button, IconButton } from "@/components/ui/Actions";
 import { AppFrame, BarBack, BarTitle } from "@/components/ui/AppFrame";
+import { DayLoad, DaySentence } from "@/components/ui/DayParts";
+import { DayRow, dayTiles } from "@/components/ui/DayRow";
 import { Icon } from "@/components/ui/Icon";
 import { PageNotice, TimeChip } from "@/components/ui/Status";
 import { LogoSticker, TicketFaceSticker } from "@/components/ui/Stickers";
+import { useDayPicker } from "@/components/ui/useDayPicker";
 import { useSwapIn } from "@/components/ui/useSwapIn";
 import { CITY_NAMES, type City } from "@/lib/city";
 import { cityWords } from "@/lib/wording/city";
-import { shareLink, useHash, useSavedArea } from "@/lib/browser";
+import { shareLink, useHash, useQuery, useSavedArea } from "@/lib/browser";
 import { areaGroups, cinemasOn, startedEarlier, type CinemaTimes } from "@/lib/data/filmPage";
 import { formatLabel } from "@/lib/data/format";
 import type { Area } from "@/lib/data/load";
-import { dayDates, type Day } from "@/lib/data/programme";
+import { dayDates } from "@/lib/data/programme";
 import { pageBanner, type ListData, type ListRow } from "@/lib/data/select";
 import { minutesFromStart } from "@/lib/time/countdown";
+import { eveningDayKey } from "@/lib/time/lagos";
 import { useNow } from "@/lib/time/useNow";
 import { dayWords } from "@/lib/wording/day";
 import { areaTag, earlierLine, filmFacts, heroNote, noTimes, shareText, shortAddress, timesSubtitle, trailerLink } from "@/lib/wording/filmPage";
@@ -36,32 +40,38 @@ export function FilmScreen({ data, areas, city, bg }: { data: ListData; areas: A
   const live = clock !== null;
   const now = clock ?? data.at;
   const router = useRouter();
-  const [day, setDay] = useState<Day>(0);
-  const swap = useSwapIn(day);
+  const film = data.films[0]!;
+  // A shared link names its showing after the #; it opens once, until it is closed. A new link opens again.
+  const hash = useHash();
+  // Opened from Films on a later day, the page opens on that day (`?day=2026-11-21`, D-147); a
+  // shared showing opens on its own day, so one on a later day is there to be found.
+  const asked = useQuery("day");
+  const sharedAt = /^#s=.+@(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z)$/.exec(hash)?.[1];
+  const days = useDayPicker(data, city, now, live, { filmId: film.id }, sharedAt ? eveningDayKey(sharedAt) : asked);
+  const { day, current } = days;
+  const view = days.view ?? { ...data, rows: [] };
+  const swap = useSwapIn(day, days.status === "ready");
   const [typed, setTyped] = useState("");
   const [copied, setCopied] = useState(false);
   const copiedTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  const film = data.films[0]!;
   const areaName = (slug: string) => areas.find((area) => area.slug === slug)?.name ?? slug;
   const near = (slug: string) => areas.find((area) => area.slug === slug)?.neighbours ?? [];
   const saved = useSavedArea();
   const home = areas.find((area) => area.slug === saved) ?? null;
 
-  // A shared link names its showing after the #; it opens once, until it is closed. A new link opens again.
-  const hash = useHash();
-  const linked = hash.startsWith("#s=") ? (data.rows.find((row) => showingHash(data, row) === hash) ?? null) : null;
-  const sheet = useLazySheet(data, linked);
+  // The picked day's rows first: a later day's showing is only in its own file (D-147).
+  const linked = hash.startsWith("#s=") ? (view.rows.find((row) => showingHash(view, row) === hash) ?? data.rows.find((row) => showingHash(data, row) === hash) ?? null) : null;
+  const sheet = useLazySheet(view, linked);
 
   const dates = dayDates(data.rows, now);
-  const names = [dayWords(0, dates[0], live).name, dayWords(1, dates[1], live).name];
-  const on = dayWords(day, dates[day], live).on;
+  const on = dayWords(day, current.date, live).on;
   const today = cinemasOn(data.rows, 0, now);
   const formats = [...new Set(data.rows.map((r) => formatLabel(r.format)).filter((label): label is string => label !== null))];
   const where = today.cinemas > 0 ? { cinemas: today.cinemas, city: cityName, on: dayWords(0, dates[0], live).on } : { cinemas: cinemasOn(data.rows, 1, now).cinemas, city: cityName, on: dayWords(1, dates[1], live).on };
   const facts = filmFacts(film, formats, where);
   const trailer = film.trailer ? trailerLink(film.title, film.trailer) : null;
-  const groups = areaGroups(data.rows, day, now, live, (cinema) => data.cinemas[cinema]!.area, home);
+  const groups = areaGroups(view.rows, day, now, live, (cinema) => view.cinemas[cinema]!.area, home, days.anchor);
   const earlier = live && day === 0 ? earlierLine(startedEarlier(data.rows, now).map(({ cinema, at }) => ({ name: data.cinemas[cinema]!.name, at })), cinemasOn(data.rows, 1, now)) : null;
   const banner = pageBanner(data, clock);
   const stay = film.stay.verdict === "stay" || film.stay.verdict === "probably-stay";
@@ -125,18 +135,24 @@ export function FilmScreen({ data, areas, city, bg }: { data: ListData; areas: A
           <div className={s.heading}>
             <div>
               <h2 id="film.times">{words.times}</h2>
-              <p>{timesSubtitle(dates[day], home !== null)}</p>
+              <p>{timesSubtitle(current.date, home !== null)}</p>
             </div>
-            <Segmented label="Day" options={names} value={names[day]!} onChange={(name, how) => {
-                const next = names.indexOf(name) === 1 ? 1 : 0;
+            <DayRow
+              tiles={dayTiles(days.shown, live)}
+              value={day}
+              onChange={(next, how) => {
                 if (next === day) return;
                 swap(next > day ? 1 : -1, how);
-                setDay(next);
+                days.pick(next);
               }}
-              testId="film.day" />
+              onPress={days.press}
+              testId="film.day"
+            />
           </div>
+          <DaySentence text={days.sentence} keep={days.keep} testId="film.listed" />
           <PageNotice banner={banner} now={clock} />
-          {groups.length === 0 && (
+          {days.load && <DayLoad {...days.load} />}
+          {!days.load && groups.length === 0 && (
             <p className={s.none} data-testid="film.none" data-swap>
               {noTimes(film.title, on, live && day === 0 && today.showings > 0)}
             </p>
@@ -157,7 +173,7 @@ export function FilmScreen({ data, areas, city, bg }: { data: ListData; areas: A
                   </h3>
                   <div className={s.cinemas}>
                     {group.cinemas.map((times) => (
-                      <CinemaCard key={times.cinema} data={data} times={times} now={day === 0 ? clock : null} onOpen={sheet.openRow} />
+                      <CinemaCard key={times.cinema} data={view} times={times} now={day === 0 ? clock : null} onOpen={sheet.openRow} />
                     ))}
                   </div>
                 </section>
