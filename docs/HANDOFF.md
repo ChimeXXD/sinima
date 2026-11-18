@@ -2,7 +2,7 @@
 
 ## Now: session of 18 Nov 2026 (01:00–04:00 Lagos): answers to the open calls, sinima wording, dark-mode fixes, the domain, five days (latest)
 
-**Where we stopped, exactly:** Chime said "go ahead" to five days (D-142). Step 1, measuring how many days each source publishes, was running when the session ended (a one-off script, `scripts/.probe-days.ts`, untracked: it reads every cleared source with the real readers and polite rules, asking for 7 days, and writes nothing). Its results are below. **Next:** report a per-sinima table and a proposed cut-off for "enough sinimas have listed this day" to Chime, get a yes, then build (readers to `daysAhead` 5, a data file per day, the day row in place of Today | Tomorrow; design first). Then delete `scripts/.probe-days.ts`.
+**Where we stopped, exactly:** Chime said "go ahead" to five days (D-142). Step 1, measuring how many days each source publishes, ran this session (a one-off script, `scripts/.probe-days.ts`, untracked: it reads every cleared source with the real readers and polite rules, asking for 7 days, and writes nothing). Its results are below (finished 03:45). **Next:** rerun it for Lagocine (5 days) and EbonyLife, Viva and Nova, then report the per-sinima table and a proposed cut-off for "enough sinimas have listed this day" to Chime, get a yes, then build (readers to `daysAhead` 5, a data file per day, the day row in place of Today | Tomorrow; design first). Then delete `scripts/.probe-days.ts`.
 
 Everything else below is committed and pushed (last commit after `9f4a843`). Nothing is running.
 
@@ -28,11 +28,30 @@ Everything else below is committed and pushed (last commit after `9f4a843`). Not
 
 ### Days probe (D-142 step 1), 18 Nov ~03:30 Lagos
 
-Results so far (each source asked for 7 days; full table to be added when the run finishes):
-- **Lagocine**: day 7 (24 Nov) answered 404, so the reader threw the run away: Lagocine has day pages for fewer than 7 days ahead. Rerun with 5 or 6 to find its horizon (pages before that day exist).
-- **Genesis**: read (262 s, its film pages). **Silverbird** (Veezi) 21 s, **Grand** 9 s, **Blue Pictures** 8 s (today only by design).
-- **EbonyLife**: a day's page timed out waiting for load (30 s), so that run lost all its days.
-- Viva, Nova, THC, Magnificent: still running.
+Read at 02:43 UTC on Wed 18 Nov, each source asked for 7 days. Showings per day (`-` = none):
+
+| Sinima | Wed 18 | Thu 19 | Fri 20 | Sat 21 | Sun 22 | Mon 23 | Tue 24 | Days |
+|---|---|---|---|---|---|---|---|---|
+| Blue Pictures Onikan | 7 | - | - | - | - | - | - | 1 (today only, by design) |
+| Genesis Ceddi Plaza | 21 | 18 | - | - | - | - | - | 2 |
+| Genesis Festac | 15 | 15 | - | - | - | - | - | 2 |
+| Genesis Maryland | 17 | 17 | - | - | - | - | - | 2 |
+| Genesis Purple Lekki | 17 | 16 | - | - | - | - | - | 2 |
+| Silverbird Ikeja | 28 | 28 | - | - | - | - | - | 2 |
+| Silverbird SEC (Abuja) | 30 | 30 | - | - | - | - | - | 2 |
+| Magnificent Ikorodu Road | 34 | 34 | 34 | - | - | - | - | 3 |
+| THC Agege | 11 | 11 | 12 | 13 | 13 | 11 | - | 6 |
+| Grand Lekki | 12 | 12 | 12 | 12 | 12 | - | 12 | 6 of 7 (undated weekday tabs, D-123 c) |
+| Silverbird Jabi (Abuja) | 24 | 27 | 25 | 25 | 20 | 25 | 25 | 7 |
+| Silverbird Galleria | - | - | - | - | - | - | - | its Veezi page is empty |
+
+**Not measured, and they matter most:**
+- **Lagocine** feeds 10 cinemas (Filmhouse's 7, Filmworld, Ozone, Sky). Its 24 Nov page answered 404 and the reader dropped the whole run, so its range is fewer than 7 days but unknown. Rerun asking 5, then 6.
+- **EbonyLife, Viva, Nova (Lagos and Abuja):** one day's page timed out at 30 s and each run lost all its days. Rerun them alone.
+
+**What it suggests (inferred, not proven):** most sinimas publish through Thursday. In Nigeria new programmes start on Friday, so a new week appears around Wednesday or Thursday. On launch day, Tue 15 Dec, Friday's Doomsday times will exist only where a sinima has opened presales. Genesis lists about 3 days on its location pages (genesis.ts comment) but our reader returns 2, so check whether the reader drops day 3. With "show a day once enough sinimas list it", days 3 and later would show today for only 3–4 of the 11 measured. Put this to Chime before building: five days as agreed, with mostly-empty later days hidden until cinemas publish them.
+
+`scripts/.probe-days.ts` (untracked) reruns this: `node scripts/.probe-days.ts > out.json`. Delete it once the build is done.
 
 ### For Chime
 
