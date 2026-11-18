@@ -37,5 +37,5 @@ export const parseThc: DayParser = (html, { cinemaId, day }) => {
   return showings;
 };
 
-/** The home page once per day, that day's tab clicked: two page loads a run. */
+/** The home page once per day, that day's tab clicked: up to five page loads a run. */
 export const readThc = tabbedReader("THC", thcDaySelector, parseThc);

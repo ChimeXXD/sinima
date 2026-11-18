@@ -1,7 +1,7 @@
 // Parser and reader for Grand Cinemas' home page (grandcinemas.com.ng, D-122). It lists the week
 // in weekday tabs (#Mon to #Sun) with no dates; inside each tab every film carries its times for
 // each weekday ("tue-time": "3:00 pm"). Today's and the next days' tabs are read onto today's and
-// the next days' dates. Tickets are sold at the cinema, so there are no booking links.
+// the next days' dates, up to Sunday. Tickets are sold at the cinema, so there are no booking links.
 import * as cheerio from "cheerio";
 import { clock12, lagosDay, showStart, weekdayOf } from "./dates.ts";
 import { clean, type ParsedPage, type RawShowing, type Reader } from "./raw.ts";
@@ -17,6 +17,9 @@ export function parseGrand(html: string, options: { cinemaId: string; now: strin
   const showings: RawShowing[] = [];
   for (let offset = 0; offset < options.days; offset += 1) {
     const day = lagosDay(options.now, offset);
+    // The tabs are this week's, Monday to Sunday: a later day that is Monday is next week, which the
+    // page doesn't show, so the read stops rather than give it last week's times (rule 8).
+    if (offset > 0 && weekdayOf(day) === "monday") break;
     // The weekday's tab: "tuesday" -> "Tue".
     const name = weekdayOf(day).slice(0, 3).replace(/^./, (c) => c.toUpperCase());
     const tab = tabs.find(`[id="${name}"]`);

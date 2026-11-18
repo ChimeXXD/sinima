@@ -2,6 +2,17 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 18 Nov 2026 (afternoon, Lagos) — Five days, unit 1: every source read for five days (D-142, D-146, D-147)
+
+Chime: "let's do the five days, the share card, and the coming soon", then on the cut-off: "Do your recommendation" (D-146); day row: "B" (D-148, `mockup/day-row/`, local).
+
+- **Measured first** (one-off `scripts/.probe-days.ts`, real readers and polite rules, read 18 Nov): sinimas with times per day, Wed 18 to Sun 22. Lagos 21 / 20 / 15 / 7 / 7; Abuja 4 / 4 / 2 / 2 / 2. Lagocine five days: Filmworld and Ozone every day (and Mon 23), Sky to Fri, Filmhouse's 7 to Fri (Fri partly: 1–5 showings each). EbonyLife Wed, Thu, Sat, Sun (none Fri). Viva and Nova (both cities) all five. Genesis (asked 3) gave 2: its film pages list only to Thursday (the page, not our filter). Earlier the same morning: Silverbird Jabi 7 days, THC 6, Grand 6 of 7, Magnificent 3, Silverbird Ikeja and SEC 2, Blue Pictures 1; Galleria empty.
+- **Changed:** `DAYS_AHEAD = 5` in `scripts/live.ts` (the two `daysAhead: 2` in `data/sources.json` → default). Lagocine keeps the days it has published: a later day answering 404/410, timing out, or with no films yet ends the read (note in the log); today's page missing or empty, or any refusal, fails it. `readEachDay` (EbonyLife, THC, Magnificent, Reach: Viva, Nova, Sky) does the same per cinema; the browser's "still loading after the click" is now a `TimeoutError`. Grand never reads past Sunday's tab (its tabs are this week's, undated: five days from Thursday would have given last Tuesday's times next Tuesday's date). So on a Sunday Grand has no Monday times (before, Monday's tab from the week just ending was copied onto tomorrow: rule 8). Refresh job limit 15 → 30 min. Page files unchanged: still today and tomorrow (`splitByArea`), so pages and the 20 KB data budget are as before.
+- **Red:** `live.test.ts` "reads Lagocine's day pages for five days…" (asked 2 URLs); "keeps the days Lagocine has published…" (threw on the 404); "treats a later Lagocine day page with no films yet as not published…"; `grand.test.ts` "never reads past Sunday's tab…" (gave Tue 24–Thu 26 from a Sunday); `tabbed-days.test.ts` "keeps the days read before a later day times out…". **Green:** `npx vitest run` 839 pass; tsc and eslint clean.
+- **Review:** proof:verifier found the Grand wrap (FAIL), the job's time limit, later-day timeouts and empty Lagocine pages (all fixed above). /code-review medium: 6 findings, 3 fixed (Reach's unpublished day, `isoDay` in the note, `daysAhead` typed `number | null`); skipped: a log note when Grand stops at Sunday, Lagocine's later pages parsed twice (cheap), the untracked probe script (deleted when five days is done).
+- **Not verified:** the refresh job's run time with five days (the next scheduled run, 16:17 Lagos, measures it); how Reach's dated pages (Viva, Nova) show a day they haven't published: a day with no slide is now read as not published (/code-review, test in `reach.test.ts`); a slide shown for another day still fails the read (last good data kept).
+- **Next:** unit 2, the later-day files (`/data/<city>/<date>.json`, D-147).
+
 ## 18 Nov 2026 (13:30 Lagos) — Light by default; dark only from the pull cord (D-143)
 
 Chime: "So I want the default to be light mode, then you can pull it if you want dark."

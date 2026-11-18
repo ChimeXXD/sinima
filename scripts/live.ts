@@ -17,9 +17,9 @@ import { genesisReader, MAX_FILM_PAGES } from "./sources/genesis.ts";
 import { readEbonyLife } from "./sources/ebonylife.ts";
 import { readFilmhouseHome } from "./sources/filmhouse.ts";
 import { readGrand } from "./sources/grand.ts";
-import { parseLagocineDay } from "./sources/lagocine.ts";
+import { lagocineHasFilms, parseLagocineDay } from "./sources/lagocine.ts";
 import { readMagnificent } from "./sources/magnificent.ts";
-import type { FetchText } from "./sources/polite.ts";
+import { pageMissingOrSlow, type FetchText } from "./sources/polite.ts";
 import type { ParsedPage, Reader } from "./sources/raw.ts";
 import { readReach } from "./sources/reach.ts";
 import { readThc } from "./sources/thc.ts";
@@ -35,6 +35,9 @@ const DAY = 86_400_000;
 
 export type { Reader };
 
+/** How many days each source is asked for, today first (D-142, D-146). */
+export const DAYS_AHEAD = 5;
+
 /**
  * The sources we can read live. A cleared source with no reader here is not read yet. Each cinema
  * is read from its own site where it can be (D-76, D-122, D-125), and from Lagocine only while it can't.
@@ -42,10 +45,26 @@ export type { Reader };
  * shows currently scheduled" while Filmworld's own site, through Lagocine, listed 22 times (D-122).
  */
 export const READERS: Record<string, Reader> = {
-  // One day page holds every showing in Lagos that day.
+  // One day page holds every showing in Lagos that day. A later day Lagocine hasn't published yet
+  // (404, or a page with no films) ends the read with the days before it; today's page missing or
+  // empty, or any refusal, fails it.
   lagocine: async ({ now, days, fetchText }) => {
     const pages: ParsedPage[] = [];
-    for (let day = 0; day < days; day += 1) pages.push(parseLagocineDay(await fetchText(`https://lagocine.com/day/${lagosDayKey(utcString(utcMs(now) + day * DAY))}/`)));
+    for (let day = 0; day < days; day += 1) {
+      const key = lagosDayKey(utcString(utcMs(now) + day * DAY));
+      let html: string | null;
+      try {
+        html = await fetchText(`https://lagocine.com/day/${key}/`);
+      } catch (error) {
+        if (day === 0 || !pageMissingOrSlow(error)) throw error;
+        html = null;
+      }
+      if (html === null || (day > 0 && !lagocineHasFilms(html))) {
+        pages[pages.length - 1]!.notes = [...(pages[pages.length - 1]!.notes ?? []), `no day page for ${key} yet; read ${day} days`];
+        break;
+      }
+      pages.push(parseLagocineDay(html));
+    }
     return pages;
   },
   // Each cinema's own Veezi sessions page (Lagos and Abuja); the siteToken is in data/sources.json.
@@ -56,7 +75,7 @@ export const READERS: Record<string, Reader> = {
   bluepictures: readBluePictures,
   // Script-built pages, read rendered through the run's headless browser (D-125): the Reach Cinema
   // platform (Ozone and Sky; Viva; Nova in Lagos and Abuja), EbonyLife, THC and Magnificent, each
-  // day by its own address or by clicking its date tab. Two page loads per cinema a run.
+  // day by its own address or by clicking its date tab. Up to five page loads per cinema a run.
   reachcinema: readReach,
   viva: readReach,
   nova: readReach,
@@ -137,7 +156,7 @@ export async function refreshLive(input: {
     try {
       // Each cinema's own page on this source, for the cinemas it feeds (data/sources.json `cinemaPages`).
       const own = (map: Record<string, string> = {}) => Object.fromEntries(Object.entries(map).filter(([cinemaId]) => given.has(cinemaId)));
-      pages = await reader({ now, days: source.daysAhead ?? 2, fetchText, renderText, pages: own(source.cinemaPages), sites: own(source.bookingSites), names: own(source.pageNames) });
+      pages = await reader({ now, days: source.daysAhead ?? DAYS_AHEAD, fetchText, renderText, pages: own(source.cinemaPages), sites: own(source.bookingSites), names: own(source.pageNames) });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       failures.push(message);

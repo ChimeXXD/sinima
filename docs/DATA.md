@@ -184,6 +184,8 @@ Filled on Day 0 by the data-source audit. One entry per source.
 }
 ```
 
+`daysAhead` (optional): how many days a source is asked for, today first. `null` means the default, five (`DAYS_AHEAD` in `scripts/live.ts`, D-142, D-146). A reader reads only the days its site has published: Lagocine stops at the first later day with no page yet (404) and keeps the days before it; a missing page for today still fails the source. The page files keep today and tomorrow; the days after are cut into their own files (D-147).
+
 `cinemaPages` (D-122, optional): each cinema's own listing page on that source, by cinema id, for the readers in `scripts/live.ts`. Only cinemas in the source's `cinemaIds` may have one (`tests/unit/registry.test.ts`), and every cinema a reader-run source feeds must (`tests/unit/scripts/live.test.ts`). A Veezi page's address carries the cinema's own `siteToken` (`https://ticketing.eu.veezi.com/sessions/?siteToken=<token>`); the reader reads the token from there, so no token is written in code. Lagocine has none: it reads its day pages.
 
 `bookingSites` (D-124, optional): the name the source's booking links give each cinema, by cinema id, where a reader needs it to tell which cinema a link is for. Genesis's film pages list a film at every location, each time linking to `/<site>/booknow/<id>`, and Lekki's page is `/freedom-way-lekki/` while its links say `lekki-purple`; so the map is data, not learned from the day's rows (a location with nothing on today would lose its tomorrow). Only cinemas in `cinemaIds` may have one, each name once (`tests/unit/registry.test.ts`). A location page whose links name another site fails the read.

@@ -43,5 +43,5 @@ export const parseEbonyLife: DayParser = (html, { cinemaId, day, origin }) => {
   return showings;
 };
 
-/** The /movies page once per day, that day's date clicked: two page loads a run. */
+/** The /movies page once per day, that day's date clicked: up to five page loads a run. */
 export const readEbonyLife = tabbedReader("EbonyLife", ebonyLifeDaySelector, parseEbonyLife);

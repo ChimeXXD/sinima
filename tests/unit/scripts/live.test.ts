@@ -3,6 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { LIVE_DIR, liveBuildFiles, READERS, refreshLive } from "../../../scripts/live.ts";
+import { PageError } from "../../../scripts/sources/polite.ts";
 import type { ShowtimesFile } from "@/lib/data/types";
 
 // Live data (D-116): the cleared sources that have a reader, read today, written to data/live/ for
@@ -44,10 +45,43 @@ function fakeLagocine() {
 }
 
 describe("refreshLive", () => {
-  it("reads Lagocine's day pages for today and tomorrow in Lagos, nothing else", async () => {
+  it("reads Lagocine's day pages for five days in Lagos, today first, nothing else (D-142)", async () => {
     const net = fakeLagocine();
     await refreshLive({ now: NOW, root, fetchText: net.fetchText, readers: LAGOCINE_ONLY });
-    expect(net.asked).toEqual(["https://lagocine.com/day/2026-11-11/", "https://lagocine.com/day/2026-11-12/"]);
+    expect(net.asked).toEqual(["11", "12", "13", "14", "15"].map((d) => `https://lagocine.com/day/2026-11-${d}/`));
+  });
+
+  it("keeps the days Lagocine has published when a later day's page isn't there yet, and stops asking", async () => {
+    const asked: string[] = [];
+    const fetchText = async (url: string) => {
+      asked.push(url);
+      if (url.endsWith("/2026-11-14/")) throw new PageError(url, 404);
+      return dayPage;
+    };
+    const pages = await READERS.lagocine!({ now: NOW, days: 5, fetchText, renderText: async () => "", pages: {} });
+    expect(pages).toHaveLength(3);
+    expect(asked).toHaveLength(4); // Sun 15 is not asked for once Sat 14 is missing
+    expect(pages.flatMap((page) => page.notes ?? [])).toContainEqual(expect.stringMatching(/no day page for 2026-11-14 yet/));
+  });
+
+  it("treats a later Lagocine day page with no films yet as not published, not as a changed layout", async () => {
+    const empty = "<html><body><main><p>No showtimes yet.</p></main></body></html>";
+    const fetchText = async (url: string) => (url.endsWith("/2026-11-13/") ? empty : dayPage);
+    const pages = await READERS.lagocine!({ now: NOW, days: 5, fetchText, renderText: async () => "", pages: {} });
+    expect(pages).toHaveLength(2);
+    await expect(READERS.lagocine!({ now: NOW, days: 5, fetchText: async () => empty, renderText: async () => "", pages: {} })).rejects.toThrow(/no film cards/);
+  });
+
+  it("still fails when today's Lagocine page is missing, or a later page refuses us", async () => {
+    const missingToday = async (url: string) => {
+      throw new PageError(url, 404);
+    };
+    await expect(READERS.lagocine!({ now: NOW, days: 5, fetchText: missingToday, renderText: async () => "", pages: {} })).rejects.toThrow(/404/);
+    const refusedLater = async (url: string) => {
+      if (url.endsWith("/2026-11-12/")) throw new PageError(url, 403);
+      return dayPage;
+    };
+    await expect(READERS.lagocine!({ now: NOW, days: 5, fetchText: refusedLater, renderText: async () => "", pages: {} })).rejects.toThrow(/403/);
   });
 
   it("writes real data: not sample, read from a public page now, with the cinemas' own booking links", async () => {

@@ -31,7 +31,7 @@
         "minSecondsBetweenRequests": 5,
         "maxRunsPerDay": 3
       },
-      "daysAhead": 2,
+      "daysAhead": null,
       "cinemaIds": [
         "filmhouse-lekki-imax",
         "filmhouse-surulere",
@@ -241,7 +241,7 @@
         "minSecondsBetweenRequests": 5,
         "maxRunsPerDay": 3
       },
-      "daysAhead": 2,
+      "daysAhead": null,
       "cinemaIds": [
         "silverbird-ikeja",
         "silverbird-galleria",

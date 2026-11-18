@@ -60,10 +60,13 @@ export function parseReachDay(html: string, options: Options): RawShowing[] {
   const $ = cheerio.load(html);
   const { cinemaId, day } = options;
   if ($(".swiper-slide").length === 0) throw new Error(`Reach page for ${cinemaId}: no date slides found. Has the page layout changed?`);
-  const active = $(".swiper-slide.bg-grad-yellow");
   // The site's own day address pads the day ("Dec 05"), so its slide may too: "05" is read as 5.
-  const shown = active.length === 1 ? active.find("span").map((_, span) => clean($(span).text())?.replace(/^0(?=\d$)/, "")).get().join(" ") : `${active.length} highlighted slides`;
+  const label = (slide: ReturnType<Cheerio>) => slide.find("span").map((_, span) => clean($(span).text())?.replace(/^0(?=\d$)/, "")).get().join(" ");
   const wanted = `${shortMonth(day)} ${day.day} ${shortWeekday(day)}`;
+  // No slide for the day: the site hasn't published it yet, so nothing is on that day (as on a tabs page).
+  if (!$(".swiper-slide").toArray().some((slide) => label($(slide)) === wanted)) return [];
+  const active = $(".swiper-slide.bg-grad-yellow");
+  const shown = active.length === 1 ? label(active) : `${active.length} highlighted slides`;
   if (shown !== wanted) throw new Error(`Reach page for ${cinemaId}: the page shows "${shown}", not "${wanted}".`);
   checkCinema($, options);
   const cards = $("main ul > li > section");
@@ -94,7 +97,7 @@ export function parseReachTabs(html: string, options: Options): RawShowing[] {
 
 /**
  * Each cinema's page for today and the next days: a page with `cinemaId` in its address by each
- * day's own address, one without by clicking each day's tab. Two page loads per cinema a run. A
+ * day's own address, one without by clicking each day's tab. Up to five page loads per cinema a run. A
  * cinema with no times on any day read fails the source (its last good showings are kept, D-119):
  * an empty page and one whose times did not load look the same.
  */

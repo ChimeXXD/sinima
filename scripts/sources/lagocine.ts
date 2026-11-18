@@ -17,6 +17,9 @@ function builtAt($: cheerio.CheerioAPI): string | null {
   return stamp ? lagosOffsetTimeToUtc(stamp) : null;
 }
 
+/** Whether a day page lists any film: a later day with none is one Lagocine hasn't filled yet (D-147). */
+export const lagocineHasFilms = (html: string): boolean => cheerio.load(html)("article.movie-card").length > 0;
+
 /** https://lagocine.com/day/<yyyy-mm-dd>/ */
 export function parseLagocineDay(html: string): ParsedPage {
   const $ = cheerio.load(html);

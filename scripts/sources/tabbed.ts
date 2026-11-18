@@ -3,7 +3,8 @@
 // clicked (politeBrowser's `click`), and the parser checks the page shows that day. A cinema with
 // no times on any day read fails the source, keeping its last good showings (D-119): these pages
 // say nothing when they are empty, so an empty page and one whose times did not load look the same.
-import { lagosDay, withinDays, type Day } from "./dates.ts";
+import { isoDay, lagosDay, withinDays, type Day } from "./dates.ts";
+import { pageMissingOrSlow } from "./polite.ts";
 import type { ParsedPage, RawShowing, Reader } from "./raw.ts";
 
 export type DayParser = (html: string, options: { cinemaId: string; day: Day; origin: string }) => RawShowing[];
@@ -20,13 +21,25 @@ export async function readEachDay(
 ): Promise<ParsedPage[]> {
   const { now, days, pages } = input;
   const showings: RawShowing[] = [];
+  const notes: string[] = [];
   for (const [cinemaId, page] of Object.entries(pages)) {
     const rows: RawShowing[] = [];
-    for (let offset = 0; offset < days; offset += 1) rows.push(...(await readDay(cinemaId, page, lagosDay(now, offset))));
+    for (let offset = 0; offset < days; offset += 1) {
+      const day = lagosDay(now, offset);
+      try {
+        rows.push(...(await readDay(cinemaId, page, day)));
+      } catch (error) {
+        // A later day missing or too slow ends this cinema's read with the days before it (D-147);
+        // today's page failing, or a refusal, still fails the source (D-77).
+        if (offset === 0 || !pageMissingOrSlow(error)) throw error;
+        notes.push(`${cinemaId}: stopped at ${isoDay(day)} (${error instanceof Error ? error.message : String(error)}); read ${offset} days`);
+        break;
+      }
+    }
     if (rows.length === 0) throw new Error(`${site} page for ${cinemaId}: no times on any day read. Has the page layout changed?`);
     showings.push(...withinDays(rows, now, days));
   }
-  return [{ showings, builtAt: null }];
+  return [{ showings, builtAt: null, ...(notes.length > 0 ? { notes } : {}) }];
 }
 
 export function tabbedReader(site: string, selector: (day: Day) => string, parse: DayParser): Reader {

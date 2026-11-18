@@ -35,5 +35,5 @@ export const parseMagnificent: DayParser = (html, { cinemaId, day }) => {
   return showings;
 };
 
-/** review.html once per day, that day's tab clicked: two page loads a run. */
+/** review.html once per day, that day's tab clicked: up to five page loads a run. */
 export const readMagnificent = tabbedReader("Magnificent", magnificentDaySelector, parseMagnificent);

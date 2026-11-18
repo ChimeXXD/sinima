@@ -35,6 +35,14 @@ describe("parseGrand", () => {
     expect(perDay(parse(html, "2026-11-16T10:00:00Z"))).toEqual({ "2026-11-17": 12 });
   });
 
+  // The tabs are this week's, Monday to Sunday (D-123 c): a later day past Sunday is next week, which
+  // the page doesn't show, so the read stops there rather than give it last week's times (rule 8).
+  it("never reads past Sunday's tab: five days from Thursday are Thursday to Sunday, from Sunday only Sunday", () => {
+    expect(Object.keys(perDay(parse(html, "2026-11-19T10:00:00Z", 5)))).toEqual(["2026-11-19", "2026-11-20", "2026-11-21", "2026-11-22"]);
+    expect(Object.keys(perDay(parse(html, "2026-11-22T10:00:00Z", 5)))).toEqual(["2026-11-22"]);
+    expect(Object.keys(perDay(parse(html, TUESDAY, 5)))).toEqual(["2026-11-17", "2026-11-18", "2026-11-19", "2026-11-20", "2026-11-21"]);
+  });
+
   // Every tab repeats each film's times for every weekday; the reader takes the day's own times from the day's own tab.
   it("puts a show after midnight on the night it is listed under", () => {
     const late = html.replace(/(id="Tue"[\s\S]*?<div class="tue-time time-wrap">[\s\S]*?)8:40 pm/, "$112:40 am");

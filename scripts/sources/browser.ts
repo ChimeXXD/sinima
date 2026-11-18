@@ -129,7 +129,7 @@ async function chromiumPage(page: Page): Promise<BrowserPage> {
     await page.waitForTimeout(CLICK_GRACE_MS);
     let since = Date.now();
     while (Date.now() - since < QUIET_MS) {
-      if (Date.now() > deadline) throw new Error(`The page was still loading ${timeoutMs / 1000} s after the click. Not read.`);
+      if (Date.now() > deadline) throw Object.assign(new Error(`The page was still loading ${timeoutMs / 1000} s after the click. Not read.`), { name: "TimeoutError" });
       if (inFlight > 0) since = Date.now();
       await page.waitForTimeout(50);
     }
