@@ -17,7 +17,7 @@ describe("chain logos (D-56)", () => {
     const chains = [...new Set(cinemas.cinemas.map((c) => c.chain))];
     const without: Record<string, string> = logos.withoutLogo;
     expect(chains.filter((chain) => !(chain in logos.chains) && !(chain in without))).toEqual([]);
-    // A chain listed as having none really has none, and says why; today only The Jays (D-120).
+    // A chain listed as having none really has none, and says why; none since The Jays got its logo (D-136).
     expect(Object.keys(without).filter((chain) => chain in logos.chains || !chains.includes(chain))).toEqual([]);
     for (const [chain, why] of Object.entries(without)) expect(why, chain).toMatch(/D-\d+/);
   });

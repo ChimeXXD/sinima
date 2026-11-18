@@ -2,6 +2,18 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 18 Nov 2026 — Chime's answers (D-136), The Jays' logo, the tab count per city, dark-mode fixes (D-137)
+
+Chime answered the numbered list of open calls (D-121, D-123, D-127): keep everything, with two changes.
+
+- **The Jays' logo (D-136):** it was never missing, only not saved. Its own site's logo (thejayscinemas.com, the 270 px icon of the marquee sign), cut to its dark panel and set on a 176 × 132 fill tile (`public/logos/jays.png`, 13.5 KB; `data/logos.json`; `withoutLogo` now empty). `tests/unit/logos.test.ts` 16 pass.
+- **The tab count per city (D-136, D-121 e):** the root layout hands each cinema's city down (`CinemaCities`, from `cinemaCityMap()` in `load.ts`); `AppFrame` counts only the page city's saved cinemas. **Red:** `abuja.spec.ts` "…counts the page city's saved cinemas only" on the old code: `Expected: "2", Received: "3"`. Green after.
+- **Dark mode (D-137):** the Today | Tomorrow pill was the track's own #18181b; a dropdown's highlight was 2 % off the menu. New tokens `--segment-thumb` (dark `--p-neutral-700`), `--hover-fill-menu` and `--hover-fill-option` (dark `--p-neutral-800`, #27272a, new primitive); light values unchanged. **Red:** new `dark.spec.ts`: "dark: Today | Tomorrow…" `Expected: > 1.5, Received: 1`; "dark: …dropdown's highlighted row…" `Expected: > 1.15, Received: 1.048`. Green after; light screenshots byte-identical before and after (scratchpad).
+- **Checked:** dark, abuja, film-screen, kit, cinemas-screen specs pass (21 + 36); one full gate run failed on film-screen while the review agent built `out/` beside it (an overlap, passed alone).
+- **Code review (medium, --fix):** fixed: `cinemaCityMap` uses `cityOfCinema` (throws like `inCity`), the greys are palette primitives, a stale comment. Left: the ~1 KB city map on every page; the test's colour parser doesn't read exponents.
+- **Not verified:** Chime's phone and computer; Safari's `light-dark()` inside `color-mix` by eye.
+- **Not merged:** "Maybe Or Maybe Not" (Silverbird Ikeja, Magnificent) and "Maybe… Maybe Not" (Genesis, Filmworld, Sky): neither is on TMDB and no article names either, so they stay apart (rule 8).
+
 ## 17 Nov 2026 — No lone "Any format" (D-135)
 
 Chime: "what is the point of the Any Format button right now? The button is not performing any action."

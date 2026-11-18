@@ -65,9 +65,12 @@
       "file": "nova.png",
       "tile": "dark",
       "source": "https://reach-cinema-storage.nyc3.digitaloceanspaces.com/nova-logo.pngff0cc026-195a-44a4-990f-96448ba82542"
+    },
+    "The Jays": {
+      "file": "jays.png",
+      "tile": "fill",
+      "source": "https://thejayscinemas.com/wp-content/uploads/2026/04/cropped-Screenshot-2026-04-27-095437-1-270x270.jpg"
     }
   },
-  "withoutLogo": {
-    "The Jays": "Added with Abuja on 17 Nov 2026 (D-120). Its logo has not been saved from thejayscinemas.com yet; until then its rows show no logo sticker."
-  }
+  "withoutLogo": {}
 }

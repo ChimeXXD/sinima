@@ -7,7 +7,7 @@ import s from "./hero.module.css";
 // side, the city circled by hand and the count under it. On a phone "Cinemas in" and "Lagos" are
 // two lines; from an iPad, one. The stickers are decoration: the heading carries the words.
 // Each city shows chains it has (D-120): Abuja has no Filmhouse or EbonyLife, so Nova takes
-// Filmhouse's place and Silverbird EbonyLife's, and the fourth place stays empty (The Jays has no logo yet).
+// Filmhouse's place and Silverbird EbonyLife's, and the fourth place stays empty (Chime kept it so, D-136).
 
 const STICKERS: Record<City, [chain: string, place: string | undefined][]> = {
   lagos: [
