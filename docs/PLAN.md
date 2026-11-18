@@ -127,6 +127,7 @@ Dates are a target. If a week slips, cut its Should items first; never cut the c
 
 - [ ] Doomsday weekend: watch real use, fix fast
 - [ ] Case study draft in `docs/CASE-STUDY.md` with launch numbers (visits, shares, permission replies, data freshness)
+- [ ] **Before it expires (Nov 2027):** renew sinima.com.ng at Whogohost (₦7,200 a year, D-140), or the address stops working
 - [ ] **By 1 Nov 2027:** renew the GitHub token `sinima-refresh-timer` (it expires 17 Nov 2027) and paste the new one into the cron-job.org job's Authorization header. Without it the refresh stops and the site's times go stale (D-128)
 
 ---
