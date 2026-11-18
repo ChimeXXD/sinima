@@ -28,11 +28,11 @@ function todayWord(at: string, now: string): "tonight" | "today" {
   return laterName(now) === "Later tonight" ? "tonight" : "today";
 }
 
-/** "2 h 25 min · 12A · IMAX · 2 cinemas tonight": what we know of the film, then where it is on. `at` is its next showing. */
+/** "2 h 25 min · 12A · IMAX · 2 sinimas tonight": what we know of the film, then where it is on. `at` is its next showing. */
 export function resultMeta(film: { runtimeMin: number | null; rating: string | null }, formats: string[], cinemas: number, day: Day, now: string, at: string): string {
   const when = day === 1 ? dayAfter(at, now) : todayWord(at, now);
   const known = film.runtimeMin || film.rating ? [filmMeta(film)] : [];
-  return [...known, ...formats, `${plural(cinemas, "cinema", "cinemas")} ${when}`].join(" · ");
+  return [...known, ...formats, `${plural(cinemas, "sinima", "sinimas")} ${when}`].join(" · ");
 }
 
 /** "Next 6:00 PM · Grand Cinemas Lekki", or "Tomorrow 2:00 PM · …" when nothing is left tonight. */
@@ -51,27 +51,27 @@ export function noMatch(query: string, scope: Scope, home: City): { title: strin
   const where = scope === "both" ? "Lagos or Abuja" : CITY_NAME[scope];
   return {
     title: `Nothing called ${quoted(query)} in ${where} yet`,
-    body: "Times appear here as soon as a cinema lists them. Check the spelling, or see what's on now.",
+    body: "Times appear here as soon as a sinima lists them. Check the spelling, or see what's on now.",
     action: `See what's on in ${CITY_NAME[home]}`,
   };
 }
 
 /** A city with no cinemas in the search index (Abuja, until a live run has read its sources): said, never filled with made-up times. */
-export const ABUJA_SOON = "Abuja's cinemas are being added";
+export const ABUJA_SOON = "Abuja's sinimas are being added";
 
 /** The search index could not be fetched. */
 export const SEARCH_FAILED = "Search could not load. Check your connection and try again.";
 
 export const CITY_SHEET = {
   title: "Choose your city",
-  subtitle: "Films, cinemas and times follow it.",
+  subtitle: "Films, sinimas and times follow it.",
   footer: "To see both cities at once, search: results are grouped by city.",
 };
 
-/** "22 cinemas in Lekki, Victoria Island, Ikeja and 9 more areas": the first three areas by name. */
+/** "22 sinimas in Lekki, Victoria Island, Ikeja and 9 more areas": the first three areas by name. */
 export function cityLine(cinemas: number, areas: string[]): string {
   const named = areas.slice(0, 3);
   const more = areas.length - named.length;
   const list = more > 0 ? `${named.join(", ")} and ${plural(more, "more area", "more areas")}` : named.length > 1 ? `${named.slice(0, -1).join(", ")} and ${named.at(-1)}` : named.join("");
-  return `${plural(cinemas, "cinema", "cinemas")} in ${list}`;
+  return `${plural(cinemas, "sinima", "sinimas")} in ${list}`;
 }

@@ -4,7 +4,7 @@ import { cinemasTitleNote } from "@/lib/wording/cinemas";
 import s from "./hero.module.css";
 
 // The Cinemas title (Figma Cinemas › Title, D-73): centred, the chains' logo stickers two on each
-// side, the city circled by hand and the count under it. On a phone "Cinemas in" and "Lagos" are
+// side, the city circled by hand and the count under it. On a phone "Sinimas in" and "Lagos" are
 // two lines; from an iPad, one. The stickers are decoration: the heading carries the words.
 // Each city shows chains it has (D-120): Abuja has no Filmhouse or EbonyLife, so Nova takes
 // Filmhouse's place and Silverbird EbonyLife's, and the fourth place stays empty (Chime kept it so, D-136).
@@ -34,7 +34,7 @@ export function CinemasHero({ city, count }: { city: City; count: number }) {
         ))}
       </div>
       <h1 className={s.title}>
-        <span>Cinemas in</span>{" "}
+        <span>Sinimas in</span>{" "}
         <span className={s.city}>
           {CITY_NAMES[city]}
           <svg className={s.circle} aria-hidden="true">

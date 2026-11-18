@@ -68,7 +68,7 @@ export function CinemaRow({ href, name, chain, area, line, at, featured = null, 
           {formats.length > 0 && <FormatBadge formats={formats} />}
         </span>
       </span>
-      <button type="button" className={s.keep} aria-pressed={pressed} aria-label={pressed ? `Remove ${name} from your cinemas` : `Save ${name} to your cinemas`} onClick={tap} data-testid="cinema.keep">
+      <button type="button" className={s.keep} aria-pressed={pressed} aria-label={pressed ? `Remove ${name} from your sinimas` : `Save ${name} to your sinimas`} onClick={tap} data-testid="cinema.keep">
         <Icon name="heart" size={20} />
       </button>
       <Icon name="chevron-right" size={20} className={s.chevron} />

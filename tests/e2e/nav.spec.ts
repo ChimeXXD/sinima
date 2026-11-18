@@ -9,11 +9,11 @@ test("the site opens on Films, and the tabs read Films, Cinemas, Starting soon, 
   await expect(page.getByTestId("tab.films")).toHaveAttribute("aria-current", "page");
   for (const path of ["/lagos", "/lagos/cinemas", "/lagos/area/lekki", "/lagos/soon", "/lagos/yours", "/lagos/film/ramayana", "/lagos/cinema/ebonylife-vi"]) {
     await page.goto(path);
-    await expect(page.getByRole("navigation", { name: "Sections" }).getByRole("link")).toHaveText(["Films", "Cinemas", "Starting soon", "Your cinemas"]);
+    await expect(page.getByRole("navigation", { name: "Sections" }).getByRole("link")).toHaveText(["Films", "Sinimas", "Starting soon", "Your sinimas"]);
   }
   await page.getByTestId("tab.cinemas").click();
   await expect(page).toHaveURL(/\/cinemas$/);
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Cinemas in Lagos");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sinimas in Lagos");
 });
 
 // D-91: the Cinemas tab keeps the saved area on its own page: that area's cinemas come first.

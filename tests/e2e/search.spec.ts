@@ -36,7 +36,7 @@ test("on a phone, search opens over the page, finds films in Lagos and opens one
   // On a phone search covers the page, so it carries the page's sample-data banner (rule 8).
   await expect(page.getByTestId("search.panel").getByTestId("banner.sample")).toBeVisible();
   // Each result: title, what we know of it with how many cinemas, and the next showing with its cinema.
-  await expect(page.getByTestId("search.hit.spider-man-brand-new-day")).toContainText(/Spider-Man: Brand New Day.*cinemas? (tonight|today|tomorrow).*(Next|Tomorrow) \d{1,2}:\d\d\s[AP]M.* · /);
+  await expect(page.getByTestId("search.hit.spider-man-brand-new-day")).toContainText(/Spider-Man: Brand New Day.*sinimas? (tonight|today|tomorrow).*(Next|Tomorrow) \d{1,2}:\d\d\s[AP]M.* · /);
   await page.getByTestId("search.hit.spider-man-brand-new-day").click();
   await expect(page).toHaveURL(/\/film\/spider-man-brand-new-day$/);
 });
@@ -149,8 +149,8 @@ test("the city sheet opens from the search bar and from the Films title; Lagos i
   await expect(sheet).toBeVisible();
   await expect(sheet.getByRole("heading")).toHaveText("Choose your city");
   await expect(page.getByTestId("city.lagos")).toHaveAttribute("aria-pressed", "true");
-  await expect(page.getByTestId("city.lagos")).toContainText(/\d+ cinemas in Lekki, Victoria Island, Ikeja and \d+ more areas/);
-  await expect(page.getByTestId("city.abuja")).toHaveText("AbujaAbuja5 cinemas in Central Business District, Jabi, Lugbe and 1 more area"); // D-120
+  await expect(page.getByTestId("city.lagos")).toContainText(/\d+ sinimas in Lekki, Victoria Island, Ikeja and \d+ more areas/);
+  await expect(page.getByTestId("city.abuja")).toHaveText("AbujaAbuja5 sinimas in Central Business District, Jabi, Lugbe and 1 more area"); // D-120
   await page.getByTestId("city.lagos").click();
   await expect(sheet).toBeHidden();
 
@@ -166,7 +166,7 @@ test("picking Abuja in the city sheet opens Abuja's same tab and keeps the city"
   await page.getByTestId("search.city").click();
   await page.getByTestId("city.abuja").click();
   await expect(page).toHaveURL(/\/abuja\/cinemas$/);
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Cinemas in Abuja");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sinimas in Abuja");
   expect(await page.evaluate(() => localStorage.getItem("ls.city"))).toBe("abuja");
   await page.getByTestId("search.city").click();
   await expect(page.getByTestId("city.abuja")).toHaveAttribute("aria-pressed", "true");

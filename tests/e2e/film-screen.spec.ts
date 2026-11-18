@@ -30,7 +30,7 @@ test("your area first, then the areas next to it, then the rest soonest first (F
   const today = lagosDay((await sampleTime(request, "12:00")).toISOString());
   const cinemas = new Set(all.showings.filter((s) => s.filmId === "ramayana" && lagosDay(s.startsAt) === today).map((s) => s.cinemaId)).size;
   expect(cinemas).toBeGreaterThan(10);
-  await expect(page.getByTestId("film.facts")).toHaveText(`${Math.floor(runtime.runtimeMin / 60)} h ${runtime.runtimeMin % 60} min·IMAX·MX4D·at ${cinemas} cinemas in Lagos today`);
+  await expect(page.getByTestId("film.facts")).toHaveText(`${Math.floor(runtime.runtimeMin / 60)} h ${runtime.runtimeMin % 60} min·IMAX·MX4D·at ${cinemas} sinimas in Lagos today`);
   await expect(page.getByTestId("credits.chip")).toHaveText("Credits scene: not known yet");
   await expect(page.getByTestId("film.note")).toHaveText("in IMAX!");
   await expect(page.getByText(`${await sampleDay(request)} · your area first`)).toBeVisible();
@@ -118,7 +118,7 @@ test("once the showing starts the sheet can't book it, and offers the next times
   await expect(sheet.getByTestId("countdown-badge")).toHaveText("Started5 min ago");
   await expect(sheet.getByTestId("showing.book")).toHaveCount(0);
   await expect(sheet.getByTestId("showing.started")).toHaveText("This showing started at 6:00 PM, so it can't be booked here. The next times nearby:");
-  await expect(sheet.getByTestId("showing.next").getByRole("listitem")).toHaveText(["6:15 PMin 10 minFilmhouse OniruVictoria Island", "7:00 PMFilmhouse IkotaLekki", "10:00 PMFilmhouse Circle MallThis cinema, in IMAX"]);
+  await expect(sheet.getByTestId("showing.next").getByRole("listitem")).toHaveText(["6:15 PMin 10 minFilmhouse OniruVictoria Island", "7:00 PMFilmhouse IkotaLekki", "10:00 PMFilmhouse Circle MallThis sinima, in IMAX"]);
   await expect(sheet.getByTestId("showing.share-film")).toContainText("A link to Ramayana's times in Lagos.");
 
   await sheet.getByTestId(`next.filmhouse-oniru.${await startOf(request, "filmhouse-oniru", "18:15")}`).click();

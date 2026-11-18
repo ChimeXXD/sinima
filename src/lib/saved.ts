@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 
-// Lists kept on this phone only: "Your cinemas" (the ids a visitor has hearted) and the showings
+// Lists kept on this phone only: "Your sinimas" (the ids a visitor has hearted) and the showings
 // they keep a countdown for (Figma Film › showing sheet: "Shows on Starting soon until it begins").
 
 const EMPTY: string[] = [];

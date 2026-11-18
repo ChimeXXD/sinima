@@ -41,7 +41,7 @@ test("a page saved earlier opens offline too; one never opened falls back to the
   await page.goto("/lagos"); // Films, saved through the service worker
   await context.setOffline(true);
   await page.goto("/lagos/cinemas");
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Cinemas in Lagos");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sinimas in Lagos");
   await expect(page.getByTestId("banner.offline")).toBeVisible();
   await page.goto("/about");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("What's on in Lagos");

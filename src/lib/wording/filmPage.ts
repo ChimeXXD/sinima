@@ -8,11 +8,11 @@ import { runtimeText } from "@/lib/wording/film";
 const plural = (n: number, one: string) => `${n} ${one}${n === 1 ? "" : "s"}`;
 
 /**
- * The line under the title, as parts joined by dots: "2 h 25 min · 12A · IMAX · at 4 cinemas in
+ * The line under the title, as parts joined by dots: "2 h 25 min · 12A · IMAX · at 4 sinimas in
  * Lagos today". `on` is from dayWords ("today", or "on Fri 13 Nov" before the page has the time).
  */
 export function filmFacts(film: { runtimeMin: number | null; rating: string | null }, formats: string[], where: { cinemas: number; city: string; on: string }): string[] {
-  const place = where.cinemas > 0 ? `at ${plural(where.cinemas, "cinema")} in ${where.city} ${where.on}` : null;
+  const place = where.cinemas > 0 ? `at ${plural(where.cinemas, "sinima")} in ${where.city} ${where.on}` : null;
   const parts = [film.runtimeMin ? runtimeText(film.runtimeMin) : null, film.rating, ...formats, place].filter((part): part is string => Boolean(part));
   return parts.length > 0 ? parts : ["Runtime not listed"];
 }
@@ -44,7 +44,7 @@ export function areaTag(tag: "home" | "next" | null, homeName: string): string |
 export function earlierLine(started: { name: string; at: string }[], tomorrow: { showings: number; cinemas: number }): string | null {
   const parts = [
     started.length > 0 ? `Started earlier today: ${list(started.map((s) => `${s.name} at ${formatTime(s.at)}`))}.` : null,
-    tomorrow.showings > 0 ? `Tomorrow: ${plural(tomorrow.showings, "showing")} at ${plural(tomorrow.cinemas, "cinema")}.` : null,
+    tomorrow.showings > 0 ? `Tomorrow: ${plural(tomorrow.showings, "showing")} at ${plural(tomorrow.cinemas, "sinima")}.` : null,
   ].filter(Boolean);
   return parts.length > 0 ? parts.join(" ") : null;
 }
@@ -68,9 +68,9 @@ export function bookOption(book: BookCase): { title: string; desc: string } {
     case "sample":
       return { title: "Sample only", desc: "These are saved sample times, so they can't be booked." };
     case "old":
-      return { title: book.site ? `Check on ${book.chain}'s site` : "Check with the cinema", desc: "These times are old. Check them before you go." };
+      return { title: book.site ? `Check on ${book.chain}'s site` : "Check with the sinima", desc: "These times are old. Check them before you go." };
     case "door":
-      return { title: "Tickets at the cinema", desc: book.address ?? "Buy them at the box office." };
+      return { title: "Tickets at the sinima", desc: book.address ?? "Buy them at the box office." };
   }
 }
 
@@ -81,10 +81,10 @@ export function startedNotice(at: string, next: "near" | "city" | "none", city =
   return `${lead} The next times ${next === "near" ? "nearby" : `in ${city}`}:`;
 }
 
-/** Under a next time's cinema: its area, or "This cinema, in IMAX". */
+/** Under a next time's cinema: its area, or "This sinima, in IMAX". */
 export function nextPlace(next: { same: boolean; area: string; format: string | null }): string {
   if (!next.same) return next.area;
-  return next.format ? `This cinema, in ${next.format}` : "This cinema";
+  return next.format ? `This sinima, in ${next.format}` : "This sinima";
 }
 
 /** The text that goes with a shared link: "Sinners · Filmhouse Lekki · Fri 7:30 PM" (UI brief §5), or a film's times. */

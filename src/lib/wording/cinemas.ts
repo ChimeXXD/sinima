@@ -5,8 +5,8 @@ import { list } from "@/lib/wording/credits";
 
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 
-/** "6 cinemas", "1 cinema". */
-export const cinemaCount = (n: number) => plural(n, "cinema");
+/** "6 sinimas", "1 sinima". */
+export const cinemaCount = (n: number) => plural(n, "sinima");
 
 /** Handwritten under the title: "22 of them!". */
 export const cinemasTitleNote = (n: number) => `${n} of them!`;
@@ -41,7 +41,7 @@ export function cinemasHeading(input: HeadingInput): { title: string; note: stri
     case "rest":
       return { title: `Elsewhere in ${input.city}`, note: "Soonest first" };
     case "all":
-      return { title: input.format ? `Showing in ${input.format}` : "All cinemas", note: `${cinemaCount(input.count)}, soonest first` };
+      return { title: input.format ? `Showing in ${input.format}` : "All sinimas", note: `${cinemaCount(input.count)}, soonest first` };
   }
 }
 
@@ -52,11 +52,11 @@ export const pickerValue = {
 };
 
 /** Under the list, when a cinema on it says "Times not available yet". */
-export const NO_TIMES_NOTE = "“Times not available yet”: we can't read this cinema's times yet. Check its own site.";
+export const NO_TIMES_NOTE = "“Times not available yet”: we can't read this sinima's times yet. Check its own site.";
 
 /** The picker sheets' titles. */
 export const PICKER_SHEETS: Record<"area" | "day" | "format", { title: string; subtitle?: string }> = {
-  area: { title: "Choose an area", subtitle: "Cinemas in your area come first, then the areas next to it." },
+  area: { title: "Choose an area", subtitle: "Sinimas in your area come first, then the areas next to it." },
   day: { title: "Choose a day" },
   format: { title: "Choose a format" },
 };

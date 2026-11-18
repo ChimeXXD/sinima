@@ -20,9 +20,9 @@ const loadSprings = () => (loading ??= import("./navSprings").then((module) => (
 
 export const SECTIONS = [
   { id: "films", label: "Films", href: "/", icon: "film" },
-  { id: "cinemas", label: "Cinemas", href: "/cinemas", icon: "store" },
+  { id: "cinemas", label: "Sinimas", href: "/cinemas", icon: "store" },
   { id: "soon", label: "Starting soon", href: "/soon", icon: "clock" },
-  { id: "yours", label: "Your cinemas", href: "/yours", icon: "heart" },
+  { id: "yours", label: "Your sinimas", href: "/yours", icon: "heart" },
 ] as const satisfies readonly { id: string; label: string; href: string; icon: IconName }[];
 
 export type SectionId = (typeof SECTIONS)[number]["id"];

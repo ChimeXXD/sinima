@@ -14,11 +14,11 @@ export function sourceStatus(status: SourceStatus): string {
   return `Permission asked ${day} ${MONTHS[month! - 1]}`;
 }
 
-/** "In Lagos, 9 cinemas are read from their own sites and 14 through Lagocine." (D-122) */
+/** "In Lagos, 9 sinimas are read from their own sites and 14 through Lagocine." (D-122) */
 export function cityReadingLine(city: City, { own, through, none }: CityReading): string {
   const name = CITY_NAMES[city];
   if (own === 0 && through === 0) return `${name}'s times aren't online yet.`;
-  const cinemas = (n: number) => `${n} ${n === 1 ? "cinema is" : "cinemas are"}`;
+  const cinemas = (n: number) => `${n} ${n === 1 ? "sinima is" : "sinimas are"}`;
   const parts = [
     own > 0 ? `${cinemas(own)} read from ${own === 1 ? "its own site" : "their own sites"}` : null,
     through > 0 ? (own > 0 ? `${through} through Lagocine` : `${cinemas(through)} read through Lagocine`) : null,
@@ -28,23 +28,23 @@ export function cityReadingLine(city: City, { own, through, none }: CityReading)
 }
 
 export const STEPS = [
-  { title: "We read each cinema's public listings", body: "Only pages anyone can open, at most once every 5 seconds, with our name on every request." },
-  { title: "Old times say so", body: "If a cinema's times are more than a day old, the page tells you, so you can check before you travel." },
-  { title: "You book on the cinema's own site", body: "We never sell tickets, take a cut or add tracking to the links." },
+  { title: "We read each sinima's public listings", body: "Only pages anyone can open, at most once every 5 seconds, with our name on every request." },
+  { title: "Old times say so", body: "If a sinima's times are more than a day old, the page tells you, so you can check before you travel." },
+  { title: "You book on the sinima's own site", body: "We never sell tickets, take a cut or add tracking to the links." },
 ] as const;
 
 export const ABOUT = {
   title: "About Sinima",
   note: "made in Lagos",
-  lead: "Every Lagos and Abuja cinema's times in one place, with where each time came from.",
+  lead: "Every Lagos and Abuja sinima's times in one place, with where each time came from.",
   how: "How it works",
   sources: "Where the times come from",
-  columns: ["Source", "Cinemas", "Status"],
+  columns: ["Source", "Sinimas", "Status"],
   films: "Films and credits scenes",
   tmdb: "Posters, runtimes and Stay or Go come from TMDB. This product uses the TMDB API but is not endorsed or certified by TMDB.",
   logos: "Logos and removal",
-  owners: "Cinema names and logos belong to their owners. They're shown only to say where a time comes from.",
-  removal: "Run a cinema and want your times or logo taken down? Open an issue on GitHub and we'll remove them the same day.",
+  owners: "Each sinima's name and logo belong to its owner. They're shown only to say where a time comes from.",
+  removal: "Run a sinima and want your times or logo taken down? Open an issue on GitHub and we'll remove them the same day.",
   ask: "Ask for removal on GitHub",
   code: "Read the code (MIT)",
   footer: "Sinima is free and has no ads, accounts or tracking. Your city and area are kept on your phone.",
@@ -58,6 +58,6 @@ export const REPO_URL = "https://github.com/ChimeXXD/sinima";
 export const NOT_FOUND = {
   note: "this one's not showing",
   title: "We can't find that page",
-  body: "The link may be old, or the film has left the cinemas. Everything showing now is on Films.",
+  body: "The link may be old, or the film has left the sinimas. Everything showing now is on Films.",
   action: (city: string) => `See what's on in ${city}`,
 } as const;

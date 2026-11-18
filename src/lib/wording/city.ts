@@ -8,11 +8,11 @@ export type Section = "films" | "cinemas" | "soon" | "yours";
 /** The screen's own title, in the page's city. */
 export function sectionTitle(section: Section, city: City): string {
   const name = CITY_NAMES[city];
-  return { films: `What's on in ${name}`, cinemas: `Cinemas in ${name}`, soon: `Starting soon in ${name}`, yours: "Your cinemas" }[section];
+  return { films: `What's on in ${name}`, cinemas: `Sinimas in ${name}`, soon: `Starting soon in ${name}`, yours: "Your sinimas" }[section];
 }
 
 /** The ways back to the city's tabs, and the film page's heading over its times. */
 export const cityWords = (city: City) => {
   const name = CITY_NAMES[city];
-  return { allCinemas: `All cinemas in ${name}`, allFilms: `All films in ${name}`, times: `Times in ${name}` };
+  return { allCinemas: `All sinimas in ${name}`, allFilms: `All films in ${name}`, times: `Times in ${name}` };
 };

@@ -43,7 +43,7 @@ export function earlierLine(started: string[], tomorrow: string[], next: "Tomorr
 
 /** The page's footer: who sells the tickets. */
 export function ticketsFooter(cinema: { chain: string; name: string; online: boolean }): string {
-  return cinema.online ? `${cinema.chain} sells the tickets. Sinima only shows the times and sends you to their site.` : `${cinema.name} sells the tickets at the cinema. Sinima only shows the times.`;
+  return cinema.online ? `${cinema.chain} sells the tickets. Sinima only shows the times and sends you to their site.` : `${cinema.name} sells the tickets at the sinima. Sinima only shows the times.`;
 }
 
 /** In place of the films on a day with none: "No times listed for tomorrow yet." */
@@ -53,4 +53,4 @@ export function noFilms(input: { day: 0 | 1; live: boolean; date: string }): str
 }
 
 /** The toast after Save (Figma: Saved). */
-export const SAVED_TOAST = "Saved to Your cinemas. Only on this phone.";
+export const SAVED_TOAST = "Saved to Your sinimas. Only on this phone.";

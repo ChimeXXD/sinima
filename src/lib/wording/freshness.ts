@@ -35,7 +35,7 @@ export function freshness(source: { name: string; method: SourceMethod }, fetche
 
   const daysAgo = -lagosDaysFrom(now, readAt);
   if (daysAgo <= 0) return { band: "today", text: `${read} today at ${formatTime(readAt)}`, bookable: true };
-  if (daysAgo === 1) return { band: "stale", text: `${read} yesterday at ${formatTime(readAt)} · check with the cinema`, bookable: true };
+  if (daysAgo === 1) return { band: "stale", text: `${read} yesterday at ${formatTime(readAt)} · check with the sinima`, bookable: true };
   return { band: "old", text: `${lastRead} ${formatDate(readAt)} · may have changed`, bookable: false };
 }
 

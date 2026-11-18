@@ -6,11 +6,11 @@ import { areaTag, bookOption, calendarLine, earlierLine, filmFacts, heroNote, ne
 
 describe("filmFacts", () => {
   it("reads runtime, rating, formats and where it is on, as Figma's line", () => {
-    expect(filmFacts({ runtimeMin: 145, rating: "12A" }, [], { cinemas: 4, city: "Lagos", on: "today" })).toEqual(["2 h 25 min", "12A", "at 4 cinemas in Lagos today"]);
-    expect(filmFacts({ runtimeMin: 201, rating: null }, ["IMAX", "MX4D"], { cinemas: 16, city: "Lagos", on: "today" })).toEqual(["3 h 21 min", "IMAX", "MX4D", "at 16 cinemas in Lagos today"]);
+    expect(filmFacts({ runtimeMin: 145, rating: "12A" }, [], { cinemas: 4, city: "Lagos", on: "today" })).toEqual(["2 h 25 min", "12A", "at 4 sinimas in Lagos today"]);
+    expect(filmFacts({ runtimeMin: 201, rating: null }, ["IMAX", "MX4D"], { cinemas: 16, city: "Lagos", on: "today" })).toEqual(["3 h 21 min", "IMAX", "MX4D", "at 16 sinimas in Lagos today"]);
   });
   it("says one cinema, and leaves the place out when it is on nowhere that day", () => {
-    expect(filmFacts({ runtimeMin: null, rating: null }, [], { cinemas: 1, city: "Lagos", on: "on 13 Nov" })).toEqual(["at 1 cinema in Lagos on 13 Nov"]);
+    expect(filmFacts({ runtimeMin: null, rating: null }, [], { cinemas: 1, city: "Lagos", on: "on 13 Nov" })).toEqual(["at 1 sinima in Lagos on 13 Nov"]);
     expect(filmFacts({ runtimeMin: null, rating: null }, [], { cinemas: 0, city: "Lagos", on: "today" })).toEqual(["Runtime not listed"]);
   });
 });
@@ -48,8 +48,8 @@ describe("earlierLine", () => {
       { name: "EbonyLife Cinemas", at: "2026-11-13T10:10:00Z" },
       { name: "Sky Cinemas Sangotedo", at: "2026-11-13T12:00:00Z" },
     ];
-    expect(earlierLine(started, { showings: 7, cinemas: 4 })).toBe("Started earlier today: EbonyLife Cinemas at 11:10\u00a0AM and Sky Cinemas Sangotedo at 1:00\u00a0PM. Tomorrow: 7 showings at 4 cinemas.");
-    expect(earlierLine([started[0]!], { showings: 1, cinemas: 1 })).toBe("Started earlier today: EbonyLife Cinemas at 11:10\u00a0AM. Tomorrow: 1 showing at 1 cinema.");
+    expect(earlierLine(started, { showings: 7, cinemas: 4 })).toBe("Started earlier today: EbonyLife Cinemas at 11:10\u00a0AM and Sky Cinemas Sangotedo at 1:00\u00a0PM. Tomorrow: 7 showings at 4 sinimas.");
+    expect(earlierLine([started[0]!], { showings: 1, cinemas: 1 })).toBe("Started earlier today: EbonyLife Cinemas at 11:10\u00a0AM. Tomorrow: 1 showing at 1 sinima.");
     expect(earlierLine([], { showings: 0, cinemas: 0 })).toBeNull();
     expect(earlierLine(started, { showings: 0, cinemas: 0 })).toBe("Started earlier today: EbonyLife Cinemas at 11:10\u00a0AM and Sky Cinemas Sangotedo at 1:00\u00a0PM.");
   });
@@ -69,8 +69,8 @@ describe("the showing sheet", () => {
     expect(bookOption({ kind: "book", chain: "Filmhouse" })).toEqual({ title: "Book on Filmhouse's site", desc: "Opens their booking page. We never sell tickets." });
     expect(bookOption({ kind: "sample", chain: "Filmhouse" }).title).toBe("Sample only");
     expect(bookOption({ kind: "old", chain: "Filmhouse", site: true }).title).toBe("Check on Filmhouse's site");
-    expect(bookOption({ kind: "old", chain: "Filmhouse", site: false }).title).toBe("Check with the cinema");
-    expect(bookOption({ kind: "door", chain: "Grand", address: "Lekki" })).toEqual({ title: "Tickets at the cinema", desc: "Lekki" });
+    expect(bookOption({ kind: "old", chain: "Filmhouse", site: false }).title).toBe("Check with the sinima");
+    expect(bookOption({ kind: "door", chain: "Grand", address: "Lekki" })).toEqual({ title: "Tickets at the sinima", desc: "Lekki" });
   });
   it("explains a started showing and points to the next times", () => {
     expect(startedNotice(at, "near")).toBe("This showing started at 6:00\u00a0PM, so it can't be booked here. The next times nearby:");
@@ -79,8 +79,8 @@ describe("the showing sheet", () => {
   });
   it("places each next time: another cinema's area, or this cinema and its format", () => {
     expect(nextPlace({ same: false, area: "Victoria Island", format: null })).toBe("Victoria Island");
-    expect(nextPlace({ same: true, area: "Lekki", format: "IMAX" })).toBe("This cinema, in IMAX");
-    expect(nextPlace({ same: true, area: "Lekki", format: null })).toBe("This cinema");
+    expect(nextPlace({ same: true, area: "Lekki", format: "IMAX" })).toBe("This sinima, in IMAX");
+    expect(nextPlace({ same: true, area: "Lekki", format: null })).toBe("This sinima");
   });
   it("shares as the brief's line", () => {
     expect(shareText({ film: "Sinners", cinema: "Filmhouse Lekki", at: "2026-11-13T18:30:00Z" })).toBe("Sinners · Filmhouse Lekki · Fri 7:30 PM"); // a plain space: shared text gets pasted and searched

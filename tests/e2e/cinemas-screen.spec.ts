@@ -23,7 +23,7 @@ test("with Lekki kept, Lekki's cinemas come first, then the areas next to it, th
   await freeze(page, now);
   await page.goto("/lagos/cinemas");
 
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Cinemas in Lagos");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sinimas in Lagos");
   await expect(page.getByTestId("cinemas.count")).toHaveText(`${all.cinemas.length} of them!`);
   await expect(page.getByTestId("pick.area")).toHaveText("AreaLekki");
 
@@ -36,7 +36,7 @@ test("with Lekki kept, Lekki's cinemas come first, then the areas next to it, th
 
   const heading = (group: string) => page.getByTestId(`group.${group}`).locator("h2 + p");
   await expect(page.getByTestId("group.area").getByRole("heading", { level: 2 })).toHaveText("In Lekki");
-  await expect(heading("area")).toHaveText(`Your area · ${inArea.length} cinemas, soonest first`);
+  await expect(heading("area")).toHaveText(`Your area · ${inArea.length} sinimas, soonest first`);
   await expect(page.getByTestId("group.next").getByRole("heading", { level: 2 })).toHaveText("Next to Lekki");
   await expect(heading("next")).toHaveText("Victoria Island and Sangotedo");
   await expect(page.getByTestId("group.rest").getByRole("heading", { level: 2 })).toHaveText("Elsewhere in Lagos");
@@ -63,7 +63,7 @@ test("a row gives the next time and the films left tonight, its area and formats
   const unread = all.cinemas.filter((c) => !all.showings.some((s) => s.cinemaId === c.id));
   expect(unread.length).toBeGreaterThan(0);
   for (const cinema of unread) await expect(page.getByTestId(`cinema.card.${cinema.id}`).getByTestId("cinema.next")).toHaveText("Times not available yet");
-  await expect(page.getByTestId("cinemas.no-times")).toHaveText("“Times not available yet”: we can't read this cinema's times yet. Check its own site.");
+  await expect(page.getByTestId("cinemas.no-times")).toHaveText("“Times not available yet”: we can't read this sinima's times yet. Check its own site.");
 
   await card.click();
   await expect(page).toHaveURL(new RegExp(`/lagos/cinema/${first}$`));
@@ -75,7 +75,7 @@ test("with no area kept, one list of every cinema, soonest first", async ({ page
   await freeze(page, now);
   await page.goto("/lagos/cinemas");
   await expect(page.getByTestId("pick.area")).toHaveText("AreaAll");
-  await expect(page.getByTestId("group.all").getByRole("heading", { level: 2 })).toHaveText("All cinemas");
+  await expect(page.getByTestId("group.all").getByRole("heading", { level: 2 })).toHaveText("All sinimas");
   expect(await shown(page, "all")).toEqual(order(all, now, all.cinemas.map((c) => c.id)));
 });
 
@@ -88,7 +88,7 @@ test("choosing an area regroups the page in place and is kept on this phone", as
   await expect(sheet).toBeVisible();
   await expect(sheet.getByRole("heading", { level: 2 })).toHaveText("Choose an area");
   const lekki = all.cinemas.filter((c) => c.area === "lekki").length;
-  await expect(sheet.getByTestId("sheet.area.lekki")).toHaveText(`Lekki${lekki} cinemas`);
+  await expect(sheet.getByTestId("sheet.area.lekki")).toHaveText(`Lekki${lekki} sinimas`);
   await sheet.getByTestId("sheet.area.ikeja").click();
   await expect(sheet).toBeHidden();
 
@@ -172,7 +172,7 @@ test("choosing IMAX leaves only cinemas showing in IMAX, and says which were lef
   await page.getByTestId("format.option.IMAX").click();
   await expect(page.getByTestId("pick.format")).toHaveText("FormatIMAX");
   expect((await shown(page, "all")).sort()).toEqual(imax.sort());
-  await expect(page.getByTestId("format.left-out")).toContainText(`${silent} cinemas don't, so they're left out here; their times are under Any format.`);
+  await expect(page.getByTestId("format.left-out")).toContainText(`${silent} sinimas don't, so they're left out here; their times are under Any format.`);
 });
 
 test("the rows sit one to a line on a phone and two on an iPad and a computer, at Figma's widths", async ({ page, request }) => {
@@ -202,7 +202,7 @@ for (const width of [390, 360, 320]) {
 
 test("the footer says the logos are the chains' own and how to have one removed", async ({ page }) => {
   await page.goto("/lagos/cinemas");
-  await expect(page.getByTestId("footer.logos")).toContainText("Cinema logos belong to their owners");
+  await expect(page.getByTestId("footer.logos")).toContainText("Each sinima's logo belongs to its owner");
   await expect(page.getByTestId("footer.logos").getByRole("link")).toHaveAttribute("href", "https://github.com/ChimeXXD/sinima/issues");
 });
 

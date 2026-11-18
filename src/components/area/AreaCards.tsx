@@ -51,7 +51,7 @@ export function CinemaCard({ cinema, entry, films, now, line, body, featured = n
           </p>
         </div>
         {saved && (
-          <button type="button" className={s.heart} aria-pressed="true" aria-label={`Remove ${cinema.name} from your cinemas`} onClick={onLetGo} data-testid="cinema.save">
+          <button type="button" className={s.heart} aria-pressed="true" aria-label={`Remove ${cinema.name} from your sinimas`} onClick={onLetGo} data-testid="cinema.save">
             <Icon name="heart" size={18} />
           </button>
         )}

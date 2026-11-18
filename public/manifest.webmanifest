@@ -1,7 +1,7 @@
 {
   "name": "Sinima",
   "short_name": "Sinima",
-  "description": "What's starting soon at Lagos cinemas, and should you stay after the credits?",
+  "description": "What's starting soon at Lagos and Abuja sinimas, and should you stay after the credits?",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

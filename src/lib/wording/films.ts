@@ -36,8 +36,8 @@ const list = (names: string[]) => (names.length <= 1 ? names.join("") : `${names
  */
 export function formatNote(chains: string[], silent: number): string | null {
   if (silent === 0) return null;
-  const left = silent === 1 ? "1 cinema doesn't, so it's left out here; its times are under Any format." : `${silent} cinemas don't, so they're left out here; their times are under Any format.`;
-  if (chains.length === 0) return `No cinema says which format its showings are in, so none is listed here; every time is under Any format.`;
+  const left = silent === 1 ? "1 sinima doesn't, so it's left out here; its times are under Any format." : `${silent} sinimas don't, so they're left out here; their times are under Any format.`;
+  if (chains.length === 0) return `No sinima says which format its showings are in, so none is listed here; every time is under Any format.`;
   return `Only ${list(chains)} ${chains.length === 1 ? "says" : "say"} which format each showing is in. ${left}`;
 }
 
@@ -49,14 +49,14 @@ export function nothingMoreToday(input: { city: string; last: string | null; tom
 }
 
 /** Under every rebuilt screen. */
-export const FOOTER_NOTE = "Times come from each cinema's own pages. Always book on the cinema's site.";
+export const FOOTER_NOTE = "Times come from each sinima's own pages. Always book on the sinima's site.";
 
 /** In every footer: the way to About. */
 export const ABOUT_LINK = "About Sinima: sources and takedown";
 
 /** Under a screen that shows cinema logos (D-57): they only name each cinema, and come off the same day if asked. */
 export const LOGO_NOTE = {
-  before: "Cinema logos belong to their owners and only name each cinema. A cinema that wants its logo removed can ",
+  before: "Each sinima's logo belongs to its owner and only names it. A sinima that wants its logo removed can ",
   link: "ask here",
   href: "https://github.com/ChimeXXD/sinima/issues",
   after: "; it goes the same day.",

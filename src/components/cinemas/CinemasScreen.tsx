@@ -144,7 +144,7 @@ export function CinemasScreen({ data, areas, city, bg }: { data: ListData; areas
       )}
       {sections.length === 0 && (
         <p className={s.none} data-testid="cinemas.none" data-swap>
-          {`No cinema is showing a film in ${format} ${dayWords(day, dates[day], live).on}.`}
+          {`No sinima is showing a film in ${format} ${dayWords(day, dates[day], live).on}.`}
         </p>
       )}
       {toast && <Toast stamp={toast} icon="heart" text={SAVED_TOAST} onUndo={() => (toggleSaved(toast), setToast(null))} onDone={hideToast} />}

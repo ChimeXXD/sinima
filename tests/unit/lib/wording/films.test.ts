@@ -18,10 +18,10 @@ describe("sectionWords", () => {
 
 describe("formatNote (IMAX chosen)", () => {
   it("is Figma's sentence for one chain and many silent cinemas", () => {
-    expect(formatNote(["Filmhouse"], 13)).toBe("Only Filmhouse says which format each showing is in. 13 cinemas don't, so they're left out here; their times are under Any format.");
+    expect(formatNote(["Filmhouse"], 13)).toBe("Only Filmhouse says which format each showing is in. 13 sinimas don't, so they're left out here; their times are under Any format.");
   });
   it("agrees in number", () => {
-    expect(formatNote(["Filmhouse", "Genesis"], 1)).toBe("Only Filmhouse and Genesis say which format each showing is in. 1 cinema doesn't, so it's left out here; its times are under Any format.");
+    expect(formatNote(["Filmhouse", "Genesis"], 1)).toBe("Only Filmhouse and Genesis say which format each showing is in. 1 sinima doesn't, so it's left out here; its times are under Any format.");
   });
   it("says nothing when every cinema gives its formats", () => {
     expect(formatNote(["Filmhouse"], 0)).toBeNull();

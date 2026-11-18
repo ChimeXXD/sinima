@@ -2,6 +2,16 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 18 Nov 2026 — "Sinima" in place of "cinema" (D-138)
+
+Chime: "anywhere we write cinema, can we change it to SINIMA? … So we can be on brand."
+
+- **Changed:** 70 user-facing strings in 25 files under `src/` (tabs "Sinimas" and "Your sinimas", "Sinimas in Lagos", "All sinimas", counts "22 sinimas", sheets, toasts, About, the calendar file, page titles, meta description) and the manifest's description (which also gains Abuja). Done by a TypeScript-AST script (scratchpad `rebrand.cjs`) that rewrites only string and JSX text, never ids, paths, test ids, `validate.ts` messages or chain names; dry-run read line by line first; `film.ts`'s one-word plural and two owner lines fixed by hand.
+- **Tests:** the expected wording in 108 test strings and 4 test patterns follows the new copy (Chime's change of the words, not a weakened check); test titles, ids, URLs and the readers' message tests untouched.
+- **Checked:** unit 832 pass; e2e 282 pass then the 3 failing specs (patterns) 23 pass; screenshots at 390 of Sinimas, a sinima's page and Films (scratchpad `sinima/`).
+- **Flagged to Chime:** a sinima's page top bar says "Sinima", the app's own name; search engines; Figma still says Cinemas.
+- **Not verified:** how VoiceOver and TalkBack pronounce "sinima".
+
 ## 18 Nov 2026 — Chime's answers (D-136), The Jays' logo, the tab count per city, dark-mode fixes (D-137)
 
 Chime answered the numbered list of open calls (D-121, D-123, D-127): keep everything, with two changes.

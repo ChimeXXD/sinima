@@ -5,8 +5,8 @@ import { areaHeading, cardBody, cardLine, locality, nextAreaLine, quietTitle, qu
 
 describe("areaHeading", () => {
   it("names the kept cinemas, then the area's others (Figma Default)", () => {
-    expect(areaHeading({ key: "saved", area: "Lekki" })).toEqual({ title: "Your cinemas in Lekki", note: "Saved on this phone" });
-    expect(areaHeading({ key: "area", area: "Lekki", afterSaved: true, quiet: false })).toEqual({ title: "More cinemas in Lekki", note: "Soonest first" });
+    expect(areaHeading({ key: "saved", area: "Lekki" })).toEqual({ title: "Your sinimas in Lekki", note: "Saved on this phone" });
+    expect(areaHeading({ key: "area", area: "Lekki", afterSaved: true, quiet: false })).toEqual({ title: "More sinimas in Lekki", note: "Soonest first" });
     expect(areaHeading({ key: "area", area: "Lekki", afterSaved: false, quiet: false })).toEqual({ title: "In Lekki", note: "Soonest first" });
   });
   it("with nothing left tonight, the neighbours lead, soonest first, and the area follows (Figma Nothing left tonight)", () => {
@@ -61,14 +61,14 @@ describe("cardBody", () => {
 
 describe("nextAreaLine", () => {
   it("says how many cinemas and the soonest (Figma)", () => {
-    expect(nextAreaLine({ cinemas: 4, next: { at: "2026-11-13T16:40:00Z", name: "EbonyLife Cinemas" }, listed: true, when: "tonight" })).toBe("4 cinemas · next 5:40\u00a0PM at EbonyLife Cinemas");
-    expect(nextAreaLine({ cinemas: 1, next: { at: "2026-11-13T17:10:00Z", name: "Sky Cinemas Sangotedo" }, listed: true, when: "tonight" })).toBe("1 cinema · next 6:10\u00a0PM at Sky Cinemas Sangotedo");
+    expect(nextAreaLine({ cinemas: 4, next: { at: "2026-11-13T16:40:00Z", name: "EbonyLife Cinemas" }, listed: true, when: "tonight" })).toBe("4 sinimas · next 5:40\u00a0PM at EbonyLife Cinemas");
+    expect(nextAreaLine({ cinemas: 1, next: { at: "2026-11-13T17:10:00Z", name: "Sky Cinemas Sangotedo" }, listed: true, when: "tonight" })).toBe("1 sinima · next 6:10\u00a0PM at Sky Cinemas Sangotedo");
   });
   it("says first before the page knows the time, and when nothing is left or nothing can be read", () => {
-    expect(nextAreaLine({ cinemas: 2, next: { at: "2026-11-13T11:00:00Z", name: "Ozone Cinemas" }, listed: true, when: null })).toBe("2 cinemas · first 12:00\u00a0PM at Ozone Cinemas");
-    expect(nextAreaLine({ cinemas: 2, next: null, listed: true, when: "tonight" })).toBe("2 cinemas · nothing more tonight");
-    expect(nextAreaLine({ cinemas: 1, next: null, listed: false, when: "tonight" })).toBe("1 cinema · times not available yet");
-    expect(nextAreaLine({ cinemas: 1, next: null, listed: true, when: null })).toBe("1 cinema");
+    expect(nextAreaLine({ cinemas: 2, next: { at: "2026-11-13T11:00:00Z", name: "Ozone Cinemas" }, listed: true, when: null })).toBe("2 sinimas · first 12:00\u00a0PM at Ozone Cinemas");
+    expect(nextAreaLine({ cinemas: 2, next: null, listed: true, when: "tonight" })).toBe("2 sinimas · nothing more tonight");
+    expect(nextAreaLine({ cinemas: 1, next: null, listed: false, when: "tonight" })).toBe("1 sinima · times not available yet");
+    expect(nextAreaLine({ cinemas: 1, next: null, listed: true, when: null })).toBe("1 sinima");
   });
 });
 
@@ -85,7 +85,7 @@ describe("the quiet state", () => {
     const last = { name: "Filmhouse Ikota", at: "2026-11-13T21:45:00Z" };
     expect(quietWhy({ last, cinemas: 6, neighbours: 1, neighboursWithTimes: 1, when: "tonight" })).toBe("The last showing here began at 10:45\u00a0PM, at Filmhouse Ikota. The area next to it still has times tonight.");
     expect(quietWhy({ last, cinemas: 6, neighbours: 2, neighboursWithTimes: 0, when: "tonight" })).toBe("The last showing here began at 10:45\u00a0PM, at Filmhouse Ikota. Nothing more starts next to it tonight either.");
-    expect(quietWhy({ last: null, cinemas: 2, neighbours: 2, neighboursWithTimes: 2, when: "today" })).toBe("No cinema here has a showing today. The areas next to it still have times today.");
+    expect(quietWhy({ last: null, cinemas: 2, neighbours: 2, neighboursWithTimes: 2, when: "today" })).toBe("No sinima here has a showing today. The areas next to it still have times today.");
   });
   it("when only some of the areas next to it still have times, says how many", () => {
     const last = { name: "Filmhouse Ikota", at: "2026-11-13T21:45:00Z" };

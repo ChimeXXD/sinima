@@ -114,7 +114,7 @@ export type Banner = { kind: "sample" | "old" | "stale"; text: string };
 export function bannerFor(bands: FreshnessBand[]): Banner | null {
   if (bands.includes("sample")) return { kind: "sample", text: "Sample data. These times are for the demo, not for booking." };
   if (bands.includes("old")) return { kind: "old", text: "Some times are more than a day old and may have changed." };
-  if (bands.includes("stale")) return { kind: "stale", text: "Some times are from yesterday. Cinemas change programmes; check before you travel." };
+  if (bands.includes("stale")) return { kind: "stale", text: "Some times are from yesterday. Sinimas change programmes; check before you travel." };
   return null;
 }
 

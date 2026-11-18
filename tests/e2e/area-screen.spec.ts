@@ -24,14 +24,14 @@ test("kept cinemas first, then the area's others soonest first, then the areas n
   await page.goto("/lagos/area/lekki");
 
   const lekki = all.cinemas.filter((c) => c.area === "lekki").map((c) => c.id);
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Cinemas in Lekki");
-  await expect(page.getByTestId("area.count")).toHaveText(`${lekki.length} cinemas`);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sinimas in Lekki");
+  await expect(page.getByTestId("area.count")).toHaveText(`${lekki.length} sinimas`);
 
   const heading = (group: string) => page.getByTestId(`group.${group}`).locator("h2");
-  await expect(heading("saved")).toHaveText("Your cinemas in Lekki");
+  await expect(heading("saved")).toHaveText("Your sinimas in Lekki");
   await expect(page.getByTestId("group.saved").locator("h2 + p")).toHaveText("Saved on this phone");
   expect(await shown(page, "saved")).toEqual(["filmhouse-lekki-imax"]);
-  await expect(heading("area")).toHaveText("More cinemas in Lekki");
+  await expect(heading("area")).toHaveText("More sinimas in Lekki");
   await expect(page.getByTestId("group.area").locator("h2 + p")).toHaveText("Soonest first");
   expect(await shown(page, "area")).toEqual(order(all, now, lekki.filter((id) => id !== "filmhouse-lekki-imax")));
 
@@ -46,7 +46,7 @@ test("kept cinemas first, then the area's others soonest first, then the areas n
     const first = firstIn(area);
     const count = all.cinemas.filter((c) => c.area === area).length;
     const card = page.getByTestId(`next.card.${area}`);
-    await expect(card.getByTestId("next.line")).toHaveText(`${plural(count, "cinema")} · next ${shownClock(first.startsAt)} at ${all.cinemas.find((c) => c.id === first.cinemaId)!.name}`);
+    await expect(card.getByTestId("next.line")).toHaveText(`${plural(count, "sinima")} · next ${shownClock(first.startsAt)} at ${all.cinemas.find((c) => c.id === first.cinemaId)!.name}`);
     await expect(card).toHaveAttribute("href", `/lagos/area/${area}`);
   }
 });
@@ -102,7 +102,7 @@ test("the heart on a kept cinema lets it go: it moves to the area's other cinema
   await page.goto("/lagos/area/lekki");
   const heart = page.getByTestId("cinema.card.grand-lekki").getByTestId("cinema.save");
   await expect(heart).toHaveAttribute("aria-pressed", "true");
-  await expect(heart).toHaveAccessibleName("Remove Grand Cinemas Lekki from your cinemas");
+  await expect(heart).toHaveAccessibleName("Remove Grand Cinemas Lekki from your sinimas");
   await heart.click();
   await expect(page.getByTestId("group.saved")).toHaveCount(0);
   await expect(page.getByTestId("group.area").locator("h2")).toHaveText("In Lekki");
@@ -119,8 +119,8 @@ test("with nothing more tonight, it says whose showing was last and the areas ne
   await freeze(page, new Date(Date.parse(last) + 60_000));
   await page.goto("/lagos/area/lagos-island");
 
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Cinemas in Lagos Island");
-  await expect(page.getByTestId("area.count")).toHaveText("1 cinema");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sinimas in Lagos Island");
+  await expect(page.getByTestId("area.count")).toHaveText("1 sinima");
   await expect(page.getByTestId("area.empty").getByRole("heading")).toHaveText("Nothing more starts in Lagos Island tonight");
   await expect(page.getByTestId("area.empty").locator("p")).toHaveText(`Blue Pictures Cinemas City Mall's last showing began at ${shownClock(last)}. The areas next to it still have times tonight.`);
   const groups = await page.locator('[data-testid^="group."]').evaluateAll((els) => els.map((el) => el.getAttribute("data-testid")));
@@ -139,8 +139,8 @@ test("a cinema whose times we can't read says so, and the footer explains", asyn
   const unread = all.cinemas.filter((c) => c.area === "victoria-island" && !all.showings.some((s) => s.cinemaId === c.id));
   expect(unread.length).toBeGreaterThan(0);
   for (const cinema of unread) await expect(page.getByTestId(`cinema.card.${cinema.id}`).getByTestId("cinema.none")).toHaveText("Times not available yet");
-  await expect(page.getByTestId("area.no-times")).toHaveText("“Times not available yet”: we can't read this cinema's times yet. Check its own site.");
-  await expect(page.getByTestId("footer.logos")).toContainText("Cinema logos belong to their owners");
+  await expect(page.getByTestId("area.no-times")).toHaveText("“Times not available yet”: we can't read this sinima's times yet. Check its own site.");
+  await expect(page.getByTestId("footer.logos")).toContainText("Each sinima's logo belongs to its owner");
 });
 
 test("phone and iPad: a top bar with back and share; desktop: a link back to all cinemas", async ({ page, request }) => {
@@ -151,7 +151,7 @@ test("phone and iPad: a top bar with back and share; desktop: a link back to all
   await expect(page.getByTestId("wordmark")).toBeHidden();
   await page.setViewportSize({ width: 1440, height: 900 });
   await expect(page.getByTestId("area.back")).toBeHidden();
-  await expect(page.getByRole("link", { name: "All cinemas in Lagos" })).toHaveAttribute("href", "/lagos/cinemas");
+  await expect(page.getByRole("link", { name: "All sinimas in Lagos" })).toHaveAttribute("href", "/lagos/cinemas");
   await expect(page.getByTestId("tab.cinemas")).toHaveAttribute("aria-current", "page");
 });
 

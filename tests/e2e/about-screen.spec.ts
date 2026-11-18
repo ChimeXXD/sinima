@@ -9,7 +9,7 @@ const registry = JSON.parse(readFileSync("data/sources.json", "utf8")) as Regist
 test("About: how it works, every source with cinemas and its real status, TMDB, and takedown (Figma)", async ({ page }) => {
   await page.goto("/about");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("About Sinima");
-  await expect(page.getByRole("heading", { level: 3 })).toHaveText(["We read each cinema's public listings", "Old times say so", "You book on the cinema's own site"]);
+  await expect(page.getByRole("heading", { level: 3 })).toHaveText(["We read each sinima's public listings", "Old times say so", "You book on the sinima's own site"]);
 
   const listed = registry.sources.filter((s) => s.status !== "do-not-use" && (s.cinemaIds?.length ?? 0) > 0).sort((a, b) => b.cinemaIds!.length - a.cinemaIds!.length);
   const rows = page.getByTestId("about.sources").locator("tbody tr");
@@ -22,8 +22,8 @@ test("About: how it works, every source with cinemas and its real status, TMDB, 
   await expect(lagocine).toHaveAttribute("target", "_blank");
   // How each city is read, counted from the times the site is built on (D-122): the sample build
   // reads Lagos through Lagocine's saved page and Abuja through Silverbird's two saved Veezi pages.
-  await expect(page.getByTestId("about.reading.lagos")).toHaveText(/^In Lagos, \d+ cinemas are read through Lagocine\. \d+ (has|have) no times online yet\.$/);
-  await expect(page.getByTestId("about.reading.abuja")).toHaveText("In Abuja, 2 cinemas are read from their own sites. 3 have no times online yet.");
+  await expect(page.getByTestId("about.reading.lagos")).toHaveText(/^In Lagos, \d+ sinimas are read through Lagocine\. \d+ (has|have) no times online yet\.$/);
+  await expect(page.getByTestId("about.reading.abuja")).toHaveText("In Abuja, 2 sinimas are read from their own sites. 3 have no times online yet.");
   await expect(page.getByTestId("about.source.filmhouse")).toContainText("Permission asked 11 Nov");
   // The site runs on saved samples, so no source is in use yet.
   await expect(page.getByTestId("about.sources")).not.toContainText("In use");
@@ -49,7 +49,7 @@ test("an address the site doesn't have: the torn ticket, Figma's words and the w
   const notFound = page.getByTestId("notfound");
   await expect(notFound.locator("h1")).toHaveText("We can't find that page");
   await expect(notFound).toContainText("this one's not showing");
-  await expect(notFound).toContainText("The link may be old, or the film has left the cinemas. Everything showing now is on Films.");
+  await expect(notFound).toContainText("The link may be old, or the film has left the sinimas. Everything showing now is on Films.");
   await expect(page.getByTestId("notfound.home")).toHaveText("See what's on in Lagos");
   await page.getByTestId("notfound.home").click();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("What's on in Lagos");

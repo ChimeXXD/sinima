@@ -16,9 +16,9 @@ type HeadingInput = { key: "saved"; area: string } | { key: "area"; area: string
 export function areaHeading(input: HeadingInput): { title: string; note: string | null } {
   switch (input.key) {
     case "saved":
-      return { title: `Your cinemas in ${input.area}`, note: "Saved on this phone" };
+      return { title: `Your sinimas in ${input.area}`, note: "Saved on this phone" };
     case "area":
-      return { title: input.afterSaved ? `More cinemas in ${input.area}` : `In ${input.area}`, note: input.quiet ? null : "Soonest first" };
+      return { title: input.afterSaved ? `More sinimas in ${input.area}` : `In ${input.area}`, note: input.quiet ? null : "Soonest first" };
     case "next":
       // Leading the quiet page, the neighbours are where to go: soonest first says so.
       return { title: `Next to ${input.area}`, note: input.quiet ? "Soonest first" : null };
@@ -50,7 +50,7 @@ export function cardBody(input: { listed: boolean; when: When; tomorrow: { films
   return `Nothing more ${when}.${tomorrow ? ` ${next}: ${films(tomorrow.films)} from ${formatLateTime(tomorrow.from)}.` : ""}`;
 }
 
-/** A neighbouring area's line: "4 cinemas · next 5:40 PM at EbonyLife Cinemas". */
+/** A neighbouring area's line: "4 sinimas · next 5:40 PM at EbonyLife Cinemas". */
 export function nextAreaLine(input: { cinemas: number; next: { at: string; name: string } | null; listed: boolean; when: When }): string {
   const { next, when } = input;
   const count = cinemaCount(input.cinemas);
@@ -65,7 +65,7 @@ export const quietTitle = (area: string, when: "tonight" | "today") => `Nothing 
 /** Under it: whose showing began last, and whether the areas next to it still have times. */
 export function quietWhy(input: { last: { name: string; at: string } | null; cinemas: number; neighbours: number; neighboursWithTimes: number; when: "tonight" | "today" }): string {
   const { last, when } = input;
-  const first = !last ? `No cinema here has a showing ${when}.` : input.cinemas === 1 ? `${last.name}${last.name.endsWith("s") ? "'" : "'s"} last showing began at ${formatLateTime(last.at)}.` : `The last showing here began at ${formatLateTime(last.at)}, at ${last.name}.`;
+  const first = !last ? `No sinima here has a showing ${when}.` : input.cinemas === 1 ? `${last.name}${last.name.endsWith("s") ? "'" : "'s"} last showing began at ${formatLateTime(last.at)}.` : `The last showing here began at ${formatLateTime(last.at)}, at ${last.name}.`;
   const { neighbours, neighboursWithTimes: open } = input;
   const then =
     open === 0 ? `Nothing more starts next to it ${when} either.`
@@ -75,5 +75,8 @@ export function quietWhy(input: { last: { name: string; at: string } | null; cin
   return `${first} ${then}`;
 }
 
+/** An area page's name: its tab title and share title, "Sinimas in Lekki" (D-138). */
+export const areaTitle = (area: string) => `Sinimas in ${area}`;
+
 /** The share sheet's text for an area. */
-export const areaShareText = (area: string, city: string) => `Cinemas in ${area}, ${city} · times on Sinima`;
+export const areaShareText = (area: string, city: string) => `${areaTitle(area)}, ${city} · times on Sinima`;

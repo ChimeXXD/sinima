@@ -71,9 +71,9 @@ describe("the areas of each city (data/cinemas.json)", () => {
 describe("the words that name the page's city (D-120)", () => {
   it("say Abuja on Abuja's pages and Lagos on Lagos's", async () => {
     const { cityWords, sectionTitle } = await import("@/lib/wording/city");
-    expect(cityWords("abuja")).toEqual({ allCinemas: "All cinemas in Abuja", allFilms: "All films in Abuja", times: "Times in Abuja" });
+    expect(cityWords("abuja")).toEqual({ allCinemas: "All sinimas in Abuja", allFilms: "All films in Abuja", times: "Times in Abuja" });
     expect(cityWords("lagos").times).toBe("Times in Lagos");
     expect(sectionTitle("films", "abuja")).toBe("What's on in Abuja");
-    expect(sectionTitle("cinemas", "lagos")).toBe("Cinemas in Lagos");
+    expect(sectionTitle("cinemas", "lagos")).toBe("Sinimas in Lagos");
   });
 });

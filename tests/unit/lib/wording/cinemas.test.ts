@@ -31,12 +31,12 @@ describe("cinemaLine", () => {
 
 describe("cinemasHeading", () => {
   it.each([
-    [{ key: "area", area: "Lekki", count: 6 }, "In Lekki", "Your area · 6 cinemas, soonest first"],
-    [{ key: "area", area: "Ikeja", count: 1 }, "In Ikeja", "Your area · 1 cinema, soonest first"],
+    [{ key: "area", area: "Lekki", count: 6 }, "In Lekki", "Your area · 6 sinimas, soonest first"],
+    [{ key: "area", area: "Ikeja", count: 1 }, "In Ikeja", "Your area · 1 sinima, soonest first"],
     [{ key: "next", neighbours: ["Victoria Island", "Sangotedo"] }, "Next to Lekki", "Victoria Island and Sangotedo"],
     [{ key: "rest", city: "Lagos" }, "Elsewhere in Lagos", "Soonest first"],
-    [{ key: "all", count: 22, format: null }, "All cinemas", "22 cinemas, soonest first"],
-    [{ key: "all", count: 7, format: "IMAX" }, "Showing in IMAX", "7 cinemas, soonest first"],
+    [{ key: "all", count: 22, format: null }, "All sinimas", "22 sinimas, soonest first"],
+    [{ key: "all", count: 7, format: "IMAX" }, "Showing in IMAX", "7 sinimas, soonest first"],
   ] as const)("%j", (input, title, note) => {
     expect(cinemasHeading({ area: "Lekki", ...input } as Parameters<typeof cinemasHeading>[0])).toEqual({ title, note });
   });
@@ -47,8 +47,8 @@ describe("the rest of the page", () => {
     expect(cinemasTitleNote(22)).toBe("22 of them!");
   });
   it("counts an area's cinemas in the area sheet", () => {
-    expect(cinemaCount(6)).toBe("6 cinemas");
-    expect(cinemaCount(1)).toBe("1 cinema");
+    expect(cinemaCount(6)).toBe("6 sinimas");
+    expect(cinemaCount(1)).toBe("1 sinima");
   });
   it("names the pickers' values", () => {
     expect(pickerValue.area(null)).toBe("All");
@@ -57,7 +57,7 @@ describe("the rest of the page", () => {
     expect(pickerValue.format("IMAX")).toBe("IMAX");
   });
   it("explains the missing times under the list, as Figma words it", () => {
-    expect(NO_TIMES_NOTE).toBe("“Times not available yet”: we can't read this cinema's times yet. Check its own site.");
-    expect(PICKER_SHEETS.area).toEqual({ title: "Choose an area", subtitle: "Cinemas in your area come first, then the areas next to it." });
+    expect(NO_TIMES_NOTE).toBe("“Times not available yet”: we can't read this sinima's times yet. Check its own site.");
+    expect(PICKER_SHEETS.area).toEqual({ title: "Choose an area", subtitle: "Sinimas in your area come first, then the areas next to it." });
   });
 });

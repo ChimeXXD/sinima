@@ -11,11 +11,11 @@ describe("search wording", () => {
 
   it("a result says how long, the rating, the formats and how many cinemas, today or tomorrow", () => {
     const now = "2026-11-13T16:30:00Z"; // 5:30 PM in Lagos: tonight
-    expect(resultMeta({ runtimeMin: 145, rating: "12A" }, [], 2, 0, now, "2026-11-13T17:00:00Z")).toBe("2 h 25 min · 12A · 2 cinemas tonight");
-    expect(resultMeta({ runtimeMin: 201, rating: null }, ["IMAX", "4D"], 12, 0, now, "2026-11-13T17:00:00Z")).toBe("3 h 21 min · IMAX · 4D · 12 cinemas tonight");
-    expect(resultMeta({ runtimeMin: null, rating: null }, [], 5, 0, now, "2026-11-13T17:00:00Z")).toBe("5 cinemas tonight");
-    expect(resultMeta({ runtimeMin: null, rating: null }, [], 1, 0, "2026-11-13T09:00:00Z", "2026-11-13T12:00:00Z")).toBe("1 cinema today");
-    expect(resultMeta({ runtimeMin: null, rating: null }, [], 3, 1, now, "2026-11-14T13:00:00Z")).toBe("3 cinemas tomorrow");
+    expect(resultMeta({ runtimeMin: 145, rating: "12A" }, [], 2, 0, now, "2026-11-13T17:00:00Z")).toBe("2 h 25 min · 12A · 2 sinimas tonight");
+    expect(resultMeta({ runtimeMin: 201, rating: null }, ["IMAX", "4D"], 12, 0, now, "2026-11-13T17:00:00Z")).toBe("3 h 21 min · IMAX · 4D · 12 sinimas tonight");
+    expect(resultMeta({ runtimeMin: null, rating: null }, [], 5, 0, now, "2026-11-13T17:00:00Z")).toBe("5 sinimas tonight");
+    expect(resultMeta({ runtimeMin: null, rating: null }, [], 1, 0, "2026-11-13T09:00:00Z", "2026-11-13T12:00:00Z")).toBe("1 sinima today");
+    expect(resultMeta({ runtimeMin: null, rating: null }, [], 3, 1, now, "2026-11-14T13:00:00Z")).toBe("3 sinimas tomorrow");
   });
 
   it("the next showing: its time and cinema; tomorrow's says so", () => {
@@ -28,11 +28,11 @@ describe("search wording", () => {
   it("after midnight, with last night's late shows still to start, the next day's times are today's", () => {
     const now = "2026-11-14T00:00:00Z"; // 1:00 AM Saturday in Lagos
     expect(resultNext({ at: "2026-11-14T13:00:00Z", cinema: "Sky" }, 1, now)).toBe("Today 2:00\u00a0PM · Sky");
-    expect(resultMeta({ runtimeMin: null, rating: null }, [], 2, 1, now, "2026-11-14T13:00:00Z")).toBe("2 cinemas today");
+    expect(resultMeta({ runtimeMin: null, rating: null }, [], 2, 1, now, "2026-11-14T13:00:00Z")).toBe("2 sinimas today");
     expect(resultNext({ at: "2026-11-15T13:00:00Z", cinema: "Sky" }, 1, now)).toBe("Tomorrow 2:00\u00a0PM · Sky");
     // Once last night's shows are over, today is the new day: a 2:00 PM show is "today", not "tonight".
-    expect(resultMeta({ runtimeMin: null, rating: null }, [], 1, 0, now, "2026-11-14T13:00:00Z")).toBe("1 cinema today");
-    expect(resultMeta({ runtimeMin: null, rating: null }, [], 1, 0, now, "2026-11-14T01:30:00Z")).toBe("1 cinema tonight");
+    expect(resultMeta({ runtimeMin: null, rating: null }, [], 1, 0, now, "2026-11-14T13:00:00Z")).toBe("1 sinima today");
+    expect(resultMeta({ runtimeMin: null, rating: null }, [], 1, 0, now, "2026-11-14T01:30:00Z")).toBe("1 sinima tonight");
   });
 
   it("Enter shows them on Films", () => {
@@ -44,7 +44,7 @@ describe("search wording", () => {
   it("no match names the cities searched", () => {
     expect(noMatch("Avengers", "both", "lagos")).toEqual({
       title: "Nothing called “Avengers” in Lagos or Abuja yet",
-      body: "Times appear here as soon as a cinema lists them. Check the spelling, or see what's on now.",
+      body: "Times appear here as soon as a sinima lists them. Check the spelling, or see what's on now.",
       action: "See what's on in Lagos",
     });
     expect(noMatch("Avengers", "abuja", "abuja").title).toBe("Nothing called “Avengers” in Abuja yet");
@@ -54,11 +54,11 @@ describe("search wording", () => {
 
   it("the city sheet: the cinemas and the first three areas of each city", () => {
     expect(cityLine(22, ["Lekki", "Victoria Island", "Ikeja", "Surulere", "Yaba", "Lagos Island", "Festac", "Maryland", "Agege", "Sangotedo", "Ikorodu Road", "Idimu"])).toBe(
-      "22 cinemas in Lekki, Victoria Island, Ikeja and 9 more areas",
+      "22 sinimas in Lekki, Victoria Island, Ikeja and 9 more areas",
     );
-    expect(cityLine(2, ["Jabi", "Lugbe"])).toBe("2 cinemas in Jabi and Lugbe");
-    expect(cityLine(4, ["Jabi", "Lugbe", "Kuje", "Wuse"])).toBe("4 cinemas in Jabi, Lugbe, Kuje and 1 more area");
+    expect(cityLine(2, ["Jabi", "Lugbe"])).toBe("2 sinimas in Jabi and Lugbe");
+    expect(cityLine(4, ["Jabi", "Lugbe", "Kuje", "Wuse"])).toBe("4 sinimas in Jabi, Lugbe, Kuje and 1 more area");
     expect(CITY_SHEET.title).toBe("Choose your city");
-    expect(ABUJA_SOON).toBe("Abuja's cinemas are being added");
+    expect(ABUJA_SOON).toBe("Abuja's sinimas are being added");
   });
 });

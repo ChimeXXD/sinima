@@ -31,10 +31,10 @@ describe("freshness wording: every band at both edges (DATA §Freshness, D-04)",
     expect(freshness(FILMHOUSE, "2026-11-05T23:00:00Z", NOW)).toEqual({ band: "today", text: "Read from Filmhouse's site today at 12:00\u00a0AM", bookable: true });
     expect(freshness(FILMHOUSE, "2026-11-05T22:59:59Z", NOW)).toEqual({
       band: "stale",
-      text: "Read from Filmhouse's site yesterday at 11:59\u00a0PM · check with the cinema",
+      text: "Read from Filmhouse's site yesterday at 11:59\u00a0PM · check with the sinima",
       bookable: true,
     });
-    expect(freshness(FILMHOUSE, "2026-11-05T14:06:00Z", NOW).text).toBe("Read from Filmhouse's site yesterday at 3:06\u00a0PM · check with the cinema");
+    expect(freshness(FILMHOUSE, "2026-11-05T14:06:00Z", NOW).text).toBe("Read from Filmhouse's site yesterday at 3:06\u00a0PM · check with the sinima");
     // 12:00 AM Lagos on Thu 5 Nov is 11:00 PM UTC on Wed 4 Nov: the first second of "yesterday".
     expect(freshness(FILMHOUSE, "2026-11-04T23:00:00Z", NOW).band).toBe("stale");
     expect(freshness(FILMHOUSE, "2026-11-04T22:59:59Z", NOW)).toEqual({
@@ -87,7 +87,7 @@ describe("data that reached us through another listing (via)", () => {
   it("carries the stale and old warnings", () => {
     expect(freshness(LAGOCINE, ago(0), NOW, via("2026-11-05T14:06:00Z"))).toEqual({
       band: "stale",
-      text: "From Lagocine, which read EbonyLife's site yesterday at 3:06\u00a0PM · check with the cinema",
+      text: "From Lagocine, which read EbonyLife's site yesterday at 3:06\u00a0PM · check with the sinima",
       bookable: true,
     });
     expect(freshness(LAGOCINE, ago(0), NOW, via("2026-11-03T09:00:00Z"))).toEqual({

@@ -3,6 +3,7 @@ import { AreaScreen } from "@/components/area/AreaScreen";
 import { areaBySlug, areas, areasIn, cityParam, loadCity } from "@/lib/data/load";
 import { toListData } from "@/lib/data/select";
 import { pageColours } from "@/lib/theme/pageColours";
+import { areaTitle } from "@/lib/wording/areaPage";
 
 type Props = { params: Promise<{ city: string; slug: string }> };
 
@@ -11,7 +12,7 @@ export const dynamicParams = false;
 export const generateStaticParams = () => areas.map((area) => ({ city: area.city, slug: area.slug }));
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  return { title: `Cinemas in ${areaBySlug((await params).slug).name} · Sinima` };
+  return { title: `${areaTitle(areaBySlug((await params).slug).name)} · Sinima` };
 }
 
 /** One area's cinemas, then the areas next to it (Figma Area, build unit 7). The page carries only those areas' showings. */

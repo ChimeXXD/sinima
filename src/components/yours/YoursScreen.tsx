@@ -47,7 +47,7 @@ export function YoursScreen({ data, areas, city, bg }: { data: ListData; areas: 
     <AppFrame active="yours" search={{ value: typed, onChange: setTyped, onSubmit: () => router.push(`/?q=${encodeURIComponent(typed.trim())}`) }} bg={bg} footer={footer}>
       <div className={s.titleRow}>
         <div className={s.title}>
-          <h1>Your cinemas</h1>
+          <h1>Your sinimas</h1>
           <p className={s.sub}>
             {live && <span data-testid="yours.count">{savedCount(saved.length)}</span>}
             <span className={s.hand} aria-hidden="true">

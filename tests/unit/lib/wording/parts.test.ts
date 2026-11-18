@@ -57,10 +57,10 @@ describe("spokenCountdown: units spelled out for screen readers", () => {
 
 describe("filmNextLine: the stats line under a film card (Figma 10.1)", () => {
   it("names the next time and how many cinemas", () => {
-    expect(filmNextLine(START, 4)).toEqual({ next: "Next 7:30\u00a0PM", where: "4 cinemas" });
+    expect(filmNextLine(START, 4)).toEqual({ next: "Next 7:30\u00a0PM", where: "4 sinimas" });
   });
   it("says one cinema, not one cinemas", () => {
-    expect(filmNextLine(START, 1)).toEqual({ next: "Next 7:30\u00a0PM", where: "1 cinema" });
+    expect(filmNextLine(START, 1)).toEqual({ next: "Next 7:30\u00a0PM", where: "1 sinima" });
   });
   it("marks a showing after midnight with its day", () => {
     expect(filmNextLine("2026-11-06T23:30:00Z", 2).next).toBe("Next 12:30\u00a0AM (Sat)");

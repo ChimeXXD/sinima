@@ -29,7 +29,7 @@ test("the cinema, then its films tonight soonest first, each with its times stil
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Filmhouse Lekki IMAX");
   await expect(page.getByTestId("cinema.address")).toHaveText("The Rock Drive, off Bisola Durosinmi Etti Drive, Lekki Phase 1, Lagos");
   await expect(page.getByTestId("cinema.tags")).toHaveText("LekkiIMAX");
-  await expect(page.getByTestId("cinema.save")).toHaveText(/^Save /); // then, for screen readers, " Filmhouse Lekki IMAX on Your cinemas"
+  await expect(page.getByTestId("cinema.save")).toHaveText(/^Save /); // then, for screen readers, " Filmhouse Lekki IMAX on Your sinimas"
   await expect(page.getByTestId("cinema.save")).toHaveAttribute("aria-pressed", "false");
   const book = page.getByTestId("cinema.book");
   await expect(book).toHaveText("Book on Filmhouse's site");
@@ -85,7 +85,7 @@ test("Save keeps the cinema on this phone, says so in a toast, and Undo takes it
   await expect(save).toHaveAttribute("aria-pressed", "true");
   expect(await page.evaluate(() => localStorage.getItem("ls.cinemas"))).toBe(JSON.stringify([ID]));
   const toast = page.getByTestId("toast");
-  await expect(toast).toContainText("Saved to Your cinemas. Only on this phone.");
+  await expect(toast).toContainText("Saved to Your sinimas. Only on this phone.");
   const undo = (await toast.getByRole("button", { name: "Undo" }).boundingBox())!;
   expect(Math.min(undo.width, undo.height)).toBeGreaterThanOrEqual(44);
   await toast.getByRole("button", { name: "Undo" }).click();
@@ -122,10 +122,10 @@ test("a time opens the showing sheet; sample times can't be booked; Escape gives
 test("a cinema that sells only at the door has no Book button, and its footer says so", async ({ page, request }) => {
   const all = await dataFile(request, "lagos");
   const door = (all.cinemas as (DataFile["cinemas"][number] & { bookingHost: string | null })[]).find((c) => !c.bookingHost && all.showings.some((s) => s.cinemaId === c.id));
-  test.skip(!door, "every listed cinema sells online");
+  test.skip(!door, "every listed sinima sells online");
   await page.goto(`/lagos/cinema/${door!.id}`);
   await expect(page.getByTestId("cinema.book")).toHaveCount(0);
-  await expect(page.getByTestId("footer.tickets")).toHaveText(`${door!.name} sells the tickets at the cinema. Sinima only shows the times.`);
+  await expect(page.getByTestId("footer.tickets")).toHaveText(`${door!.name} sells the tickets at the sinima. Sinima only shows the times.`);
 });
 
 test("phone and iPad: the top bar; desktop: the cinema on the left and its films beside it, two to a row", async ({ page, request }) => {
@@ -140,7 +140,7 @@ test("phone and iPad: the top bar; desktop: the cinema on the left and its films
     expect(boxes[0]!.w).toBe(cardWidth);
   }
   await expect(page.getByTestId("cinema.back")).toBeHidden();
-  const crumb = page.getByRole("link", { name: "All cinemas in Lagos" });
+  const crumb = page.getByRole("link", { name: "All sinimas in Lagos" });
   await expect(crumb).toHaveAttribute("href", "/lagos/cinemas");
   expect((await crumb.boundingBox())!.height).toBeGreaterThanOrEqual(44);
   const title = (await page.getByRole("heading", { level: 1 }).boundingBox())!;

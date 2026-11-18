@@ -31,7 +31,7 @@ test("Abuja's Films lists Abuja's films only, and Lagos's none of them that Lago
 
 test("Abuja's Cinemas lists its five cinemas; The Jays says in words that it has no times", async ({ page }) => {
   await page.goto("/abuja/cinemas");
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Cinemas in Abuja");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sinimas in Abuja");
   await expect(page.getByTestId("cinemas.count")).toHaveText("5 of them!");
   // The title's logo stickers are chains Abuja has: no Filmhouse or EbonyLife (D-120).
   await expect(page.locator('img[src="/logos/filmhouse.png"], img[src="/logos/ebonylife.png"]')).toHaveCount(0);
@@ -61,7 +61,7 @@ test("an Abuja cinema's page shows its times and leads back to Abuja's cinemas",
   await expect(page.getByTestId("cinema.title")).toHaveText("Silverbird Cinemas Jabi Lake Mall");
   await expect(page.locator('[data-testid^="time.street-fighter."]').first()).toBeVisible();
   expect(abuja.showings.some((s) => s.cinemaId === "silverbird-jabi" && s.filmId === "street-fighter")).toBe(true);
-  await expect(page.getByTestId("cinema.back")).toHaveAccessibleName(/All cinemas in Abuja/);
+  await expect(page.getByTestId("cinema.back")).toHaveAccessibleName(/All sinimas in Abuja/);
   await page.getByTestId("cinema.back").click();
   await expect(page).toHaveURL(/\/abuja\/cinemas$/);
 });

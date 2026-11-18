@@ -74,7 +74,7 @@
 }
 
 /* Below 360 (Figma draws 390 up) the bar is 296 at most: the tabs keep a 44 target with 12
-   padding, and the current tab's name drops to 14, so "Your cinemas" and "Starting soon" fit. */
+   padding, and the current tab's name drops to 14, so "Your sinimas" and "Starting soon" fit. */
 @media (max-width: 359px) {
   .tab {
     gap: var(--space-6);

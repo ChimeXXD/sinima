@@ -84,9 +84,9 @@ describe("buildIcs: the Remind me calendar file (SPEC §6, acceptance 5)", () =>
   });
 
   it("describes where to book and where the time came from", () => {
-    expect(unescape(value(ics, "DESCRIPTION")!)).toBe("Book on the cinema's site: https://www.filmhouseng.com/\nRead from Filmhouse's site 2 hours ago. Times can change; check with the cinema.");
+    expect(unescape(value(ics, "DESCRIPTION")!)).toBe("Book on the sinima's site: https://www.filmhouseng.com/\nRead from Filmhouse's site 2 hours ago. Times can change; check with the sinima.");
     expect(unescape(value(buildIcs({ ...showing, bookingUrl: null }, NOW), "DESCRIPTION")!)).toBe(
-      "Tickets at the cinema.\nRead from Filmhouse's site 2 hours ago. Times can change; check with the cinema.",
+      "Tickets at the sinima.\nRead from Filmhouse's site 2 hours ago. Times can change; check with the sinima.",
     );
   });
 

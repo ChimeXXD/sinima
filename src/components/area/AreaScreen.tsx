@@ -19,7 +19,7 @@ import { laterName, nextDayName, pageBanner, type ListData } from "@/lib/data/se
 import { formatDate } from "@/lib/time/lagos";
 import { toggleSaved, useSaved } from "@/lib/saved";
 import { useNow } from "@/lib/time/useNow";
-import { areaHeading, areaShareText, cardBody, cardLine, locality, nextAreaLine, quietTitle, quietWhy } from "@/lib/wording/areaPage";
+import { areaHeading, areaShareText, areaTitle, cardBody, cardLine, locality, nextAreaLine, quietTitle, quietWhy } from "@/lib/wording/areaPage";
 import { NO_TIMES_NOTE } from "@/lib/wording/cinemas";
 import { featuredFor } from "@/lib/wording/featured";
 import { FOOTER_NOTE } from "@/lib/wording/films";
@@ -67,7 +67,7 @@ export function AreaScreen({ data, areas, slug, city, bg }: { data: ListData; ar
   const sheet = useLazySheet(data);
 
   async function share() {
-    const done = await shareLink({ title: `Cinemas in ${area.name}`, text: areaShareText(area.name, cityName), url: `${window.location.origin}${cityHref(`/area/${slug}`)}` });
+    const done = await shareLink({ title: areaTitle(area.name), text: areaShareText(area.name, cityName), url: `${window.location.origin}${cityHref(`/area/${slug}`)}` });
     if (done === "copied") {
       setCopied(true);
       clearTimeout(copiedTimer.current);
@@ -127,7 +127,7 @@ export function AreaScreen({ data, areas, slug, city, bg }: { data: ListData; ar
     <>
       <BarBack href="/cinemas" label={words.allCinemas} testId="area.back" />
       <BarTitle>Area</BarTitle>
-      <IconButton icon={copied ? "check" : "share-up"} label={copied ? "Link copied" : `Share cinemas in ${area.name}`} onClick={() => void share()} testId="area.share" />
+      <IconButton icon={copied ? "check" : "share-up"} label={copied ? "Link copied" : `Share sinimas in ${area.name}`} onClick={() => void share()} testId="area.share" />
     </>
   );
 

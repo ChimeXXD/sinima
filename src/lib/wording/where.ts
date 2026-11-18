@@ -18,7 +18,7 @@ export const foundNote = (city: City) => `found you in ${CITY_NAMES[city]}!`;
 
 export const WHERE = {
   title: "Where are you watching?",
-  lead: "Showtimes for every cinema in Lagos and Abuja, in one place.",
+  lead: "Showtimes for every sinima in Lagos and Abuja, in one place.",
   asking: "finding your city…",
   fallback: "We couldn't place you in Lagos or Abuja, so here's Lagos. Switch any time in the search bar.",
   locate: "Use my location",

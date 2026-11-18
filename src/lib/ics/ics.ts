@@ -55,7 +55,7 @@ function fold(line: string): string {
 export function buildIcs(showing: IcsShowing, now: string): string {
   const { film, cinema, address, bookingUrl, sourceLine } = showing;
   const duration = showing.runtimeMin && showing.runtimeMin > 0 ? `PT${Math.round(showing.runtimeMin)}M` : "PT2H";
-  const booking = bookingUrl ? `Book on the cinema's site: ${bookingUrl}` : "Tickets at the cinema.";
+  const booking = bookingUrl ? `Book on the sinima's site: ${bookingUrl}` : "Tickets at the sinima.";
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
@@ -69,7 +69,7 @@ export function buildIcs(showing: IcsShowing, now: string): string {
     `DURATION:${duration}`,
     `SUMMARY:${text(`${film} at ${cinema}`)}`,
     `LOCATION:${text(address ? `${cinema}, ${address}` : cinema)}`,
-    `DESCRIPTION:${text(`${booking}\n${sourceLine}. Times can change; check with the cinema.`)}`,
+    `DESCRIPTION:${text(`${booking}\n${sourceLine}. Times can change; check with the sinima.`)}`,
     "BEGIN:VALARM",
     "ACTION:DISPLAY",
     `DESCRIPTION:${text(`${film} starts in ${ALERT_MINUTES} min at ${cinema}`)}`,

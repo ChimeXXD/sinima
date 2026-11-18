@@ -86,7 +86,7 @@ export function CinemaScreen({ data, id, area, city, bg }: { data: ListData; id:
   const bar = (
     <>
       <BarBack href="/cinemas" label={words.allCinemas} testId="cinema.back" />
-      <BarTitle>Cinema</BarTitle>
+      <BarTitle>Sinima</BarTitle>
       <IconButton icon={copied ? "check" : "share-up"} label={copied ? "Link copied" : `Share ${cinema.name}`} onClick={() => void share()} testId="cinema.share" />
     </>
   );
@@ -123,7 +123,7 @@ export function CinemaScreen({ data, id, area, city, bg }: { data: ListData; id:
             <button type="button" className={s.save} aria-pressed={saved} onClick={save} data-testid="cinema.save">
               <Icon name="heart" size={18} />
               {saved ? "Saved" : "Save"}
-              <span className={s.hidden}> {cinema.name} on Your cinemas</span>
+              <span className={s.hidden}> {cinema.name} on Your sinimas</span>
             </button>
             {cinema.online && cinema.website && (
               <Button href={cinema.website} testId="cinema.book">

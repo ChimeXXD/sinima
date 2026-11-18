@@ -65,10 +65,10 @@ describe("earlierLine", () => {
 describe("ticketsFooter and the toast", () => {
   it("says who sells the tickets (Figma)", () => {
     expect(ticketsFooter({ chain: "Filmhouse", name: "Filmhouse Lekki IMAX", online: true })).toBe("Filmhouse sells the tickets. Sinima only shows the times and sends you to their site.");
-    expect(ticketsFooter({ chain: "THC", name: "THC Cinemas Agege", online: false })).toBe("THC Cinemas Agege sells the tickets at the cinema. Sinima only shows the times.");
+    expect(ticketsFooter({ chain: "THC", name: "THC Cinemas Agege", online: false })).toBe("THC Cinemas Agege sells the tickets at the sinima. Sinima only shows the times.");
   });
   it("tells a visitor the save stays on this phone (Figma Saved)", () => {
-    expect(SAVED_TOAST).toBe("Saved to Your cinemas. Only on this phone.");
+    expect(SAVED_TOAST).toBe("Saved to Your sinimas. Only on this phone.");
   });
 });
 

@@ -25,14 +25,14 @@ describe("folderLine", () => {
 describe("fixed words", () => {
   it("Figma's empty state, add card and footer", () => {
     expect(EMPTY).toEqual({
-      title: "Keep your usual cinemas here",
-      body: "Tick the ones you go to, or tap the heart on any cinema. Their next times show up here first, and the tab bar counts them.",
-      action: "Pick your cinemas",
+      title: "Keep your usual sinimas here",
+      body: "Tick the ones you go to, or tap the heart on any sinima. Their next times show up here first, and the tab bar counts them.",
+      action: "Pick your sinimas",
       note: "Saved on this phone only. Nothing is sent anywhere.",
     });
-    expect(ADD).toEqual({ title: "Add your cinemas", body: "Tick them from a list, or tap a heart." });
-    expect(addLabel("Lagos")).toBe("Add cinemas in Lagos");
-    expect(PICK("Lagos")).toEqual({ title: "Add your cinemas", subtitle: "Tick the cinemas you go to in Lagos. Saved on this phone only.", done: "Done" });
+    expect(ADD).toEqual({ title: "Add your sinimas", body: "Tick them from a list, or tap a heart." });
+    expect(addLabel("Lagos")).toBe("Add sinimas in Lagos");
+    expect(PICK("Lagos")).toEqual({ title: "Add your sinimas", subtitle: "Tick the sinimas you go to in Lagos. Saved on this phone only.", done: "Done" });
     expect(FOOTER).toBe("Saved on this phone only, soonest first. Nothing is sent anywhere, and there's no account.");
   });
 });

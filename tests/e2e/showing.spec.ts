@@ -66,7 +66,7 @@ test("times read 30 hours ago show the stale banner, and the showing says so in 
   await asLiveData(page, "/lagos/cinema/ebonylife-vi", new Date(now.getTime() - 30 * 3_600_000));
   await freeze(page, now);
   await page.goto("/lagos/cinema/ebonylife-vi");
-  await expect(page.getByTestId("banner.stale")).toHaveText("Some times are from yesterday. Cinemas change programmes; check before you travel.");
+  await expect(page.getByTestId("banner.stale")).toHaveText("Some times are from yesterday. Sinimas change programmes; check before you travel.");
   // Figma Cinema › Times a day old: the films' note and a warning say so too.
   await expect(page.getByTestId("films.note")).toHaveText(/ · times from yesterday$/);
   await expect(page.getByTestId("films.warning")).toHaveText("Times from yesterday");

@@ -10,7 +10,7 @@ const cinemaCities = cinemaCityMap();
 
 export const metadata: Metadata = {
   title: "Sinima",
-  description: "What's starting soon at Lagos and Abuja cinemas, and should you stay after the credits?",
+  description: "What's starting soon at Lagos and Abuja sinimas, and should you stay after the credits?",
   manifest: "/manifest.webmanifest",
   icons: {
     icon: [

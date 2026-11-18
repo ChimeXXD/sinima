@@ -140,7 +140,7 @@ describe("groupShowings (D-05, D-18)", () => {
 describe("bannerFor: one banner, the worst case wins (DATA §Freshness)", () => {
   it.each([
     [["fresh", "today"], null],
-    [["fresh", "stale"], { kind: "stale", text: "Some times are from yesterday. Cinemas change programmes; check before you travel." }],
+    [["fresh", "stale"], { kind: "stale", text: "Some times are from yesterday. Sinimas change programmes; check before you travel." }],
     [["stale", "old", "fresh"], { kind: "old", text: "Some times are more than a day old and may have changed." }],
     [["old", "sample", "stale"], { kind: "sample", text: "Sample data. These times are for the demo, not for booking." }],
     [[], null],

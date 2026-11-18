@@ -15,7 +15,7 @@ test("saved cinemas as folders, soonest first, each with its count and next time
   await freeze(page, now);
   await page.goto("/lagos/yours");
 
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Your cinemas");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Your sinimas");
   await expect(page.getByTestId("yours.count")).toHaveText("4 saved on this phone");
   await expect(page.getByTestId("banner.sample")).toBeVisible();
   const left = today(all, now);
@@ -34,8 +34,8 @@ test("saved cinemas as folders, soonest first, each with its count and next time
     await expect(folder.getByTestId("logo-sticker")).toHaveCount(1);
   }
   // The + and the dashed card open the list to tick cinemas from (D-106 f).
-  await expect(page.getByTestId("yours.add-card")).toContainText("Add your cinemas");
-  await expect(page.getByTestId("yours.add")).toHaveAccessibleName("Add cinemas in Lagos");
+  await expect(page.getByTestId("yours.add-card")).toContainText("Add your sinimas");
+  await expect(page.getByTestId("yours.add")).toHaveAccessibleName("Add sinimas in Lagos");
   await page.getByTestId("yours.add").click();
   await expect(page.getByTestId("yours.pick")).toBeVisible();
   await expect(page.getByTestId("footer.note")).toHaveText("Saved on this phone only, soonest first. Nothing is sent anywhere, and there's no account.");
@@ -62,8 +62,8 @@ test("none saved: the words, and the list to pick cinemas from (Figma None saved
   await page.goto("/lagos/yours");
   await expect(page.getByTestId("yours.count")).toHaveText("None saved yet");
   const empty = page.getByTestId("yours.empty");
-  await expect(empty.locator("h2")).toHaveText("Keep your usual cinemas here");
-  await expect(empty.locator("h2 + p")).toHaveText("Tick the ones you go to, or tap the heart on any cinema. Their next times show up here first, and the tab bar counts them.");
+  await expect(empty.locator("h2")).toHaveText("Keep your usual sinimas here");
+  await expect(empty.locator("h2 + p")).toHaveText("Tick the ones you go to, or tap the heart on any sinima. Their next times show up here first, and the tab bar counts them.");
   await expect(empty.getByTestId("logo-sticker")).toHaveCount(3);
   await expect(empty).toContainText("Saved on this phone only. Nothing is sent anywhere.");
   await expect(page.getByTestId("yours.add")).toHaveCount(0);
@@ -88,7 +88,7 @@ test.describe("before the page knows the time", () => {
   test.use({ javaScriptEnabled: false });
   test("the page's own HTML lists no saved cinemas and no empty state: both live on the phone (rule 3)", async ({ page }) => {
     await page.goto("/lagos/yours");
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Your cinemas");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Your sinimas");
     await expect(page.getByTestId("yours.folders")).toHaveCount(0);
     await expect(page.getByTestId("yours.empty")).toHaveCount(0);
   });
@@ -125,7 +125,7 @@ test("the list ticks cinemas on and off Your cinemas at once, grouped by area (D
   await page.goto("/lagos/yours");
   await page.getByTestId("yours.browse").click();
   const sheet = page.getByTestId("yours.pick");
-  await expect(sheet).toHaveAccessibleName("Add your cinemas");
+  await expect(sheet).toHaveAccessibleName("Add your sinimas");
   await expect(sheet.getByRole("heading", { name: "Lekki" })).toBeVisible();
   await sheet.getByTestId("pick.grand-lekki").click();
   await sheet.getByTestId("pick.ebonylife-vi").click();
@@ -141,10 +141,10 @@ test("a heart on each row of the Cinemas tab keeps a cinema without opening it (
   await page.goto("/lagos/cinemas");
   const row = page.getByTestId("cinema.card.grand-lekki");
   const heart = row.getByTestId("cinema.keep");
-  await expect(heart).toHaveAccessibleName("Save Grand Cinemas Lekki to your cinemas");
+  await expect(heart).toHaveAccessibleName("Save Grand Cinemas Lekki to your sinimas");
   await heart.click();
   await expect(heart).toHaveAttribute("aria-pressed", "true");
-  await expect(page.getByText("Saved to Your cinemas. Only on this phone.")).toBeVisible();
+  await expect(page.getByText("Saved to Your sinimas. Only on this phone.")).toBeVisible();
   await expect(page).toHaveURL(/\/lagos\/cinemas$/); // still here
   expect(await page.evaluate(() => localStorage.getItem("ls.cinemas"))).toBe(JSON.stringify(["grand-lekki"]));
   await row.getByTestId("cinema.name").click(); // the rest of the row still opens the cinema

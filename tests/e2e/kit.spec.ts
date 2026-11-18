@@ -62,7 +62,7 @@ test("the phone tab bar floats 24 px from the bottom, centred, with the count st
   await expect(page.getByTestId("nav.count")).toHaveText("4");
   // Icon-only tabs keep their names for screen readers.
   await expect(page.getByRole("link", { name: "Starting soon" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Your cinemas, 4 saved" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Your sinimas, 4 saved" })).toBeVisible();
 });
 
 test("on desktop every tab is labelled in a 52 px pill that hugs its tabs", async ({ page }) => {
@@ -70,7 +70,7 @@ test("on desktop every tab is labelled in a 52 px pill that hugs its tabs", asyn
   const nav = await box(page.getByTestId("nav"));
   near(nav.height, 52);
   expect(nav.width).toBeLessThan(600);
-  await expect(page.getByTestId("tab.cinemas")).toContainText("Cinemas");
+  await expect(page.getByTestId("tab.cinemas")).toContainText("Sinimas");
 });
 
 test("a started showing has no booking link; one still to start books on the cinema's site (D-05)", async ({ page }) => {
