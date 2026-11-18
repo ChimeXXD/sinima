@@ -1,0 +1,1126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sinima share card references</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&display=swap">
+<style>
+/* Layout: a fixed section list on the left, one column of reference cards on the right. On a phone the list becomes a drawer. */
+:root {
+  --bg: #eef0f4; --surface: #ffffff; --ink: #131a2b; --muted: #566078; --line: #d5d9e3;
+  --marquee: #f2b705; --on-marquee: #1d1600; --no: #b3261e; --on-no: #ffffff; --shot: #dfe3ec;
+  --scrim: rgba(10, 14, 24, 0.95); --stage: #0a0e18; --on-scrim: #f4f6fb; --on-scrim-muted: #b9c1d4;
+  --scrim-field: rgba(255, 255, 255, 0.08); --mark: #f2b705; --on-mark: #1d1600; --mark-fill: rgba(242, 183, 5, 0.2);
+  --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --side: 264px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0d1220; --surface: #171e31; --ink: #eef1f8; --muted: #a3adc4; --line: #2c3650;
+    --marquee: #f5c518; --on-marquee: #1d1600; --no: #f2877f; --on-no: #2a0704; --shot: #232c44;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; }
+h1 { font-family: var(--display); font-weight: 700; font-size: clamp(28px, 5vw, 38px); line-height: 1.1; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--display); font-weight: 700; font-size: 24px; line-height: 1.2; margin: 0; text-wrap: balance; }
+h3 { font-size: 16px; font-weight: 650; margin: 0; }
+p { margin: 0; }
+img { max-width: 100%; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+.side {
+  position: fixed; inset: 0 auto 0 0; width: var(--side); z-index: 20; overflow-y: auto;
+  background: var(--surface); border-right: 1px solid var(--line);
+  padding: 20px 12px 24px; display: flex; flex-direction: column; gap: 16px;
+}
+.side .brand { font-family: var(--display); font-weight: 700; font-size: 18px; line-height: 1.2; padding: 0 8px; }
+.progress { padding: 0 8px; font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 6px; }
+.progress strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+.meter { height: 6px; border-radius: 999px; background: var(--shot); overflow: hidden; }
+.meter i { display: block; height: 100%; width: 0; background: var(--marquee); }
+.side nav { display: flex; flex-direction: column; gap: 2px; }
+.side nav a {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 40px;
+  padding: 0 8px; border-radius: 8px; color: var(--ink); text-decoration: none; font-size: 14px;
+}
+.side nav a span { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.side nav a:hover { background: var(--bg); }
+.side nav a[aria-current="true"] { background: var(--bg); font-weight: 650; }
+.side .actions { display: flex; flex-direction: column; gap: 8px; padding: 0 8px; margin-top: auto; }
+.side .hint { padding: 0 8px; font-size: 12px; color: var(--muted); }
+
+.topbar { display: none; }
+.page { margin-left: var(--side); padding: 32px max(24px, env(safe-area-inset-right, 0px)) 80px 32px; }
+.wrap { max-width: 980px; display: flex; flex-direction: column; gap: 40px; }
+.intro { display: flex; flex-direction: column; gap: 8px; }
+.intro p { color: var(--muted); max-width: 64ch; }
+
+section { display: flex; flex-direction: column; gap: 16px; scroll-margin-top: 24px; }
+.sec-head { display: flex; flex-direction: column; gap: 4px; }
+.sec-head p { color: var(--muted); max-width: 64ch; }
+.ref {
+  display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 20px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px;
+}
+.ref.wide { grid-template-columns: minmax(0, 1fr); }
+.shot {
+  display: block; padding: 0; border: 0; background: var(--shot); border-radius: 8px; overflow: hidden;
+  align-self: start; cursor: zoom-in; width: 100%; position: relative;
+}
+.ref.wide .shot { max-width: 640px; }
+.shot img { display: block; width: 100%; height: auto; }
+.form { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.meta { display: flex; flex-direction: column; gap: 6px; }
+.title-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.tag { font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; }
+.pair { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 4px 12px; margin: 0; }
+.pair dt { font-size: 13px; color: var(--muted); }
+.pair dd { margin: 0; }
+.meta a { color: var(--ink); font-size: 13px; align-self: start; }
+fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+legend { padding: 0; font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  font: inherit; font-size: 14px; min-height: 44px; padding: 0 14px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--line); background: transparent; color: var(--ink);
+}
+.chip[aria-pressed="true"] { background: var(--marquee); border-color: var(--marquee); color: var(--on-marquee); font-weight: 600; }
+.chip.no[aria-pressed="true"] { background: var(--no); border-color: var(--no); color: var(--on-no); }
+label.note { font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
+textarea {
+  font: inherit; font-size: 16px; color: var(--ink); background: var(--bg); border: 1px solid var(--line);
+  border-radius: 8px; padding: 10px 12px; min-height: 76px; resize: vertical; width: 100%;
+}
+button.plain {
+  font: inherit; font-size: 14px; min-height: 44px; padding: 0 14px; border-radius: 8px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+}
+.saved { font-size: 12px; color: var(--muted); min-height: 18px; }
+#copyout { min-height: 120px; font-family: ui-monospace, Menlo, monospace; font-size: 12px; }
+
+/* Colour section */
+table.roles { border-collapse: collapse; width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.roles th, .roles td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; font-size: 14px; }
+.roles th { font-size: 13px; color: var(--muted); font-weight: 500; }
+.roles tr:last-child td { border-bottom: 0; }
+.roles code, .sw code, .checks code { font-family: ui-monospace, Menlo, monospace; font-size: 12px; white-space: nowrap; }
+.scroll { overflow-x: auto; }
+.pal { display: flex; flex-direction: column; gap: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+.modes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.mode { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.mode h4 { margin: 0; font-size: 13px; color: var(--muted); font-weight: 500; }
+.sample { background: var(--p-bg); color: var(--p-text); border-radius: 10px; padding: 14px; border: 1px solid var(--line); }
+.sample .card { background: var(--p-surface); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 6px; }
+.sample .time { font-size: 30px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.sample .soon { font-size: 14px; font-weight: 600; color: var(--p-accent-text); background: var(--p-accent-bg); border-radius: 999px; padding: 2px 8px; }
+.sample .film { font-size: 17px; font-weight: 650; }
+.sample .where, .sample .fresh { color: var(--p-muted); font-size: 13px; }
+.sample .stale { color: var(--p-stale); font-size: 13px; }
+.sample .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
+.sample .book { background: var(--p-book); color: var(--p-book-text); border-radius: 8px; padding: 9px 16px; font-weight: 650; font-size: 14px; }
+.sample .focus { border: 2px solid var(--p-focus); border-radius: 8px; padding: 6px 10px; font-size: 13px; }
+.sws { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; }
+.sw { display: flex; flex-direction: column; gap: 2px; font-size: 12px; }
+.sw i { display: block; height: 36px; border-radius: 6px; border: 1px solid var(--line); }
+.sw span { color: var(--muted); }
+.checks { margin: 0; padding: 0; list-style: none; font-size: 12px; color: var(--muted); display: flex; flex-direction: column; gap: 2px; }
+.checks b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* Marked regions */
+.marks { position: absolute; inset: 0; pointer-events: none; }
+.zmarks { position: absolute; cursor: crosshair; touch-action: none; }
+.mark { position: absolute; border: 2px solid var(--mark); background: var(--mark-fill); border-radius: 4px; pointer-events: none; }
+.mark b { position: absolute; top: -2px; left: -2px; background: var(--mark); color: var(--on-mark); font-size: 11px; line-height: 1; padding: 3px 5px; border-radius: 4px 0 4px 0; }
+
+/* Zoom: the screenshot on a dark stage, and beside it a panel with the whole answer form,
+   so nothing has to be closed to answer. On a phone the panel sits under the screenshot. */
+dialog#zoom {
+  border: 0; padding: 0; margin: 0; width: 100vw; height: 100dvh; max-width: none; max-height: none;
+  background: var(--stage); color: var(--ink);
+}
+dialog#zoom::backdrop { background: transparent; }
+.z { height: 100%; display: grid; grid-template-columns: minmax(0, 1fr) minmax(360px, 440px); }
+.z-stage { min-height: 0; padding: 24px; display: flex; }
+.z-stage figure { margin: 0; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; position: relative; }
+.z-stage img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; }
+.z-panel {
+  background: var(--surface); border-left: 1px solid var(--line); overflow-y: auto; overscroll-behavior: contain;
+  padding: 0 20px 24px; display: flex; flex-direction: column; gap: 18px; min-height: 0;
+}
+.z-nav {
+  position: sticky; top: 0; z-index: 1; background: var(--surface); border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; gap: 8px; padding: 12px 0;
+}
+.z-nav .count { flex: 1; text-align: center; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.zbtn {
+  font: inherit; font-size: 14px; min-height: 44px; min-width: 44px; padding: 0 12px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--line); background: transparent; color: var(--ink);
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+}
+.zbtn:hover { background: var(--bg); }
+kbd { font-family: ui-monospace, Menlo, monospace; font-size: 11px; border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; color: var(--muted); }
+.z-head { display: flex; flex-direction: column; gap: 4px; }
+.z-sec { font-size: 13px; color: var(--muted); }
+.z-pair { grid-template-columns: minmax(0, 1fr); }
+.z-pair dd + dt { margin-top: 8px; }
+#znote { min-height: 120px; }
+.z-marks { display: flex; flex-direction: column; gap: 8px; }
+.z-help { font-size: 13px; color: var(--muted); }
+.z-regions { display: flex; flex-wrap: wrap; gap: 6px; }
+.z-regions:empty { display: none; }
+.z-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: auto; }
+.z-foot .saved { min-height: 0; }
+.z-foot a { color: var(--ink); font-size: 13px; white-space: nowrap; }
+
+@media (max-width: 900px) {
+  .side { transform: translateX(-100%); visibility: hidden; width: min(86vw, 320px); }
+  body.nav-open .side { transform: none; visibility: visible; box-shadow: 0 0 0 100vmax var(--scrim); }
+  .topbar {
+    display: flex; position: sticky; top: 0; z-index: 10; background: var(--bg); border-bottom: 1px solid var(--line);
+    align-items: center; justify-content: space-between; gap: 12px;
+    padding: 8px max(16px, env(safe-area-inset-right, 0px)) 8px max(16px, env(safe-area-inset-left, 0px));
+    font-size: 13px; color: var(--muted);
+  }
+  .topbar strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .page { margin-left: 0; padding: 20px max(16px, env(safe-area-inset-right, 0px)) 64px max(16px, env(safe-area-inset-left, 0px)); }
+  section { scroll-margin-top: 76px; }
+  .ref { grid-template-columns: minmax(0, 1fr); }
+  .ref .shot { max-width: 260px; }
+  .ref.wide .shot { max-width: 100%; }
+  .modes { grid-template-columns: minmax(0, 1fr); }
+  .pair { grid-template-columns: minmax(0, 1fr); }
+  .z { display: block; overflow-y: auto; }
+  .z-stage { height: 58dvh; padding: 12px; }
+  .z-panel { border-left: 0; overflow: visible; padding: 0 16px 32px; }
+  .zbtn kbd { display: none; }
+}
+.hexes { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+.hexes span { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; }
+.hexes i { width: 28px; height: 28px; border-radius: 8px; border: 1px solid var(--line); }
+.hexes small { color: var(--muted); font-size: 12px; }
+</style>
+</head>
+<body>
+
+<aside class="side" id="side" aria-label="Sections">
+  <div class="brand">Sinima references · round 7: the share card</div>
+  <div class="progress">
+    <span><strong id="count">0</strong> of <strong id="total">0</strong> answered</span>
+    <div class="meter" aria-hidden="true"><i id="meter"></i></div>
+    <span id="savestate" role="status">Answers are saved in this browser</span>
+  </div>
+  <nav id="nav"></nav>
+  <p class="hint">Click a screenshot to open it large, with the full answer form beside it. Drag on the screenshot to mark parts. Esc closes; the arrow keys move between references.</p>
+  <div class="actions">
+    <button class="plain" id="dlbtn" type="button">Download answers</button>
+    <button class="plain" id="copybtn" type="button">Copy all answers</button>
+  </div>
+</aside>
+
+<div class="topbar">
+  <button class="plain" id="navbtn" type="button" aria-controls="side" aria-expanded="false">Sections</button>
+  <span><strong id="count2">0</strong> of <strong id="total2">0</strong> answered</span>
+</div>
+
+<div class="page">
+  <div class="wrap">
+    <header class="intro">
+      <h1>Round 7: the share card</h1>
+      <p>When someone shares a Sinima link in WhatsApp or on X, the chat shows a picture under it: the share card (also called a link preview). Today our links show no picture. This board is for designing it: one card per film (and per showing), plus one for the site itself for the launch post. 57 screens in four groups: your share picks so far, share cards other apps design, how links look once sent in a chat, and tickets and passes.</p>
+      <p>Most share cards here are tall, for stories. Ours will be wide (WhatsApp and X show 1.91 : 1, about 1200 × 630), so judge the style and what's on the card, not the shape. All are iPhone apps from Mobbin.</p>
+      <p>For each one, tap what you like and say exactly what in the box. Click a screenshot to zoom, drag over the parts you like, and type there too. Tap “Not for us” for anything to avoid; that helps as much as a like. Skip the ones you have no view on. Answers save in this browser; press Copy all answers when you're done and paste them to me.</p>
+    </header>
+    <textarea id="copyout" hidden readonly aria-label="All answers as text"></textarea>
+    <main id="main" class="wrap"></main>
+  </div>
+</div>
+
+<dialog id="zoom" aria-labelledby="ztitle">
+  <div class="z">
+    <div class="z-stage">
+      <figure id="zfig"><img id="zimg" alt="" draggable="false"><div id="zmarks" class="zmarks"></div></figure>
+    </div>
+    <div class="z-panel">
+      <div class="z-nav">
+        <button class="zbtn" id="zprev" type="button" aria-label="Previous reference">←</button>
+        <span class="count" id="zcount"></span>
+        <button class="zbtn" id="znext" type="button" aria-label="Next reference">→</button>
+        <button class="zbtn" id="zclose" type="button">Close <kbd>Esc</kbd></button>
+      </div>
+      <div class="z-head">
+        <span class="z-sec" id="zsec"></span>
+        <div class="title-row"><h3 id="ztitle"></h3><span class="tag" id="ztag"></span></div>
+      </div>
+      <dl class="pair z-pair"><dt>What it shows</dt><dd id="zwhat"></dd><dt>What we'd take</dt><dd id="zhow"></dd></dl>
+      <div id="zhex"></div>
+      <fieldset><legend>What do you like about it?</legend><div class="chips" id="zchips"></div></fieldset>
+      <label class="note" for="znote">Exactly what you like (or don't)
+        <textarea id="znote" rows="5" placeholder="e.g. 1: the big condensed titles. 2: the coloured strip under each poster"></textarea></label>
+      <div class="z-marks">
+        <p class="z-help">Drag on the screenshot to mark a part you mean. Each mark gets a number you can use in your note.</p>
+        <div class="z-regions" id="zregions"></div>
+      </div>
+      <div class="z-foot"><span class="saved" id="zsaved" role="status"></span><a id="zlink" href="#" target="_blank" rel="noopener">Open on Mobbin</a></div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+const LIKES = ["Visual style", "Colour", "Type", "Hierarchy", "Layout", "Density", "Wording", "Interaction"];
+const PAL_LIKES = ["Overall feel", "Background", "Accent", "Book button", "Light mode", "Dark mode"];
+const NO = "Not for us";
+// [id, product, library id, "p" phone | "d" desktop, what it shows, how we'd use it]
+const SECTIONS = [
+ {
+  "id": "ours",
+  "title": "Where we are: your share picks",
+  "note": "What you picked on the first board, built as the share sheet. The new card is what a friend sees after you press Share: it should read as this sheet's sibling.",
+  "refs": [
+   [
+    "r7-fixtured-share",
+    "Fixtured",
+    "a2a5e7b0-888f-4669-8449-e1359dbb41d5",
+    "p",
+    "Your pick (“I really like this design and the layout”): a heavy headline, one line of text, a tilted card with the day, time and both names, then “Share Event” and “Copy Link”.",
+    "Already built as our share sheet. The link card could reuse its tilted ticket, so the sheet and the chat show the same object.",
+    {}
+   ],
+   [
+    "r7-partiful-sending",
+    "Partiful",
+    "e24af6da-4d79-4a79-9aec-dd9abc96adef",
+    "p",
+    "“Sending to someone? It looks way better when you share it”: a swipeable row of designed cards, each with the title and partiful.com under it, then Copy Link, Messages, More.",
+    "Show the card itself in our share sheet before sending, so people see what their friend will get.",
+    {}
+   ]
+  ]
+ },
+ {
+  "id": "cards",
+  "title": "Share cards apps design",
+  "note": "Images an app makes for one thing (a trip, a song, an event) so it looks good when shared. Most are tall, for stories; ours is wide (WhatsApp and X show 1.91 : 1), so judge the style, not the shape.",
+  "refs": [
+   [
+    "r7-luma-event",
+    "Luma",
+    "20efb33d-995e-418a-a15a-df9e3528c694",
+    "p",
+    "The event's flyer on a soft glass card, the title large under it, then “Jul 18 · Los Angeles” in grey, and the short link at the top.",
+    "Poster on top, film title large, then day and city in one quiet line: the plainest version of our card.",
+    {}
+   ],
+   [
+    "r7-insight-live",
+    "Insight Timer",
+    "eea2737e-b756-44fa-83c9-0c2df8643adf",
+    "p",
+    "A full-bleed photo with a small white date block (JUL / 20), “Live Event · 10:22am”, and a big serif title at the bottom.",
+    "A calendar-leaf date block on the poster (“FRI 18 DEC”) for a film's opening or a showing.",
+    {}
+   ],
+   [
+    "r7-letterboxd-film",
+    "Letterboxd",
+    "f41976a6-dc7b-47f1-b2c6-5e28640d8f77",
+    "p",
+    "A film still on top, a numbered badge, the film title in a heavy serif, a small caps label, director and rating.",
+    "A film card that reads like an editorial page: big title, one small label under it (“34 SHOWINGS IN LAGOS”).",
+    {}
+   ],
+   [
+    "r7-pangea-trip",
+    "Pangea",
+    "96592121-1a7c-4a34-afca-6ea9b403167c",
+    "p",
+    "A city photo with “New Trip!” huge, the place and dates under it, a small “Confirmed” tag, a pin chip, and a handwritten “DM me your Recs!” with an arrow.",
+    "A handwritten note with an arrow, like our “tonight!” scribble, on the card (“who's coming?”).",
+    {}
+   ],
+   [
+    "r7-places-koi",
+    "Places",
+    "84581639-f860-45ab-a6f0-4f6633adf8eb",
+    "p",
+    "A food photo with a thin white frame inset, the place name in a light serif and a small monospaced line under it.",
+    "A thin inset frame over the poster: quiet and classy, lets the poster lead.",
+    {}
+   ],
+   [
+    "r7-spotify-playlist",
+    "Spotify",
+    "f19fe4c3-cd4f-47d1-a112-7047c47e3d23",
+    "p",
+    "A small playlist card stuck on lined notebook paper with doodles; colour swatches under it to change the background.",
+    "A sticker-on-paper look that matches our Keepsy stickers: the poster as a sticker on a plain sheet.",
+    {}
+   ],
+   [
+    "r7-calm-story",
+    "Calm",
+    "e12983c2-1c89-437f-83ed-a2b59ae40e98",
+    "p",
+    "A wide image with the title set inside it, then the title and “Sleep Story · Matthew McConaughey” below, and a white “Share for Free” button.",
+    "Title, then one line of who and what: the minimum the chat card needs.",
+    {}
+   ],
+   [
+    "r7-rodeo-collection",
+    "Rodeo",
+    "7e9dc638-8fa0-4756-a54f-678a96e55bf3",
+    "p",
+    "A white rounded card with a bold title and emoji, a 2×2 photo grid and “by Sam”; “Copied” and “Share” buttons below.",
+    "For a sinima's link: a grid of the posters showing there today.",
+    {}
+   ],
+   [
+    "r7-polarsteps-trip",
+    "Polarsteps",
+    "a5791d89-539b-4ca0-a09e-1d300db4382e",
+    "p",
+    "A map card with “Holiday” top left, a flip-digit “02 nights to go” top right, and small stats along the bottom; “Share link” and “Copy link”.",
+    "The flip-digit counter (“3 DAYS TO GO”) for a Coming soon film's card.",
+    {}
+   ],
+   [
+    "r7-posh-event",
+    "Posh",
+    "3a33cfed-eb27-4c91-9a76-96c7613cf589",
+    "p",
+    "A loud pink flyer as a small tall card in the middle, the event title bold under it, the host in grey, three round buttons.",
+    "Let the poster carry all the colour; everything else stays plain.",
+    {}
+   ],
+   [
+    "r7-strava-club",
+    "Strava",
+    "98fb6ad7-e801-4fe7-a654-c75902d3ecde",
+    "p",
+    "A dark card with the club logo, three short lines (“Make some friends. Get some kudos. Join the Club.”) and “Join us on STRAVA”.",
+    "A short call to action on the card itself (“See every time in Lagos”) with our name under it.",
+    {}
+   ],
+   [
+    "r7-linktree-collection",
+    "Linktree",
+    "1fea774f-f8ca-46da-964c-53f1cb8b22fa",
+    "p",
+    "A black rounded card with one product photo centred and the title in heavy white type; share targets X, Facebook, WhatsApp, LinkedIn below.",
+    "A dark card with one centred poster: the simplest layout that still works small.",
+    {}
+   ],
+   [
+    "r7-futurepro-workout",
+    "Future Pro",
+    "cd43ee2a-c5a6-4c1f-93c1-2d6f29224ef5",
+    "p",
+    "A soft gradient card with huge light numbers (“50”, “18:51”), a sideways date line on the right edge and a small title at the bottom.",
+    "The start time as the hero (“7:30 PM”), huge and light, with the film smaller.",
+    {}
+   ],
+   [
+    "r7-pliability-stats",
+    "pliability",
+    "7bd2568c-0959-4a9f-8375-48f6cecf0f5d",
+    "p",
+    "A portrait photo card with the brand and date at the top and a week strip (M T W T F S S) with one day lit.",
+    "A day strip along the card's bottom with today lit, echoing our five-day row.",
+    {}
+   ],
+   [
+    "r7-hypelist-list",
+    "Hypelist",
+    "6a2f340e-52c8-408b-9de8-ac8fdfebcc5d",
+    "p",
+    "A maroon story card with a small list inside it and the logo under it; WhatsApp and Messenger in the share row.",
+    "Several variants to swipe through before sharing (poster, times, ticket).",
+    {}
+   ],
+   [
+    "r7-uxcel-streak",
+    "Uxcel",
+    "a849139b-8acf-4bd6-9046-3d9ee8381db5",
+    "p",
+    "A lilac card with a headline sentence (“I've been learning design for 2 days in a row”) and four white stat tiles with icons.",
+    "A sentence as the headline (“Doomsday is showing at 22 sinimas in Lagos”) over small fact tiles.",
+    {}
+   ],
+   [
+    "r7-tonal-goal",
+    "Tonal",
+    "a410bbd8-f821-4df1-8b54-06c1f4451136",
+    "p",
+    "A black square with a glowing ring in the middle, a title and subtitle, and a small caps name and date at the bottom.",
+    "Here as the dark, minimal end: one mark, one line, very little else.",
+    {}
+   ],
+   [
+    "r7-netflix-moment",
+    "Netflix",
+    "13dd5991-7319-4f42-be03-68bbb8484bc9",
+    "p",
+    "A wide still with the show's title and “Starts at 1:00” on a dark strip at its bottom edge.",
+    "The wide shape we need, with a dark strip carrying the title and the time.",
+    {}
+   ],
+   [
+    "r7-plex-share",
+    "Plex",
+    "6549a7e8-a08b-4dc8-9e7f-cfd5376ed946",
+    "p",
+    "A show's poster behind a dark sheet: “Share with Friends”, the title, one line of text, Copy link and Send to.",
+    "Here for the sheet, not the card: the film's poster stays visible behind the share step.",
+    {}
+   ],
+   [
+    "r7-bumble-date",
+    "Bumble",
+    "a27dbcaf-d1a2-4b23-bd0f-9c7e770131d1",
+    "p",
+    "“Your date. Here are the details you're about to share”: a photo card with a calendar line and a pin line, then Share.",
+    "Two icon lines on the card: a calendar for day and time, a pin for the sinima.",
+    {}
+   ],
+   [
+    "r7-givingli-event",
+    "Givingli",
+    "652c2821-c013-40d5-bc4a-93be2cd7c28c",
+    "p",
+    "A wide white card: a small illustrated invite on the left, the title in a serif on the right with a date line and a location line.",
+    "A wide card that splits poster left, words right: fits WhatsApp's 1.91 : 1 well.",
+    {}
+   ],
+   [
+    "r7-lifereset-pass",
+    "Life Reset",
+    "3dc9e319-4531-4e7a-864a-f8290f7f728d",
+    "p",
+    "A warm cream sheet with a bright orange “Tap to copy link” bar, small caps labels and dots for passes left.",
+    "Here for its loud copy-link bar, as a contrast to our quiet one.",
+    {}
+   ]
+  ]
+ },
+ {
+  "id": "chat",
+  "title": "How a link looks once it's sent",
+  "note": "Real chats with a link preview. This is where our card lives: small, inside a bubble, under the link. What survives at this size?",
+  "refs": [
+   [
+    "r7-bluesky-dm",
+    "Bluesky Social",
+    "2de32498-340a-4ec3-9342-a1bd2c522009",
+    "p",
+    "A shared post in a DM: a wide photo, then a bold two-line headline, a short line and the site's address.",
+    "How X-style apps crop our card: wide image on top, our page's title and description under it in the app's own type.",
+    {}
+   ],
+   [
+    "r7-bff-invite",
+    "BFF",
+    "d0c37dd6-be8a-4302-9fca-228710ea0bc8",
+    "p",
+    "A link, then a large photo preview with bumble.com, a bold title and one line of text under it, in a grey bubble.",
+    "Close to WhatsApp's large preview: the image does the work; the title must be short.",
+    {}
+   ],
+   [
+    "r7-bff-group",
+    "BFF",
+    "0db58121-b21d-4ca2-9899-88a2c2739a33",
+    "p",
+    "The same preview further into a chat, between ordinary messages.",
+    "How loud the card should be among real messages: noticeable, not shouting.",
+    {}
+   ],
+   [
+    "r7-discord-portfolio",
+    "Discord",
+    "83157db7-2451-46a4-9ffd-5bfad2137a6d",
+    "p",
+    "Two embeds: one with a wide designed image (big tracked type and a portrait), one with a small square thumbnail on the right.",
+    "Both preview sizes side by side: a good card has to work wide and as a small square.",
+    {}
+   ],
+   [
+    "r7-discord-coolors",
+    "Discord",
+    "a777eaac-8f18-4075-bc66-1e8a2934d59e",
+    "p",
+    "A link embed whose image is a designed card: the product name and tagline on the left, a screen mock-up on the right.",
+    "A card that names itself in big type, so it reads even without the title under it.",
+    {}
+   ],
+   [
+    "r7-corner-place",
+    "corner",
+    "63b6a49d-bf8b-4773-837c-f44d4bb1d351",
+    "p",
+    "A sent bubble whose preview is a handwritten-style note (“LA CABRA BAKERY — ALEX”) beside a photo, over a blue title bar.",
+    "Handwriting in the image, like our scribbles: personal, and recognisable as ours.",
+    {}
+   ],
+   [
+    "r7-fable-club",
+    "Fable",
+    "e42e1bf5-78ec-4eb4-a626-d7b1ea686747",
+    "p",
+    "A long link, a blue title and one line, then a wide painted image under it.",
+    "The ugly part we can't control: the long link text above our card. Keep our URLs short.",
+    {}
+   ],
+   [
+    "r7-manus-site",
+    "Manus",
+    "c64c719b-b356-44c9-827b-d7f826cb0201",
+    "p",
+    "A website card with the site's favicon and name on top, a screenshot, then Dashboard and Visit buttons.",
+    "Our icon and name shown by the app next to the card: the ticket icon has to read at that size.",
+    {}
+   ],
+   [
+    "r7-base-gecko",
+    "Base",
+    "7882c6cf-b251-45a4-bf82-4ee70a6b8011",
+    "p",
+    "A designed promo image (“Track Smarter, Trade Better”, mascot, store badges) with “View on GeckoTerminal” under it.",
+    "Here as what to avoid: an advert-like card with badges reads as spam in a chat.",
+    {}
+   ],
+   [
+    "r7-substack-cards",
+    "Substack",
+    "cd548805-e0ca-4812-9c5e-4058fc135fa2",
+    "p",
+    "Several shared items in one thread: a bold black-and-white card, an article card with a label, and a data card with rows and a button.",
+    "A data card (rows of dates and numbers): a film card could list its next three times.",
+    {}
+   ],
+   [
+    "r7-linkedin-post",
+    "LinkedIn",
+    "73702271-f86e-4dcc-a8a0-ec8549130aeb",
+    "p",
+    "A shared post card inside a message: author row, a two-line title, then a busy diagram image.",
+    "Here for contrast: a crowded image is unreadable at chat size.",
+    {}
+   ],
+   [
+    "r7-linkedin-event",
+    "LinkedIn",
+    "5c913a9c-6a40-4926-a759-343f7b02f6e9",
+    "p",
+    "An event card in a post draft: a wide photo, then “Fri, Jul 10, 8:00 PM – 9:00 PM” in orange, the title, and “Online”.",
+    "The time line in colour above the title: our showing card could say “TONIGHT · 7:30 PM” the same way.",
+    {}
+   ],
+   [
+    "r7-slack-youtube",
+    "Slack",
+    "2a1023ae-288b-4ae5-a433-1e0a145fe00d",
+    "p",
+    "A YouTube link unfurled as a source line, a blue title and a small thumbnail on the right.",
+    "The small-thumbnail layout some apps use: the poster alone must still say what it is.",
+    {}
+   ],
+   [
+    "r7-spotify-inchat",
+    "Spotify",
+    "9e53d509-71dd-40a9-9cad-49a859cc7f00",
+    "p",
+    "A song card about to be sent: album art on a blurred colour of itself, the title, artist and the Spotify mark.",
+    "The poster on a blur of its own colours, so every film's card has its own tint.",
+    {}
+   ],
+   [
+    "r7-handshake-job",
+    "Handshake",
+    "e07fa77d-c477-4253-ab29-72c56f5ee93d",
+    "p",
+    "A job card in a chat: logo, company, title, pay, and place and time in a grey line.",
+    "No image at all, only well-ordered lines: the fallback when a film has no poster.",
+    {}
+   ],
+   [
+    "r7-strava-chat",
+    "Strava",
+    "559106be-3663-4df0-beb8-d01de7cd7aac",
+    "p",
+    "Two shared cards in a chat: a map on top with a dark caption strip, and a badge with three lines of text.",
+    "A dark caption strip under the image, as a chat card.",
+    {}
+   ]
+  ]
+ },
+ {
+  "id": "ticket",
+  "title": "Tickets and passes",
+  "note": "Our sticker is a ticket, and the share sheet already shows a ticket. These show how others lay out a ticket: what is big, what is small, the cut-outs.",
+  "refs": [
+   [
+    "r7-dice-ticket",
+    "DICE",
+    "72d4aa91-3988-470e-870d-08b63233850c",
+    "p",
+    "The event flyer as a ticket with half-circle cut-outs on both sides, the title, venue and date in white over the image.",
+    "Cut-outs on the card's edges so it reads as a ticket even small.",
+    {}
+   ],
+   [
+    "r7-mubi-go",
+    "MUBI GO",
+    "b403976f-9f70-45f8-975b-8406daf8c0d8",
+    "p",
+    "A yellow card on dark brown: small caps labels FILM, THEATER, TIME, DATE with the answers in large caps under each.",
+    "Label-and-answer pairs (FILM / SINIMA / TIME / DAY): a cinema ticket people already know.",
+    {}
+   ],
+   [
+    "r7-eventbrite-ticket",
+    "Eventbrite",
+    "9aa88ec6-82a1-46e0-ae92-df1a9c9f7306",
+    "p",
+    "A ticket with a notch at the top, the date and time top left, a small thumbnail and the event title, then a big QR code.",
+    "A notch at the top and date and time first, before the title.",
+    {}
+   ],
+   [
+    "r7-posh-order",
+    "Posh",
+    "70c99608-be00-4a4a-8d05-48bc9e9697bb",
+    "p",
+    "A white ticket on black: title and date centred, a QR code, an order number, then rows (Add to Calendar, Get Directions).",
+    "Centred title and time on a white slip: the plain ticket.",
+    {}
+   ],
+   [
+    "r7-livenation-ticket",
+    "Live Nation",
+    "81c6b20a-263a-4812-9e34-f70034d1d137",
+    "p",
+    "A ticket with a black header (SEC GA, General Admission), a dark photo band with the event title and time, then a white stub.",
+    "Three bands: header, poster band with the title, white stub with the time.",
+    {}
+   ],
+   [
+    "r7-livenation-full",
+    "Live Nation",
+    "09fc694b-8ccc-4ba4-8a42-8000ebc67d3e",
+    "p",
+    "The ticket full screen: a dark photo with the event name huge in red behind a barcode.",
+    "The film's title huge behind everything, cropped by the edges.",
+    {}
+   ],
+   [
+    "r7-focusflight-pass",
+    "FocusFlight",
+    "f06fb631-010c-4715-acb2-6f1305b1607c",
+    "p",
+    "A boarding pass: SFO → SMX huge, seat, distance, boarding and date in a monospaced face, a tilted barcode below.",
+    "The tilted second piece (like Fixtured's tilt) and boarding-pass labels in a monospaced face.",
+    {}
+   ],
+   [
+    "r7-meetup-ticket",
+    "Meetup",
+    "427c632f-e3ad-471e-8652-1d95b622e4f3",
+    "p",
+    "A white ticket with a curved notch at the top, a QR code, a dashed tear line, the title and two rows of details.",
+    "The dashed tear line between poster and details.",
+    {}
+   ],
+   [
+    "r7-luma-ticket",
+    "Luma",
+    "fd60dbd4-6f2f-43e8-a2a8-dbf6954b3f59",
+    "p",
+    "A dark sheet with the event name at the top, a large rounded QR card and “1× Standard”.",
+    "Here for its calm dark sheet and one rounded white card.",
+    {}
+   ],
+   [
+    "r7-nrc-ticket",
+    "Nike Run Club",
+    "7a42107d-c20b-415f-9df7-f593c958d016",
+    "p",
+    "A dark screen with the event name in light type, a QR code, and a member row under a hairline.",
+    "A hairline between the event and who it's for.",
+    {}
+   ],
+   [
+    "r7-nike-ticket",
+    "Nike",
+    "4f8370c4-f360-484a-a7c7-8306894c5a1b",
+    "p",
+    "A grey rounded card on black: the event name top left, a QR code, a member row.",
+    "The quietest ticket: one card, one title, nothing decorative.",
+    {}
+   ],
+   [
+    "r7-applewallet-genius",
+    "Apple Wallet",
+    "e1061c73-0be8-42ba-aaed-3bb1c3321a4e",
+    "p",
+    "A pass with a notch, the logo and “Genius Bar” top left, time and “Thu, Jul 28” top right, a photo band, then RESERVATION and LOCATION labels.",
+    "Wallet's layout: who top left, when top right, a picture band, then labelled lines.",
+    {}
+   ],
+   [
+    "r7-stubhub-ticket",
+    "StubHub",
+    "1488a72e-daa5-4ae8-9013-36fdd4d944a7",
+    "p",
+    "A white top with a barcode and small circles on the edges, then an orange lower half with SECTION, ROW, SEAT in big numbers.",
+    "A two-colour ticket: white top, colour bottom with the time in big numbers.",
+    {}
+   ],
+   [
+    "r7-ladder-pass",
+    "Ladder",
+    "ff18105c-4ea7-4c5c-9017-2fa99f72ca6f",
+    "p",
+    "A shiny olive pass with dots and swirls, the logo at the top, a QR code and “GUEST PASS” in bold yellow.",
+    "Here as the loud, decorated end of the scale.",
+    {}
+   ],
+   [
+    "r7-clear-pass",
+    "CLEAR",
+    "53bd0d89-b12c-42c2-bd4d-ceec73c5f64e",
+    "p",
+    "A navy pass with a lime pill label at the top, an info box, a QR code and an Add to Apple Wallet badge.",
+    "A pill label at the top of the card (“NOW SHOWING”, “COMING 18 DEC”).",
+    {}
+   ],
+   [
+    "r7-classpass-upcoming",
+    "ClassPass",
+    "c02eb578-2251-4c71-b067-6979ae743fb1",
+    "p",
+    "Booked classes as cards: a map on top, then the title, “Today, 3 Sep · 12.00 PM – 12.30 PM”, the place and address, and action chips.",
+    "Day and time written out in one line under the title, the way our rows already say it.",
+    {}
+   ],
+   [
+    "r7-imdb-showtimes",
+    "IMDb",
+    "7c37a114-9db0-4823-b9cc-25739bde0ab6",
+    "p",
+    "A film's showtimes: poster and title at the top, a row of day pills (Today, Thu, Fri, Sat), then cinemas with their times.",
+    "Also useful for five days: a day row of dated pills under the film.",
+    {}
+   ]
+  ]
+ }
+];
+const EXTRA = [];
+
+// The eight colour roles from the UI brief, and three candidate palettes with exact values.
+const ROLES = [
+  ["bg", "Background", "The page behind everything."],
+  ["surface", "Surface", "Rows, sheets and cards that sit on the background."],
+  ["text", "Text", "Start times, film titles and body copy. Times need the strongest contrast."],
+  ["muted", "Muted text", "Cinema name, format and the freshness line."],
+  ["accent", "Accent", "The brand colour: “Starts in 45 min”, the selected area, the Stay or Go chip."],
+  ["book", "Book", "The Book button, the one action colour."],
+  ["stale", "Stale", "Old data. Always paired with words, never colour alone."],
+  ["focus", "Focus ring", "The 2 px outline around whatever the keyboard is on."]
+];
+const PALETTES = []
+
+const state = {}, els = {}, timers = {};
+const ORDER = [];   // zoomable references, in page order
+const LS = "lsrefs7:";
+const $ = (t, attrs, ...kids) => { const e = document.createElement(t); for (const k in attrs || {}) { if (k === "text") e.textContent = attrs[k]; else e.setAttribute(k, attrs[k]); } kids.forEach(k => k != null && e.append(k)); return e; };
+const mobbin = mid => "https://mobbin.com/screens/" + mid;
+
+function lum(hex) { const c = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255).map(v => v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4)); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; }
+function ratio(a, b) { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); }
+
+function answered(id) { const s = state[id]; return !!s && (s.likes.length > 0 || s.note.trim() !== "" || s.regions.length > 0); }
+function recount() {
+  let n = 0, total = 0;
+  SECTION_IDS.forEach(([sid, ids]) => {
+    const k = ids.filter(answered).length; n += k; total += ids.length;
+    const unit = sid === "colour" ? " options" : " refs";
+    document.getElementById("navc-" + sid).textContent = k ? k + " of " + ids.length + " answered" : ids.length + unit;
+  });
+  ["count", "count2"].forEach(i => document.getElementById(i).textContent = n);
+  ["total", "total2"].forEach(i => document.getElementById(i).textContent = total);
+  document.getElementById("meter").style.width = (total ? 100 * n / total : 0) + "%";
+}
+function toggleLike(id, name) {
+  const s = state[id];
+  if (s.likes.includes(name)) s.likes = s.likes.filter(x => x !== name);
+  else s.likes = name === NO ? [NO] : s.likes.filter(x => x !== NO).concat([name]);
+  paint(id); recount(); save(id);
+}
+function paint(id) {
+  if (zoom.open && ORDER[zi].id === id) zchips.forEach((btn, name) => btn.setAttribute("aria-pressed", state[id].likes.includes(name) ? "true" : "false"));
+  const s = state[id], e = els[id];
+  e.chips.forEach((btn, name) => btn.setAttribute("aria-pressed", s.likes.includes(name) ? "true" : "false"));
+  if (e.note.value !== s.note) e.note.value = s.note;
+}
+// Regions are stored as fractions of the image (0 to 1), so they fit any size the image is drawn at.
+function markEl(r, n) {
+  const m = $("span", { class: "mark" }, $("b", { text: String(n) }));
+  m.style.left = r.x * 100 + "%"; m.style.top = r.y * 100 + "%"; m.style.width = r.w * 100 + "%"; m.style.height = r.h * 100 + "%";
+  return m;
+}
+function drawMarks(id) {
+  const rs = state[id].regions, e = els[id];
+  if (e.cardMarks) e.cardMarks.replaceChildren(...rs.map((r, i) => markEl(r, i + 1)));
+  if (!zoom.open || ORDER[zi].id !== id) return;
+  zmarks.replaceChildren(...rs.map((r, i) => markEl(r, i + 1)));
+  document.getElementById("zregions").replaceChildren(...rs.map((r, i) => {
+    const b = $("button", { type: "button", class: "zbtn", "aria-label": "Remove region " + (i + 1), text: "Region " + (i + 1) + " ✕" });
+    b.addEventListener("click", () => { state[id].regions.splice(i, 1); save(id); recount(); drawMarks(id); });
+    return b;
+  }));
+}
+function regionText(id) {
+  const rs = state[id].regions;
+  if (!rs.length) return "";
+  const pct = n => Math.round(n * 100) + "%";
+  return " | regions: " + rs.map((r, i) => (i + 1) + " [left " + pct(r.x) + ", top " + pct(r.y) + ", width " + pct(r.w) + ", height " + pct(r.h) + "]").join("; ");
+}
+function save(id) {
+  if (zoom.open && ORDER[zi].id === id) zsaved.textContent = "Saved in this browser";
+  try { localStorage.setItem(LS + id, JSON.stringify(state[id])); els[id].saved.textContent = "Saved in this browser"; }
+  catch (_) { els[id].saved.textContent = "Could not save. Use Copy all answers before closing."; }
+}
+// The tick buttons, text box and saved line shared by references and palettes.
+function answerForm(id, likes, question, placeholder) {
+  state[id] = { likes: [], note: "", regions: [] };
+  try { const raw = localStorage.getItem(LS + id); if (raw) { const v = JSON.parse(raw); state[id] = { likes: Array.isArray(v.likes) ? v.likes : [], note: typeof v.note === "string" ? v.note : "", regions: Array.isArray(v.regions) ? v.regions.filter(r => r && [r.x, r.y, r.w, r.h].every(n => typeof n === "number")) : [] }; } } catch (_) {}
+  const chips = new Map(), chipRow = $("div", { class: "chips" });
+  likes.concat([NO]).forEach(name => {
+    const b = $("button", { type: "button", class: name === NO ? "chip no" : "chip", "aria-pressed": "false", text: name });
+    b.addEventListener("click", () => toggleLike(id, name));
+    chips.set(name, b); chipRow.append(b);
+  });
+  const note = $("textarea", { id: "note-" + id, placeholder });
+  note.addEventListener("input", () => {
+    state[id].note = note.value; recount(); els[id].saved.textContent = "";
+    clearTimeout(timers[id]); timers[id] = setTimeout(() => save(id), 600);
+  });
+  note.addEventListener("blur", () => { clearTimeout(timers[id]); save(id); });
+  const saved = $("div", { class: "saved", role: "status" });
+  els[id] = { chips, note, saved };
+  const frag = document.createDocumentFragment();
+  frag.append($("fieldset", {}, $("legend", { text: question }), chipRow), $("label", { class: "note", for: "note-" + id }, "Exactly what you like (or don't)", note), saved);
+  return frag;
+}
+
+const SECTION_IDS = [];
+function addNav(id, title, n) {
+  document.getElementById("nav").append($("a", { href: "#" + id, "data-sec": id }, title, $("span", { id: "navc-" + id, text: String(n) })));
+}
+function build() {
+  const main = document.getElementById("main");
+  SECTIONS.forEach(sec => {
+    addNav(sec.id, sec.title, sec.refs.length);
+    SECTION_IDS.push([sec.id, sec.refs.map(r => r[0])]);
+    const section = $("section", { id: sec.id }, $("div", { class: "sec-head" }, $("h2", { text: sec.title }), $("p", { text: sec.note })));
+    sec.refs.forEach(([id, app, mid, kind, what, how, extra]) => {
+      const desk = kind === "d";
+      const index = ORDER.push({ id, app, mid, how, what, hex: (extra && extra.hex) || [], noLink: !!(extra && extra.section), section: sec.title, kind }) - 1;
+      const img = $("img", desk ? { src: "images/round7/" + id + ".webp", alt: "", loading: "lazy" } : { src: "images/round7/" + id + ".webp", alt: "", loading: "lazy", width: "1179", height: "2676" });
+      const hexes = (extra && extra.hex) || [];
+      const sw = hexes.length ? $("div", { class: "hexes" }, ...hexes.map((h) => { const i = $("i"); i.style.background = h; return $("span", {}, i, $("code", { text: h })); }), $("small", { text: "approximate, by eye" })) : null;
+      const cardMarks = $("span", { class: "marks" });
+      const shot = $("button", { type: "button", class: "shot", "aria-label": "Zoom the " + app + " screenshot" }, img, cardMarks);
+      shot.addEventListener("click", () => openZoom(index, shot));
+      const article = $("article", { class: desk ? "ref wide" : "ref", id: "ref-" + id },
+        shot,
+        $("div", { class: "form" },
+          $("div", { class: "meta" },
+            $("div", { class: "title-row" }, $("h3", { text: app }), $("span", { class: "tag", text: desk ? "Desktop" : "Phone" })),
+            $("dl", { class: "pair" }, $("dt", { text: "What it shows" }), $("dd", { text: what }), $("dt", { text: "What we'd take" }), $("dd", { text: how })),
+            sw,
+            extra && extra.section ? null : $("a", { href: mobbin(mid), target: "_blank", rel: "noopener", text: "Open full size on Mobbin" })),
+          answerForm(id, LIKES, "What do you like about it?", "e.g. the big time on the left, the grey line under it")));
+      section.append(article);
+      els[id].cardMarks = cardMarks;
+      paint(id); drawMarks(id);
+    });
+    main.append(section);
+  });
+  recount();
+}
+
+function swatches(m) {
+  const box = $("div", { class: "sws" });
+  [["Background", m.bg], ["Surface", m.surface], ["Text", m.text], ["Muted text", m.muted], ["Accent", m.accent], ["Book", m.book], ["Stale", m.stale], ["Focus ring", m.focus]].forEach(([n, hex]) => {
+    const i = $("i"); i.style.background = hex;
+    box.append($("div", { class: "sw" }, i, $("strong", { text: n }), $("code", { text: hex })));
+  });
+  return box;
+}
+function checks(m) {
+  const rows = [["Time and text on background", m.text, m.bg, 7], ["Text on a row", m.text, m.surface, 7], ["Muted text on background", m.muted, m.bg, 4.5], ["Muted text on a row", m.muted, m.surface, 4.5], ["Label on the accent", m.accentText, m.accent, 4.5], ["Label on Book", m.bookText, m.book, 4.5], ["Stale words on a row", m.stale, m.surface, 4.5], ["Focus ring on background", m.focus, m.bg, 3]];
+  const ul = $("ul", { class: "checks" });
+  rows.forEach(([n, a, b, need]) => { const r = ratio(a, b); ul.append($("li", { "data-ratio": r.toFixed(2), "data-need": need }, n + ": ", $("b", { text: r.toFixed(1) + ":1" }), " (needs " + need + ":1" + (r >= need ? ")" : ", fails)"))); });
+  return ul;
+}
+function sample(m, stale) {
+  const s = $("div", { class: "sample" });
+  const set = { "--p-bg": m.bg, "--p-surface": m.surface, "--p-text": m.text, "--p-muted": m.muted, "--p-accent-bg": m.accent, "--p-accent-text": m.accentText, "--p-book": m.book, "--p-book-text": m.bookText, "--p-stale": m.stale, "--p-focus": m.focus };
+  for (const k in set) s.style.setProperty(k, set[k]);
+  s.append($("div", { class: "card" },
+    $("div", { class: "time" }, "19:30", $("span", { class: "soon", text: "Starts in 45 min" })),
+    $("div", { class: "film", text: "Sinners" }),
+    $("div", { class: "where", text: "Filmhouse Lekki · IMAX" }),
+    stale ? $("div", { class: "stale", text: "Read from Filmhouse's site 9 hours ago. May be out of date." }) : $("div", { class: "fresh", text: "Read from Filmhouse's site 2 hours ago" }),
+    $("div", { class: "row" }, $("span", { class: "focus", text: "Keyboard focus" }), $("span", { class: "book", text: "Book" }))));
+  return s;
+}
+function buildColour(main) {
+  addNav("colour", "Colour palette", PALETTES.length);
+  SECTION_IDS.push(["colour", PALETTES.map(p => p.id)]);
+  const section = $("section", { id: "colour" }, $("div", { class: "sec-head" }, $("h2", { text: "Colour palette" }),
+    $("p", { text: "The app uses eight colour roles, each in a light and a dark version. Below are the roles, then five palettes (today's and four new ones) with exact values. The example row is made-up sample text, drawn with each palette's real colours." })));
+  const table = $("table", { class: "roles" }, $("thead", {}, $("tr", {}, $("th", { text: "Role" }), $("th", { text: "Token" }), $("th", { text: "What it colours" }))));
+  const tb = $("tbody");
+  ROLES.forEach(([tok, name, use]) => tb.append($("tr", {}, $("td", { text: name }), $("td", {}, $("code", { text: "--" + tok })), $("td", { text: use }))));
+  table.append(tb);
+  section.append($("div", { class: "scroll" }, table));
+  PALETTES.forEach(p => {
+    const modes = $("div", { class: "modes" });
+    [["Light", p.light, false], ["Dark", p.dark, true]].forEach(([label, m, stale]) => modes.append($("div", { class: "mode", "data-mode": p.id + "-" + label.toLowerCase() }, $("h4", { text: label + (stale ? " · showing a stale row" : "") }), sample(m, stale), swatches(m), checks(m))));
+    section.append($("article", { class: "pal", id: "ref-" + p.id }, $("div", { class: "meta" }, $("h3", { text: p.name }), $("p", { text: p.note })), modes,
+      answerForm(p.id, PAL_LIKES, "What do you like about it?", "e.g. the amber against navy, but the light mode feels too yellow")));
+    paint(p.id);
+  });
+  main.append(section);
+}
+
+// Zoom
+const zoom = document.getElementById("zoom"), zfig = document.getElementById("zfig"), zimg = document.getElementById("zimg");
+const zmarks = document.getElementById("zmarks"), znote = document.getElementById("znote");
+let zi = 0, zfrom = null, draft = null;
+const zsaved = document.getElementById("zsaved"), zchips = new Map();
+LIKES.concat([NO]).forEach(name => {
+  const b = $("button", { type: "button", class: name === NO ? "chip no" : "chip", "aria-pressed": "false", text: name });
+  b.addEventListener("click", () => toggleLike(ORDER[zi].id, name));
+  zchips.set(name, b); document.getElementById("zchips").append(b);
+});
+// Keep the marking layer exactly over the image, whatever size it is drawn at.
+function layoutMarks() {
+  const f = zfig.getBoundingClientRect(), r = zimg.getBoundingClientRect();
+  zmarks.style.left = (r.left - f.left) + "px"; zmarks.style.top = (r.top - f.top) + "px";
+  zmarks.style.width = r.width + "px"; zmarks.style.height = r.height + "px";
+}
+zimg.addEventListener("load", layoutMarks);
+new ResizeObserver(layoutMarks).observe(zfig);
+const clamp01 = n => Math.min(1, Math.max(0, n));
+function draftBox(e) {
+  const b = zmarks.getBoundingClientRect();
+  const x1 = clamp01((e.clientX - b.left) / b.width), y1 = clamp01((e.clientY - b.top) / b.height);
+  return { x: Math.min(draft.x0, x1), y: Math.min(draft.y0, y1), w: Math.abs(x1 - draft.x0), h: Math.abs(y1 - draft.y0) };
+}
+zmarks.addEventListener("pointerdown", e => {
+  if (e.button) return;
+  const b = zmarks.getBoundingClientRect();
+  draft = { x0: clamp01((e.clientX - b.left) / b.width), y0: clamp01((e.clientY - b.top) / b.height), el: $("span", { class: "mark" }) };
+  zmarks.append(draft.el); zmarks.setPointerCapture(e.pointerId); e.preventDefault();
+});
+zmarks.addEventListener("pointermove", e => {
+  if (!draft) return;
+  const r = draftBox(e), st = draft.el.style;
+  st.left = r.x * 100 + "%"; st.top = r.y * 100 + "%"; st.width = r.w * 100 + "%"; st.height = r.h * 100 + "%";
+});
+function endDraft(e, keep) {
+  if (!draft) return;
+  const r = draftBox(e), id = ORDER[zi].id;
+  draft = null;
+  // A plain click or a tiny drag is not a region.
+  if (keep && r.w >= 0.02 && r.h >= 0.02) { const q = n => Math.round(n * 1000) / 1000; state[id].regions.push({ x: q(r.x), y: q(r.y), w: q(r.w), h: q(r.h) }); save(id); recount(); }
+  drawMarks(id);
+}
+zmarks.addEventListener("pointerup", e => endDraft(e, true));
+zmarks.addEventListener("pointercancel", e => endDraft(e, false));
+znote.addEventListener("input", () => {
+  const id = ORDER[zi].id;
+  state[id].note = znote.value; els[id].note.value = znote.value; recount();
+  clearTimeout(timers[id]); timers[id] = setTimeout(() => save(id), 600);
+});
+function showZoom() {
+  const r = ORDER[zi];
+  zmarks.replaceChildren();
+  zimg.src = "images/round7/" + r.id + ".webp"; zimg.alt = r.app + " screenshot";
+  znote.value = state[r.id].note; zsaved.textContent = "";
+  document.getElementById("zcount").textContent = (zi + 1) + " of " + ORDER.length;
+  document.getElementById("zsec").textContent = r.section;
+  document.getElementById("ztitle").textContent = r.app;
+  document.getElementById("ztag").textContent = r.kind === "d" ? "Desktop" : "Phone";
+  document.getElementById("zwhat").textContent = r.what;
+  document.getElementById("zhow").textContent = r.how;
+  document.getElementById("zhex").replaceChildren(...(r.hex.length ? [$("div", { class: "hexes" }, ...r.hex.map(h => { const i = $("i"); i.style.background = h; return $("span", {}, i, $("code", { text: h })); }), $("small", { text: "approximate, by eye" }))] : []));
+  const link = document.getElementById("zlink"); link.hidden = r.noLink; link.href = mobbin(r.mid);
+  zchips.forEach((btn, name) => btn.setAttribute("aria-pressed", state[r.id].likes.includes(name) ? "true" : "false"));
+  document.querySelector(".z-panel").scrollTop = 0;
+  drawMarks(r.id); layoutMarks();
+}
+function openZoom(i, from) { zi = i; zfrom = from; zoom.showModal(); showZoom(); document.getElementById("zclose").focus(); }
+znote.addEventListener("blur", flushNote);
+function flushNote() { const id = ORDER[zi].id; clearTimeout(timers[id]); save(id); }
+function step(d) { flushNote(); zi = (zi + d + ORDER.length) % ORDER.length; showZoom(); }
+document.getElementById("zclose").addEventListener("click", () => zoom.close());
+document.getElementById("zprev").addEventListener("click", () => step(-1));
+document.getElementById("znext").addEventListener("click", () => step(1));
+zoom.addEventListener("keydown", e => { if (e.target.tagName === "TEXTAREA") return; if (e.key === "ArrowRight") { e.preventDefault(); step(1); } else if (e.key === "ArrowLeft") { e.preventDefault(); step(-1); } });
+zoom.addEventListener("click", e => { if (e.target === zoom || e.target.classList.contains("z-stage") || e.target.tagName === "FIGURE") zoom.close(); });
+zoom.addEventListener("close", () => {
+  flushNote();
+  const card = document.getElementById("ref-" + ORDER[zi].id);
+  const back = card ? card.querySelector(".shot") : zfrom;
+  if (card) card.scrollIntoView({ block: "nearest" });
+  if (back) back.focus({ preventScroll: true });
+});
+
+// Sidebar
+const navbtn = document.getElementById("navbtn");
+function setNav(open) { document.body.classList.toggle("nav-open", open); navbtn.setAttribute("aria-expanded", open ? "true" : "false"); }
+navbtn.addEventListener("click", () => setNav(!document.body.classList.contains("nav-open")));
+document.getElementById("nav").addEventListener("click", e => { if (e.target.closest("a")) setNav(false); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !zoom.open) setNav(false); });
+document.addEventListener("click", e => { if (document.body.classList.contains("nav-open") && !e.target.closest("#side") && !e.target.closest("#navbtn")) setNav(false); });
+
+function allAnswersText() {
+  const lines = [];
+  ORDER.forEach(r => { if (answered(r.id)) lines.push(r.id + " | " + r.app + " | " + r.section + " | " + (state[r.id].likes.join(", ") || "-") + " | " + state[r.id].note.replace(/\s+/g, " ").trim() + regionText(r.id)); });
+  PALETTES.forEach(p => { if (answered(p.id)) lines.push(p.id + " | " + p.name + " | Colour palette | " + (state[p.id].likes.join(", ") || "-") + " | " + state[p.id].note.replace(/\s+/g, " ").trim()); });
+  return lines.join("\n") || "No answers yet.";
+}
+document.getElementById("copybtn").addEventListener("click", () => {
+  const text = allAnswersText(), out = document.getElementById("copyout"), btn = document.getElementById("copybtn");
+  const fallback = () => { setNav(false); out.value = text; out.hidden = false; out.focus(); out.select(); btn.textContent = "Select the text at the top"; };
+  try { navigator.clipboard.writeText(text).then(() => { btn.textContent = "Copied"; setTimeout(() => { btn.textContent = "Copy all answers"; }, 2000); }, fallback); } catch (_) { fallback(); }
+});
+document.getElementById("dlbtn").addEventListener("click", () => {
+  const out = {};
+  ORDER.forEach(r => { if (answered(r.id)) out[r.id] = { app: r.app, section: r.section, likes: state[r.id].likes, note: state[r.id].note, regions: state[r.id].regions }; });
+  PALETTES.forEach(p => { if (answered(p.id)) out[p.id] = { app: p.name, section: "Colour palette", likes: state[p.id].likes, note: state[p.id].note }; });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(out, null, 2)], { type: "application/json" }));
+  a.download = "sinima-cinemas-references-answers.json";
+  document.body.append(a); a.click(); a.remove();
+});
+
+build();
+
+// Mark the section in view in the sidebar.
+const links = new Map([...document.querySelectorAll("#nav a")].map(a => [a.dataset.sec, a]));
+const io = new IntersectionObserver(entries => {
+  entries.forEach(en => { if (en.isIntersecting) { links.forEach(a => a.removeAttribute("aria-current")); links.get(en.target.id).setAttribute("aria-current", "true"); } });
+}, { rootMargin: "-20% 0px -70% 0px" });
+document.querySelectorAll("main section").forEach(s => io.observe(s));
+</script>
+</body>
+</html>
