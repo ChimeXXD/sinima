@@ -28,6 +28,7 @@
   --p-neutral-300: #d4d4d8;
   --p-neutral-500: #71717a;
   --p-neutral-700: #3f3f46;
+  --p-neutral-800: #27272a;
   --p-neutral-900: #18181b;
   --p-neutral-1000: #000000;
   --p-green-50: #e7f8f1;
@@ -53,6 +54,13 @@
   --hover-fill: color-mix(in srgb, var(--bg-surface), var(--text-primary) 2%);
   --hover-fill-page: color-mix(in srgb, var(--bg-page), var(--text-primary) 1%);
   --hover-fill-raised: color-mix(in srgb, var(--bg-raised), var(--text-primary) 2%); /* chips on the raised colour */
+  /* Dark only (D-137): a dropdown's highlighted row was 2 % off the menu's own #18181b, so it barely
+     showed; in dark it is a step lighter. Light keeps the fills above. */
+  --hover-fill-menu: light-dark(var(--hover-fill), var(--p-neutral-800));
+  --hover-fill-option: light-dark(var(--bg-surface), var(--p-neutral-800)); /* picker sheet rows */
+  /* The segmented control's picked pill (D-137): in dark the raised colour is the track's own, so
+     the pill vanished; it takes a lighter grey there. */
+  --segment-thumb: light-dark(var(--bg-raised), var(--p-neutral-700));
   /* Scrollbars on a computer (D-134): a quiet pill in the text colour, darker under the pointer. */
   --scrollbar-thumb: color-mix(in srgb, var(--text-primary) 20%, transparent);
   --scrollbar-thumb-hover: color-mix(in srgb, var(--text-primary) 36%, transparent);

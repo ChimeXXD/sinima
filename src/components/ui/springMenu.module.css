@@ -1,6 +1,6 @@
 /* D-109 c: the Spring dropdown (SpringMenu.tsx) in Sinima's look: a raised surface with the
-   floating shadow, the pickers' 14 px rows, the one hover fill for the highlight (--hover-fill,
-   D-110: mixed with the text colour, so it shows in dark too). Its height,
+   floating shadow, the pickers' 14 px rows, the dropdowns' hover fill for the highlight (--hover-fill-menu,
+   D-137: --hover-fill in light, a step lighter in dark). Its height,
    width, opacity and the rows' entrance are written by its springs each frame. */
 .menu {
   position: fixed;
@@ -28,7 +28,7 @@
   top: 0;
   left: 0;
   border-radius: 14px; /* the pickers' rows */
-  background: var(--hover-fill);
+  background: var(--hover-fill-menu);
   opacity: 0;
   pointer-events: none;
 }

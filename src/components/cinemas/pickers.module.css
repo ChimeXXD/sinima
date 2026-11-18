@@ -93,7 +93,7 @@
 }
 @media (hover: hover) and (pointer: fine) {
   .option:hover {
-    background: var(--bg-surface);
+    background: var(--hover-fill-option);
   }
 }
 .option:active {

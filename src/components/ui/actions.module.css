@@ -131,7 +131,7 @@
   left: var(--space-4);
   width: calc((100% - var(--space-8) - (var(--n) - 1) * var(--space-4)) / var(--n));
   border-radius: 11px;
-  background: var(--bg-raised);
+  background: var(--segment-thumb);
   box-shadow: var(--fx-shadow-segment);
   transform: translateX(calc(var(--i) * (100% + var(--space-4))));
   transition: transform var(--dur-base) var(--ease-in-out);
