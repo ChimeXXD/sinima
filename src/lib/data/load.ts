@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import registry from "../../../data/cinemas.json";
 import { isCity, type City } from "@/lib/city";
+import { cityOfCinema } from "@/lib/data/cities";
 import type { ShowtimesFile } from "@/lib/data/types";
 
 // Build-time only: pages read the files `npm run refresh` wrote (DATA §Per-area files). Each page
@@ -20,6 +21,11 @@ export const areasIn = (city: City) => areas.filter((area) => area.city === city
 
 /** An area's city, or undefined for a slug the registry does not have. */
 export const cityOfArea = (slug: string): City | undefined => areas.find((area) => area.slug === slug)?.city;
+
+/** Every cinema's city, by id: what the tab bar needs to count one city's saved cinemas (D-136). */
+export function cinemaCityMap(): Record<string, City> {
+  return Object.fromEntries(registry.cinemas.map((cinema) => [cinema.id, cityOfCinema(cinema, cityOfArea)]));
+}
 
 export function areaBySlug(slug: string): Area {
   const area = areas.find((candidate) => candidate.slug === slug);

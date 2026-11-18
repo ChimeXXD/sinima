@@ -8,6 +8,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { useServiceWorker } from "@/lib/offline";
 import { useNow } from "@/lib/time/useNow";
 import { useSaved } from "@/lib/saved";
+import { useCinemaCities } from "./CinemaCities";
 import { ABOUT_LINK, FOOTER_NOTE, LOGO_NOTE } from "@/lib/wording/films";
 import { Icon } from "./Icon";
 import { SearchBar, type CityChoice } from "./SearchBar";
@@ -100,8 +101,10 @@ function NowMark() {
  * header's place, a back button, the screen's name and a share button; the desktop navbar stays.
  */
 export function AppFrame({ active, search, city: chosen, bg, bar, footer, onAbout = false, children }: { active: SectionId; search: { value: string; onChange: (text: string) => void; onSubmit?: () => void }; city?: CityChoice; bg: { light: string; dark: string }; bar?: React.ReactNode; /** The page's own footer lines, in place of the note (Figma Cinemas). */ footer?: React.ReactNode; /** About itself: no link to About in the footer. */ onAbout?: boolean; children: React.ReactNode }) {
-  const saved = useSaved().length;
   const pageCity = useCity();
+  // The tab's count is this city's saved cinemas: Your cinemas lists only those (D-136).
+  const cinemaCities = useCinemaCities();
+  const saved = useSaved().filter((id) => cinemaCities[id] === pageCity).length;
   const cityChoice: CityChoice = chosen ?? pageCity;
   useServiceWorker();
   const [open, setOpen] = useState(false);

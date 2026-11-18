@@ -1,9 +1,12 @@
 import type { Metadata, Viewport } from "next";
+import { CinemaCities } from "@/components/ui/CinemaCities";
 import { THEME_KEY } from "@/lib/area";
+import { cinemaCityMap } from "@/lib/data/load";
 import { pageColours } from "@/lib/theme/pageColours";
 import "@/styles/globals.css";
 
 const bg = pageColours();
+const cinemaCities = cinemaCityMap();
 
 export const metadata: Metadata = {
   title: "Sinima",
@@ -40,7 +43,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <script dangerouslySetInnerHTML={{ __html: keptTheme }} />
       </head>
-      <body>{children}</body>
+      <body>
+        <CinemaCities value={cinemaCities}>{children}</CinemaCities>
+      </body>
     </html>
   );
 }

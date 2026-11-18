@@ -85,3 +85,12 @@ test("an Abuja area page lists its cinemas, then the areas next to it", async ({
   await expect(page.locator("main")).toContainText("Jabi");
   await expect(page.locator("main")).not.toContainText("Lekki");
 });
+
+test("the tab bar's Your cinemas count counts the page city's saved cinemas only (D-136)", async ({ page }) => {
+  // Two saved in Lagos, one in Abuja, as a phone that has used both cities would have them.
+  await page.addInitScript(() => localStorage.setItem("ls.cinemas", JSON.stringify(["silverbird-ikeja", "grand-lekki", "silverbird-jabi"])));
+  await page.goto("/lagos");
+  await expect(page.getByTestId("nav.count")).toHaveText("2");
+  await page.goto("/abuja");
+  await expect(page.getByTestId("nav.count")).toHaveText("1");
+});
