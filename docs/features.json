@@ -355,13 +355,13 @@
       "title": "A light and dark switch in the header (D-58)",
       "criteria": [
         "the switch is on every page's header on a phone and on a computer",
-        "with no choice made the page follows the phone",
+        "with no choice made the page is light, whatever the phone's setting (D-143)",
         "a tap switches the theme and the browser bar colour",
         "the choice holds on the next page from its first paint"
       ],
       "verify": "npm run test:e2e -- theme",
       "passes": true,
-      "evidence": "13 Nov 2026 (D-60): `npx playwright test tests/e2e/theme.spec.ts` 11 pass; the motion test checks no view transition, no colour fading anywhere, and the icon's blur, scale and fade (opacity only with reduced motion). Icon frames at 60 fps compared with Rune Icons' recording; header screenshots at 390, 360 and 1440 px in light and dark."
+      "evidence": "13 Nov 2026 (D-60): `npx playwright test tests/e2e/theme.spec.ts` 11 pass; the motion test checks no view transition, no colour fading anywhere, and the icon's blur, scale and fade (opacity only with reduced motion). Icon frames at 60 fps compared with Rune Icons' recording; header screenshots at 390, 360 and 1440 px in light and dark. 18 Nov 2026 (D-143): light by default on a phone and a computer set to dark; theme, dark and round2 specs 28 pass."
     },
     {
       "id": "D3-9",

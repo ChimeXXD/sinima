@@ -1,20 +1,23 @@
+import type { Page } from "@playwright/test";
 import { expect, test } from "./test";
 
 // The Figma tokens (D-82) as the browser actually renders them. Dark is a stand-in until it is designed.
 const rgb = (hex: string) => `rgb(${[1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)).join(", ")})`;
+/** Every theme-color tag on the page (Next can repeat the tag once the page runs), so none disagrees. */
+const barColours = (page: Page) => page.locator('meta[name="theme-color"]').evaluateAll((tags) => [...new Set(tags.map((t) => t.getAttribute("content")))]);
 
 for (const [scheme, bg, text] of [
   ["light", "#ffffff", "#18181b"],
   ["dark", "#000000", "#fafafa"],
 ] as const) {
   test(`the page uses the ${scheme} palette`, async ({ page }) => {
-    await page.emulateMedia({ colorScheme: scheme });
+    await page.addInitScript((t) => localStorage.setItem("ls.theme", t), scheme);
     await page.goto("/lagos");
     const body = page.locator("body");
     await expect(body).toHaveCSS("background-color", rgb(bg));
     await expect(body).toHaveCSS("color", rgb(text));
     // The browser bar matches the page.
-    await expect(page.locator(`meta[name="theme-color"][media*="${scheme}"]`)).toHaveAttribute("content", bg);
+    await expect.poll(() => barColours(page)).toEqual([bg]);
   });
 }
 
@@ -42,7 +45,7 @@ for (const width of [390, 360, 320]) {
   });
 }
 
-// D-58: a switch in the header, on a phone and on a computer, overrides the phone's setting and is
+// D-58: a switch in the header, on a phone and on a computer, changes the theme and is
 // remembered on this device. The choice is applied before the page is drawn, so there is no flash.
 for (const [name, viewport] of [["phone", { width: 390, height: 844 }], ["computer", { width: 1440, height: 900 }]] as const) {
   test(`on a ${name}, the header switch turns light into dark and back, and the choice is remembered`, async ({ page }) => {
@@ -66,12 +69,25 @@ for (const [name, viewport] of [["phone", { width: 390, height: 844 }], ["comput
   });
 }
 
-test("with no choice made, the page follows the phone's setting", async ({ page }) => {
-  await page.emulateMedia({ colorScheme: "dark" });
-  await page.goto("/lagos");
-  expect(await page.evaluate(() => document.documentElement.dataset.theme)).toBeUndefined();
-  await expect(page.getByTestId("theme.toggle")).toHaveAccessibleName("Switch to light mode");
-});
+// D-143 (supersedes D-58's "follows the phone"): with no choice made the page is light, even on a
+// phone set to dark; dark comes only from the switch.
+for (const name of ["phone", "computer"] as const) {
+  test(`with no choice made, the page is light on a ${name} set to dark`, async ({ page }) => {
+    if (name === "computer") await page.setViewportSize({ width: 1440, height: 900 });
+    await page.emulateMedia({ colorScheme: "dark" });
+    await page.goto("/lagos");
+    expect(await page.evaluate(() => document.documentElement.dataset.theme)).toBeUndefined();
+    await expect(page.locator("body")).toHaveCSS("background-color", rgb("#ffffff"));
+    await expect(page.locator("body")).toHaveCSS("color", rgb("#18181b"));
+    await expect.poll(() => barColours(page)).toEqual(["#ffffff"]);
+    await expect(page.getByTestId("theme.toggle")).toHaveAccessibleName("Switch to dark mode");
+    // The pull still turns it dark, and the choice is kept.
+    await page.getByTestId("theme.toggle").click();
+    await expect(page.locator("body")).toHaveCSS("background-color", rgb("#000000"));
+    await page.reload();
+    await expect(page.locator("body")).toHaveCSS("background-color", rgb("#000000"));
+  });
+}
 
 // D-107 (supersedes D-60): the switch is a pull cord (D-106 i). Pulled, the new theme opens as a
 // circle from its bulb: a view transition. With reduced motion the page changes at once, no transition.

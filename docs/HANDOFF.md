@@ -62,6 +62,7 @@ Read at 02:43 UTC on Wed 18 Nov, each source asked for 7 days. Showings per day 
 - Answer when the days table is ready: the cut-off and the day row design.
 - ~~Say "check the domain"~~: live 18 Nov 12:55 (one name server still refusing; recheck 20 Nov).
 - Phone checks still waiting: review rounds 1 and 2, the motion audit, both cities, a trailer, the side panel and scrollbars on the computer, and now dark mode, The Jays' sticker and the sinima wording.
+- **Light by default (D-143, 18 Nov 13:30):** done and pushed; check on the phone with it set to dark: the site should open light, and the cord turns it dark.
 - **Tue 24 Nov:** if Filmhouse, CINEsync, the Filmhouse Group CEO or FilmOne haven't replied, draft the follow-ups (OUTREACH §4) and show Chime the text first.
 
 ### Watch out

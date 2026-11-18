@@ -4,15 +4,12 @@
  * to it by tests/unit/tokens.test.ts (D-82). CSS names are Figma's own code syntax.
  * Figma designs the light mode only; every dark value below is a stand-in until dark is designed.
  */
-/* The header switch (D-58) fixes one scheme; with no choice made, the page follows the phone. */
-:root[data-theme="light"] {
-  color-scheme: light;
-}
+/* Light unless the header switch (D-58) chose dark, whatever the phone's own setting (D-143). */
 :root[data-theme="dark"] {
   color-scheme: dark;
 }
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
 
   /* Primitives: Sinima · Primitives. Components use the semantic tokens below, not these. */
   --p-blue-50: #eef3ff;

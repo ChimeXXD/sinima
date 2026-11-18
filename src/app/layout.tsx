@@ -24,16 +24,13 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  // The browser bar takes the page colour.
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: bg.light },
-    { media: "(prefers-color-scheme: dark)", color: bg.dark },
-  ],
+  // The browser bar takes the page colour: light until the switch says dark (D-143).
+  themeColor: bg.light,
 };
 
 // A light or dark choice made with the header switch (D-58) is applied before the page is drawn, so
 // the page never flashes the other theme, and the browser bar takes the kept colour as soon as the
-// page is read (not only once React starts). With no choice, the page follows the phone.
+// page is read (not only once React starts). With no choice, the page is light (D-143).
 const keptTheme = `try{var t=localStorage.getItem(${JSON.stringify(THEME_KEY)});if(t==="light"||t==="dark"){var c=${JSON.stringify(bg)}[t];document.documentElement.dataset.theme=t;document.addEventListener("DOMContentLoaded",function(){document.querySelectorAll('meta[name="theme-color"]').forEach(function(m){m.content=c})})}}catch(e){}`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

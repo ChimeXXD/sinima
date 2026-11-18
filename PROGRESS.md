@@ -2,6 +2,16 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 18 Nov 2026 (13:30 Lagos) — Light by default; dark only from the pull cord (D-143)
+
+Chime: "So I want the default to be light mode, then you can pull it if you want dark."
+
+- **Changed:** `tokens.css` `:root` is `color-scheme: light`, dark only under `[data-theme="dark"]`; `layout.tsx` one white theme-color (no media pair); `ThemeToggle.tsx` no longer reads `prefers-color-scheme`. SPEC 16, features D3-8, UI-BRIEF principle 6 follow D-143.
+- **Red:** new `theme.spec.ts` "with no choice made, the page is light on a phone set to dark": body was `rgb(0, 0, 0)`. **Green:** theme, dark and round2 specs 28 pass (palette tests set `ls.theme` instead of the phone's setting; the bar check now covers every theme-color tag, since Next repeats the tag once the page runs). Unit 832 pass; typecheck clean; lint 0 errors.
+- **Screens:** WebKit iPhone at 390 and 360 with the phone set to dark: no choice → white page, cord says "Switch to dark mode"; kept dark → black (scratchpad `theme/side_390.png`, `side_360.png`). A pale strip at the right in a desktop-style WebKit run is its 12 px scrollbar gutter (`scrollbar-gutter: stable`), absent on an iPhone; unrelated.
+- **Review:** /code-review medium: no bugs; fixed one stale comment in `layout.tsx`. proof:verifier: PASS 7 of 7. Motion skills: none (no motion changed).
+- **Not verified:** on Chime's phone.
+
 ## 18 Nov 2026 (12:55 Lagos) — sinima.com.ng is live (D-140)
 
 Chime: "Check the domain, please."

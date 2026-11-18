@@ -12,24 +12,17 @@ let cut = 0;
 let lit = 0;
 
 function subscribe(listener: () => void): () => void {
-  const scheme = window.matchMedia("(prefers-color-scheme: dark)");
-  scheme.addEventListener("change", listener);
   window.addEventListener(CHANGED, listener);
-  return () => {
-    scheme.removeEventListener("change", listener);
-    window.removeEventListener(CHANGED, listener);
-  };
+  return () => window.removeEventListener(CHANGED, listener);
 }
-/** The theme on screen: the one chosen here, or the phone's own. */
+/** The theme on screen: dark only when chosen here; the phone's own setting is not read (D-143). */
 function current(): Theme {
-  const chosen = document.documentElement.dataset.theme;
-  if (chosen === "light" || chosen === "dark") return chosen;
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
 }
-/** The browser bar takes the page colour: both theme-color tags, since a choice here outranks the media query. */
-function paintBar(theme: Theme | null, bg: { light: string; dark: string }) {
+/** The browser bar takes the page colour. */
+function paintBar(theme: Theme, bg: { light: string; dark: string }) {
   document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]').forEach((meta) => {
-    meta.content = theme ? bg[theme] : meta.media.includes("dark") ? bg.dark : bg.light;
+    meta.content = bg[theme];
   });
 }
 
@@ -51,8 +44,8 @@ function springCurve(k: number, c: number): { easing: string; duration: number }
 }
 
 /**
- * The light and dark switch in the header (D-58). It follows the phone until pulled, then keeps the
- * choice on this device; layout.tsx applies a kept choice before the page is drawn. It is Design
+ * The light and dark switch in the header (D-58). The page is light until pulled (D-143), then keeps
+ * the choice on this device; layout.tsx applies a kept choice before the page is drawn. It is Design
  * Bookmark's pull cord (D-106 i): pulled past its click, the new theme opens as a circle from the
  * bulb (turning the light on) or closes back into it (off), on their light's springs, 120/21
  * opening and 170/27 closing (D-107, superseding D-60's instant change). Reduced motion, or a
@@ -60,10 +53,7 @@ function springCurve(k: number, c: number): { easing: string; duration: number }
  */
 export function ThemeToggle({ bg, className }: { bg: { light: string; dark: string }; className?: string }) {
   const theme = useSyncExternalStore(subscribe, current, () => null);
-  useEffect(() => {
-    const chosen = document.documentElement.dataset.theme;
-    paintBar(chosen === "light" || chosen === "dark" ? chosen : null, bg);
-  }, [bg]);
+  useEffect(() => paintBar(current(), bg), [bg]);
 
   const next: Theme = theme === "dark" ? "light" : "dark";
   const apply = () => {

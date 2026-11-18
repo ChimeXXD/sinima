@@ -17,7 +17,7 @@ What makes it B:
 3. **Capsules.** Book, the area button, time chips and the countdown are full capsules. The area button and "Share this film" are black capsules; Book is the only blue thing.
 4. **Stay or Go is a tile, not a badge:** the answer in 16 px on a grey tile, with the detail line and source link under it. The loudest of the three directions, on purpose.
 5. **Freshness stays quiet:** 12 px grey under the cinema line, always in words. Stale wording turns the stale colour; the words carry it, the colour only backs them up.
-6. **Light first.** Dark mode follows the phone's setting and uses the same roles.
+6. **Light first.** Dark mode comes only from the header switch (D-143; it once followed the phone's setting) and uses the same roles.
 
 Constraints that still hold (unchanged from the draft): time is the hero; honesty is visible but quiet; fast on 3G; one hand, outdoors; Lagos voice without slang overload.
 

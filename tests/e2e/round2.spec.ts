@@ -130,7 +130,7 @@ test("the bulb is drawn before the shade, so the shade hides its top half", asyn
 });
 
 test("in dark mode the highlight stands apart from the menu", async ({ page }) => {
-  await page.emulateMedia({ colorScheme: "dark" });
+  await page.addInitScript(() => localStorage.setItem("ls.theme", "dark"));
   await desktop(page, "/lagos/cinemas");
   await page.getByTestId("pick.day").click();
   const menu = page.getByTestId("sheet.day");
