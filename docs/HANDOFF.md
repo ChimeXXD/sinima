@@ -1,6 +1,53 @@
 # Handoff: read this first when you pick the project back up
 
-## Now: session of 16–17 Nov 2026: posters on MTN, 12-hour clock, live data in both cities, Filmhouse outreach (latest)
+## Now: session of 18 Nov 2026 (01:00–04:00 Lagos): answers to the open calls, sinima wording, dark-mode fixes, the domain, five days (latest)
+
+**Where we stopped, exactly:** Chime said "go ahead" to five days (D-142). Step 1, measuring how many days each source publishes, was running when the session ended (a one-off script, `scripts/.probe-days.ts`, untracked: it reads every cleared source with the real readers and polite rules, asking for 7 days, and writes nothing). Its results are below. **Next:** report a per-sinima table and a proposed cut-off for "enough sinimas have listed this day" to Chime, get a yes, then build (readers to `daysAhead` 5, a data file per day, the day row in place of Today | Tomorrow; design first). Then delete `scripts/.probe-days.ts`.
+
+Everything else below is committed and pushed (last commit after `9f4a843`). Nothing is running.
+
+### What Chime asked, and what was done
+
+1. **"Where did we stop?"** then **"write all the decisions in plain English so I can reply"**: a numbered list of 16 open calls. Chime's answers are D-136: keep 1, 2, 3, 7, 8, 9 and "everything you said, keep" (10–16: Galleria and Filmworld as they are, Ozone and Sky on Lagocine, push after launch, the video tool at the storyboard). The stale Open questions (O-3, O-4, O-5, O-6, O-8, O-9, O-11, O-12) are marked closed; the 11 Nov permission table is marked as history.
+2. **The Jays' logo** ("There's no way they don't have a logo"): it was never missing, only unsaved. From thejayscinemas.com's own site icon, on a fill tile (`public/logos/jays.png`). Then **The Jays fills Abuja's fourth title sticker** (D-141).
+3. **The Your sinimas tab count counts only the page's city** (D-136, Claude's recommendation): the root layout hands down each cinema's city (`CinemaCities`).
+4. **Dark mode only** (D-137): the Today | Tomorrow pill was the track's own #18181b (now `--segment-thumb`, #3f3f46); every dropdown's highlight was 2 % off the menu (now `--hover-fill-menu` / `--hover-fill-option`, #27272a). Light mode byte-identical. `tests/e2e/dark.spec.ts`.
+5. **"cinema" → "sinima" everywhere a visitor reads or hears it** (D-138): tabs "Sinimas" and "Your sinimas", "Sinimas in Lagos", counts, sheets, About, the calendar file, titles, meta and manifest. Chain and source names, URLs, ids and developer messages unchanged. Flagged once, built as asked: a sinima page's top bar now says "Sinima" (the app's name); search engines match "cinema" more; Figma still says Cinemas.
+6. **"Maybe Or Maybe Not" vs "Maybe… Maybe Not"**: neither is on TMDB or in any article found, so they stay apart (rule 8). If Chime knows they are one film, add an alias in `data/film-aliases.json`.
+7. **Why only two days**: readers fetch 2 (`daysAhead`), page files keep 2, the switch has two places; Lagos's two days are 16.3 of the 20 KB data budget. Chime asked which is better; Claude: five, each day shown only once enough sinimas list it (D-142).
+8. **A $5 domain** (D-139) → **sinima.com.ng** (D-140). See "The domain" below.
+
+### The domain (sinima.com.ng), state when the session ended
+
+- **Bought** by Chime at Whogohost (GO54): invoice #2428227, ₦3,225 with VAT (Paystack ₦3,375.64), 18 Nov 02:54 Lagos. Panel: Active, auto-renews 18 Nov 2027 at ₦7,200. **No ID protection** (₦9,000 upsell): the .ng registry already redacts every owner's details (checked google, jumia, whogohost, qservers, truehost .com.ng). Domain lock and ID protection in the panel's "Action needed" box are upsells; nothing is needed.
+- **Vercel: done** (Chime approved in chat). The Vercel project is **`lagos-showtimes`** (not `sinima-app`; it serves sinima-app.vercel.app) in team `ekpenduchimezie1-gmailcoms-projects`. Added `sinima.com.ng` → Production (Vercel's "redirect apex to www" unticked) and `www.sinima.com.ng` → 308 to `sinima.com.ng` ("include apex and www variants" unticked). Both show Invalid Configuration until DNS exists.
+- **Whogohost DNS: stuck.** "DNS Zone Not Created"; Create DNS Zone asks for an IP; with 216.198.79.1 it spun and returned to the empty form twice, no error. At the same time the .ng registry had **no record** of sinima.com.ng (`https://rdap.nic.net.ng/domain/sinima.com.ng` → 404; Whogohost's own domain → 200), and no "domain registered" email had come. Likely the registration hadn't reached the registry yet (guess, not confirmed).
+- **When Chime says "check the domain":** 1) RDAP above; when it's 200, 2) Whogohost › Domains › sinima.com.ng › Manage DNS › Create DNS Zone with IP **216.198.79.1**, 3) make sure the zone has **A @ 216.198.79.1** and add **CNAME www a8592d53f44e5350.vercel-dns-017.com.** (checked: it resolves to Vercel's 216.198.79.1 and 64.29.17.1), deleting nothing (Chime's approval covered only adding these two; ask before removing any default record Whogohost adds), 4) Vercel › lagos-showtimes › Domains › Refresh until both are valid, 5) `curl -I https://sinima.com.ng` 200 and `https://www.sinima.com.ng` 308, sinima-app.vercel.app still 200, 6) then make sinima.com.ng the site's address in the code (link card, About, README, docs) and commit. If the registry has it and the zone still won't create: Chime opens a Whogohost ticket (Claude drafts; Chime sends; support PIN is on the panel's dashboard).
+- Chime's worry "will the domain make the site slower": no; same Vercel servers, one cached DNS lookup. Measure both addresses once live.
+- Browser: Chime's Brave has the Claude extension; it can't read vercel.com page text (screenshots work). Claude can't see tabs Chime opened, only its own group.
+
+### Days probe (D-142 step 1), 18 Nov ~03:30 Lagos
+
+Results so far (each source asked for 7 days; full table to be added when the run finishes):
+- **Lagocine**: day 7 (24 Nov) answered 404, so the reader threw the run away: Lagocine has day pages for fewer than 7 days ahead. Rerun with 5 or 6 to find its horizon (pages before that day exist).
+- **Genesis**: read (262 s, its film pages). **Silverbird** (Veezi) 21 s, **Grand** 9 s, **Blue Pictures** 8 s (today only by design).
+- **EbonyLife**: a day's page timed out waiting for load (30 s), so that run lost all its days.
+- Viva, Nova, THC, Magnificent: still running.
+
+### For Chime
+
+- Answer when the days table is ready: the cut-off and the day row design.
+- Say "check the domain" in a few hours.
+- Phone checks still waiting: review rounds 1 and 2, the motion audit, both cities, a trailer, the side panel and scrollbars on the computer, and now dark mode, The Jays' sticker and the sinima wording.
+- **Tue 24 Nov:** if Filmhouse, CINEsync, the Filmhouse Group CEO or FilmOne haven't replied, draft the follow-ups (OUTREACH §4) and show Chime the text first.
+
+### Watch out
+
+- Don't run `npm run build` or a Playwright run while the proof gate's e2e runs (port 4173 and `out/`): twice this session a review agent's build broke the gate's run ("1 error was not a part of any test"); each failing test passed alone.
+- The proof gate refuses `git commit` in the same command as a file-changing script: make changes first, then `git add … && git commit …` on its own.
+- Wording tests: the copy now says sinima; a new string about cinemas should too (chain names excepted).
+
+## Earlier: session of 16–17 Nov 2026: posters on MTN, 12-hour clock, live data in both cities, Filmhouse outreach
 
 Everything below is committed and pushed (last code commit `57a1c9d`; the refresh job commits data on its own). The full gate passed on each commit. Nothing is running.
 
