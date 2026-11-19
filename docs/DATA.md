@@ -245,7 +245,7 @@ The chip never says "Go" without a source that says so.
 
 ## Per-area files (D-18)
 
-`refresh` also writes one file per area, `public/data/area/<slug>.json`, one per city, `public/data/lagos.json` and `abuja.json` (D-126), and `public/data/all.json`, in the same v1 shape but holding only that area's (or city's) cinemas, their showings for today and tomorrow, and the films and sources those showings use. Pages load only their own file. The size budget (D-21) applies per file a page loads, each city's and each area's: at most 20 KB gzipped each (D-45, D-126). `all.json` holds both cities and is read only at build time (About's counts, the search index), so it is not held to the budget; the run's log says so. "Tomorrow" runs to 04:00 the morning after, so a 00:30 show stays with its evening.
+`refresh` also writes one file per area, `public/data/area/<slug>.json`, one per city, `public/data/lagos.json` and `abuja.json` (D-126), and `public/data/all.json`, in the same v1 shape but holding only that area's (or city's) cinemas, their showings for today and tomorrow, and the films and sources those showings use. Pages load only their own file. The size budget (D-21) applies per file a page loads, each city's and each area's: at most 24 KB gzipped each (D-45, D-126; 20 until D-155, back to 20 once page files stop storing each showing's id). `all.json` holds both cities and is read only at build time (About's counts, the search index), so it is not held to the budget; the run's log says so. "Tomorrow" runs to 04:00 the morning after, so a 00:30 show stays with its evening.
 
 ## Live data (D-116)
 

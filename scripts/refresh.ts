@@ -28,7 +28,9 @@ import type { ParsedPage } from "./sources/raw.ts";
  * own markup. All of Lagos for two days (588 sample showings, no booking links) measured 10.3 KB on
  * 11 Nov 2026 (D-45); live rows carry booking links and will weigh more.
  */
-export const DATA_FILE_LIMIT_KB = 20;
+// 24 from 19 Nov (D-155): five days filled tomorrow for every Lagos sinima (21.9 KB); back to 20
+// once page files stop storing each showing's id.
+export const DATA_FILE_LIMIT_KB = 24;
 
 type FixtureEntry = {
   file: string; sourceId: string; page: string; cinemaId?: string; savedAt: string; sample: boolean;
