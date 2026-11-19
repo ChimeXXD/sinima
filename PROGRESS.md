@@ -2,6 +2,14 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 19 Nov 2026 (evening, Lagos) — "Add to calendar" opens the iPhone's calendar (D-160)
+
+- **Found on Chime's iPhone:** "Add to calendar" downloaded a file. A temporary test page (`/cal-test`, four ways) showed only a link to a served `.ics` offers "add it to your calendar"; a file made in the page and the current download only offer to save; a `data:` address does nothing.
+- **Changed:** `src/app/cal/[file]/route.ts` writes a calendar file per showing on each day a page lists and per coming film's first day (`src/lib/ics/calFiles.ts`, names from `calHref.ts`); `vercel.json` serves `/cal/` as `text/calendar`, inline, noindex; `sw.js` leaves `/cal/` to the network; `serve-out.mjs` knows `.ics`. The sheet's "Add to calendar" and a coming film's calendar button are plain same-tab links (`isSiteFile` in `Actions.tsx`, used by `Button` and `OptionRow`). The file's source line is dated (`readOn` in `lib/wording/freshness.ts`). Removed: `CalendarButton.tsx`, `saveIcs`, `icsFileName`, `fileSlug`, the coming event's `fileName`, the test page.
+- **Red:** `calFiles.test.ts` (`Cannot find package '@/lib/ics/calFiles'`); `freshness.test.ts` readOn ×2. **Green:** units 979/979; e2e `film-screen.spec.ts` + `coming.spec.ts` 14/14 (each link's href, no new tab, `text/calendar`, the file's DTSTART and 30-min alert). Build 7.9 s with 757 files (sample).
+- **Tests changed, and why:** `ics.test.ts` lost its `icsFileName` block and `coming.test.ts` the `fileName` field (both removed; names are now tested in `calFiles.test.ts`); the e2e checks the new link and file name in place of the old download name.
+- **Not verified:** the real button on Chime's iPhone and on Android, after the deploy.
+
 ## 19 Nov 2026 (late afternoon, Lagos) — page weight: room freed (handoff item 5)
 
 - **Chime's phone check, 19 Nov:** share card picture shows on WhatsApp (X's composer not reported); search shows coming films ("Opens … at Filmhouse"); five days fine; Coming soon: "do your recommendation" (kept as built). PLAN: Five days and Coming soon ticked.

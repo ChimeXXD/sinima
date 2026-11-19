@@ -88,7 +88,13 @@ test("a time opens its sheet: sample times can't be booked; calendar, countdown;
   await expect(sheet.getByTestId("showing.book")).toContainText("Sample only");
   expect(await sheet.getByTestId("showing.book").evaluate((el) => el.tagName)).toBe("DIV"); // not a link (rule 8, D-25)
 
-  const [download] = await Promise.all([page.waitForEvent("download"), sheet.getByTestId("showing.calendar").click()]);
+  // D-160: a plain link, in the same tab, to the file the build wrote; an iPhone offers to add it to Calendar.
+  const calendar = sheet.getByTestId("showing.calendar");
+  await expect(calendar).toHaveAttribute("href", `/cal/ramayana_filmhouse-circle-mall_${lagosDay(at)}-1800.ics`);
+  await expect(calendar).not.toHaveAttribute("target", /./);
+  const served = await request.get((await calendar.getAttribute("href"))!);
+  expect(served.headers()["content-type"]).toMatch(/^text\/calendar/);
+  const [download] = await Promise.all([page.waitForEvent("download"), calendar.click()]);
   const ics = readFileSync(await download.path(), "utf8");
   expect(ics).toContain(`DTSTART:${at.replace(/[-:]/g, "")}`);
   expect(ics).toContain("TRIGGER:-PT30M");

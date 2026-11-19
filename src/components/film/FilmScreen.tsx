@@ -25,7 +25,6 @@ import { eveningDayKey } from "@/lib/time/lagos";
 import { useNow } from "@/lib/time/useNow";
 import { dayWords } from "@/lib/wording/day";
 import { areaTag, earlierLine, filmFacts, heroNote, noTimes, shareText, shortAddress, timesSubtitle, trailerLink } from "@/lib/wording/filmPage";
-import { CalendarButton } from "./CalendarButton";
 import type { ComingPage } from "@/lib/data/comingPage";
 import { FilmHero } from "./FilmHero";
 import { showingHash, useLazySheet } from "./useLazySheet";
@@ -152,7 +151,11 @@ export function FilmScreen({ data, areas, city, bg, coming }: { data: ListData; 
               <p className={s.comingNote} data-testid="coming.note">
                 {coming.note}
               </p>
-              {coming.calendar && <CalendarButton {...coming.calendar} />}
+              {coming.calendar && (
+                <Button kind="secondary" icon="calendar-plus" href={coming.calendar.href} testId="coming.calendar">
+                  {coming.calendar.label}
+                </Button>
+              )}
             </div>
           </section>
         ) : (

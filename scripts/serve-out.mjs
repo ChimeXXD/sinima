@@ -17,6 +17,7 @@ const TYPES = {
   ".ico": "image/x-icon",
   ".webmanifest": "application/manifest+json",
   ".woff2": "font/woff2",
+  ".ics": "text/calendar; charset=utf-8",
 };
 
 function resolve(urlPath) {

@@ -81,7 +81,9 @@ test("a coming film's page says when it opens, has no times and no booking, and 
   const button = page.getByTestId("coming.calendar");
   await expect(button).toHaveText(`Add ${Number(day.slice(8))} ${MONTHS[Number(day.slice(5, 7)) - 1]} to my calendar`);
   const [download] = await Promise.all([page.waitForEvent("download"), button.click()]);
-  expect(download.suggestedFilename()).toBe(`${film.filmId}-opens-${day}.ics`);
+  // D-160: a plain link to the file the build wrote, named by city: an iPhone offers to add it to Calendar.
+  await expect(button).toHaveAttribute("href", `/cal/lagos_${film.filmId}_opens-${day}.ics`);
+  expect(download.suggestedFilename()).toBe(`lagos_${film.filmId}_opens-${day}.ics`);
   const ics = await (await download.createReadStream()).toArray().then((chunks) => Buffer.concat(chunks).toString("utf8"));
   expect(ics).toContain(`\r\nDTSTART;VALUE=DATE:${day.replace(/-/g, "")}\r\n`);
   expect(ics).toContain(`\r\nUID:opens-lagos-${film.filmId}@sinima\r\n`);

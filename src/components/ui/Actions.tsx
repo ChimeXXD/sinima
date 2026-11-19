@@ -6,6 +6,9 @@ import s from "./actions.module.css";
 
 // 7 · Actions (Figma 167:60): things people press.
 
+/** A calendar file of this site, not a page: "/cal/….ics" (D-160). The phone opens it, not the app's router. */
+export const isSiteFile = (href: string) => /^\/cal\/[^/?#]+\.ics$/.test(href);
+
 type ButtonProps = {
   kind?: "primary" | "secondary";
   icon?: IconName;
@@ -15,9 +18,10 @@ type ButtonProps = {
 } & ({ href: string; onClick?: never } | { href?: never; onClick?: () => void });
 
 /**
- * 7.1 Button. With `href` it is a link: a page of this site opens in place; another site (booking
- * always goes to the cinema's own site, rule 5) opens in a new tab. A disabled link loses its
- * href, so it cannot be followed.
+ * 7.1 Button. With `href` it is a link: a page of this site opens in place; a file of this site (a
+ * calendar file, D-160) is a plain link, so the phone opens it itself; another site (booking always
+ * goes to the cinema's own site, rule 5) opens in a new tab. A disabled link loses its href, so it
+ * cannot be followed.
  */
 export function Button({ kind = "primary", icon, disabled = false, children, testId, href, onClick }: ButtonProps) {
   const className = `${s.button} ${s[kind]}`;
@@ -30,6 +34,10 @@ export function Button({ kind = "primary", icon, disabled = false, children, tes
   if (href !== undefined) {
     return disabled ? (
       <a className={className} aria-disabled="true" role="link" data-testid={testId}>
+        {inner}
+      </a>
+    ) : isSiteFile(href) ? (
+      <a className={className} href={href} data-testid={testId}>
         {inner}
       </a>
     ) : /^\/(?!\/)/.test(href) ? (

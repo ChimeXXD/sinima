@@ -43,3 +43,14 @@ export function freshness(source: { name: string; method: SourceMethod }, fetche
 export function rowWarning(band: FreshnessBand): string | null {
   return band === "stale" ? "Times from yesterday" : band === "old" ? "Times may have changed" : null;
 }
+
+/**
+ * "Times read from Filmhouse's site on Thu 19 Nov at 2:15 PM": for a calendar file, which is written
+ * at build time and read days later, so it says when, never how long ago (rule 3, D-160).
+ */
+export function readOn(source: { name: string; method: SourceMethod }, fetchedAt: string, via?: Via | null): string {
+  if (source.method === "fixture") return freshness(source, fetchedAt, fetchedAt).text;
+  const at = via ? via.fetchedAt : fetchedAt;
+  const when = `on ${formatDate(at)} at ${formatTime(at)}`;
+  return via ? `Times from ${source.name}, which read ${via.name} ${when}` : `Times read from ${source.name} ${when}`;
+}

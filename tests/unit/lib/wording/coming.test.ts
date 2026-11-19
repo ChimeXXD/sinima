@@ -61,14 +61,14 @@ describe("a coming film's page", () => {
     expect(calendarAction("2027-01-02")).toBe("Add 2 Jan to my calendar");
   });
 
-  it("the calendar event: what it says, the alert and the file's name", () => {
+  // Its file's name is its address under /cal/ (D-160): tests/unit/lib/ics/calFiles.test.ts.
+  it("the calendar event: what it says and the alert", () => {
     expect(comingCalendar({ film: "Avengers: Doomsday", filmId: "avengers-doomsday", sinimas: ["Filmhouse"], firstDay: "2026-12-18", city: "lagos", url: "https://sinima.com.ng/lagos/film/avengers-doomsday" })).toEqual({
       uid: "opens-lagos-avengers-doomsday@sinima",
       day: "2026-12-18",
       summary: "Avengers: Doomsday opens at Filmhouse",
       description: "Filmhouse lists Avengers: Doomsday from Fri 18 Dec. Its times will be on Sinima as soon as Filmhouse puts them up: https://sinima.com.ng/lagos/film/avengers-doomsday",
       alert: "Avengers: Doomsday opens today at Filmhouse",
-      fileName: "avengers-doomsday-opens-2026-12-18.ics",
     });
   });
 });

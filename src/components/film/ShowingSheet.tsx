@@ -10,8 +10,7 @@ import { shareLink } from "@/lib/browser";
 import { nextNearby } from "@/lib/data/filmPage";
 import { formatLabel } from "@/lib/data/format";
 import type { ListData, ListRow } from "@/lib/data/select";
-import { showingId } from "@/lib/data/showingId";
-import { buildIcs, icsFileName, saveIcs } from "@/lib/ics/ics";
+import { showingCal } from "@/lib/ics/calHref";
 import { countdownId, toggleCountdown, useCountdowns } from "@/lib/saved";
 import { minutesFromStart } from "@/lib/time/countdown";
 import { formatTime } from "@/lib/time/lagos";
@@ -62,7 +61,7 @@ export function ShowingSheet({ data, row, open, now, areaName, near, city, onPic
       {now === null ? null : upcoming ? (
         <>
           <Book data={data} row={row} now={now} />
-          <OptionRow icon="calendar-plus" tone="soft" title="Add to calendar" desc={calendarLine(row.at, film.runtimeMin)} onClick={() => addToCalendar(data, row, now)} testId="showing.calendar" />
+          <OptionRow icon="calendar-plus" tone="soft" title="Add to calendar" desc={calendarLine(row.at, film.runtimeMin)} href={showingCal(film.id, cinema.id, row.at)} testId="showing.calendar" />
           <OptionRow
             icon="clock"
             tone="soft"
@@ -102,15 +101,6 @@ function Book({ data, row, now }: { data: ListData; row: ListRow; now: string })
   // Old times send people to the cinema's own site to check, never to the source that read them (D-76).
   const href = book.kind === "book" ? bookAt : book.kind === "old" ? cinema.website : null;
   return href ? <OptionRow icon="external-link" title={title} desc={desc} href={href} testId="showing.book" /> : <OptionRow icon="external-link" tone="soft" title={title} desc={desc} testId="showing.book" />;
-}
-
-function addToCalendar(data: ListData, row: ListRow, now: string) {
-  const film = data.films[row.film]!;
-  const cinema = data.cinemas[row.cinema]!;
-  const from = data.fresh[row.fresh]!;
-  const sourceLine = freshness({ name: from.source, method: from.method }, from.fetchedAt, now, from.via).text;
-  const showing = { id: showingId({ cinemaId: cinema.id, filmId: film.id, startsAt: row.at }), film: film.title, cinema: cinema.name, address: cinema.address, startsAt: row.at, runtimeMin: film.runtimeMin, bookingUrl: row.book, sourceLine };
-  saveIcs(buildIcs(showing, now), icsFileName(showing));
 }
 
 /** A started showing: why it can't be booked, and the next times nearby, each opening its own sheet. */

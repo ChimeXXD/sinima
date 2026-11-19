@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildAllDayIcs, buildIcs, icsFileName, type IcsShowing } from "@/lib/ics/ics";
+import { buildAllDayIcs, buildIcs, type IcsShowing } from "@/lib/ics/ics";
 
 const NOW = "2026-11-06T14:00:00Z";
 const showing: IcsShowing = {
@@ -101,15 +101,7 @@ describe("buildIcs: the Remind me calendar file (SPEC §6, acceptance 5)", () =>
   });
 });
 
-describe("icsFileName: <film>-<cinema>-<time>.ics", () => {
-  it("uses plain lowercase words and the Lagos day and time", () => {
-    expect(icsFileName(showing)).toBe("sinners-filmhouse-lekki-imax-2026-11-06-1930.ics");
-  });
-
-  it("strips accents and punctuation, and names an after-midnight show by its Lagos date", () => {
-    expect(icsFileName({ ...showing, film: "Ọmọ Ghetto: The Saga!", startsAt: "2026-11-06T23:30:00Z" })).toBe("omo-ghetto-the-saga-filmhouse-lekki-imax-2026-11-07-0030.ics");
-  });
-});
+// A file's name is its address under /cal/ now (D-160): tests/unit/lib/ics/calFiles.test.ts.
 
 describe("buildAllDayIcs: a coming film's first day (D-151)", () => {
   const event = {

@@ -1,7 +1,8 @@
-import { clock24, lagosDayKey, utcMs } from "@/lib/time/lagos";
+import { utcMs } from "@/lib/time/lagos";
 
 // The "Remind me" calendar file (RFC 5545). One event in UTC with one alert 30 minutes before.
-// It opens in whichever calendar the phone uses; nothing is sent anywhere.
+// Written at build time, one file per showing under /cal/ (calFiles.ts, D-160): an iPhone adds an
+// event to Calendar only from a file at a web address. Nothing is sent anywhere.
 
 export type IcsShowing = {
   /** The showing's id; makes the event's UID, so adding it twice updates one event. */
@@ -13,7 +14,7 @@ export type IcsShowing = {
   startsAt: string;
   runtimeMin?: number | null;
   bookingUrl?: string | null;
-  /** The freshness sentence shown on the row, e.g. "Read from Filmhouse's site 2 hours ago". */
+  /** Where the times came from, with a date, never an age (readOn, D-160): "Times read from Filmhouse's site on Thu 19 Nov at 2:15 PM". */
   sourceLine: string;
 };
 
@@ -108,31 +109,4 @@ export function buildAllDayIcs(event: IcsDay, now: string): string {
     "END:VALARM",
     "END:VEVENT",
   ]);
-}
-
-/** Saves a calendar file through the browser: the phone offers to add it to its calendar. Nothing is sent anywhere. */
-export function saveIcs(ics: string, fileName: string): void {
-  const url = URL.createObjectURL(new Blob([ics], { type: "text/calendar" }));
-  const link = Object.assign(document.createElement("a"), { href: url, download: fileName });
-  document.body.append(link);
-  link.click();
-  link.remove();
-  // Not at once: Safari on an iPhone can still be reading the file when the click returns.
-  setTimeout(() => URL.revokeObjectURL(url), 60_000);
-}
-
-/** Lowercase words joined by hyphens, with accents removed: "Ọmọ Ghetto!" -> "omo-ghetto". */
-export function fileSlug(value: string): string {
-  return value
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
-}
-
-/** "sinners-filmhouse-lekki-imax-2026-11-06-1930.ics": the Lagos day and time of the showing. */
-export function icsFileName(showing: Pick<IcsShowing, "film" | "cinema" | "startsAt">): string {
-  // The file name keeps the 24-hour "1930": short, sortable, no space (the screen says 7:30 PM, D-114).
-  return `${fileSlug(showing.film)}-${fileSlug(showing.cinema)}-${lagosDayKey(showing.startsAt)}-${clock24(showing.startsAt).replace(":", "")}.ics`;
 }

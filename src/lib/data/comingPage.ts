@@ -1,8 +1,7 @@
 import type { City } from "@/lib/city";
 import type { ComingFilm } from "@/lib/data/coming";
-import type { IcsDay } from "@/lib/ics/ics";
-import { SITE_URL } from "@/lib/share/meta";
-import { calendarAction, comingCalendar, leafWords, opensChip, opensLine, timesNotUp } from "@/lib/wording/coming";
+import { comingCal } from "@/lib/ics/calHref";
+import { calendarAction, leafWords, opensChip, opensLine, timesNotUp } from "@/lib/wording/coming";
 import { list } from "@/lib/wording/list";
 
 // Build time: Coming soon's cards and a coming film's page as the words the pages send (D-151). Every
@@ -20,7 +19,7 @@ export type Leaf = { month: string; day: string };
 export type ComingCard = [id: string, title: string, poster: string | null, opens: string, sinimas: string, month?: string, day?: string];
 
 /** What a coming film's page shows in place of the times. */
-export type ComingPage = { leaf: Leaf | null; chip: string; note: string; calendar: { label: string; event: IcsDay; fileName: string } | null };
+export type ComingPage = { leaf: Leaf | null; chip: string; note: string; calendar: { label: string; href: string } | null };
 
 export const comingCards = (entries: ComingFilm[]): ComingCard[] =>
   entries.map(({ film, firstDay, sinimas }): ComingCard => {
@@ -33,6 +32,5 @@ export const comingCards = (entries: ComingFilm[]): ComingCard[] =>
 export function comingPage({ film, firstDay, sinimas }: ComingFilm, city: City): ComingPage {
   const page = { chip: opensChip(firstDay, sinimas), note: timesNotUp(film.title, sinimas, firstDay) };
   if (!firstDay) return { ...page, leaf: null, calendar: null };
-  const { fileName, ...event } = comingCalendar({ film: film.title, filmId: film.id, sinimas, firstDay, city, url: `${SITE_URL}/${city}/film/${film.id}` });
-  return { ...page, leaf: leafWords(firstDay), calendar: { label: calendarAction(firstDay), event, fileName } };
+  return { ...page, leaf: leafWords(firstDay), calendar: { label: calendarAction(firstDay), href: comingCal(city, film.id, firstDay) } };
 }

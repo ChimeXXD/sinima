@@ -1,4 +1,3 @@
-import { fileSlug } from "@/lib/ics/ics";
 import { formatDate, lagosNoon } from "@/lib/time/lagos";
 import { list } from "@/lib/wording/list";
 
@@ -47,7 +46,7 @@ export function calendarAction(firstDay: string): string {
 
 /**
  * The all-day calendar event for a coming film's first day (lib/ics buildAllDayIcs): its words, a UID
- * that is the same each time (adding it again updates one event) and the file's name.
+ * that is the same each time (adding it again updates one event). Its file is /cal/ (D-160).
  */
 export function comingCalendar(input: { film: string; filmId: string; sinimas: string[]; firstDay: string; city: string; url: string }) {
   const { film, filmId, sinimas, firstDay, city, url } = input;
@@ -58,6 +57,5 @@ export function comingCalendar(input: { film: string; filmId: string; sinimas: s
     summary: `${film} opens at ${w.names}`,
     description: `${w.names} ${w.lists} ${film} from ${opening(firstDay)}. ${w.Its} times will be on Sinima as soon as ${w.puts} them up: ${url}`,
     alert: `${film} opens today at ${w.names}`,
-    fileName: `${fileSlug(film)}-opens-${firstDay}.ics`,
   };
 }

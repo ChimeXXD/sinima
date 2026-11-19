@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { freshness, rowWarning } from "@/lib/wording/freshness";
+import { freshness, readOn, rowWarning } from "@/lib/wording/freshness";
 
 const FILMHOUSE = { name: "Filmhouse's site", method: "public-page" } as const;
 const NOW = "2026-11-06T14:00:00Z"; // Fri 6 Nov, 3:00 PM in Lagos
@@ -128,3 +128,16 @@ describe("rowWarning", () => {
     expect(rowWarning("old")).toBe("Times may have changed");
   });
 });
+
+// D-160: a calendar file is written at build time and read days later, so it says when, not how long ago.
+describe("readOn", () => {
+  it("says the day and time the times were read, in Lagos", () => {
+    expect(readOn({ name: "Filmhouse's site", method: "public-page" }, "2026-11-19T13:15:00Z")).toBe("Times read from Filmhouse's site on Thu 19 Nov at 2:15\u00a0PM");
+    expect(readOn({ name: "Lagocine", method: "public-page" }, "2026-11-19T13:15:00Z", { name: "EbonyLife's site", fetchedAt: "2026-11-19T12:00:00Z" })).toBe("Times from Lagocine, which read EbonyLife's site on Thu 19 Nov at 1:00\u00a0PM");
+  });
+
+  it("says sample data is sample data", () => {
+    expect(readOn({ name: "Filmhouse's site", method: "fixture" }, "2026-11-17T09:00:00Z")).toBe("Sample data saved from Filmhouse's site on 17 Nov");
+  });
+});
+

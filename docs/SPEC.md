@@ -21,7 +21,7 @@ Accounts, ticket sales, ads, push notifications (D-11), group plans, crowd confi
 1. **Tonight near me:** open the Cinemas tab → a returning visitor lands on their area's page; a first visit sees all of Lagos with the area picker (D-18, D-55) → "Starting soon" lists showings in the next 2 hours → tap Book → cinema's site in a new tab. Nothing soon in the area → the empty state offers neighbouring areas (D-22).
 2. **One film, anywhere:** the site opens on Films (D-55); search from any page or tap a film (D-22) → every showing in Lagos by start time, grouped by area → Stay or Go chip → Book or Remind me.
 3. **One cinema:** tap a cinema → today and tomorrow → address and source line.
-4. **Remind me:** tap Remind me → .ics downloads → phone calendar adds the event with a 30-minute alert. The page shows a live countdown.
+4. **Remind me:** tap Add to calendar → the phone opens the showing's calendar file (a file the build wrote at `/cal/`, D-160) → its calendar adds the event with a 30-minute alert. The page shows a live countdown.
 5. **Share:** tap Share → native share sheet (or WhatsApp link) with "Sinners · Filmhouse Lekki · Fri 19:30" and the page URL.
 6. **Old data:** the source was read 30 hours ago → every row from it says "Read yesterday at 15:06 · check with the cinema" and a banner explains.
 
@@ -78,7 +78,7 @@ Tapping any time opens that showing in a panel (a sheet on a phone): the ticket,
 - Area picker is a list of areas with cinema counts; choice stored in `localStorage` (`ls.area`).
 - "Use my location" (Should): on tap, `getCurrentPosition` with a 10 s timeout, low accuracy; nearest area by haversine to cinema `geo`; store only the slug. Denied → "No problem. Pick your area." 
 - Book opens the cinema's site in a new tab (`rel="noopener"`). No Book link → "Tickets at the cinema".
-- Remind me downloads `<film>-<cinema>-<time>.ics`: `DTSTART` in UTC, `DURATION` from runtime or 2 h, `VALARM` 30 min before, `LOCATION` cinema name and address, `DESCRIPTION` with booking URL and source line.
+- Remind me links to `/cal/<film id>_<cinema id>_<Lagos day>-<hhmm>.ics`, written at build time for every showing a page lists (D-160; an iPhone adds to Calendar only from a file at a web address, served as `text/calendar`): `DTSTART` in UTC, `DURATION` from runtime or 2 h, `VALARM` 30 min before, `LOCATION` cinema name and address, `DESCRIPTION` with booking URL and source line.
 - Relative text updates every 30 s while the tab is visible; stops when hidden.
 
 ## 7. Accessibility

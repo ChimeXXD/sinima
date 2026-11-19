@@ -17,16 +17,7 @@
       ]
     },
     {
-      "source": "/cal-test/:file*",
-      "headers": [
-        {
-          "key": "X-Robots-Tag",
-          "value": "noindex"
-        }
-      ]
-    },
-    {
-      "source": "/cal-test/event.ics",
+      "source": "/cal/:file*",
       "headers": [
         {
           "key": "Content-Type",
@@ -34,7 +25,11 @@
         },
         {
           "key": "Content-Disposition",
-          "value": "inline; filename=\"sinima-test.ics\""
+          "value": "inline"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
         }
       ]
     }

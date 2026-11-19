@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { onBackdrop } from "@/lib/browser";
+import { isSiteFile } from "./Actions";
 import { Icon, type IconName } from "./Icon";
 import { useSwipeDown } from "./useSwipeDown";
 import s from "./sheet.module.css";
@@ -65,7 +66,7 @@ type OptionRowProps = { icon: IconName; /** In place of the icon tile: the city 
 
 /**
  * 12.1 Option row: an icon tile, a title and a line under it. A link (to another site, in a new
- * tab), a button, or with neither just a statement; a picked option is tinted and ticked. The
+ * tab; to a file of this site, in place), a button, or with neither just a statement; a picked option is tinted and ticked. The
  * tile is the action colour, or the soft tint for the quieter rows of a sheet (Figma Film). Only a
  * row given `selected` is a toggle (aria-pressed); the others are plain buttons.
  */
@@ -99,8 +100,10 @@ export function OptionRow({ icon, lead, title, desc, selected, tone = "primary",
       </div>
     );
   }
+  // A file of this site (a calendar file, D-160) opens in place, so the phone hands it to its calendar.
+  const elsewhere = href !== undefined && !isSiteFile(href);
   return href !== undefined ? (
-    <a className={box} href={href} target="_blank" rel="noopener" data-selected={selected || undefined} data-testid={testId}>
+    <a className={box} href={href} target={elsewhere ? "_blank" : undefined} rel={elsewhere ? "noopener" : undefined} data-selected={selected || undefined} data-testid={testId}>
       {inner}
     </a>
   ) : (

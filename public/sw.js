@@ -110,6 +110,8 @@ self.addEventListener("fetch", (event) => {
     return;
   }
   if (url.origin !== self.location.origin) return;
+  // A calendar file (D-160) goes straight to the network, so the phone hands it to its calendar.
+  if (url.pathname.startsWith("/cal/")) return;
   // Next's build files carry a hash in their names, so a saved copy never goes out of date.
   if (url.pathname.startsWith("/_next/static/")) {
     event.respondWith(cacheFirst(request, FILES, MAX_FILES));
