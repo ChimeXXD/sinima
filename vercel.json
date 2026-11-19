@@ -1,5 +1,42 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "rewrites": [{ "source": "/poster/:size(w154|w342|w500)/:file", "destination": "https://image.tmdb.org/t/p/:size/:file" }],
-  "headers": [{ "source": "/poster/:path*", "headers": [{ "key": "x-vercel-enable-rewrite-caching", "value": "1" }] }]
+  "rewrites": [
+    {
+      "source": "/poster/:size(w154|w342|w500)/:file",
+      "destination": "https://image.tmdb.org/t/p/:size/:file"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/poster/:path*",
+      "headers": [
+        {
+          "key": "x-vercel-enable-rewrite-caching",
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "source": "/cal-test/:file*",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
+    },
+    {
+      "source": "/cal-test/event.ics",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/calendar; charset=utf-8"
+        },
+        {
+          "key": "Content-Disposition",
+          "value": "inline; filename=\"sinima-test.ics\""
+        }
+      ]
+    }
+  ]
 }

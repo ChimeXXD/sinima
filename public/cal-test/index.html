@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Calendar test · Sinima</title>
+<style>
+  body { font: 17px/1.45 -apple-system, system-ui, sans-serif; margin: 0 auto; padding: 24px 16px 48px; max-width: 480px; }
+  h1 { font-size: 24px; margin: 0 0 8px; }
+  p { margin: 0 0 20px; }
+  .way { display: block; width: 100%; box-sizing: border-box; min-height: 56px; margin: 0 0 12px; padding: 14px 16px; border: 1px solid; border-radius: 14px; background: none; color: inherit; font: inherit; text-align: left; text-decoration: none; }
+  .way b { display: block; }
+  small { opacity: .7; }
+</style>
+</head>
+<body>
+<h1>Calendar test</h1>
+<p>Each button opens the same test event: “Sinima calendar test (delete me)”, Sat 21 Nov at 7:30 PM, with an alert 30 minutes before. Tap them one at a time and note which ones open Calendar’s <b>Add</b> screen. Delete the test event afterwards.</p>
+
+<a class="way" href="/cal-test/event.ics"><b>A · A link to the file</b><small>A normal web address that serves a calendar file</small></a>
+<button class="way" type="button" id="b"><b>B · Open it in the page</b><small>The file made in the browser, opened rather than saved</small></button>
+<button class="way" type="button" id="c"><b>C · Open it as text</b><small>The file’s text put straight into the address</small></button>
+<button class="way" type="button" id="d"><b>D · Today’s button</b><small>Saved as a download, as Sinima does now</small></button>
+
+<script>
+  const file = fetch("/cal-test/event.ics").then((r) => r.text());
+  const blobUrl = async () => URL.createObjectURL(new Blob([await file], { type: "text/calendar" }));
+  document.getElementById("b").onclick = async () => { location.href = await blobUrl(); };
+  document.getElementById("c").onclick = async () => { location.href = "data:text/calendar;charset=utf-8," + encodeURIComponent(await file); };
+  document.getElementById("d").onclick = async () => {
+    const a = Object.assign(document.createElement("a"), { href: await blobUrl(), download: "sinima-test.ics" });
+    document.body.append(a); a.click(); a.remove();
+  };
+</script>
+</body>
+</html>
