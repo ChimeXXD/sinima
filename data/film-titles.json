@@ -1,0 +1,6 @@
+{
+  "about": "Hand-kept proper titles (D-159). Key: our film id. Value: the title to show. It wins over TMDB's and, like TMDB's, replaces only a title the sinima writes in capitals; the film's id and page address stay as they are. For a film TMDB can't match yet. \"the-four\": Funke Akindele's The Four (full title The Four: No One Fights Alone, opens 11 Dec 2026, FilmOne), which Filmhouse lists as \"THE FOUR\"; Chime chose \"The Four\" on 19 Nov 2026.",
+  "titles": {
+    "the-four": "The Four"
+  }
+}

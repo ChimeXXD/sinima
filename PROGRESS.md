@@ -2,6 +2,12 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 19 Nov 2026 (afternoon, Lagos) — "THE FOUR" shows as "The Four" (D-159)
+
+- **Changed:** `data/film-titles.json` (hand-kept titles by film id, one entry: `"the-four": "The Four"`); `titleLookup` in `scripts/titles.ts` reads it before TMDB's titles; `assemble.ts` (sample) and `live.ts` (live build) use it. Docs: DATA.md, D-159.
+- **Red:** `titles.test.ts` "titleLookup" (`TypeError: titleLookup is not a function`). **Green:** `tests/unit/scripts` 290/290. `refresh --build` (live) and `--fixtures` (sample): `lagos.json` names the film "The Four".
+- **Not verified:** on the live site until the deploy finishes.
+
 ## 19 Nov 2026 (midday, Lagos) — handoff list items 1–3: smaller page files, search finds coming films, a coming film's preview words (D-156, D-157, D-158)
 
 - **Unit 1, page files without the usual showing id (D-156).** `src/lib/data/showingId.ts` (`showingId`, `withoutShowingIds`, `withShowingIds`); `scripts/refresh.ts` writes the city and area files without an id that is `<cinemaId>_<filmId>_<startsAt>` (any other id stays); `load.ts` puts them back. Later days' files keep their ids (the browser fetches them, and a tab or installed app on the old code would break on one without; `fetchDay` still fills any missing). `writeFiles` now compares the exact text it would write, so an old-shape file is rewritten. `DATA_FILE_LIMIT_KB` 24 → 20. `pipeline.ts` and `ShowingSheet.tsx` build ids through `showingId`.

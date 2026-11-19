@@ -25,7 +25,7 @@ import type { ParsedPage, Reader } from "./sources/raw.ts";
 import { readReach } from "./sources/reach.ts";
 import { readThc } from "./sources/thc.ts";
 import { readVeezi } from "./sources/veezi.ts";
-import { properTitle, tmdbTitles } from "./titles.ts";
+import { properTitle, titleLookup } from "./titles.ts";
 
 export const LIVE_DIR = "data/live";
 const LIVE_PATHS: Paths = {
@@ -209,7 +209,7 @@ export function liveBuildFiles(root: string, now: string): Map<string, Showtimes
   // Only what is saved under the film's id: a merged film (D-119) keeps what the read found under
   // a spelling's id, instead of being wiped back to "not known".
   const creditsFor = creditsLookup(root, { savedOnly: true });
-  const titleFor = tmdbTitles(root);
+  const titleFor = titleLookup(root);
   const read = readJson<ShowtimesFile>(mainPath);
   const checked = validateShowtimes({ ...read, films: read.films.map((film) => ({ ...film, ...creditsFor(film.id), title: properTitle(film.title, titleFor(film.id)) })) });
   if (!checked.ok) throw new Error(`data/live/showtimes.json with today's credits was refused:\n${checked.errors.join("\n")}`);
