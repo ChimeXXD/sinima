@@ -1,6 +1,52 @@
 # Handoff: read this first when you pick the project back up
 
-## Now: session of 18–19 Nov 2026 (evening to 04:15 Lagos): five days, the share card and Coming soon built and live (latest)
+## Now: session of 19 Nov 2026 (midday to late night, Lagos): handoff list done, calendar fixed for iPhone, pull to refresh, the Home Screen guide (latest)
+
+**Where we stopped, exactly:** everything below is committed, pushed (last `75e947f`) and deploying from main. Nothing is running. `mockup/home-screen/` (the guide's pick page) and `docs/design/reference-board/round8-coming-soon.html` are left untracked on purpose (local, like `mockup/coming-soon/`).
+
+**Waiting on Chime (phone checks):**
+1. **Pull to refresh**: open Sinima from the Home Screen, pull any page down from the top (D-161).
+2. **The Home Screen guide**: open sinima.com.ng in Safari (not the app), come back after 30+ minutes; the sheet rises after ~4 s, the card is at the end of Films (D-162, D-163).
+3. **X's composer**: paste a film link and say whether the picture shows (WhatsApp shows it).
+4. **Android**, if one can be borrowed: Add to calendar → Google Calendar, and the guide's one-tap install.
+5. Chime's call, offered: a line for X's in-app browser ("Open this page in Safari first"), since X's browser may not say who it is and would get Safari's steps.
+
+**Next (Claude's list):**
+1. **Video script (30–45 s)**, then the storyboard in Figma: the launch's long-lead item (PLAN week 3). Offer 2–3 scripts to pick from.
+2. Search leftovers: Enter with only coming films matching goes to Films where nothing matches; a film only on days 3–5 isn't found by search.
+3. Two flaky e2e tests under load (both on main before this session): `coming.spec.ts:64` (a Coming soon card click doesn't navigate) and `motion-m5-m9.spec.ts:150` (the tab slide sampled after it ended).
+4. Week 4: Lighthouse ≥ 90 mobile, accessibility pass, both cities on real phones, the Doomsday presales check, launch kit.
+5. Dated: **Fri 20 Nov** recheck `dig A sinima.com.ng @nsc.go54.com` (REFUSED on 18 Nov; if still, draft a Whogohost ticket for Chime). **Tue 24 Nov** draft the outreach follow-ups (OUTREACH §4), show Chime first.
+
+### What Chime asked this session, and what was done
+
+1. **"Where did we stop, and what are we doing next?"**, then **"Yeah, let's start with the tasks"** (the 18–19 Nov list):
+   - **Page files without the usual showing id, limit back to 20 KB** (D-156, `690363d`): city and area files drop an id that is `<cinema>_<film>_<startsAt>`; `load.ts` puts it back; later-day files keep theirs (the browser fetches them; old tabs must read them). Lagos 16.8 → 13.1 KB on live data; newest live: 12.5 KB.
+   - **Search finds coming films** (D-157) and **a coming film's preview promises no times** (D-158) (`db2c0ae`). Also fixed: tapping search before hydration did nothing (`AppFrame`, e2e reproduces it).
+2. **"What is THE FOUR?"**: Funke Akindele's *The Four: No One Fights Alone*, FilmOne, opens 11 Dec 2026. **"Okay, do your recommendation"** → `data/film-titles.json` (hand-kept titles before TMDB's), "The Four" (D-159, `c229175`).
+3. **Phone check** (Chime): share card picture shows on WhatsApp; search shows coming films; five days fine; Coming soon "do your recommendation" (kept). PLAN: Five days and Coming soon ticked.
+4. **"Start with the free up page size room. Then … the reminder plus share."**
+   - Room (`26d80b2`): a source-map build showed Next + React are 133 of ~165 KB per page; ours ~30 KB. Logo data trimmed to file + tile (`logo-tiles.ts`), `Status.tsx` split (`Notices.tsx`, `FormatBadge.tsx`). Sinimas 227.9 → 224.3; Films only 227.7 → 227.2 (now 227.7 of 228 after the features below: **Films has ~0.3 KB left**).
+   - Reminder and share were already built in the showing sheet; the iPhone check found the problem below.
+5. **"When I click Add to calendar, it downloads a file. So can we fix that?"** A temporary `/cal-test` page with four ways, tapped on Chime's iPhone: only a link to a served `.ics` offered "add it to your calendar". So the build writes `/cal/<film>_<cinema>_<day>-<hhmm>.ics` per showing and `/cal/<city>_<film>_opens-<day>.ics` per coming film, served `text/calendar` (`vercel.json`); the buttons are plain same-tab links (D-160, `73605d4`). Chime, from the Home Screen app: "it did not ask to download. It just popped up" with Add to Calendar.
+6. **A screen recording + Design Bookmark's "Pull to refresh" code: "replicate that on all the pages"** → D-161 (`71349a3`): the reference's drop, handle, goo and springs, only in the Home Screen app (Safari has its own), its code loaded only there; a refresh is `router.refresh()` in place.
+7. **"Put a pop-up … that encourages the user to add the web app to their home page"** → pick page with A (sheet on a second visit), B (card at the end of Films), C (nudge after Add to calendar); **"let's do A and B together"** → D-162 (`2d068d4`). Then **"Share is under [•••] on Safari, while on Chrome, share is above"** → per-browser step 1 (D-163, `75e947f`).
+8. **"Yes"** to updating this handoff.
+
+### Decisions this session
+
+D-156 (page files without the usual id, 20 KB), D-157 (search finds coming films), D-158 (coming film's preview words), D-159 (The Four, `data/film-titles.json`), D-160 (calendar files at `/cal/`), D-161 (pull to refresh in the Home Screen app), D-162 (Home Screen guide A + B; O-22 closed), D-163 (each browser's own Share).
+
+### Watch out
+
+- **Budget:** Films is 227.7 of 228 KB, a film page's JS 166.4 of 167. Anything new on every page must load lazily (as pull to refresh and the guide do) or the limit needs Chime's OK.
+- **A visit** for the guide is a page 30+ minutes after the last (`src/lib/homeScreen.ts`), not the browser session: Safari keeps a tab's session for days.
+- **`/cal/` files** are rebuilt with each deploy; a page cached from before a time changed can link to a file that's gone (its 404 is labelled `text/calendar`, from the `vercel.json` rule).
+- **Pull to refresh** moves `<main>` with `translate`: a fixed toast inside main (Sinimas' "Saved") jumps during a pull. Known, not fixed.
+- **The commit gate refuses a command that edits files and commits in one go**: edit first, then `git add … && git commit` on its own.
+- Another session (GlambyPrime) runs a vite preview on `[::1]:4173`; ours binds `127.0.0.1:4173`, no clash. Never kill theirs.
+
+## Earlier: session of 18–19 Nov 2026 (evening to 04:15 Lagos): five days, the share card and Coming soon built and live
 
 **Where we stopped, exactly:** all three features Chime asked for ("Do three of them. So five days, real card, and comming soon") are built, committed, pushed and **live on sinima.com.ng with real data** (checked 04:10 Lagos at 390 px: Coming soon lists THE FOUR 11 Dec, Dune: Part Three and Avengers: Doomsday 18 Dec, Jumanji: Open World 25 Dec; The Hunger Games is left out because it already shows in Lagos, D-154). Commits: `23c0b61` (five days unit 3 + Coming soon data), `bffc762` (data limit 24 KB), `f11ef79` (share cards), `6c2e2f9` (Coming soon screens), then the refresh `2c7a81f`. Nothing is running.
 
