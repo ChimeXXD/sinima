@@ -74,3 +74,6 @@ export function noFilms(input: { query: string; format: string | null; on: strin
   if (input.format) return `No film is showing in ${input.format} ${input.on}.`;
   return `No times are listed ${input.on}.`;
 }
+
+/** Pull to refresh in the Home Screen app (D-161): read aloud as it starts and ends; nothing is shown. */
+export const PULL_REFRESH = { checking: "Checking for new times", done: "Done checking for new times" } as const;

@@ -2,6 +2,14 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 19 Nov 2026 (night, Lagos) — Pull to refresh in the Home Screen app (D-161)
+
+- **Asked:** Chime's screen recording (the Home Screen app has no pull to refresh) and Design Bookmark's "Pull to refresh" code: "replicate that on all the pages".
+- **Changed:** `src/components/ui/pullRefresh.ts` + `.module.css` (the reference's drop, handle, goo filter, rubber pull, 88 px threshold, springs 900/50 dragging and 260/18 home, drop 380/20, scale 420/18, spinner 400/26, 1.3 s hold; reduced motion critically damped; asleep when still), loaded only in the Home Screen app by `usePullRefresh.ts` (in `AppFrame`), so the browser's pages carry none of it. A refresh is `router.refresh()` in a transition: the page's data read again in place. The bar stays; the content and footer move (`translate`, apart from the tab slide's `transform`). Read aloud: "Checking for new times" / "Done checking for new times" (`PULL_REFRESH`).
+- **Checked:** e2e `tests/e2e/pull-refresh.spec.ts` 3/3 (installed: past the threshold the page's data is fetched again and the page springs home; a short pull reads nothing; in the browser nothing pulls). Written after the code, so not red first. Frames side by side with the reference (scratchpad `ptr/side.png`): same layering (bar still, content down, the drop alone in the gap, then the spinner). Budget: Films 227.2 → 227.6 KB (the loader), a film's page 224.5 → 224.7.
+- **Skills:** gestures (kept the reference's stiff 900/50 spring while dragging, which the skill would make 1:1, because Chime asked for the same springs).
+- **Not verified:** on Chime's iPhone from the Home Screen; dark mode by eye.
+
 ## 19 Nov 2026 (evening, Lagos) — "Add to calendar" opens the iPhone's calendar (D-160)
 
 - **Found on Chime's iPhone:** "Add to calendar" downloaded a file. A temporary test page (`/cal-test`, four ways) showed only a link to a served `.ics` offers "add it to your calendar"; a file made in the page and the current download only offer to save; a `data:` address does nothing.

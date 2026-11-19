@@ -14,6 +14,7 @@ import { Icon } from "./Icon";
 import { SearchBar, type CityChoice } from "./SearchBar";
 import { SectionNav, type SectionId } from "./SectionNav";
 import { useTabSlide } from "./tabSlide";
+import { usePullRefresh } from "./usePullRefresh";
 import { TicketFace } from "./Stickers";
 import s from "./frame.module.css";
 
@@ -118,7 +119,9 @@ export function AppFrame({ active, search, city: chosen, bg, bar, footer, onAbou
   const field = useRef<HTMLInputElement>(null);
   const quiet = useRef(false);
   const content = useRef<HTMLElement>(null);
+  const foot = useRef<HTMLElement>(null);
   useTabSlide(content);
+  usePullRefresh([content, foot]);
   const load = () => void loadParts().then(setLoaded, () => {});
   useEffect(() => {
     // A tap on the field before the page was ready focused it with no onFocus to hear it (a slow
@@ -183,7 +186,7 @@ export function AppFrame({ active, search, city: chosen, bg, bar, footer, onAbou
       <main className={s.main} ref={content}>
         {children}
       </main>
-      <footer className={s.footer} data-own={footer ? "" : undefined}>
+      <footer className={s.footer} data-own={footer ? "" : undefined} ref={foot}>
         {footer ?? <p data-testid="footer.note">{FOOTER_NOTE}</p>}
         {!onAbout && (
           <p>
