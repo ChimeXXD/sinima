@@ -7,7 +7,7 @@ import { posterSrc, posterSrcSet, type PosterSize } from "@/lib/data/posters";
 // Sinima's own /poster/ on Vercel (lib/data/posters, D-113).
 
 /** `small` is for a folder, a row or a sticker; the default is a poster card. */
-export function Poster({ film, small = false, eager = false }: { film: ListFilm; small?: boolean; /** Above the fold (a film page's hero): load at once. */ eager?: boolean }) {
+export function Poster({ film, small = false, eager = false }: { film: Pick<ListFilm, "poster">; small?: boolean; /** Above the fold (a film page's hero): load at once. */ eager?: boolean }) {
   if (!film.poster) return null;
   const [one, two]: [PosterSize, PosterSize] = small ? ["w154", "w342"] : ["w342", "w500"];
   return (

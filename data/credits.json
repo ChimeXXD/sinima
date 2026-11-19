@@ -256,6 +256,26 @@
       ],
       "checkedAt": "2026-11-16T22:32:15Z"
     },
+    "the-hunger-games-sunrise-on-the-reaping": {
+      "tmdbId": 1300968,
+      "tmdbTitle": "The Hunger Games: Sunrise on the Reaping",
+      "runtimeMin": 159,
+      "posterPath": "/j1MNyNNgNQL6f27cb3m3uKaPKd6.jpg",
+      "trailerKey": "Dr060OLTodE",
+      "keywordIds": [
+        818,
+        4565,
+        4458,
+        3104,
+        9663,
+        9675,
+        246466,
+        286995,
+        293198,
+        325762
+      ],
+      "checkedAt": "2026-11-18T15:25:48Z"
+    },
     "verity": {
       "tmdbId": 1283515,
       "tmdbTitle": "Verity",
@@ -357,25 +377,58 @@
       ],
       "checkedAt": "2026-11-16T22:32:15Z"
     },
-    "the-hunger-games-sunrise-on-the-reaping": {
-      "tmdbId": 1300968,
-      "tmdbTitle": "The Hunger Games: Sunrise on the Reaping",
-      "runtimeMin": 159,
-      "posterPath": "/j1MNyNNgNQL6f27cb3m3uKaPKd6.jpg",
-      "trailerKey": "Dr060OLTodE",
+    "avengers-doomsday": {
+      "tmdbId": 1003596,
+      "tmdbTitle": "Avengers: Doomsday",
+      "runtimeMin": 165,
+      "posterPath": "/zHTxblqPcqRpA93ex2Hj0RdpVBs.jpg",
+      "trailerKey": "X1aFkAkFASk",
+      "keywordIds": [
+        9715,
+        9717,
+        9663,
+        155030,
+        180547,
+        302711,
+        336874
+      ],
+      "checkedAt": "2026-11-19T00:44:41Z"
+    },
+    "dune-part-three": {
+      "tmdbId": 1170608,
+      "tmdbTitle": "Dune: Part Three",
+      "runtimeMin": 150,
+      "posterPath": "/d43fvHQsIMa4kpyhKXw0haEJIvI.jpg",
+      "trailerKey": "uJqaGLmZpGo",
       "keywordIds": [
         818,
-        4565,
-        4458,
-        3104,
+        7534,
         9663,
-        9675,
-        246466,
-        286995,
-        293198,
-        325762
+        9882,
+        13194,
+        18034,
+        161176,
+        195114,
+        295922,
+        298532
       ],
-      "checkedAt": "2026-11-18T15:25:48Z"
+      "checkedAt": "2026-11-19T00:44:41Z"
+    },
+    "jumanji-open-world": {
+      "tmdbId": 1260649,
+      "tmdbTitle": "Jumanji: Open World",
+      "runtimeMin": 126,
+      "posterPath": "/ntjF2gemedf3ZcWzARGt6cuZlnJ.jpg",
+      "trailerKey": "nIw1O3zvOfE",
+      "keywordIds": [
+        818,
+        282,
+        1442,
+        9663,
+        10787,
+        33721
+      ],
+      "checkedAt": "2026-11-19T00:44:41Z"
     }
   }
 }

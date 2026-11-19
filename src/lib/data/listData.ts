@@ -1,6 +1,6 @@
-import type { ListData, ListFresh } from "@/lib/data/select";
+import type { ListData, ListFilm, ListFresh } from "@/lib/data/select";
 import type { ListFeatured } from "@/lib/data/featured";
-import type { CreditsInfo, ShowtimesFile } from "@/lib/data/types";
+import type { CreditsInfo, Film, ShowtimesFile } from "@/lib/data/types";
 import { creditsWording } from "@/lib/wording/credits";
 
 // A data file as the list data a page sends to the browser (select.ts holds its shape). Build time,
@@ -8,6 +8,12 @@ import { creditsWording } from "@/lib/wording/credits";
 // script doesn't carry it (the page budget, D-21).
 
 const UNKNOWN_CREDITS: CreditsInfo = { during: "unknown", after: "unknown", confidence: "unknown", sources: [], count: null };
+
+/** A film as a page sends it: its Stay or Go in words. */
+export function listFilm(film: Film): ListFilm {
+  const { verdict, chip, detail } = creditsWording(film.credits ?? UNKNOWN_CREDITS);
+  return { id: film.id, title: film.title, poster: film.posterPath ?? null, trailer: film.trailerKey ?? null, rating: film.rating, runtimeMin: film.runtimeMin, stay: { verdict, chip, detail } };
+}
 
 /** A data file as list rows in start-time order. `filmId` keeps one film's showings only. */
 export function toListData(file: ShowtimesFile, only: { filmId?: string; cinemaId?: string } = {}): ListData {
@@ -52,10 +58,7 @@ export function toListData(file: ShowtimesFile, only: { filmId?: string; cinemaI
     ...(featured.length > 0 ? { featured } : {}),
     sample: file.sample,
     at: file.generatedAt,
-    films: films.map((film) => {
-      const { verdict, chip, detail } = creditsWording(film.credits ?? UNKNOWN_CREDITS);
-      return { id: film.id, title: film.title, poster: film.posterPath ?? null, trailer: film.trailerKey ?? null, rating: film.rating, runtimeMin: film.runtimeMin, stay: { verdict, chip, detail } };
-    }),
+    films: films.map(listFilm),
     cinemas: file.cinemas.map(({ id, name, area, chain, address, website, bookingHost }) => ({ id, name, area, chain, online: Boolean(bookingHost), address, website })),
     fresh,
     rows,

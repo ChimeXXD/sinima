@@ -6,6 +6,7 @@ import type { Cinema, Film, Showing, ShowtimesFile, Source, SourceHealth } from 
 import { validateShowtimes } from "../src/lib/data/validate.ts";
 import { EVENING_ENDS_HOUR, lagosDayKey, lagosDaysFrom, lagosLocalToUtc, toLagos } from "../src/lib/time/lagos.ts";
 import { comingFilms } from "./coming.ts";
+import { properTitle } from "./titles.ts";
 import { featuredFilms, listedTitles, listMatcher } from "./lists.ts";
 import type { ComingFilm, RawShowing } from "./sources/raw.ts";
 
@@ -169,6 +170,8 @@ export function buildShowtimes(input: {
    * first, then under the ids of the other spellings merged into it (D-119).
    */
   creditsFor?: (filmId: string, spellings?: string[]) => Pick<Film, "tmdbId" | "runtimeMin" | "credits" | "posterPath" | "trailerKey"> | undefined;
+  /** TMDB's title for a matched film, for one a sinima writes in capitals (D-152c). */
+  titleFor?: (filmId: string) => string | undefined;
 }): {
   file: ShowtimesFile;
   log: string[];
@@ -250,7 +253,7 @@ export function buildShowtimes(input: {
   });
   const result = validateShowtimes({
     schemaVersion: 1, generatedAt: input.generatedAt, timeZone: "Africa/Lagos",
-    sources: input.sources, cinemas: input.cinemas, films: [...films.values()].sort((a, b) => a.id.localeCompare(b.id)), showings,
+    sources: input.sources, cinemas: input.cinemas, films: [...films.values()].map((film) => ({ ...film, title: properTitle(film.title, input.titleFor?.(film.id)) })).sort((a, b) => a.id.localeCompare(b.id)), showings,
     ...(featured.length > 0 ? { featured } : {}),
     ...(coming.length > 0 ? { coming } : {}),
   });

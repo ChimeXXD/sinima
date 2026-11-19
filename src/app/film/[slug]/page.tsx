@@ -6,7 +6,7 @@ import { loadCity } from "@/lib/data/load";
 export const metadata: Metadata = { title: "Sinima", robots: { index: false } };
 export const dynamicParams = false;
 // Every old address was a Lagos page: only Lagos's films forward (D-120), those with showings (a
-// coming-only film, D-151, has no page to forward to yet).
+// coming-only film, D-151, came after the old addresses, so none of them names one).
 export const generateStaticParams = () => filmsWithShowings(loadCity("lagos")).map((film) => ({ slug: film.id }));
 
 /** The old /film/<slug>, before the city came first (D-98). */

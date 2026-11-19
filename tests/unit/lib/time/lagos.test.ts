@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { eveningDayKey, formatDay, formatLateTime, formatTime, lagosDayKey, lagosLocalToUtc, toLagos } from "@/lib/time/lagos";
+import { eveningDayKey, formatDay, formatLateTime, formatTime, lagosDayKey, lagosLocalToUtc, lagosNoon, toLagos } from "@/lib/time/lagos";
 
 const realTz = process.env.TZ;
 afterEach(() => {
@@ -106,5 +106,16 @@ describe("the evening runs to 04:00 Lagos time (SPEC §3)", () => {
   it("leaves ordinary evening times alone", () => {
     expect(formatLateTime("2026-11-06T18:30:00Z")).toBe("7:30\u00a0PM");
     expect(eveningDayKey("2026-11-06T18:30:00Z")).toBe("2026-11-06");
+  });
+});
+
+describe("lagosNoon: a Lagos date as an instant on that day (D-151)", () => {
+  it("is noon in Lagos, 11:00 UTC, so the date reads the same in Lagos", () => {
+    expect(lagosNoon("2026-12-18")).toBe("2026-12-18T11:00:00Z");
+    expect(lagosDayKey(lagosNoon("2026-12-31"))).toBe("2026-12-31");
+  });
+  it("refuses anything that is not a real yyyy-mm-dd date", () => {
+    expect(() => lagosNoon("18 Dec")).toThrow(/date/);
+    expect(() => lagosNoon("2026-02-30")).toThrow();
   });
 });

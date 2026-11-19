@@ -22,7 +22,9 @@ import { CITY_NAMES, type City } from "@/lib/city";
 import { useNow } from "@/lib/time/useNow";
 import { dayWords } from "@/lib/wording/day";
 import { filmMeta } from "@/lib/wording/film";
-import { formatNote, noFilms, nothingMoreToday, sectionWords } from "@/lib/wording/films";
+import { COMING_SECTION, formatNote, noFilms, nothingMoreToday, sectionWords } from "@/lib/wording/films";
+import type { ComingCard } from "@/lib/data/comingPage";
+import { ComingRow } from "./ComingRow";
 import { FilmsHero } from "./FilmsHero";
 import s from "./films.module.css";
 
@@ -30,7 +32,8 @@ import s from "./films.module.css";
 // starting in the next 2 hours, then later tonight. Relative words and the countdowns wait for the
 // clock (rule 3); until then the day is one list under its date.
 
-export function FilmsScreen({ data, city, bg }: { data: ListData; city: City; bg: { light: string; dark: string } }) {
+/** `coming`: Coming soon's cards (D-151); none in a city with no coming film, and then no section. */
+export function FilmsScreen({ data, city, bg, coming = [] }: { data: ListData; city: City; bg: { light: string; dark: string }; coming?: ComingCard[] }) {
   const cityName = CITY_NAMES[city];
   const clock = useNow();
   const live = clock !== null;
@@ -128,6 +131,21 @@ export function FilmsScreen({ data, city, bg }: { data: ListData; city: City; bg
 
       {days.load && <DayLoad {...days.load} />}
       {!days.load && sections.length === 0 && <Empty data={data} cityName={cityName} day={day} now={now} live={live} format={format} query={query.trim()} on={on} onTomorrow={() => changeDay(1, "tap")} />}
+      {/* Coming films have no showings and so no format; a search or a format narrows the page to showings.
+          Drawn once the page runs (`live`), from the data the page carries anyway: the section sits below
+          Now showing, and leaving it out of the HTML keeps Films inside its budget (D-153). */}
+      {live && coming.length > 0 && !query.trim() && !format && (
+        <section className={s.section} aria-labelledby="films.coming" data-testid="section.coming">
+          <div className={s.heading}>
+            <h2 id="films.coming">{COMING_SECTION.title}</h2>
+            <p>{COMING_SECTION.note}</p>
+            <span className={`${s.hand} ${s.comingHand}`} aria-hidden="true">
+              {COMING_SECTION.hand}
+            </span>
+          </div>
+          <ComingRow cards={coming} />
+        </section>
+      )}
     </AppFrame>
   );
 }

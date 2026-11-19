@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildIcs, icsFileName, type IcsShowing } from "@/lib/ics/ics";
+import { buildAllDayIcs, buildIcs, icsFileName, type IcsShowing } from "@/lib/ics/ics";
 
 const NOW = "2026-11-06T14:00:00Z";
 const showing: IcsShowing = {
@@ -92,7 +92,8 @@ describe("buildIcs: the Remind me calendar file (SPEC §6, acceptance 5)", () =>
 
   it("escapes text that would break the file", () => {
     const out = buildIcs({ ...showing, film: "Love; Actually, Again\\Now\nPart 2" }, NOW);
-    expect(value(out, "SUMMARY")).toBe("Love\; Actually\\, Again\\\\Now\\nPart 2 at Filmhouse Lekki IMAX");
+    // RFC 5545 3.3.11: a semicolon is written "\\;" (the test once said "\;", which JavaScript reads as ";").
+    expect(value(out, "SUMMARY")).toBe("Love\\; Actually\\, Again\\\\Now\\nPart 2 at Filmhouse Lekki IMAX");
   });
 
   it("refuses a start time that is not UTC", () => {
@@ -107,5 +108,47 @@ describe("icsFileName: <film>-<cinema>-<time>.ics", () => {
 
   it("strips accents and punctuation, and names an after-midnight show by its Lagos date", () => {
     expect(icsFileName({ ...showing, film: "Ọmọ Ghetto: The Saga!", startsAt: "2026-11-06T23:30:00Z" })).toBe("omo-ghetto-the-saga-filmhouse-lekki-imax-2026-11-07-0030.ics");
+  });
+});
+
+describe("buildAllDayIcs: a coming film's first day (D-151)", () => {
+  const event = {
+    uid: "opens-lagos-avengers-doomsday@sinima",
+    day: "2026-12-18",
+    summary: "Avengers: Doomsday opens at Filmhouse",
+    description: "Filmhouse lists Avengers: Doomsday from Fri 18 Dec. Its times will be on Sinima as soon as Filmhouse puts them up: https://sinima.com.ng/lagos/film/avengers-doomsday",
+    alert: "Avengers: Doomsday opens today at Filmhouse",
+  };
+  const ics = buildAllDayIcs(event, NOW);
+
+  it("is one all-day event on the sinima's date: a DATE start and the next day as its end, no time and no zone", () => {
+    expect(ics).toContain("\r\nDTSTART;VALUE=DATE:20261218\r\n");
+    expect(ics).toContain("\r\nDTEND;VALUE=DATE:20261219\r\n");
+    expect(ics).not.toMatch(/TZID|DURATION/);
+    expect(buildAllDayIcs({ ...event, day: "2026-12-31" }, NOW)).toContain("\r\nDTEND;VALUE=DATE:20270101\r\n");
+  });
+
+  it("carries the words it is given, escaped, and a stable UID", () => {
+    expect(value(ics, "UID")).toBe("opens-lagos-avengers-doomsday@sinima");
+    expect(value(ics, "DTSTAMP")).toBe("20261106T140000Z");
+    expect(unescape(value(ics, "SUMMARY")!)).toBe(event.summary);
+    expect(unescape(value(ics, "DESCRIPTION")!)).toBe(event.description);
+  });
+
+  it("has one alert at 9 in the morning of the day", () => {
+    const names = parse(ics).map((l) => `${l.name}:${l.value}`);
+    const alarm = names.slice(names.indexOf("BEGIN:VALARM"), names.indexOf("END:VALARM") + 1);
+    expect(alarm).toEqual(["BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:Avengers: Doomsday opens today at Filmhouse", "TRIGGER:PT9H", "END:VALARM"]);
+  });
+
+  it("is a calendar a phone accepts: CRLF, folded at 75 bytes", () => {
+    expect(ics.startsWith("BEGIN:VCALENDAR\r\nVERSION:2.0\r\n")).toBe(true);
+    expect(ics.endsWith("END:VCALENDAR\r\n")).toBe(true);
+    for (const line of ics.split("\r\n")) expect(new TextEncoder().encode(line).length).toBeLessThanOrEqual(75);
+  });
+
+  it("refuses a day that is not a real yyyy-mm-dd date", () => {
+    expect(() => buildAllDayIcs({ ...event, day: "18 Dec" }, NOW)).toThrow(/date/);
+    expect(() => buildAllDayIcs({ ...event, day: "2026-02-30" }, NOW)).toThrow(/date/);
   });
 });

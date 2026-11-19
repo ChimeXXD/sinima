@@ -7,6 +7,7 @@ import { inCity } from "../src/lib/data/cities.ts";
 import type { Cinema, ShowtimesFile, Source } from "../src/lib/data/types.ts";
 import { mergeCredits, type FilmCredits, type ManualEntry, type TmdbFilm } from "./credits.ts";
 import { buildShowtimes, laterDays, splitByArea, type Batch } from "./pipeline.ts";
+import { tmdbTitles } from "./titles.ts";
 
 export type RegistryCinema = Omit<Cinema, "sourceIds"> & Record<string, unknown>;
 export type RegistrySource = {
@@ -98,7 +99,7 @@ export function assemble(input: { now: string; root: string; batches: Batch[]; m
   // Chime's film aliases (D-119), when the file is there.
   const aliasPath = join(root, "data/film-aliases.json");
   const aliases = existsSync(aliasPath) ? readJson<{ aliases: Record<string, string> }>(aliasPath).aliases : {};
-  const { file, log } = buildShowtimes({ generatedAt: now, sources, cinemas, batches, aliases, creditsFor: creditsLookup(root) });
+  const { file, log } = buildShowtimes({ generatedAt: now, sources, cinemas, batches, aliases, creditsFor: creditsLookup(root), titleFor: tmdbTitles(root) });
   const files = new Map<string, ShowtimesFile>([[paths.main, file], ...pageFiles(file, registry.areas, now, paths)]);
   return { files, log };
 }

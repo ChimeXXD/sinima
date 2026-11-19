@@ -10,7 +10,7 @@ import { shareLink } from "@/lib/browser";
 import { nextNearby } from "@/lib/data/filmPage";
 import { formatLabel } from "@/lib/data/format";
 import type { ListData, ListRow } from "@/lib/data/select";
-import { buildIcs, icsFileName } from "@/lib/ics/ics";
+import { buildIcs, icsFileName, saveIcs } from "@/lib/ics/ics";
 import { countdownId, toggleCountdown, useCountdowns } from "@/lib/saved";
 import { minutesFromStart } from "@/lib/time/countdown";
 import { formatTime } from "@/lib/time/lagos";
@@ -109,13 +109,7 @@ function addToCalendar(data: ListData, row: ListRow, now: string) {
   const from = data.fresh[row.fresh]!;
   const sourceLine = freshness({ name: from.source, method: from.method }, from.fetchedAt, now, from.via).text;
   const showing = { id: `${cinema.id}_${film.id}_${row.at}`, film: film.title, cinema: cinema.name, address: cinema.address, startsAt: row.at, runtimeMin: film.runtimeMin, bookingUrl: row.book, sourceLine };
-  const url = URL.createObjectURL(new Blob([buildIcs(showing, now)], { type: "text/calendar" }));
-  const link = Object.assign(document.createElement("a"), { href: url, download: icsFileName(showing) });
-  document.body.append(link);
-  link.click();
-  link.remove();
-  // Not at once: Safari on an iPhone can still be reading the file when the click returns.
-  setTimeout(() => URL.revokeObjectURL(url), 60_000);
+  saveIcs(buildIcs(showing, now), icsFileName(showing));
 }
 
 /** A started showing: why it can't be booked, and the next times nearby, each opening its own sheet. */

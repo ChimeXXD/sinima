@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import example from "../../../../docs/examples/showtimes-v1.example.json";
 import { inCity } from "@/lib/data/cities";
-import { cutComing, filmsWithShowings, withComing } from "@/lib/data/coming";
+import { comingList, cutComing, filmsWithShowings, withComing } from "@/lib/data/coming";
 import type { ShowtimesFile } from "@/lib/data/types";
 import { validateShowtimes } from "@/lib/data/validate";
 
@@ -104,5 +104,53 @@ describe("filmsWithShowings: which films get a film page today", () => {
   it("leaves out a coming-only film, which is in `films` but has no showing (its page comes with the Coming soon UI, D-151)", () => {
     const file = withEntries(entry()) as ShowtimesFile;
     expect(filmsWithShowings(file).map((film) => film.id)).toEqual(["spider-man-brand-new-day", "one-gidi-night"]);
+  });
+});
+
+describe("comingList: the films under Coming soon in a city, and which get a coming film's page (D-151, D-154)", () => {
+  const cinema = (id: string, chain: string) => ({ id, name: id, chain, area: "lekki", address: null, geo: null, website: null, bookingHost: null, sourceIds: [] });
+  const film = (id: string, title: string) => ({ id, title, runtimeMin: null, rating: null, origin: null, tmdbId: null });
+  const coming = (filmId: string, firstDay: string | null, cinemaIds = ["filmhouse-oniru", "filmhouse-surulere"], sourceId = "filmhouse-home") => ({ sourceId, filmId, firstDay, cinemaIds, fetchedAt: FETCHED });
+  // Generated 6 Nov at 16:00 UTC: 17:00 on 6 Nov in Lagos.
+  const file = {
+    generatedAt: FETCHED,
+    cinemas: [cinema("filmhouse-oniru", "Filmhouse"), cinema("filmhouse-surulere", "Filmhouse"), cinema("genesis-lekki", "Genesis")],
+    films: [film("avengers-doomsday", "Avengers: Doomsday"), film("dune-part-three", "Dune: Part Three"), film("the-four", "The Four"), film("hunger-games", "The Hunger Games")],
+    coming: [coming("avengers-doomsday", "2026-12-18"), coming("the-four", null), coming("dune-part-three", "2026-12-11"), coming("hunger-games", "2026-11-20")],
+  };
+  const ids = (list: ReturnType<typeof comingList>) => list.map((entry) => entry.film.id);
+
+  it("lists each film once, by its first date, undated last, with the sinimas that list it", () => {
+    const list = comingList(file, new Set());
+    expect(ids(list)).toEqual(["hunger-games", "dune-part-three", "avengers-doomsday", "the-four"]);
+    expect(list[2]).toEqual({ film: file.films[0], firstDay: "2026-12-18", sinimas: ["Filmhouse"] });
+    expect(list[3]!.firstDay).toBeNull();
+  });
+
+  it("leaves out a film with any showing in the city's shown days: it is on now, not coming (D-154)", () => {
+    expect(ids(comingList(file, new Set(["hunger-games"])))).toEqual(["dune-part-three", "avengers-doomsday", "the-four"]);
+  });
+
+  it("leaves out a film whose first date is not after the file's Lagos day", () => {
+    const today = { ...file, coming: [coming("avengers-doomsday", "2026-11-06"), coming("dune-part-three", "2026-11-07")] };
+    expect(ids(comingList(today, new Set()))).toEqual(["dune-part-three"]);
+  });
+
+  it("takes a film's earliest date when two sinimas list it, with the sinimas giving that date", () => {
+    const two = { ...file, coming: [coming("avengers-doomsday", "2026-12-18"), coming("avengers-doomsday", "2026-12-16", ["genesis-lekki"], "genesis"), coming("dune-part-three", "2026-12-11", ["genesis-lekki"], "genesis"), coming("dune-part-three", "2026-12-11")] };
+    const list = comingList(two, new Set());
+    expect(list.map(({ film: f, firstDay, sinimas }) => [f.id, firstDay, sinimas])).toEqual([
+      ["dune-part-three", "2026-12-11", ["Genesis", "Filmhouse"]],
+      ["avengers-doomsday", "2026-12-16", ["Genesis"]],
+    ]);
+  });
+
+  it("never lets an entry naming no sinima in the file take the date from one that does", () => {
+    const stray = { ...file, coming: [coming("avengers-doomsday", "2026-12-18"), coming("avengers-doomsday", "2026-12-16", ["gone-cinema"], "gone")] };
+    expect(comingList(stray, new Set())).toEqual([{ film: file.films[0], firstDay: "2026-12-18", sinimas: ["Filmhouse"] }]);
+  });
+
+  it("is empty when no sinima lists a film as coming (Abuja today)", () => {
+    expect(comingList({ ...file, coming: undefined }, new Set())).toEqual([]);
   });
 });

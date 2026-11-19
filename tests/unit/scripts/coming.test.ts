@@ -32,6 +32,9 @@ const COMING: ComingFilm[] = [
 const homePage = (coming = COMING): ParsedPage[] => [{ showings: [], builtAt: null, featured: { day: "2026-11-11", films: [] }, coming }];
 const readers = (home: () => Promise<ParsedPage[]>) => ({ lagocine: READERS.lagocine!, "filmhouse-home": home });
 const main = (files: Map<string, ShowtimesFile>) => files.get(`${LIVE_DIR}/showtimes.json`) as ShowtimesFile;
+// TMDB's title once data/credits.json has matched the film (D-152c); until then the page's, tidied.
+const tmdbTitle = (id: string, own: string) => (JSON.parse(readFileSync(join(root, "data/credits.json"), "utf8")) as { tmdb: Record<string, { tmdbTitle?: string }> }).tmdb[id]?.tmdbTitle ?? own;
+const DUNE = tmdbTitle("dune-part-three", "DUNE: PART THREE");
 const entry = (filmId: string, firstDay: string | null, fetchedAt = NOW, cinemaIds = FILMHOUSE) => ({ sourceId: "filmhouse-home", filmId, firstDay, cinemaIds, fetchedAt });
 
 function scratch(): string {
@@ -51,9 +54,11 @@ describe("refreshLive with Filmhouse's coming films", () => {
       entry("the-four", null),
     ]);
     const films = new Map(file.films.map((film) => [film.id, film]));
-    // The sinima's rating; the title as the page writes it, without the space before a colon.
-    expect(films.get("avengers-doomsday")).toMatchObject({ title: "AVENGERS: DOOMSDAY", rating: "PG-13", runtimeMin: null, origin: null });
-    expect(films.get("dune-part-three")).toMatchObject({ title: "DUNE: PART THREE", rating: null });
+    // The sinima's rating; TMDB's title once matched, else the page's without the space before a colon; the
+    // runtime only from TMDB (D-152d): data/credits.json's match once it has one, else none.
+    const tmdb = (JSON.parse(readFileSync(join(root, "data/credits.json"), "utf8")) as { tmdb: Record<string, { runtimeMin?: number | null }> }).tmdb;
+    expect(films.get("avengers-doomsday")).toMatchObject({ title: tmdbTitle("avengers-doomsday", "AVENGERS: DOOMSDAY"), rating: "PG-13", runtimeMin: tmdb["avengers-doomsday"]?.runtimeMin ?? null, origin: null });
+    expect(films.get("dune-part-three")).toMatchObject({ title: DUNE, rating: null });
     expect(file.showings.some((s) => s.sourceId === "filmhouse-home")).toBe(false);
   });
 
@@ -98,7 +103,7 @@ describe("refreshLive with Filmhouse's coming films", () => {
     });
     const later = await refreshLive({ now: LATER, root: dir, fetchText, readers: broken });
     expect(main(later.files).coming).toEqual([entry("tomorrows-film", "2026-11-12"), entry("avengers-doomsday", "2026-12-18"), entry("dune-part-three", "2026-12-18"), entry("the-four", null)]);
-    expect(main(later.files).films.find((f) => f.id === "dune-part-three")).toMatchObject({ title: "DUNE: PART THREE" });
+    expect(main(later.files).films.find((f) => f.id === "dune-part-three")).toMatchObject({ title: DUNE });
     expect(main(later.files).sources.find((s) => s.id === "filmhouse-home")).toMatchObject({ health: "failing", fetchedAt: NOW });
 
     save(main(later.files));
@@ -131,7 +136,7 @@ describe("refresh --fixtures with Filmhouse's saved home page", () => {
       entry("avengers-doomsday", "2026-12-19", saved),
       entry("jumanji-open-world", "2026-12-26", saved),
     ]);
-    expect(lagos.films.find((f) => f.id === "dune-part-three")!.title).toBe("DUNE: PART THREE");
+    expect(lagos.films.find((f) => f.id === "dune-part-three")!.title).toBe(DUNE);
     expect("coming" in (files.get("public/data/abuja.json") as ShowtimesFile)).toBe(false);
   });
 });

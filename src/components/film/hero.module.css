@@ -57,6 +57,40 @@
   rotate: -10deg;
   animation-delay: 100ms;
 }
+/* A coming film's date leaf (D-151) on the poster's top-right corner, as the mockup sets it: the
+   leaf's left edge 28.8 px left of the tilted corner (at 50% + 97.5, 33.7), its top 1.8 px above. */
+.leafAt {
+  position: absolute;
+  top: 32px;
+  left: calc(50% + 68.7px);
+  animation: stick var(--dur-base) var(--ease-out) 80ms backwards;
+}
+/* The leaf itself: a Films card's (films.module.css .comingLeaf), larger. */
+.comingLeaf {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 64px;
+  padding: var(--space-6) 0 7px;
+  border-radius: var(--radius-button);
+  background: var(--bg-raised);
+  box-shadow: 0 0 0 3px var(--sticker-outline);
+  filter: drop-shadow(var(--fx-sticker-small));
+  rotate: 8deg;
+  text-align: center;
+  line-height: 1;
+}
+.comingLeaf small {
+  display: block;
+  color: var(--text-accent);
+  font: 700 12px/1.1 var(--font-sans);
+}
+.comingLeaf b {
+  display: block;
+  margin-top: var(--space-2);
+  color: var(--text-primary);
+  font: 700 26px/1 var(--font-sans);
+}
 .note {
   position: absolute;
   top: 124.3px;
@@ -86,6 +120,7 @@
 @media (prefers-reduced-motion: reduce) {
   .poster,
   .sticker,
+  .leafAt,
   .note {
     animation-name: fade;
   }
@@ -99,6 +134,7 @@
 /* D-112 C8, F6: after a move inside the site, these press on only on a fresh page (tabSlide.ts). */
 :global(html[data-arrived]) .poster,
 :global(html[data-arrived]) .sticker,
+:global(html[data-arrived]) .leafAt,
 :global(html[data-arrived]) .note {
   animation: none;
 }

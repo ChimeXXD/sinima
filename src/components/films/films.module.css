@@ -1,4 +1,5 @@
-/* Films (Figma 175:3480): controls, sections and the poster grid at 2, 4 and 5 columns. */
+/* Films (Figma 175:3480): controls, sections and the poster grid at 2, 4 and 5 columns; Coming soon
+   (D-151, mockup/coming-soon). */
 
 .controls {
   display: flex;
@@ -26,6 +27,7 @@
   padding-bottom: var(--space-8);
 }
 .heading {
+  position: relative; /* Coming soon's "save the date!" */
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
@@ -38,12 +40,79 @@
   color: var(--text-secondary);
   font: 500 14px/1.2 var(--font-sans); /* Figma: Urbanist Medium 14 */
 }
+/* Coming soon (D-151): "save the date!" on the heading's right, as the mockup sets it. */
+.comingHand {
+  position: absolute;
+  top: -2px;
+  right: var(--space-4);
+  font: 400 26px/1 var(--font-hand); /* with .hand: the mockup's 26 px */
+  white-space: nowrap;
+}
 .grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 22px var(--space-12);
   align-items: start;
 }
+/* Coming soon's cards are the Now showing .grid from an iPad; on a phone, one sideways row of 148 px
+   cards. The 12 px above them keeps the date leaves whole; the row fades at its edges like the chip
+   rows (a mask: only its alpha counts). */
+@media (max-width: 767px) {
+  .comingRow {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: 148px;
+    gap: var(--space-12);
+    margin: calc(-1 * var(--space-12)) calc(-1 * var(--gutter)) 0;
+    padding: var(--space-12) var(--gutter) var(--space-4);
+    overflow-x: auto;
+    scrollbar-width: none;
+    mask-image: linear-gradient(90deg, transparent, var(--text-primary) var(--space-16), var(--text-primary) calc(100% - var(--space-32)), transparent);
+  }
+  .comingRow::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* A coming card with no poster keeps its ticket at the bottom right, as the mockup draws it: the
+   top right is the date leaf's. Just above a one-line title (28 px up, 26 px type). */
+.comingRow [data-testid="poster.none"] > img {
+  top: auto;
+  bottom: 60px;
+}
+/* The sinima's name sits close under "Opens Fri 18 Dec". */
+.comingSinima {
+  margin-top: calc(-1 * var(--space-4));
+}
+
+/* The calendar leaf on the poster's top-right corner: white, a 3 px die-cut outline, the small
+   sticker shadow, turned 6°. `rotate`, not `transform`, so the card's hover lift moves it with the
+   poster. The film page's larger leaf is in film/hero.module.css. */
+.comingLeaf {
+  position: absolute;
+  top: -8px;
+  right: -6px;
+  width: 54px;
+  padding: var(--space-6) 0 7px;
+  border-radius: var(--radius-button);
+  background: var(--bg-raised);
+  box-shadow: 0 0 0 3px var(--sticker-outline);
+  filter: drop-shadow(var(--fx-sticker-small));
+  rotate: 6deg;
+  text-align: center;
+  font: 700 22px/1 var(--font-sans); /* the day; the month is 12 px */
+}
+.comingLeaf small {
+  display: block;
+  color: var(--text-accent);
+  font-size: 12px;
+  line-height: 1.1;
+}
+.comingLeaf b {
+  display: block;
+  margin-top: var(--space-2);
+}
+
 .formatNote {
   color: var(--text-secondary);
   font: var(--type-meta);
@@ -88,6 +157,9 @@
     gap: 22px;
     padding-top: 30px;
   }
+  .comingHand {
+    right: var(--space-40);
+  }
   .grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
     column-gap: var(--space-16);
@@ -118,6 +190,9 @@
   }
   .heading p {
     font-size: 15px;
+  }
+  .comingHand {
+    top: 6px;
   }
   .grid {
     grid-template-columns: repeat(5, minmax(0, 1fr));

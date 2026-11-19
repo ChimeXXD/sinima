@@ -124,3 +124,13 @@ export function lagosLocalToUtc(local: LagosLocal): string {
   if (!same) throw new Error(`Not a real Lagos time: ${JSON.stringify(local)}`);
   return utcString(wallAsUtc - offset);
 }
+
+/**
+ * A Lagos date ("2026-12-18", a coming film's first day, D-151) as an instant on that day: noon in
+ * Lagos, so every Lagos formatter gives that date back. Never `new Date("2026-12-18")` (rule 1).
+ */
+export function lagosNoon(day: string): string {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(day);
+  if (!match) throw new Error(`Not a Lagos date like 2026-12-18: "${day}"`);
+  return lagosLocalToUtc({ year: Number(match[1]), month: Number(match[2]), day: Number(match[3]), hour: 12, minute: 0 });
+}

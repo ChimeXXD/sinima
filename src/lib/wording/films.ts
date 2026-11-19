@@ -3,6 +3,9 @@ import { formatTime } from "@/lib/time/lagos";
 // Words on the Films screen (Figma 175:3480): section headings, the format note and the
 // "Nothing more starts today" state.
 
+/** Coming soon, under Now showing (D-151). "save the date!" is set in Story Script, which holds its letters. */
+export const COMING_SECTION = { title: "Coming soon", note: "First dates from the sinimas' own pages", hand: "save the date!" } as const;
+
 export const filmCount = (n: number) => `${n} ${n === 1 ? "film" : "films"}`;
 
 type SectionInput =
