@@ -469,7 +469,7 @@
       ],
       "verify": "manual on both phones + npm run test:e2e -- remind",
       "passes": false,
-      "evidence": "12 Nov 2026, not passing: Remind me downloads the .ics from the showing panel (`npm run test:e2e -- showing` checks the file name, DTSTART and the 30-minute alarm) and the panel shows a live countdown. Since build unit 9 (D-96) the old panel is gone: the showing sheet's Add to calendar is checked in tests/e2e/film-screen.spec.ts (DTSTART, TRIGGER:-PT30M) and a kept countdown leads Starting soon until it starts (tests/e2e/soon-screen.spec.ts). Still to do: open the file on an iPhone and an Android phone."
+      "evidence": "19 Nov 2026, iPhone half passing: Add to calendar links to a calendar file the build writes (/cal/, D-160). Chime on an iPhone, from the Home Screen app: \"it did not ask to download. It just popped up\" with Add to Calendar; in Safari the same file (test A, /cal-test) asked \"Calendar file available … Continue\" first. e2e: tests/e2e/film-screen.spec.ts and coming.spec.ts check each link, text/calendar, DTSTART and TRIGGER:-PT30M. Still open: Google Calendar on an Android phone."
     },
     {
       "id": "D5-2",
