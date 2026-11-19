@@ -1,6 +1,47 @@
 # Handoff: read this first when you pick the project back up
 
-## Now: session of 18 Nov 2026 (12:50–15:00 Lagos): domain live, light by default, five days units 1–2, share card board, day row picked (latest)
+## Now: session of 18–19 Nov 2026 (evening to 04:15 Lagos): five days, the share card and Coming soon built and live (latest)
+
+**Where we stopped, exactly:** all three features Chime asked for ("Do three of them. So five days, real card, and comming soon") are built, committed, pushed and **live on sinima.com.ng with real data** (checked 04:10 Lagos at 390 px: Coming soon lists THE FOUR 11 Dec, Dune: Part Three and Avengers: Doomsday 18 Dec, Jumanji: Open World 25 Dec; The Hunger Games is left out because it already shows in Lagos, D-154). Commits: `23c0b61` (five days unit 3 + Coming soon data), `bffc762` (data limit 24 KB), `f11ef79` (share cards), `6c2e2f9` (Coming soon screens), then the refresh `2c7a81f`. Nothing is running.
+
+**Waiting on Chime (the phone check):** paste `https://sinima.com.ng/lagos/film/avengers-doomsday` into WhatsApp and X's composer and say whether the picture shows (cards with posters are 300–491 KB; WhatsApp may drop pictures over ~300 KB: if so, make the cards smaller, e.g. a 256-colour PNG measured 105 KB). Then Coming soon and the five day tiles on the phone (five days unit 4, Coming soon unit 3).
+
+**Next (Claude's list):**
+1. Shrink the page data files and put the limit back to 20 KB (D-155): stop storing each showing's `id` in page files (it is `<cinemaId>_<filmId>_<startsAt>`, rebuild it on load): Lagos measured 21.9 → 16.8 KB.
+2. Search doesn't find coming films (the index has films with showings only).
+3. A coming film's share title and description still say "showtimes … with times and where to book": new words needed.
+4. Optional, Chime's call: "THE FOUR" stays in capitals (no sure TMDB match; title-casing would also lowercase acronyms like "UFO").
+5. Budget headroom is nearly gone: Films 227.6 and Sinimas 227.9 of 228 KB, the film page JS 166.6 of 167 (sample build).
+
+### What Chime asked this session, and what was done
+
+1. **"Do three of them. So five days, real card, and comming soon"**, then for Coming soon **"I don't think we need Mobbin… design it with our style"** (D-150) and **"The coming soon on the other you showed me is approved, so you can build it"** (D-151).
+2. **Page budget:** five days put pages 0.3–1.8 KB over. Chime: **"Raise it, go ahead"** → 167 KB script, 228 KB total (D-153, `scripts/check-budget.mjs`).
+3. **Live data over its limit** (found by the share card agent at 00:35): with five days, today and tomorrow are full days for every Lagos sinima, `lagos.json` 21.9 KB > 20, so deploys failed (the site stayed on 18 Nov's deploy) and the 06:17 refresh would have failed. Chime: **"Do your recommendation"** → limit 24 KB now (D-155), shrink the file next.
+4. **Memory:** Chime closed WhatsApp, Spotify, Google Meet, then Dia, then Framer so builds could run.
+5. **"Have you deployed anything? … Stop showing me sample data. I approve everything. Deploy it to the site."** Everything was already pushed (Vercel deploys each push); the screenshots shown were the local sample build. Coming soon wasn't visible because the last live read (18 Nov 16:18) predated the coming-list code, so Claude started the refresh job by hand (`gh workflow run refresh-showtimes.yml`, run 44447671045, 9 min, success); the site rebuilt with the coming films, and the live site was opened in Dia.
+6. **"Add our conversation to the handoff file"**: this section.
+
+### What was built
+
+- **Five days, unit 3** (D-146–D-148): date tiles on Films, a film's page and a sinima's page; days three to five fetched from `/data/<city>/<date>.json` when picked; "N of M sinimas" sentence; Sinimas' Day menu with five days.
+- **Coming soon, unit 1, the data** (D-152): Filmhouse's home page banner → `coming` list (the sinima's first date, never TMDB's; undated = "Date not announced"); kept through a failed read while the date is ahead (new test in `live.test.ts`); TMDB poster only on a sure match (`pickComingMatch`). Verifier PASS 12/12; /code-review 10 findings, 3 fixed.
+- **Share card** (D-149): `src/app/og/site.png/route.tsx` and `src/app/og/[city]/[card]/route.tsx` (route handlers with `force-static` + `generateStaticParams` write real .png files under static export; the `opengraph-image` convention wrote files without an extension), drawn by `next/og` (no new package), fonts vendored as TTF in `assets/fonts/` (OFL; next/og can't read woff2). og/twitter tags on every page (`src/lib/share/meta.ts`, `metadataBase` https://sinima.com.ng). Build +2 s. Verifier PASS (169 pages audited). Differences from Figma left: the no-poster card uses the app's per-film tint, its ticket tilts the app's way, word spacing drifts 2–10 px, "who's coming?" ~12 px wider.
+- **Coming soon, unit 2, the screens** (D-151, D-154): Films section (drawn once the page runs, to fit the budget: no section with JavaScript off), the coming film's page (leaf sticker, "Opens … at Filmhouse" chip, "Times aren't up yet…", all-day "Add <date> to my calendar"), share cards for coming films. **Titles:** `scripts/titles.ts` `properTitle`: a title in capitals takes TMDB's once matched (D-152c had said so, nothing did it). The .ics now escapes semicolons (an old bug). TMDB run matched Doomsday, Dune: Part Three, Jumanji: Open World.
+
+### Decisions this session
+
+D-150 (Coming soon from our own style, no board), D-151 (design approved), D-152 (how Coming soon's data is read), D-153 (budget 167/228), D-154 (a film already showing in the city is not "coming" there), D-155 (data files 24 KB for now).
+
+### Watch out
+
+- **The Stop hook runs the full gate (Playwright on port 4173) every time Claude ends a turn.** While an agent or Claude's own background gate holds the port, every turn-end fails "4173 is already used" and burns a round. Don't end the turn while a run is going: wait on it in the same turn.
+- **Memory:** builds need ~3.6 GB; proof refuses runs over 85 %. GlambyPrime (another session) keeps vite servers running; never kill them.
+- **The page budget only measures the sample build.** Live pages may be heavier; nothing checks that.
+- `docs/design/reference-board/round8-coming-soon.html` is an unused board (D-150), left untracked on purpose. `scripts/.probe-days.ts` was deleted (five days done).
+- Still open from before: **Fri 20 Nov** recheck `dig A sinima.com.ng @nsc.go54.com` (REFUSED on 18 Nov; if still, draft a Whogohost ticket for Chime). **Tue 24 Nov** draft the outreach follow-ups (OUTREACH §4) and show Chime first.
+
+## Earlier: session of 18 Nov 2026 (12:50–15:00 Lagos): domain live, light by default, five days units 1–2, share card board, day row picked
 
 **Where we stopped, exactly:** five days units 1 and 2 are committed (`d14bcc0`, `38ee393`). **Next: unit 3**, the day row on the pages: date tiles (D-148, Figma Design System › Doc · Actions › "Block · Day row": Day tile 290:86, Day row 290:87) replacing Today | Tomorrow on Films, a film's page and a sinima's page; days three to five fetched from `/data/<city>/<date>.json` when picked (D-147; the page lists the days on disk and how many sinimas list each); the sentence "7 of 21 sinimas have put up Saturday's times so far." through `lib/wording/` (D-146); Sinimas' Day menu with five days. "Two days" is fixed in ~15 places (`Day = 0 | 1` in `src/lib/data/programme.ts`, `select.ts`, the wording files, `Pickers.tsx` and `PickerMenus.tsx`, the e2e specs that use `films.day`, `film.day`, `pick.day`, `sheet.day`). Sample data has a later day only in Abuja (Sun after "now"); Lagos's fixtures hold two days, so e2e for later days uses Abuja or a new fixture. Then delete `scripts/.probe-days.ts` (untracked; never commit it).
 
