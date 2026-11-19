@@ -2,21 +2,32 @@
 
 ## Now: session of 19 Nov 2026 (midday to late night, Lagos): handoff list done, calendar fixed for iPhone, pull to refresh, the Home Screen guide (latest)
 
-**Where we stopped, exactly:** everything below is committed, pushed (last `75e947f`) and deploying from main. Nothing is running. `mockup/home-screen/` (the guide's pick page) and `docs/design/reference-board/round8-coming-soon.html` are left untracked on purpose (local, like `mockup/coming-soon/`).
+**Where we stopped, exactly:** everything below is committed, pushed (last code commit `75e947f`; handoff `d077f1d` and this update after it) and deploying from main. Nothing is running. `mockup/home-screen/` (the guide's pick page) and `docs/design/reference-board/round8-coming-soon.html` are left untracked on purpose (local, like `mockup/coming-soon/`).
 
-**Waiting on Chime (phone checks):**
-1. **Pull to refresh**: open Sinima from the Home Screen, pull any page down from the top (D-161).
-2. **The Home Screen guide**: open sinima.com.ng in Safari (not the app), come back after 30+ minutes; the sheet rises after ~4 s, the card is at the end of Films (D-162, D-163).
-3. **X's composer**: paste a film link and say whether the picture shows (WhatsApp shows it).
-4. **Android**, if one can be borrowed: Add to calendar → Google Calendar, and the guide's one-tap install.
-5. Chime's call, offered: a line for X's in-app browser ("Open this page in Safari first"), since X's browser may not say who it is and would get Safari's steps.
+**Phone checks done (Chime, after `d077f1d`):** pull to refresh seen in the Home Screen app ("I've seen the animation"); the guide seen in Safari ("I did Safari and I saw it"). **X: "the picture is not showing"** (WhatsApp shows it): see "The X card" below.
+
+**Waiting on Chime:**
+1. **Change the domain's name servers** in the Whogohost client area (sinima.com.ng → Nameservers) to `nsa.whogohost.com` and `nsb.whogohost.com`. Then tell Claude, who checks with `dig`, and retest in X's composer with `https://sinima.com.ng/lagos/film/avengers-doomsday?x=1` (a new address, since X keeps a card per address). If the client area won't allow it, Claude drafts a Whogohost ticket for Chime to send.
+2. **Android**, if one can be borrowed: Add to calendar → Google Calendar, and the guide's one-tap install.
+3. Chime's call, offered: a line for X's in-app browser ("Open this page in Safari first"), since X's browser may not say who it is and would get Safari's steps.
+
+### The X card (diagnosed after the handoff commit; nothing changed in code)
+
+- **Checked:** every page has og/twitter tags and its PNG (D-149); WhatsApp shows the picture; `robots.txt` is a 404, which lets Twitterbot in.
+- **Found:** the registry sends sinima.com.ng to two name servers, `nsc.go54.com` and `nsd.go54.com`. **nsc doesn't answer** (REFUSED on 18 Nov, times out now; rechecked late 19 Nov: still nothing). nsd answers (216.198.79.1). The zone itself lists `nsa.whogohost.com` and `nsb.whogohost.com`, and both answer.
+- **Inferred, not proven** (X gives no error): a lookup that tries nsc first waits for it to time out, and Twitterbot gives up sooner than WhatsApp's fetcher. Pointing the registry at the two working name servers removes the wait. This supersedes the "Fri 20 Nov recheck" below.
+- If X still shows no picture after the change, look next at the card's size (cards are 300–491 KB; X allows 5 MB) and at `twitter:card` being `summary_large_image`.
+
+### Filmhouse's data, as told to Chime ("How did you get around it to read Filmhouse data? Is it from Lagocine")
+
+Nothing was got around. Filmhouse's **times come from Lagocine** (D-76), which said yes by email on 11 Nov (Paul Sergent: "you can use it freely as much as you want"), credited on About. Filmhouse's own times sit behind CINEsync, which answers our bot 403; we stop there (D-77). Separately, Filmhouse's **public home page** (robots.txt allows it) gives today's featured films and Coming soon dates (D-131, D-152); never its API or ticket pages. Asking Filmhouse directly: onlinesupport emailed 11 Nov (no reply); marketing, FilmOne, CINEsync and the Group CEO (LinkedIn) contacted 17 Nov; follow-ups due **Tue 24 Nov**. Source of truth: `data/sources.json` (`lagocine`, `filmhouse`, `filmhouse-home`).
 
 **Next (Claude's list):**
 1. **Video script (30–45 s)**, then the storyboard in Figma: the launch's long-lead item (PLAN week 3). Offer 2–3 scripts to pick from.
 2. Search leftovers: Enter with only coming films matching goes to Films where nothing matches; a film only on days 3–5 isn't found by search.
 3. Two flaky e2e tests under load (both on main before this session): `coming.spec.ts:64` (a Coming soon card click doesn't navigate) and `motion-m5-m9.spec.ts:150` (the tab slide sampled after it ended).
 4. Week 4: Lighthouse ≥ 90 mobile, accessibility pass, both cities on real phones, the Doomsday presales check, launch kit.
-5. Dated: **Fri 20 Nov** recheck `dig A sinima.com.ng @nsc.go54.com` (REFUSED on 18 Nov; if still, draft a Whogohost ticket for Chime). **Tue 24 Nov** draft the outreach follow-ups (OUTREACH §4), show Chime first.
+5. Dated: **Tue 24 Nov** draft the outreach follow-ups (OUTREACH §4), show Chime first. (The Fri 20 Nov name server recheck is replaced by the name server change above.)
 
 ### What Chime asked this session, and what was done
 
@@ -31,7 +42,10 @@
 5. **"When I click Add to calendar, it downloads a file. So can we fix that?"** A temporary `/cal-test` page with four ways, tapped on Chime's iPhone: only a link to a served `.ics` offered "add it to your calendar". So the build writes `/cal/<film>_<cinema>_<day>-<hhmm>.ics` per showing and `/cal/<city>_<film>_opens-<day>.ics` per coming film, served `text/calendar` (`vercel.json`); the buttons are plain same-tab links (D-160, `73605d4`). Chime, from the Home Screen app: "it did not ask to download. It just popped up" with Add to Calendar.
 6. **A screen recording + Design Bookmark's "Pull to refresh" code: "replicate that on all the pages"** → D-161 (`71349a3`): the reference's drop, handle, goo and springs, only in the Home Screen app (Safari has its own), its code loaded only there; a refresh is `router.refresh()` in place.
 7. **"Put a pop-up … that encourages the user to add the web app to their home page"** → pick page with A (sheet on a second visit), B (card at the end of Films), C (nudge after Add to calendar); **"let's do A and B together"** → D-162 (`2d068d4`). Then **"Share is under [•••] on Safari, while on Chrome, share is above"** → per-browser step 1 (D-163, `75e947f`).
-8. **"Yes"** to updating this handoff.
+8. **"Yes"** to updating this handoff (`d077f1d`).
+9. **"I've seen the animation … I did Safari and I saw it. So for X, the picture is not showing."** → the name server diagnosis above; Chime to change the name servers.
+10. **"How did you get around it to read Filmhouse data? Is it from Lagocine"** → answered above.
+11. **"Add our conversation to the Hand off file"**: these items and the two sections above.
 
 ### Decisions this session
 
