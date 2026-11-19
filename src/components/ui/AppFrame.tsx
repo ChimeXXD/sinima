@@ -121,8 +121,18 @@ export function AppFrame({ active, search, city: chosen, bg, bar, footer, onAbou
   useTabSlide(content);
   const load = () => void loadParts().then(setLoaded, () => {});
   useEffect(() => {
+    // A tap on the field before the page was ready focused it with no onFocus to hear it (a slow
+    // phone, a busy test machine): open search now, as that tap meant to.
+    if (field.current && document.activeElement === field.current) {
+      // Letters typed before then are in the field but not in the page's query: hand them over.
+      if (field.current.value !== search.value) search.onChange(field.current.value);
+      load();
+      setOpen(true);
+    }
     const id = setTimeout(load, 2000);
     return () => clearTimeout(id);
+    // Once, as the page becomes ready: later typing reaches `search` through the field's onChange.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   /** Escape gives focus back to the bar without opening the panel again; a tap leaves it be. */
   const close = (refocus = false) => {

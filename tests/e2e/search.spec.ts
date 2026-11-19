@@ -72,16 +72,54 @@ test("search finds a film on only in Abuja, at its Abuja cinema, and opens Abuja
   await expect(page).toHaveURL(/\/abuja\/film\/dear-ajayi$/);
 });
 
+// A tap on the field before the page's script has run focuses it with no React handler to hear it;
+// search must still open once the page is ready (a slow phone on mobile data).
+test("a tap on the search field before the page is ready still opens search", async ({ page }) => {
+  let release!: () => void;
+  const ready = new Promise<void>((resolve) => (release = resolve));
+  await page.route("**/_next/static/chunks/**/*.js", async (route) => (await ready, route.continue()));
+  await page.goto("/lagos", { waitUntil: "domcontentloaded" });
+  await page.getByTestId("search.field").click();
+  release();
+  await expect(page.getByTestId("search.panel")).toBeVisible();
+  await expect(page.getByTestId("search.query")).toBeFocused();
+});
+
+// D-151: a film only coming has no times, so search finds it by Coming soon's entry, saying when it opens.
+test("search finds a film that is only coming, says when it opens, and opens its page", async ({ page, request }) => {
+  const lagos = (await (await request.get("/data/lagos.json")).json()) as { coming?: { filmId: string; firstDay: string | null }[]; showings: { filmId: string }[] };
+  const dune = (lagos.coming ?? []).find((entry) => entry.filmId === "dune-part-three");
+  expect(dune?.firstDay, "the sample lists Dune: Part Three as coming, with a date").toBeTruthy();
+  expect(lagos.showings.some((s) => s.filmId === "dune-part-three")).toBe(false);
+  await page.goto("/lagos");
+  await openSearch(page);
+  await page.getByTestId("search.query").fill("dune");
+  await expect(page.getByTestId("search.count")).toHaveText("1 film in Lagos matches “dune”");
+  const hit = page.getByTestId("search.hit.dune-part-three");
+  await expect(hit).toContainText("Dune: Part Three");
+  await expect(hit).toContainText("Coming soon");
+  await expect(hit).toContainText(/Opens \w{3} \d{1,2} \w{3} at Filmhouse/);
+  await expect(hit).not.toContainText(/Next|\d:\d\d/);
+  // Coming soon is Lagos's only, so Abuja finds nothing.
+  await page.getByTestId("search.scope.abuja").click();
+  await expect(page.getByTestId("search.hit.dune-part-three")).toHaveCount(0);
+  await page.getByTestId("search.scope.lagos").click();
+  await page.getByTestId("search.hit.dune-part-three").click();
+  await expect(page).toHaveURL(/\/lagos\/film\/dune-part-three$/);
+  await expect(page.getByTestId("coming.chip")).toContainText("at Filmhouse");
+});
+
+// Not "Avengers" any more: Avengers: Doomsday is coming to Lagos, and search finds coming films (D-151).
 test("no match names the cities searched, and leads back to what's on", async ({ page, request }) => {
   await freeze(page, await sampleTime(request, "17:30"));
   await page.goto("/lagos");
   await openSearch(page);
-  await page.getByTestId("search.query").fill("Avengers");
-  await expect(page.getByTestId("search.none").getByRole("heading")).toHaveText("Nothing called “Avengers” in Lagos yet");
+  await page.getByTestId("search.query").fill("Paddington");
+  await expect(page.getByTestId("search.none").getByRole("heading")).toHaveText("Nothing called “Paddington” in Lagos yet");
   await page.getByTestId("search.scope.both").click();
-  await expect(page.getByTestId("search.none").getByRole("heading")).toHaveText("Nothing called “Avengers” in Lagos or Abuja yet");
+  await expect(page.getByTestId("search.none").getByRole("heading")).toHaveText("Nothing called “Paddington” in Lagos or Abuja yet");
   await page.getByTestId("search.scope.abuja").click();
-  await expect(page.getByTestId("search.none").getByRole("heading")).toHaveText("Nothing called “Avengers” in Abuja yet");
+  await expect(page.getByTestId("search.none").getByRole("heading")).toHaveText("Nothing called “Paddington” in Abuja yet");
   await expect(page.getByTestId("search.home")).toHaveText("See what's on in Lagos"); // the page's city
   await page.getByTestId("search.home").click();
   await expect(page.getByTestId("search.panel")).toHaveCount(0);

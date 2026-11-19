@@ -26,6 +26,26 @@ describe("a film's share words", () => {
   });
 });
 
+// A coming film's page has no times yet (D-151), so its preview can't promise them. Chats keep a
+// preview for days and the film may open in the meantime, so the words hold before and after.
+describe("a coming film's share words", () => {
+  it("names the film and the city, and promises no times", () => {
+    expect(filmShare("Dune: Part Three", "lagos", { coming: true })).toEqual({
+      title: "Dune: Part Three in Lagos · Sinima",
+      description: "When it opens at sinimas in Lagos, then every showing as soon as the times are up.",
+      alt: "Dune: Part Three in Lagos, on Sinima: every showing at every sinima, in one place.",
+    });
+    expect(filmShare("Dune: Part Three", "abuja", { coming: true }).description).toContain("in Abuja");
+  });
+
+  it("never says showtimes or where to book, and adds no count, time or date", () => {
+    for (const words of Object.values(filmShare("Dune: Part Three", "lagos", { coming: true }))) {
+      expect(words).not.toMatch(/showtimes|where to book/i);
+      expect(words).not.toMatch(STALE);
+    }
+  });
+});
+
 describe("the site's own share words", () => {
   it("has a title, a description and the card's alt text", () => {
     expect(SITE_SHARE.title).toBe("Sinima: what's on in Lagos & Abuja");

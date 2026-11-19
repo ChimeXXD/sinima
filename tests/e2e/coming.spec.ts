@@ -87,10 +87,14 @@ test("a coming film's page says when it opens, has no times and no booking, and 
   expect(ics).toContain(`\r\nUID:opens-lagos-${film.filmId}@sinima\r\n`);
 });
 
-test("a coming film's page has its own share card: the film's, with no date on it", async ({ request }) => {
+test("a coming film's page has its own share card: the film's, with no date on it, and words that promise no times", async ({ request }) => {
   const film = (await comingFilms(request))[0]!;
   const html = await (await request.get(`/lagos/film/${film.filmId}`)).text();
   expect(html).toContain(`<meta property="og:image" content="https://sinima.com.ng/og/lagos/${film.filmId}.png"/>`);
+  // Its words promise no times: it has none yet (D-151).
+  expect(html).toContain(`<meta property="og:title" content="${film.title} in Lagos · Sinima"/>`);
+  expect(html).toContain(`<meta property="og:description" content="When it opens at sinimas in Lagos, then every showing as soon as the times are up."/>`);
+  expect(html).not.toMatch(/showtimes in Lagos|where to book/);
   const card = await request.get(`/og/lagos/${film.filmId}.png`);
   expect(card.status()).toBe(200);
   const bytes = await card.body();

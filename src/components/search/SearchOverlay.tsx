@@ -6,12 +6,12 @@ import { Chip } from "@/components/ui/Actions";
 import { Icon } from "@/components/ui/Icon";
 import { Notice } from "@/components/ui/Status";
 import { CitySticker, TicketFaceSticker } from "@/components/ui/Stickers";
-import { hasCinemas, searchFilms, type Scope, type SearchIndex, type SearchResult } from "@/lib/data/search";
+import { hasCinemas, searchFilms, type Scope, type SearchFilm, type SearchGroup, type SearchIndex } from "@/lib/data/search";
 import type { City } from "@/lib/city";
 import { posterSrc, posterSrcSet } from "@/lib/data/posters";
 import { pageBanner } from "@/lib/data/select";
 import { useNow } from "@/lib/time/useNow";
-import { ABUJA_SOON, CITY_NAME, enterHint, matchCount, noMatch, resultMeta, resultNext, SEARCH_FAILED } from "@/lib/wording/search";
+import { ABUJA_SOON, CITY_NAME, comingMeta, enterHint, matchCount, noMatch, resultMeta, resultNext, SEARCH_FAILED } from "@/lib/wording/search";
 import a from "@/components/ui/actions.module.css";
 import s from "./search.module.css";
 
@@ -58,7 +58,7 @@ export default function SearchOverlay({ query, onQuery, onSubmit, onClose, city 
 
   const text = query.trim();
   const groups = typeof index === "object" && index !== null && now && text ? searchFilms(index, text, scope, now) : null;
-  const found = groups?.reduce((n, group) => n + group.results.length, 0) ?? 0;
+  const found = groups?.reduce((n, group) => n + group.results.length + group.coming.length, 0) ?? 0;
   const loaded = typeof index === "object" && index !== null ? index : null;
   // Search covers the page's banner on a phone, so it says the same (rules 2 and 8).
   const banner = loaded && pageBanner(loaded, now);
@@ -124,16 +124,14 @@ export default function SearchOverlay({ query, onQuery, onSubmit, onClose, city 
                 <p className={s.line} data-testid="search.count">
                   {matchCount(found, scope, text)}
                 </p>
-                {groups[0]!.results.map((result) => (
-                  <Result key={result.film.id} city={groups[0]!.city} result={result} now={now!} onOpen={() => onClose()} />
-                ))}
+                <Rows group={groups[0]!} now={now!} onOpen={() => onClose()} />
               </>
             )}
             {groups &&
               found > 0 &&
               scope === "both" &&
               groups.map((group) =>
-                group.results.length > 0 ? (
+                group.results.length + group.coming.length > 0 ? (
                   <section key={group.city} className={s.group} aria-label={`In ${CITY_NAME[group.city]}`} data-testid={`search.group.${group.city}`}>
                     <h3 className={s.groupHead}>
                       <span aria-hidden="true">
@@ -141,9 +139,7 @@ export default function SearchOverlay({ query, onQuery, onSubmit, onClose, city 
                       </span>
                       In {CITY_NAME[group.city]}
                     </h3>
-                    {group.results.map((result) => (
-                      <Result key={result.film.id} city={group.city} result={result} now={now!} onOpen={() => onClose()} />
-                    ))}
+                    <Rows group={group} now={now!} onOpen={() => onClose()} />
                   </section>
                 ) : group.city === "abuja" && abujaSoon ? (
                   <p key={group.city} className={s.soon} data-testid="search.abuja-soon">
@@ -159,9 +155,22 @@ export default function SearchOverlay({ query, onQuery, onSubmit, onClose, city 
   );
 }
 
+/** The rows of one city: the films with times, then those only coming (D-151). */
+function Rows({ group, now, onOpen }: { group: SearchGroup; now: string; onOpen: () => void }) {
+  return (
+    <>
+      {group.results.map((result) => (
+        <Result key={result.film.id} city={group.city} film={result.film} meta={resultMeta(result.film, result.formats, result.cinemas, result.day, now, result.next.at)} next={resultNext(result.next, result.day, now)} onOpen={onOpen} />
+      ))}
+      {group.coming.map(({ film, opens }) => (
+        <Result key={film.id} city={group.city} film={film} meta={comingMeta(film)} next={opens} onOpen={onOpen} />
+      ))}
+    </>
+  );
+}
+
 /** A result opens the film in its own city's pages, whatever city the page is in. */
-function Result({ city, result, now, onOpen }: { city: City; result: SearchResult; now: string; onOpen: () => void }) {
-  const { film } = result;
+function Result({ city, film, meta, next, onOpen }: { city: City; film: SearchFilm; meta: string; next: string; onOpen: () => void }) {
   return (
     <Link href={`/${city}/film/${film.id}`} className={s.result} onClick={onOpen} data-testid={`search.hit.${film.id}`}>
       {film.poster ? (
@@ -174,8 +183,8 @@ function Result({ city, result, now, onOpen }: { city: City; result: SearchResul
       )}
       <span className={s.text}>
         <span className={s.title}>{film.title}</span>
-        <span className={s.meta}>{resultMeta(film, result.formats, result.cinemas, result.day, now, result.next.at)}</span>
-        <span className={s.next}>{resultNext(result.next, result.day, now)}</span>
+        <span className={s.meta}>{meta}</span>
+        <span className={s.next}>{next}</span>
       </span>
       <Icon name="chevron-right" size={20} className={s.chevron} />
     </Link>

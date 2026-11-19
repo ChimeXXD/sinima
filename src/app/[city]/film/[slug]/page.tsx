@@ -13,10 +13,11 @@ export const dynamicParams = false;
 // A film has a page in each city it is showing in (D-120), or coming to (D-151): search and Films link to that city's.
 export const generateStaticParams = filmPageParams;
 
-// Its title, and its own share card (D-149): /og/<city>/<slug>.png.
+// Its title, and its own share card (D-149): /og/<city>/<slug>.png; a coming film's words promise no times.
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { city, slug } = await params;
-  return filmMeta(filmIn(cityParam(city), slug), cityParam(city));
+  const coming = comingIn(cityParam(city)).some((entry) => entry.film.id === slug);
+  return filmMeta(filmIn(cityParam(city), slug), cityParam(city), { coming });
 }
 
 /**

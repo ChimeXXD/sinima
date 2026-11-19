@@ -96,6 +96,23 @@ describe("searchFilms", () => {
   it("no match gives empty groups", () => {
     expect(searchFilms(index, "zzz", "both", NOW).map((g) => g.results.length)).toEqual([0, 0]);
   });
+
+  // A coming film (D-151) has no times, so it is found by its Coming soon entry, in its own city,
+  // apart from the films that have times there, with the opening words the sinima's date gives.
+  it("finds a coming film in its own city, apart from the films with times, saying when it opens", () => {
+    const withComing: SearchIndex = {
+      ...index,
+      films: [...index.films, { id: "spirit", title: "Spirited Away Again", poster: "/sa.jpg", rating: null, runtimeMin: null }],
+      coming: [[3, "lagos", "Opens Fri 18 Dec at Filmhouse"]],
+    };
+    const [lagos, abuja] = searchFilms(withComing, "spi", "both", NOW);
+    expect(lagos!.results.map((r) => r.film.id)).toEqual(["spider"]);
+    expect(lagos!.coming).toEqual([{ film: withComing.films[3], opens: "Opens Fri 18 Dec at Filmhouse" }]);
+    expect(abuja!.coming).toEqual([]);
+    expect(searchFilms(withComing, "zzz", "lagos", NOW)[0]!.coming).toEqual([]);
+    // An index without coming films (one read before D-151) finds none.
+    expect(searchFilms(index, "spi", "lagos", NOW)[0]!.coming).toEqual([]);
+  });
 });
 
 describe("searchIndex", () => {
@@ -131,6 +148,30 @@ describe("searchIndex", () => {
     });
     const abuja = searchFilms(built, "spider", "abuja", NOW)[0]!;
     expect(abuja.results.map((r) => r.next)).toEqual([{ at: "2026-11-13T18:00:00Z", cinema: "Silverbird Cinemas Jabi Lake Mall" }]);
+  });
+
+  // D-151: each city's Coming soon list, as Films shows it, so search finds those films too.
+  it("adds each city's coming films after the films with times, with the words saying when each opens", () => {
+    const file = {
+      generatedAt: NOW,
+      sample: false,
+      films: [
+        { id: "spider", title: "Spider-Man", posterPath: null, rating: null, runtimeMin: null },
+        { id: "dune", title: "Dune: Part Three", posterPath: "/d.jpg", rating: "12A", runtimeMin: null },
+      ],
+      cinemas: [{ id: "grand-lekki", name: "Grand Cinemas Lekki", area: "lekki", chain: "grand" }],
+      showings: [{ id: "a", cinemaId: "grand-lekki", filmId: "spider", startsAt: "2026-11-13T17:00:00Z", format: null, bookingUrl: null, sourceId: "s", fetchedAt: NOW }],
+      sources: [{ id: "s", name: "S", method: "html", url: "https://s" }],
+    } as unknown as ShowtimesFile;
+    const dune = file.films[1]!;
+    const built = searchIndex(file, () => "lagos", { lagos: [{ film: dune, firstDay: "2026-12-18", sinimas: ["Filmhouse"] }], abuja: [] });
+    expect(built.films.map((f) => f.id)).toEqual(["spider", "dune"]);
+    expect(built.films[1]).toEqual({ id: "dune", title: "Dune: Part Three", poster: "/d.jpg", rating: "12A", runtimeMin: null });
+    expect(built.coming).toEqual([[1, "lagos", "Opens Fri 18 Dec at Filmhouse"]]);
+    // A film coming in both cities is in the index once.
+    const both = searchIndex(file, () => "lagos", { lagos: [{ film: dune, firstDay: "2026-12-18", sinimas: ["Filmhouse"] }], abuja: [{ film: dune, firstDay: null, sinimas: ["Silverbird"] }] });
+    expect(both.films).toHaveLength(2);
+    expect(both.coming).toEqual([[1, "lagos", "Opens Fri 18 Dec at Filmhouse"], [1, "abuja", "Coming to Silverbird, date not announced"]]);
   });
 
   it("refuses a cinema whose area has no city, rather than guess one", () => {

@@ -13,11 +13,18 @@ export const CITIES: City[] = ["lagos", "abuja"];
 export type SearchFilm = { id: string; title: string; poster: string | null; rating: string | null; runtimeMin: number | null };
 /** A showing as [startsAt, film, cinema, format]: positions in the index's lists. */
 export type SearchRow = [string, number, number, string | null];
-/** `sample` and `fresh` give search the same banner the page shows (rules 2 and 8). */
-export type SearchIndex = { sample: boolean; fresh: ListFresh[]; films: SearchFilm[]; cinemas: { name: string; city: City }[]; rows: SearchRow[] };
+/** A film under a city's Coming soon (D-151) as [film, city, "Opens Fri 18 Dec at Filmhouse"]: it has no rows. */
+export type SearchComing = [number, City, string];
+/**
+ * `sample` and `fresh` give search the same banner the page shows (rules 2 and 8). `coming` is left
+ * out when no city has a coming film.
+ */
+export type SearchIndex = { sample: boolean; fresh: ListFresh[]; films: SearchFilm[]; cinemas: { name: string; city: City }[]; rows: SearchRow[]; coming?: SearchComing[] };
 
 export type SearchResult = { film: SearchFilm; next: { at: string; cinema: string }; cinemas: number; formats: FormatTag[]; day: Day };
-export type SearchGroup = { city: City; results: SearchResult[] };
+/** A film only coming to the city (D-151): no times, only when it opens. */
+export type SearchComingResult = { film: SearchFilm; opens: string };
+export type SearchGroup = { city: City; results: SearchResult[]; coming: SearchComingResult[] };
 
 /** True when the index has a cinema in the city: a live set read before Abuja was added has none (D-120). */
 export const hasCinemas = (index: SearchIndex, city: City) => index.cinemas.some((cinema) => cinema.city === city);
@@ -34,8 +41,9 @@ export function matchesTitle(title: string, query: string): boolean {
 /**
  * The matching films in each city of the scope, Lagos first. A film's result is its next showing
  * today that has not started (D-05), or else its first tomorrow; with neither it is left out.
- * Soonest first. Today is worked out from all of the city's times, as on Films, so a film's words
- * never depend on which other films match.
+ * Soonest first; the matching films only coming to the city are apart, in `coming` (D-151). Today is
+ * worked out from all of the city's times, as on Films, so a film's words never depend on which other
+ * films match.
  */
 export function searchFilms(index: SearchIndex, query: string, scope: Scope, now: string): SearchGroup[] {
   const wanted = new Set(index.films.flatMap((film, i) => (matchesTitle(film.title, query) ? [i] : [])));
@@ -56,6 +64,8 @@ export function searchFilms(index: SearchIndex, query: string, scope: Scope, now
         });
       }
     }
-    return { city, results };
+    // The films only coming to the city (D-151), in Coming soon's order: they have no times.
+    const coming = (index.coming ?? []).filter(([film, where]) => where === city && wanted.has(film)).map(([film, , opens]) => ({ film: index.films[film]!, opens }));
+    return { city, results, coming };
   });
 }

@@ -41,11 +41,12 @@ export function pageMeta(title: string): Metadata {
 }
 
 /**
- * A film's page in a city: its own card and words. A title the card's font can't draw gets the site's
- * card (og/[city]/[card]), so its alt text is the site's too, never a description of a card not drawn.
+ * A film's page in a city: its own card and words, a coming film's (D-151) promising no times. A title
+ * the card's font can't draw gets the site's card (og/[city]/[card]), so its alt text is the site's
+ * too, never a description of a card not drawn.
  */
-export function filmMeta(film: { id: string; title: string }, city: City): Metadata {
-  const words = filmShare(film.title, city);
+export function filmMeta(film: { id: string; title: string }, city: City, { coming = false }: { coming?: boolean } = {}): Metadata {
+  const words = filmShare(film.title, city, { coming });
   const card = missingGlyphs(film.title).length > 0 ? siteImage() : image(filmCard(city, film.id), words.alt);
   return {
     title: `${film.title} · Sinima`,

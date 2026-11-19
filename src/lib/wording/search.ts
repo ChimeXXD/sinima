@@ -3,6 +3,7 @@ import { laterName } from "@/lib/data/select";
 import type { City, Scope } from "@/lib/data/search";
 import { EVENING_ENDS_HOUR, formatLateTime, lagosDaysFrom, toLagos } from "@/lib/time/lagos";
 import { filmMeta } from "@/lib/wording/film";
+import { COMING_SECTION } from "@/lib/wording/films";
 
 // The words of search and the city sheet (Figma Search and city, 192:7519).
 
@@ -33,6 +34,11 @@ export function resultMeta(film: { runtimeMin: number | null; rating: string | n
   const when = day === 1 ? dayAfter(at, now) : todayWord(at, now);
   const known = film.runtimeMin || film.rating ? [filmMeta(film)] : [];
   return [...known, ...formats, `${plural(cinemas, "sinima", "sinimas")} ${when}`].join(" · ");
+}
+
+/** "2 h 25 min · 12A · Coming soon": a coming film's result (D-151), what we know of it first. */
+export function comingMeta(film: { runtimeMin: number | null; rating: string | null }): string {
+  return [...(film.runtimeMin || film.rating ? [filmMeta(film)] : []), COMING_SECTION.title].join(" · ");
 }
 
 /** "Next 6:00 PM · Grand Cinemas Lekki", or "Tomorrow 2:00 PM · …" when nothing is left tonight. */

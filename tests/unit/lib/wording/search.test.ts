@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CITY_SHEET, cityLine, enterHint, matchCount, noMatch, resultMeta, resultNext, ABUJA_SOON } from "@/lib/wording/search";
+import { CITY_SHEET, cityLine, comingMeta, enterHint, matchCount, noMatch, resultMeta, resultNext, ABUJA_SOON } from "@/lib/wording/search";
 
 // Every sentence of Figma's Search and city section (192:7519), filled from the data.
 
@@ -60,5 +60,11 @@ describe("search wording", () => {
     expect(cityLine(4, ["Jabi", "Lugbe", "Kuje", "Wuse"])).toBe("4 sinimas in Jabi, Lugbe, Kuje and 1 more area");
     expect(CITY_SHEET.title).toBe("Choose your city");
     expect(ABUJA_SOON).toBe("Abuja's sinimas are being added");
+  });
+
+  // A coming film's result (D-151): what we know of the film, then "Coming soon".
+  it("says a coming film is coming soon, after what we know of it", () => {
+    expect(comingMeta({ runtimeMin: null, rating: null })).toBe("Coming soon");
+    expect(comingMeta({ runtimeMin: 145, rating: "12A" })).toBe("2 h 25 min · 12A · Coming soon");
   });
 });

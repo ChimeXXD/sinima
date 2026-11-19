@@ -20,12 +20,16 @@ export const SITE_SHARE = {
   alt: "What's on in Lagos & Abuja, on Sinima.",
 } as const;
 
-/** A film's preview in a city: "Ghost Soldier: showtimes in Lagos · Sinima". */
-export function filmShare(title: string, city: City): { title: string; description: string; alt: string } {
+/**
+ * A film's preview in a city: "Ghost Soldier: showtimes in Lagos · Sinima". A film only coming
+ * (D-151) has no times yet, so its words promise none, and hold true once it opens (chats keep a
+ * preview for days): "Dune: Part Three in Lagos · Sinima".
+ */
+export function filmShare(title: string, city: City, { coming = false }: { coming?: boolean } = {}): { title: string; description: string; alt: string } {
   const name = CITY_NAMES[city];
   return {
-    title: `${title}: showtimes in ${name} · Sinima`,
-    description: `Every showing at every sinima in ${name}, with times and where to book.`,
+    title: coming ? `${title} in ${name} · Sinima` : `${title}: showtimes in ${name} · Sinima`,
+    description: coming ? `When it opens at sinimas in ${name}, then every showing as soon as the times are up.` : `Every showing at every sinima in ${name}, with times and where to book.`,
     alt: `${title} in ${name}, on Sinima: ${CARD_LINE.charAt(0).toLowerCase()}${CARD_LINE.slice(1)}`,
   };
 }
