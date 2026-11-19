@@ -1,0 +1,149 @@
+/* The Home Screen guide (D-162, mockup/home-screen/): Ghost surfaces, the app icon as a Keepsy sticker. */
+
+/* The app icon on a die-cut tile: white outline, tilted, the sticker shadow. */
+.sticker {
+  flex: none;
+  width: 74px;
+  height: 74px;
+  border-radius: 18px;
+  box-shadow: 0 0 0 4px var(--sticker-outline);
+  filter: drop-shadow(var(--fx-sticker-large));
+  rotate: -6deg;
+}
+.sticker img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+}
+.small {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+}
+
+/* A: the sheet */
+.why {
+  margin: var(--space-12) 0 0;
+  color: var(--text-secondary);
+  font: var(--type-body-m);
+}
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+  margin: var(--space-16) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.step {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  padding: var(--space-10) var(--space-12);
+  border-radius: 16px;
+  background: var(--bg-surface);
+  font: var(--type-body-m);
+  font-weight: 600;
+}
+.stepText {
+  min-width: 0;
+}
+.stepText small {
+  display: block;
+  color: var(--text-secondary);
+  font: var(--type-meta);
+}
+.num {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--action-primary);
+  color: var(--text-on-action);
+  font: var(--type-label-strong);
+}
+/* The phone's own button, drawn small: Share, Add to Home Screen's square, ⋮ or the word. */
+.glyph {
+  flex: none;
+  display: grid;
+  place-items: center;
+  min-width: 36px;
+  height: 36px;
+  margin-left: auto;
+  padding: 0 var(--space-8);
+  border-radius: 10px;
+  background: var(--bg-raised);
+  box-shadow: var(--fx-sticker-count);
+  color: var(--text-primary);
+}
+.share,
+.word {
+  color: var(--text-accent);
+}
+.word {
+  font: var(--type-label-strong);
+}
+.menu {
+  font: var(--type-time);
+}
+.actions {
+  display: flex;
+  gap: var(--space-10);
+  margin-top: var(--space-20);
+}
+.actions > * {
+  flex: 1;
+}
+
+/* B: the card at the end of Films */
+.card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-14);
+  margin-top: var(--space-24);
+  padding: var(--space-16);
+  border-radius: var(--radius-card);
+  background: var(--bg-accent-soft);
+}
+.cardText {
+  min-width: 0;
+}
+.cardTitle {
+  margin: 0;
+  padding-right: 30px; /* clear of the close button */
+  font: var(--type-title);
+}
+.cardWhy {
+  margin: var(--space-4) 0 var(--space-10);
+  color: var(--text-secondary);
+  font: var(--type-meta);
+}
+.close {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background-color var(--dur-fast) ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .close:hover {
+    background: var(--hover-fill);
+  }
+}
+@media (min-width: 768px) {
+  .card {
+    max-width: 560px;
+  }
+}

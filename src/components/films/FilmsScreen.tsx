@@ -146,6 +146,8 @@ export function FilmsScreen({ data, city, bg, coming = [] }: { data: ListData; c
           <ComingRow cards={coming} />
         </section>
       )}
+      {/* The Home Screen guide's card goes here, once its code has loaded (D-162). */}
+      {live && <div id="home-screen-card" />}
     </AppFrame>
   );
 }

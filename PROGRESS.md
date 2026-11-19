@@ -2,6 +2,14 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 19 Nov 2026 (late night, Lagos) — The Home Screen guide, A and B (D-162)
+
+- **Asked:** "can we put a pop-up or something somewhere in the app that encourages the user to add the web app to their home page?" Pick page `mockup/home-screen/` (local; vetted: overlaps fixed before it was shown); Chime: "let's do A and B together".
+- **Changed:** `src/components/home/HomeScreenGuide.tsx` + `home.module.css` (A: the sheet on a second visit with the app icon sticker, why, the three steps, Not now / Got it; B: the card at the end of Films, Show me how, ×), loaded by `useHomeGuide.ts` only in a phone's or tablet's browser, 1.5 s after the page is up; Chrome's install offer is kept early for a one-tap button on Android. `src/lib/homeScreen.ts` (when it shows), `src/lib/wording/homeScreen.ts` (words, steps for iPhone and Android). `Sheet` takes a `lead` (the sticker). Films has the card's slot.
+- **Red:** `tests/unit/lib/homeScreen.test.ts` (`Cannot find package '@/lib/homeScreen'`). **Green:** 7/7; e2e `tests/e2e/home-screen.spec.ts` 4/4 (first visit nothing; second visit the sheet with Safari's steps, Not now holds it 14 days; the card after Coming soon, Show me how, × ends it; nothing in the Home Screen app). Screens at 390 and 360 beside the mockup (scratchpad `hs/cmp.png`): the same, with the app's own sheet (close ×, no grab handle, grey Not now). Budget: Films 227.6 → 227.7 KB.
+- **Review:** /code-review medium --fix: 8 findings, 6 fixed (Chrome's install offer heard after the guide loads; a used offer can't throw; the sheet closes when the app is added from Chrome's menu; **a visit is a page 30 minutes or more after the last, not the browser's session**, since Safari on an iPhone keeps a tab's session for days and the guide might never have shown; Android steps for any browser's menu; type tokens in place of raw font values). Not fixed: a visit is counted only once the guide's code loads (1.5 s); Chrome's own install bar is held back everywhere.
+- **Not verified:** on Chime's iPhone (a second visit in Safari); Android's one-tap install (no Android phone).
+
 ## 19 Nov 2026 (night, Lagos) — Pull to refresh in the Home Screen app (D-161)
 
 - **Asked:** Chime's screen recording (the Home Screen app has no pull to refresh) and Design Bookmark's "Pull to refresh" code: "replicate that on all the pages".

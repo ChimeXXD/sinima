@@ -19,7 +19,7 @@ import s from "./sheet.module.css";
 // sliding in from it, in place of the centred dialog (D-133). Below 1200 px (phones, iPads upright)
 // it stays the sheet.
 
-export function Sheet({ open, onClose, title, subtitle, children, className, testId = "sheet", picker, side }: { open: boolean; onClose: () => void; title: string; subtitle?: string; children: React.ReactNode; className?: string; testId?: string; /** The picker the sheet opens from. */ picker?: React.RefObject<HTMLElement | null>; /** On a computer, a panel down the right edge (D-133). */ side?: boolean }) {
+export function Sheet({ open, onClose, title, subtitle, lead, children, className, testId = "sheet", picker, side }: { open: boolean; onClose: () => void; title: string; subtitle?: string; /** Beside the title: the Home Screen guide's app icon sticker (D-162). */ lead?: React.ReactNode; children: React.ReactNode; className?: string; testId?: string; /** The picker the sheet opens from. */ picker?: React.RefObject<HTMLElement | null>; /** On a computer, a panel down the right edge (D-133). */ side?: boolean }) {
   const ref = useRef<HTMLDialogElement>(null);
   useSwipeDown(ref, open);
   useEffect(() => {
@@ -45,6 +45,7 @@ export function Sheet({ open, onClose, title, subtitle, children, className, tes
       onClick={(event) => onBackdrop(event) && event.currentTarget.close()}
     >
       <div className={s.head}>
+        {lead}
         <div className={s.titles}>
           <h2 id={`${testId}.title`} className={s.title}>
             {title}
