@@ -3,6 +3,7 @@ import { CITIES } from "@/lib/city";
 import { areasIn, cityParam, loadCity } from "@/lib/data/load";
 import { YoursScreen } from "@/components/yours/YoursScreen";
 import { toListData } from "@/lib/data/listData";
+import { pageMeta } from "@/lib/share/meta";
 import { pageColours } from "@/lib/theme/pageColours";
 import { sectionTitle } from "@/lib/wording/city";
 
@@ -14,7 +15,7 @@ export const generateStaticParams = () => CITIES.map((city) => ({ city }));
 
 export async function generateMetadata({ params }: CityProps): Promise<Metadata> {
   const city = cityParam((await params).city);
-  return { title: `${sectionTitle("yours", city)} · Sinima` };
+  return pageMeta(`${sectionTitle("yours", city)} · Sinima`);
 }
 
 /** The Your cinemas tab: the cinemas saved on this phone, soonest first (Figma Your cinemas, build unit 10). */

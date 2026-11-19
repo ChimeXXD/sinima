@@ -3,6 +3,7 @@ import { CITIES } from "@/lib/city";
 import { cityParam, loadCity, loadDays } from "@/lib/data/load";
 import { FilmsScreen } from "@/components/films/FilmsScreen";
 import { toListData } from "@/lib/data/listData";
+import { pageMeta } from "@/lib/share/meta";
 import { pageColours } from "@/lib/theme/pageColours";
 import { sectionTitle } from "@/lib/wording/city";
 
@@ -14,7 +15,7 @@ export const generateStaticParams = () => CITIES.map((city) => ({ city }));
 
 export async function generateMetadata({ params }: CityProps): Promise<Metadata> {
   const city = cityParam((await params).city);
-  return { title: `${sectionTitle("films", city)} · Sinima` };
+  return pageMeta(`${sectionTitle("films", city)} · Sinima`);
 }
 
 /** Home: every film showing in the city, as posters. A visitor picks a film, then sees where it is on (D-55). */

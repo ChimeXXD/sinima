@@ -2,6 +2,7 @@ import { Link } from "@/components/ui/CityLink";
 import { minutesFromStart } from "@/lib/time/countdown";
 import { isBeforeStart, showingState } from "@/lib/time/showingState";
 import { filmNextLine } from "@/lib/wording/film";
+import { posterTint } from "@/lib/theme/posterTint";
 import { NO_POSTER } from "@/lib/wording/films";
 import { cinemaNextLine, showingsTonight } from "@/lib/wording/showing";
 import { Icon } from "./Icon";
@@ -93,13 +94,6 @@ export function ShowingCard(props: { title: string; cinema: string; meta: string
       <TimePill startsAt={startsAt} now={now} bookUrl={bookUrl} bookLabel={bookLabel} />
     </article>
   );
-}
-
-/** Which of the five poster tints a film without artwork gets: the same one every time for its title. */
-export function posterTint(title: string): number {
-  let hash = 0;
-  for (const char of title) hash = (hash * 31 + char.codePointAt(0)!) >>> 0;
-  return (hash % 5) + 1;
 }
 
 /**

@@ -3,6 +3,7 @@ import { CITIES } from "@/lib/city";
 import { areasIn, cityParam, loadCity } from "@/lib/data/load";
 import { SoonScreen } from "@/components/soon/SoonScreen";
 import { toListData } from "@/lib/data/listData";
+import { pageMeta } from "@/lib/share/meta";
 import { pageColours } from "@/lib/theme/pageColours";
 import { sectionTitle } from "@/lib/wording/city";
 
@@ -14,7 +15,7 @@ export const generateStaticParams = () => CITIES.map((city) => ({ city }));
 
 export async function generateMetadata({ params }: CityProps): Promise<Metadata> {
   const city = cityParam((await params).city);
-  return { title: `${sectionTitle("soon", city)} · Sinima` };
+  return pageMeta(`${sectionTitle("soon", city)} · Sinima`);
 }
 
 /** What starts in the next 2 hours in your area, then later tonight (Figma Starting soon, build unit 9). */

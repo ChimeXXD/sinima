@@ -4,6 +4,7 @@ import { CITIES, type City } from "@/lib/city";
 import { areaBySlug, cityParam, loadCity, loadDays } from "@/lib/data/load";
 import { toListData } from "@/lib/data/listData";
 import type { ShowtimesFile } from "@/lib/data/types";
+import { pageMeta } from "@/lib/share/meta";
 import { pageColours } from "@/lib/theme/pageColours";
 
 type Props = { params: Promise<{ city: string; id: string }> };
@@ -21,7 +22,7 @@ const cinemaById = (file: ShowtimesFile, city: City, id: string) => {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { city: slugOfCity, id } = await params;
   const city = cityParam(slugOfCity);
-  return { title: `${cinemaById(loadCity(city), city, id).name} · Sinima` };
+  return pageMeta(`${cinemaById(loadCity(city), city, id).name} · Sinima`);
 }
 
 /** One cinema: where it is, Save and Book, then its films on the day (Figma Cinema, build unit 8). */

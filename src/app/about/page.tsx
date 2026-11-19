@@ -3,9 +3,10 @@ import sources from "../../../data/sources.json";
 import { AboutScreen } from "@/components/about/AboutScreen";
 import { cityReading, sourceRows } from "@/lib/data/about";
 import { cityOfArea, loadAll } from "@/lib/data/load";
+import { pageMeta } from "@/lib/share/meta";
 import { pageColours } from "@/lib/theme/pageColours";
 
-export const metadata: Metadata = { title: "About · Sinima" };
+export const metadata: Metadata = pageMeta("About · Sinima");
 
 /** About: how it works, each source's real status, TMDB, and takedown (Figma About, build unit 11). */
 export default function AboutPage() {

@@ -483,7 +483,7 @@
       ],
       "verify": "manual: paste link in WhatsApp",
       "passes": false,
-      "evidence": "12 Nov 2026, not passing: the share dialog (the Fixtured pattern) is built; Copy link copies a link that opens the exact showing, with no tracking (`npm run test:e2e -- showing`); Share uses the phone's share sheet or WhatsApp. Still to do: the preview card image, and pasting a link in WhatsApp on a phone."
+      "evidence": "12 Nov 2026, not passing: the share dialog (the Fixtured pattern) is built; Copy link copies a link that opens the exact showing, with no tracking (`npm run test:e2e -- showing`); Share uses the phone's share sheet or WhatsApp. 19 Nov 2026: the preview card is built (D-149): one 1200 × 630 PNG per film per city at /og/<city>/<film>.png (TMDB poster, or the no-poster face) and the site's own at /og/site.png, written at build time; every page carries og:title, og:description, og:image (absolute https://sinima.com.ng), its width, height and alt, and twitter:card summary_large_image (`npx vitest run tests/unit/lib/share tests/unit/lib/wording/share.test.ts`; `npx playwright test tests/e2e/share-card.spec.ts`: a Lagos and an Abuja film page, the home page, Films and a sinima's page, each image a 1200 × 630 PNG in out/). Still to do: pasting a link in WhatsApp on a phone and in X's composer after the deploy; the cards are 101-491 KB, and WhatsApp is reported to drop pictures over 300 KB (some say 600 KB), so the phone check decides whether they need making smaller."
     },
     {
       "id": "D5-3",

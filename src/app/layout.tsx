@@ -2,15 +2,17 @@ import type { Metadata, Viewport } from "next";
 import { CinemaCities } from "@/components/ui/CinemaCities";
 import { THEME_KEY } from "@/lib/area";
 import { cinemaCityMap } from "@/lib/data/load";
+import { siteMeta } from "@/lib/share/meta";
 import { pageColours } from "@/lib/theme/pageColours";
 import "@/styles/globals.css";
 
 const bg = pageColours();
 const cinemaCities = cinemaCityMap();
 
+// The site's address, description and share card (D-149) for every page; a film's page gives its own.
 export const metadata: Metadata = {
+  ...siteMeta(),
   title: "Sinima",
-  description: "What's starting soon at Lagos and Abuja sinimas, and should you stay after the credits?",
   manifest: "/manifest.webmanifest",
   icons: {
     icon: [
