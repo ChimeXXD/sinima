@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { afterAnswer, cardDue, closeCard, FRESH, pageSeen, sheetDue, sheetShown, type GuideState } from "@/lib/homeScreen";
-import { homeSteps } from "@/lib/wording/homeScreen";
+import { homeBrowser, homeSteps } from "@/lib/wording/homeScreen";
 
 // D-162: the Home Screen guide. A sheet on a second visit and a card at the end of Films; never on a
 // first visit; "Not now" hides the sheet for 14 days, a second time for good; "Got it" ends it; ×
@@ -63,13 +63,55 @@ describe("when the guide shows", () => {
   });
 });
 
-describe("the steps", () => {
-  it("iPhone: Share (under ••• on newer iPhones), Add to Home Screen, Add", () => {
-    expect(homeSteps("ios").map((step) => step.title)).toEqual(["Tap Share", "Tap Add to Home Screen", "Tap Add"]);
-    expect(homeSteps("ios")[0]!.note).toBe("On newer iPhones, it's under •••");
+describe("the steps (D-163: each browser's own Share)", () => {
+  it("Safari on an iPhone: More (•••), then Share, Add to Home Screen, Add", () => {
+    expect(homeSteps("safari").map((step) => step.title)).toEqual(["Tap More (•••), then Share", "Tap Add to Home Screen", "Tap Add"]);
+    expect(homeSteps("safari")[0]!.note).toBe("Older iPhones: Share is in the bar");
+  });
+
+  it("Chrome on an iPhone: Share at the top", () => {
+    expect(homeSteps("chrome-ios").map((step) => step.title)).toEqual(["Tap Share", "Tap Add to Home Screen", "Tap Add"]);
+    expect(homeSteps("chrome-ios")[0]!.note).toBe("Next to the address bar"); // it can sit at the top or the bottom
   });
 
   it("Android without Chrome's own offer: the browser's menu (⋮ in Chrome)", () => {
     expect(homeSteps("android").map((step) => step.title)).toEqual(["Open your browser's menu", "Tap Add to Home screen", "Tap Add"]);
+  });
+
+  it("reads the browser from the user agent: CriOS is Chrome on an iPhone", () => {
+    const iphone = "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko)";
+    expect(homeBrowser(`${iphone} Version/18.5 Mobile/15E148 Safari/604.1`)).toBe("safari");
+    expect(homeBrowser(`${iphone} CriOS/141.0.7390.96 Mobile/15E148 Safari/604.1`)).toBe("chrome-ios");
+    expect(homeBrowser("Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0 Mobile Safari/537.36")).toBe("android");
+  });
+
+  it("an iPad, and another iPhone browser, each get their own first step", () => {
+    expect(homeSteps("ipad")[0]).toMatchObject({ title: "Tap Share", note: "At the top right, or under •••" });
+    expect(homeSteps("other-ios")[0]).toMatchObject({ title: "Tap Share", note: "In your browser's menu or bar" });
+  });
+});
+
+describe("homeBrowser", () => {
+  const iPhone = (tail: string) => `Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) ${tail}`;
+  it("tells the iPhone's browsers apart", () => {
+    expect(homeBrowser(iPhone("Version/18.5 Mobile/15E148 Safari/604.1"))).toBe("safari");
+    expect(homeBrowser(iPhone("CriOS/141.0 Mobile/15E148 Safari/604.1"))).toBe("chrome-ios");
+    expect(homeBrowser(iPhone("FxiOS/140.0 Mobile/15E148 Safari/605.1.15"))).toBe("other-ios");
+    expect(homeBrowser(iPhone("EdgiOS/140.0 Mobile/15E148 Safari/605.1.15"))).toBe("other-ios");
+  });
+
+  it("tells an iPad (which says Macintosh) from a Mac by touch", () => {
+    const mac = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Safari/605.1.15";
+    expect(homeBrowser(mac, true)).toBe("ipad");
+    expect(homeBrowser(mac, false)).toBe("safari");
+  });
+
+  it("gives no browser inside Instagram's or Facebook's own browser: no guide there", () => {
+    expect(homeBrowser(iPhone("Mobile/15E148 Instagram 400.0.0.0"))).toBeNull();
+    expect(homeBrowser(iPhone("Mobile/15E148 [FBAN/FBIOS;FBAV/500.0]"))).toBeNull();
+  });
+
+  it("Android", () => {
+    expect(homeBrowser("Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0 Mobile Safari/537.36")).toBe("android");
   });
 });

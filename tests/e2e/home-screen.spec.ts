@@ -30,8 +30,8 @@ test("on a second visit the sheet shows the iPhone's steps; Not now holds it bac
   await expect(sheet).toBeVisible({ timeout: 8000 });
   await expect(sheet).toHaveAccessibleName("Keep Sinima on your Home Screen");
   await expect(sheet).toContainText("It opens like an app: pull down for new times, and Add to calendar goes straight to Calendar.");
-  await expect(sheet.getByTestId("home.step.1")).toContainText("Tap Share");
-  await expect(sheet.getByTestId("home.step.1")).toContainText("On newer iPhones, it's under •••");
+  await expect(sheet.getByTestId("home.step.1")).toContainText("Tap More (•••), then Share"); // Safari (D-163)
+  await expect(sheet.getByTestId("home.step.1")).toContainText("Older iPhones: Share is in the bar");
   await expect(sheet.getByTestId("home.step.2")).toContainText("Tap Add to Home Screen");
   await expect(sheet.getByTestId("home.step.3")).toContainText("Tap Add");
   await sheet.getByTestId("home.sheet.not-now").click();
@@ -62,7 +62,7 @@ test("the card at the end of Films opens the steps, and closing it ends it", asy
   const steps = page.getByTestId("home.steps");
   await expect(steps).toBeVisible();
   await expect(steps).toHaveAccessibleName("Add Sinima to your Home Screen");
-  await expect(steps.getByTestId("home.step.1")).toContainText("Tap Share");
+  await expect(steps.getByTestId("home.step.1")).toContainText("Tap More (•••), then Share");
   await steps.getByTestId("home.steps.got-it").click();
   await expect(steps).not.toBeVisible();
   const close = card.getByTestId("home.card.close");
@@ -84,4 +84,18 @@ test("in the Home Screen app there is no guide", async ({ page }) => {
   await page.waitForTimeout(5000);
   await expect(page.getByTestId("home.sheet")).toHaveCount(0);
   await expect(page.getByTestId("home.card")).toHaveCount(0);
+});
+
+// D-163: Chrome on an iPhone keeps Share at the top, next to the address.
+test.describe("Chrome on an iPhone", () => {
+  test.use({ userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/141.0.7390.96 Mobile/15E148 Safari/604.1" });
+
+  test("its steps start with Share at the top", async ({ page }) => {
+    await returning(page, { visits: 1, seenAt: 0, sheetDone: true });
+    await page.goto("/lagos");
+    await page.getByTestId("home.card.show").click({ timeout: 8000 });
+    const first = page.getByTestId("home.steps").getByTestId("home.step.1");
+    await expect(first).toContainText("Tap Share");
+    await expect(first).toContainText("Next to the address bar");
+  });
 });

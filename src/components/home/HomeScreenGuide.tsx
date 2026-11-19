@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/Actions";
 import { Icon } from "@/components/ui/Icon";
 import { Sheet } from "@/components/ui/Sheet";
 import { afterAnswer, cardDue, closeCard, pageSeen, readGuide, sheetDue, sheetShown, type GuideState } from "@/lib/homeScreen";
-import { HOME_CARD, HOME_SHEET, HOME_STEPS_TITLE, homeSteps, type HomeStep } from "@/lib/wording/homeScreen";
+import { HOME_CARD, HOME_SHEET, HOME_STEPS_TITLE, homeBrowser, homeSteps, type HomeStep } from "@/lib/wording/homeScreen";
 import { installOffer, onInstallOffer, type InstallOffer } from "@/components/ui/useHomeGuide";
 import s from "./home.module.css";
 
@@ -45,8 +45,6 @@ function keep(state: GuideState) {
   }
 }
 
-const phone = (): "ios" | "android" => (/Android/i.test(navigator.userAgent) ? "android" : "ios");
-
 export default function HomeScreenGuide() {
   // Loaded only in the browser, after the page is up (useHomeGuide), so storage and the page are there to read.
   const [state, setState] = useState<GuideState>(load);
@@ -54,7 +52,7 @@ export default function HomeScreenGuide() {
   const [steps, setSteps] = useState(false);
   const [offer, setOffer] = useState<InstallOffer | null>(installOffer);
   const [slot] = useState(() => document.getElementById(CARD_SLOT));
-  const kind = phone();
+  const [kind] = useState(() => homeBrowser(navigator.userAgent, navigator.maxTouchPoints > 1));
 
   const save = (next: GuideState) => {
     setState(next);
@@ -62,6 +60,7 @@ export default function HomeScreenGuide() {
   };
 
   useEffect(() => {
+    if (!kind) return; // an app's own browser can't add to the Home Screen: no guide there
     const first = state;
     // Added from the browser's own menu: the guide's work is done, so the sheet goes too.
     const added = () => {
@@ -88,6 +87,7 @@ export default function HomeScreenGuide() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  if (!kind) return null;
   const answer = (how: "not-now" | "got-it" | "added") => {
     setSheet(false);
     save(afterAnswer(state, how, Date.now()));
@@ -176,7 +176,8 @@ function Steps({ steps }: { steps: HomeStep[] }) {
             {i + 1}
           </span>
           <span className={s.stepText}>
-            {step.title}
+            {/* "•••" is drawn but not read: a screen reader hears "Tap More, then Share". */}
+            {step.title.split(/\s?\(•••\)/).flatMap((part, j) => (j === 0 ? [part] : [<span key={j} aria-hidden="true"> (•••)</span>, part]))}
             {step.note && <small>{step.note}</small>}
           </span>
           <span className={s.glyph} aria-hidden="true">
@@ -188,10 +189,11 @@ function Steps({ steps }: { steps: HomeStep[] }) {
   );
 }
 
-/** What the step's button looks like on the phone: Safari's Share, Add to Home Screen's square, ⋮, or the word. */
+/** What the step's button looks like on the phone: Share, Add to Home Screen's square, ⋮, •••, or the word. */
 function Glyph({ step }: { step: HomeStep }) {
   if (step.glyph === "word") return <span className={s.word}>{step.word}</span>;
   if (step.glyph === "menu") return <span className={s.menu}>⋮</span>;
+  if (step.glyph === "more") return <span className={s.menu}>•••</span>;
   const d = step.glyph === "share" ? "M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" : "M12 8v8M8 12h8";
   return (
     <svg viewBox="0 0 24 24" width={20} height={20} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className={step.glyph === "share" ? s.share : undefined}>

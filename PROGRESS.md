@@ -2,6 +2,13 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 19 Nov 2026 (late night, Lagos) — The guide's first step per browser (D-163)
+
+- **Asked:** Chime: "Share is under [•••] on Safari, while on Chrome, share is above."
+- **Changed:** `homeSteps` takes the browser: Safari "Tap ••• then Share" (older iPhones: in the bar), Chrome on an iPhone (CriOS) "Tap Share", at the top next to the address, Android its menu. A ••• glyph for Safari's step.
+- **Review:** /code-review medium --fix, 6 findings: browser detection moved to `homeBrowser` (unit-tested, read once); then, from its open items: iPad steps, other iPhone browsers' steps, no guide in in-app browsers (Instagram, Facebook…), "•••" hidden from screen readers ("Tap More, then Share"), Chrome's note without "top".
+- **Checked:** unit 16/16; e2e `home-screen.spec.ts` 5/5 (Safari and Chrome on an iPhone).
+
 ## 19 Nov 2026 (late night, Lagos) — The Home Screen guide, A and B (D-162)
 
 - **Asked:** "can we put a pop-up or something somewhere in the app that encourages the user to add the web app to their home page?" Pick page `mockup/home-screen/` (local; vetted: overlaps fixed before it was shown); Chime: "let's do A and B together".
