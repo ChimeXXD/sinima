@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { gzipSync } from "node:zlib";
 import { describe, expect, it } from "vitest";
 import registry from "../../../data/cinemas.json";
+import { withShowingIds } from "@/lib/data/showingId";
 import { validateShowtimes } from "@/lib/data/validate";
 import type { CreditsInfo, ShowtimesFile } from "@/lib/data/types";
 import { clock24 as clock, eveningDayKey, lagosDayKey } from "@/lib/time/lagos";
@@ -313,10 +314,33 @@ describe("refresh --fixtures", () => {
     const out = mkdtempSync(join(tmpdir(), "sinima-refresh-"));
     expect(writeFiles(early.files, out).written).toHaveLength(early.files.size);
     const onDisk = JSON.parse(readFileSync(join(out, "public/data/area/lekki.json"), "utf8")) as ShowtimesFile;
-    expect(onDisk).toEqual(early.files.get("public/data/area/lekki.json"));
+    // A page file is written without its showings' ids (D-156); a reader puts them back.
+    expect(withShowingIds(onDisk)).toEqual(early.files.get("public/data/area/lekki.json"));
     // A minute later the showings are the same; only generatedAt differs, so nothing is rewritten.
     const later = refreshFromFixtures({ now: "2026-11-19T23:31:00Z", root });
     expect(writeFiles(later.files, out)).toEqual({ written: [], unchanged: early.files.size, removed: [] });
+  });
+
+  // D-156: an id is `<cinemaId>_<filmId>_<startsAt>`, so the city and area files leave it out and
+  // weigh less. showtimes.json and all.json keep it, and so does a later day's file: the browser
+  // fetches it, and a tab still running the code from before D-156 must be able to read it.
+  it("writes the city and area files without their showings' ids, and keeps them in later days', showtimes.json and all.json", () => {
+    const out = mkdtempSync(join(tmpdir(), "sinima-refresh-"));
+    writeFiles(early.files, out);
+    const disk = (path: string) => JSON.parse(readFileSync(join(out, path), "utf8")) as ShowtimesFile;
+    const dayFile = [...early.files.keys()].find((path) => /^public\/data\/(lagos|abuja)\/\d{4}-\d{2}-\d{2}\.json$/.test(path)) as string;
+    for (const path of ["public/data/lagos.json", "public/data/area/lekki.json"]) {
+      expect(disk(path).showings.length, path).toBeGreaterThan(0);
+      expect(disk(path).showings.some((s) => "id" in s), path).toBe(false);
+    }
+    for (const path of ["data/showtimes.json", "public/data/all.json", dayFile]) {
+      expect(disk(path).showings.length, path).toBeGreaterThan(0);
+      expect(disk(path).showings.every((s) => typeof s.id === "string"), path).toBe(true);
+    }
+    // A page file left on disk with every id (before D-156) is rewritten without them, though its showings are the same.
+    writeFileSync(join(out, "public/data/lagos.json"), JSON.stringify(early.files.get("public/data/lagos.json")));
+    expect(writeFiles(early.files, out).written).toEqual(["public/data/lagos.json"]);
+    expect(disk("public/data/lagos.json").showings.some((s) => "id" in s)).toBe(false);
   });
 
   it("removes a later day's file once that day is no longer ahead, and nothing else in the folder", () => {

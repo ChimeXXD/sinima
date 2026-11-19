@@ -2,6 +2,7 @@
 // building and validating schema v1, and the per-area split (D-18). No file or network access.
 import { cutComing, stillComing, withComing } from "../src/lib/data/coming.ts";
 import { cutFeatured, withFeatured } from "../src/lib/data/featured.ts";
+import { showingId } from "../src/lib/data/showingId.ts";
 import type { Cinema, Film, Showing, ShowtimesFile, Source, SourceHealth } from "../src/lib/data/types.ts";
 import { validateShowtimes } from "../src/lib/data/validate.ts";
 import { EVENING_ENDS_HOUR, lagosDayKey, lagosDaysFrom, lagosLocalToUtc, toLagos } from "../src/lib/time/lagos.ts";
@@ -214,7 +215,7 @@ export function buildShowtimes(input: {
       } else if (film.rating === null) {
         film.rating = row.rating;
       }
-      const id = `${cinema.id}_${filmId}_${row.startsAt}`;
+      const id = showingId({ cinemaId: cinema.id, filmId, startsAt: row.startsAt });
       // The same showing twice in one read is one showing: a day page and a cinema page overlap,
       // and Lagocine repeats some rows outright.
       if (seen.has(id)) {

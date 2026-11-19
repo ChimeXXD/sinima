@@ -10,6 +10,7 @@ import { shareLink } from "@/lib/browser";
 import { nextNearby } from "@/lib/data/filmPage";
 import { formatLabel } from "@/lib/data/format";
 import type { ListData, ListRow } from "@/lib/data/select";
+import { showingId } from "@/lib/data/showingId";
 import { buildIcs, icsFileName, saveIcs } from "@/lib/ics/ics";
 import { countdownId, toggleCountdown, useCountdowns } from "@/lib/saved";
 import { minutesFromStart } from "@/lib/time/countdown";
@@ -108,7 +109,7 @@ function addToCalendar(data: ListData, row: ListRow, now: string) {
   const cinema = data.cinemas[row.cinema]!;
   const from = data.fresh[row.fresh]!;
   const sourceLine = freshness({ name: from.source, method: from.method }, from.fetchedAt, now, from.via).text;
-  const showing = { id: `${cinema.id}_${film.id}_${row.at}`, film: film.title, cinema: cinema.name, address: cinema.address, startsAt: row.at, runtimeMin: film.runtimeMin, bookingUrl: row.book, sourceLine };
+  const showing = { id: showingId({ cinemaId: cinema.id, filmId: film.id, startsAt: row.at }), film: film.title, cinema: cinema.name, address: cinema.address, startsAt: row.at, runtimeMin: film.runtimeMin, bookingUrl: row.book, sourceLine };
   saveIcs(buildIcs(showing, now), icsFileName(showing));
 }
 

@@ -9,6 +9,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { gzipSync } from "node:zlib";
 import { CITIES } from "../src/lib/city.ts";
+import { withoutShowingIds } from "../src/lib/data/showingId.ts";
 import type { ShowtimesFile } from "../src/lib/data/types.ts";
 import { lagosDayKey, toLagos } from "../src/lib/time/lagos.ts";
 import { assemble, readJson, readSources, SAMPLE_PATHS } from "./assemble.ts";
@@ -28,9 +29,9 @@ import type { ParsedPage } from "./sources/raw.ts";
  * own markup. All of Lagos for two days (588 sample showings, no booking links) measured 10.3 KB on
  * 11 Nov 2026 (D-45); live rows carry booking links and will weigh more.
  */
-// 24 from 19 Nov (D-155): five days filled tomorrow for every Lagos sinima (21.9 KB); back to 20
-// once page files stop storing each showing's id.
-export const DATA_FILE_LIMIT_KB = 24;
+// 24 for 19 Nov (D-155), when five days filled tomorrow for every Lagos sinima (21.9 KB); back to
+// 20 once page files stopped storing each showing's usual id (D-156).
+export const DATA_FILE_LIMIT_KB = 20;
 
 type FixtureEntry = {
   file: string; sourceId: string; page: string; cinemaId?: string; savedAt: string; sample: boolean;
@@ -103,9 +104,17 @@ const sizes = (files: Map<string, ShowtimesFile>) => new Map([...files].map(([pa
 const overIn = (sized: Map<string, number>) => [...sized].filter(([path, size]) => pageLoads(path) && size > DATA_FILE_LIMIT_KB).map(([path]) => path);
 /** The page files over the budget, by path. */
 export const overBudget = (files: Map<string, ShowtimesFile>) => overIn(sizes(files));
-/** Compact for files in public/ and data/live/; showtimes.json pretty, for diffs. */
-const serialise = (path: string, file: ShowtimesFile) => (path.endsWith("showtimes.json") ? `${JSON.stringify(file, null, 2)}\n` : JSON.stringify(file));
-const withoutStamp = (file: ShowtimesFile) => JSON.stringify({ ...file, generatedAt: null });
+/**
+ * A later day's file (D-147), the one page file a browser fetches: it keeps its ids, so a tab still
+ * running the code from before D-156 (or an installed app's cached copy) can read it.
+ */
+const fetchedByBrowser = (path: string) => /\/\d{4}-\d{2}-\d{2}\.json$/.test(path);
+/**
+ * Compact for files in public/ and data/live/; showtimes.json pretty, for diffs. The city and area
+ * files, read only at build time, leave out each showing's usual id (D-156); load.ts puts it back.
+ */
+const serialise = (path: string, file: ShowtimesFile) =>
+  path.endsWith("showtimes.json") ? `${JSON.stringify(file, null, 2)}\n` : JSON.stringify(pageLoads(path) && !fetchedByBrowser(path) ? withoutShowingIds(file) : file);
 
 const DAY_FILE = /^\d{4}-\d{2}-\d{2}\.json$/;
 
@@ -122,7 +131,10 @@ export function writeFiles(files: Map<string, ShowtimesFile>, root: string): { w
     if (existsSync(target)) {
       let same = false;
       try {
-        same = withoutStamp(readJson<ShowtimesFile>(target)) === withoutStamp(file);
+        // The text it would be written as, with the stamp already on disk: a file in an older
+        // shape (a page file still carrying every id, before D-156) is rewritten, not kept.
+        const onDisk = readFileSync(target, "utf8");
+        same = onDisk === serialise(path, { ...file, generatedAt: (JSON.parse(onDisk) as ShowtimesFile).generatedAt });
       } catch {
         // An unreadable file on disk is simply replaced.
       }

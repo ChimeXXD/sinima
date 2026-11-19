@@ -5,6 +5,7 @@ import { isCity, type City } from "@/lib/city";
 import { cityOfCinema } from "@/lib/data/cities";
 import { cityDays, type LaterFile } from "@/lib/data/cityDays";
 import type { DayInfo } from "@/lib/data/days";
+import { withShowingIds } from "@/lib/data/showingId";
 import type { ShowtimesFile } from "@/lib/data/types";
 
 // Build-time only: pages read the files `npm run refresh` wrote (DATA §Per-area files). Each page
@@ -37,7 +38,8 @@ export function areaBySlug(slug: string): Area {
 
 function read(path: string): ShowtimesFile {
   try {
-    return JSON.parse(readFileSync(join(process.cwd(), "public/data", path), "utf8")) as ShowtimesFile;
+    // A page's file leaves out each showing's usual id (D-156).
+    return withShowingIds(JSON.parse(readFileSync(join(process.cwd(), "public/data", path), "utf8")) as ShowtimesFile);
   } catch (error) {
     throw new Error(`Cannot read public/data/${path}. Run \`npm run refresh -- --fixtures\` first. (${error instanceof Error ? error.message : String(error)})`);
   }

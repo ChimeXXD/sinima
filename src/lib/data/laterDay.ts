@@ -1,5 +1,6 @@
 import { toListData } from "@/lib/data/listData";
 import { type ListData } from "@/lib/data/select";
+import { withShowingIds } from "@/lib/data/showingId";
 import type { ShowtimesFile } from "@/lib/data/types";
 
 // A later day's file (D-147) as the list data the screens already use. Loaded only when a visitor
@@ -28,7 +29,8 @@ export function fetchDay(url: string): Promise<ShowtimesFile> {
   if (!got) {
     got = fetch(url)
       .then((response) => (response.ok ? (response.json() as Promise<ShowtimesFile>) : Promise.reject(new Error(`${url}: ${response.status}`))))
-      .then((file) => (file?.schemaVersion === 1 && Array.isArray(file.showings) ? file : Promise.reject(new Error(`${url} is not a showtimes file`))));
+      // The file leaves out each showing's usual id (D-156).
+      .then((file) => (file?.schemaVersion === 1 && Array.isArray(file.showings) ? withShowingIds(file) : Promise.reject(new Error(`${url} is not a showtimes file`))));
     got.catch(() => files.delete(url));
     files.set(url, got);
   }
