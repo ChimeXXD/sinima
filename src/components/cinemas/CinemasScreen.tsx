@@ -3,7 +3,7 @@
 import { useCityRouter as useRouter } from "@/components/ui/CityLink";
 import { useCallback, useState } from "react";
 import { AppFrame, LogoNote } from "@/components/ui/AppFrame";
-import { PageNotice } from "@/components/ui/Status";
+import { PageNotice } from "@/components/ui/Notices";
 import { Toast } from "@/components/ui/Toast";
 import { DayLoad, DaySentence } from "@/components/ui/DayParts";
 import { useDayPicker } from "@/components/ui/useDayPicker";

@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { Link } from "@/components/ui/CityLink";
 import { Icon } from "@/components/ui/Icon";
 import { afterPaint, pop } from "@/components/ui/motion";
-import { FormatBadge } from "@/components/ui/Status";
+import { FormatBadge } from "@/components/ui/FormatBadge";
 import { LogoSticker } from "@/components/ui/Stickers";
 import s from "./cinemas.module.css";
 

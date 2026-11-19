@@ -7,7 +7,7 @@ import { useLazySheet } from "@/components/film/useLazySheet";
 import { Button } from "@/components/ui/Actions";
 import { AppFrame } from "@/components/ui/AppFrame";
 import { NoPoster, ShowingCard } from "@/components/ui/Cards";
-import { PageNotice } from "@/components/ui/Status";
+import { PageNotice } from "@/components/ui/Notices";
 import { TicketFaceSticker } from "@/components/ui/Stickers";
 import { CITY_NAMES, type City } from "@/lib/city";
 import { useAreaChoice, useSavedArea } from "@/lib/browser";

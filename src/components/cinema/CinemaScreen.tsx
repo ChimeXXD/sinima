@@ -8,7 +8,8 @@ import { AppFrame, BarBack, BarTitle, Crumb, LogoNote } from "@/components/ui/Ap
 import { DayLoad, DaySentence } from "@/components/ui/DayParts";
 import { DayRow, dayTiles } from "@/components/ui/DayRow";
 import { Icon } from "@/components/ui/Icon";
-import { FormatBadge, PageNotice } from "@/components/ui/Status";
+import { FormatBadge } from "@/components/ui/FormatBadge";
+import { PageNotice } from "@/components/ui/Notices";
 import { LogoSticker } from "@/components/ui/Stickers";
 import { Toast } from "@/components/ui/Toast";
 import { pop } from "@/components/ui/motion";

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/Actions";
 import { AppFrame, LogoNote } from "@/components/ui/AppFrame";
 import { CinemaFolder } from "@/components/ui/Cards";
 import { Icon } from "@/components/ui/Icon";
-import { PageNotice } from "@/components/ui/Status";
+import { PageNotice } from "@/components/ui/Notices";
 import { LogoSticker, TicketFace, TicketFaceSticker } from "@/components/ui/Stickers";
 import { CITY_NAMES, type City } from "@/lib/city";
 import { pageBanner, type ListData } from "@/lib/data/select";

@@ -4,7 +4,7 @@ import { Link, useCity } from "@/components/ui/CityLink";
 import { useEffect, useRef, useState } from "react";
 import { Chip } from "@/components/ui/Actions";
 import { Icon } from "@/components/ui/Icon";
-import { Notice } from "@/components/ui/Status";
+import { Notice } from "@/components/ui/Notices";
 import { CitySticker, TicketFaceSticker } from "@/components/ui/Stickers";
 import { hasCinemas, searchFilms, type Scope, type SearchFilm, type SearchGroup, type SearchIndex } from "@/lib/data/search";
 import type { City } from "@/lib/city";

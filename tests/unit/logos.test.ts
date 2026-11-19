@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import cinemas from "../../data/cinemas.json";
 import logos from "../../data/logos.json";
+import { LOGO_TILES } from "@/components/ui/logo-tiles";
 
 // Each chain's own logo on the Cinemas tab (D-56). Files are trimmed to the logo's own marks, so a
 // tile centres them exactly, and kept small: they load on every cinema row.
@@ -20,6 +21,11 @@ describe("chain logos (D-56)", () => {
     // A chain listed as having none really has none, and says why; none since The Jays got its logo (D-136).
     expect(Object.keys(without).filter((chain) => chain in logos.chains || !chains.includes(chain))).toEqual([]);
     for (const [chain, why] of Object.entries(without)) expect(why, chain).toMatch(/D-\d+/);
+  });
+
+  // The page carries only what a sticker draws (the page budget, D-21); data/logos.json stays the record.
+  it("gives the stickers each chain's file and tile, exactly as data/logos.json has them", () => {
+    expect(LOGO_TILES).toEqual(Object.fromEntries(Object.entries(logos.chains).map(([chain, logo]) => [chain, [logo.file, logo.tile]])));
   });
 
   it("names where each logo came from, on the chain's own site", () => {

@@ -7,7 +7,7 @@ import { AppFrame } from "@/components/ui/AppFrame";
 import { FilmCard, NoPoster } from "@/components/ui/Cards";
 import { DayLoad, DaySentence } from "@/components/ui/DayParts";
 import { DayRow, dayTiles } from "@/components/ui/DayRow";
-import { PageNotice } from "@/components/ui/Status";
+import { PageNotice } from "@/components/ui/Notices";
 import { TicketFaceSticker } from "@/components/ui/Stickers";
 import { useDayPicker } from "@/components/ui/useDayPicker";
 import { dayHref } from "@/lib/data/days";

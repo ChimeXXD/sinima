@@ -1,4 +1,4 @@
-import logos from "../../../data/logos.json";
+import { LOGO_TILES } from "./logo-tiles";
 import { TICKET_FACE } from "./ticket-paths";
 import s from "./stickers.module.css";
 
@@ -68,20 +68,19 @@ export function CitySticker({ city, tilt = city === "lagos" ? -5 : 5, large = fa
   );
 }
 
-const LOGOS: Record<string, { file: string; tile: string }> = logos.chains;
-
 /**
  * The chain's own logo on a die-cut tile (D-57): dark tile for white logos, white for dark ones,
  * Ozone fills its tile. `scale` sizes it from Figma's 72 × 44 (the folder uses 0.78). Hidden from
  * screen readers: the cinema's name is always beside it. Null for a chain with no logo.
  */
 export function LogoSticker({ chain, scale = 1, tilt = -6 }: { chain: string; scale?: number; tilt?: number }) {
-  const logo = LOGOS[chain];
+  const logo = LOGO_TILES[chain];
   if (!logo) return null;
+  const [file, tile] = logo;
   return (
-    <span className={`${s.logo} ${s[logo.tile]}`} style={{ "--k": scale, rotate: `${tilt}deg` } as React.CSSProperties} aria-hidden="true" data-testid="logo-sticker">
+    <span className={`${s.logo} ${s[tile]}`} style={{ "--k": scale, rotate: `${tilt}deg` } as React.CSSProperties} aria-hidden="true" data-testid="logo-sticker">
       {/* eslint-disable-next-line @next/next/no-img-element -- a static export has no image optimiser */}
-      <img src={`/logos/${logo.file}`} alt="" loading="lazy" decoding="async" />
+      <img src={`/logos/${file}`} alt="" loading="lazy" decoding="async" />
     </span>
   );
 }

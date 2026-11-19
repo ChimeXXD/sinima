@@ -6,7 +6,7 @@ import { useRef, useState } from "react";
 import { IconButton } from "@/components/ui/Actions";
 import { useLazySheet } from "@/components/film/useLazySheet";
 import { AppFrame, BarBack, BarTitle, Crumb, LogoNote } from "@/components/ui/AppFrame";
-import { PageNotice } from "@/components/ui/Status";
+import { PageNotice } from "@/components/ui/Notices";
 import { TicketFaceSticker } from "@/components/ui/Stickers";
 import { useFlip } from "@/components/ui/useFlip";
 import { CITY_NAMES, type City } from "@/lib/city";

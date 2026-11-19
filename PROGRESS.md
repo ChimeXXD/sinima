@@ -2,6 +2,15 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 19 Nov 2026 (late afternoon, Lagos) — page weight: room freed (handoff item 5)
+
+- **Chime's phone check, 19 Nov:** share card picture shows on WhatsApp (X's composer not reported); search shows coming films ("Opens … at Filmhouse"); five days fine; Coming soon: "do your recommendation" (kept as built). PLAN: Five days and Coming soon ticked.
+- **Where the weight is** (one-off build with source maps, each chunk's gzipped bytes shared out by source file; `next.config.ts` put back after): of ~165 KB of script per page, **Next.js and React are 133.0 KB**; ours is ~30 KB in many small files (icon paths 2.7, Stickers 2.3, Status 1.8 on every page). Fonts are already subset (Urbanist 207 characters, weights 300–800; Story Script 50).
+- **Changed:** (1) `logo-tiles.ts`: stickers carry each chain's file and tile only, not all of `data/logos.json` (its notes and sources); a test keeps the two equal. (2) `Status.tsx` split: the page notices to `Notices.tsx`, the format badge to `FormatBadge.tsx`, so pages without times don't carry the countdowns and time chips.
+- **Measured** (`npm run budget`, sample build, JS / total KB, before → after): Sinimas 166.4 / 227.9 → 163.2 / 224.3; a cinema's page 165.8 / 223.7 → 164.4 / 222.4; Films 164.9 / 227.7 → 164.3 / 227.2; a film's page 166.6 / 225.0 → 166.1 / 224.5; About 155.0 / 205.6 → 154.5 / 204.7.
+- **Considered, not done:** rounding the icon paths to 2 decimals saves 0.4 KB but edits Figma's exported paths (D-83); a lazy picker sheet on Sinimas (~1.6 KB) is no longer needed there.
+- **Reminder and share:** already built in the showing sheet (Add to calendar with a 30-min alert, share), loaded only when a time is tapped; covered by `film-screen.spec.ts`. Left: the check on an iPhone and an Android (features.json D5-1).
+
 ## 19 Nov 2026 (afternoon, Lagos) — "THE FOUR" shows as "The Four" (D-159)
 
 - **Changed:** `data/film-titles.json` (hand-kept titles by film id, one entry: `"the-four": "The Four"`); `titleLookup` in `scripts/titles.ts` reads it before TMDB's titles; `assemble.ts` (sample) and `live.ts` (live build) use it. Docs: DATA.md, D-159.
