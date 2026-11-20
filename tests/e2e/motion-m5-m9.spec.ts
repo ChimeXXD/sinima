@@ -138,14 +138,23 @@ test.describe("M8, D-112 C5: search results as you type", () => {
 });
 
 test.describe("M9: moving between tabs", () => {
-  /** The tab slide running on the page's content: its first keyframe. */
-  const slide = (page: Page) =>
-    page.locator("main").evaluate((main) =>
-      main
-        .getAnimations()
-        .filter((a) => a.id === "tab")
-        .map((a) => (a.effect as KeyframeEffect).getKeyframes()[0]!.transform),
-    );
+  // The slide lasts 300 ms: on a loaded machine it could end before the test asked for it. So each
+  // tab slide the page starts is written down as it starts, and read (and cleared) from that list.
+  test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => {
+      const started: string[] = [];
+      (window as unknown as { tabSlides: string[] }).tabSlides = started;
+      const animate = Element.prototype.animate;
+      Element.prototype.animate = function (keyframes, options) {
+        const animation = animate.call(this, keyframes, options);
+        if (animation.id === "tab" && this.tagName === "MAIN") started.push(String((animation.effect as KeyframeEffect).getKeyframes()[0]!.transform));
+        return animation;
+      };
+    });
+  });
+
+  /** The tab slides started on the page's content since the last look: each one's first keyframe. */
+  const slide = (page: Page) => page.evaluate(() => (window as unknown as { tabSlides: string[] }).tabSlides.splice(0));
 
   test("a tapped tab's page slides in from its side: Cinemas from the right, back to Films from the left", async ({ page }) => {
     await page.goto("/lagos");
