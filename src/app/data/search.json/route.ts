@@ -1,4 +1,4 @@
-import { cityOfArea, loadAll } from "@/lib/data/load";
+import { cityOfArea, loadAll, loadLater } from "@/lib/data/load";
 import { comingIn } from "@/lib/data/filmPages";
 import { searchIndex } from "@/lib/data/searchIndex";
 
@@ -7,5 +7,6 @@ import { searchIndex } from "@/lib/data/searchIndex";
 export const dynamic = "force-static";
 
 export function GET() {
-  return Response.json(searchIndex(loadAll(), cityOfArea, { lagos: comingIn("lagos"), abuja: comingIn("abuja") }));
+  const later = [...loadLater("lagos"), ...loadLater("abuja")].map((day) => day.file);
+  return Response.json(searchIndex(loadAll(), cityOfArea, { lagos: comingIn("lagos"), abuja: comingIn("abuja") }, later));
 }

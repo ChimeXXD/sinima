@@ -109,6 +109,40 @@ test("search finds a film that is only coming, says when it opens, and opens its
   await expect(page.getByTestId("coming.chip")).toContainText("at Filmhouse");
 });
 
+// Enter lists today's matches on Films; with only a coming film matching, Films would list nothing,
+// so Enter opens the film (HANDOFF 19 Nov, search leftovers).
+test("Enter with only a coming film matching opens that film, not an empty Films", async ({ page }) => {
+  await page.goto("/lagos");
+  await openSearch(page);
+  await page.getByTestId("search.query").fill("dune");
+  await expect(page.getByTestId("search.hit.dune-part-three")).toBeVisible();
+  await expect(page.getByText("Press Enter to open Dune: Part Three.")).toBeVisible();
+  await expect(page.getByText(/on Films\.$/)).toHaveCount(0);
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/\/lagos\/film\/dune-part-three$/);
+  await expect(page.getByTestId("search.panel")).toHaveCount(0);
+  await expect(page.getByTestId("coming.chip")).toContainText("at Filmhouse");
+});
+
+test("Enter with nothing matching stays in search, which says so", async ({ page }) => {
+  await page.goto("/lagos");
+  await openSearch(page);
+  await page.getByTestId("search.query").fill("Paddington");
+  await expect(page.getByTestId("search.none")).toBeVisible();
+  await page.keyboard.press("Enter");
+  await expect(page.getByTestId("search.panel")).toBeVisible();
+  await expect(page).toHaveURL(/\/lagos$/);
+});
+
+// Five days (D-142, D-147): the index holds the later days' files too, so a film on only Sunday is found.
+test("the search index holds the later days' showings as well as today's and tomorrow's", async ({ request }) => {
+  const index = (await (await request.get("/data/search.json")).json()) as { rows: [string, number, number, string | null][] };
+  const both = (await (await request.get("/data/all.json")).json()) as { showings: { startsAt: string }[] };
+  const last = (times: string[]) => times.reduce((a, b) => (a > b ? a : b));
+  expect(index.rows.length).toBeGreaterThan(both.showings.length);
+  expect(last(index.rows.map((row) => row[0])) > last(both.showings.map((s) => s.startsAt))).toBe(true);
+});
+
 // Not "Avengers" any more: Avengers: Doomsday is coming to Lagos, and search finds coming films (D-151).
 test("no match names the cities searched, and leads back to what's on", async ({ page, request }) => {
   await freeze(page, await sampleTime(request, "17:30"));

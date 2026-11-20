@@ -1,7 +1,8 @@
 import type { Day } from "@/lib/data/programme";
 import { laterName } from "@/lib/data/select";
 import type { City, Scope } from "@/lib/data/search";
-import { EVENING_ENDS_HOUR, formatLateTime, lagosDaysFrom, toLagos } from "@/lib/time/lagos";
+import { EVENING_ENDS_HOUR, eveningDayKey, formatLateTime, lagosDaysFrom, toLagos } from "@/lib/time/lagos";
+import { weekdayName } from "@/lib/wording/day";
 import { filmMeta } from "@/lib/wording/film";
 import { COMING_SECTION } from "@/lib/wording/films";
 
@@ -29,9 +30,12 @@ function todayWord(at: string, now: string): "tonight" | "today" {
   return laterName(now) === "Later tonight" ? "tonight" : "today";
 }
 
+/** "Sunday": the weekday of the evening a showing is listed under (a 12:30 AM show is the evening before's). */
+const eveningName = (at: string) => weekdayName(`${eveningDayKey(at)}T12:00:00Z`);
+
 /** "2 h 25 min · 12A · IMAX · 2 sinimas tonight": what we know of the film, then where it is on. `at` is its next showing. */
 export function resultMeta(film: { runtimeMin: number | null; rating: string | null }, formats: string[], cinemas: number, day: Day, now: string, at: string): string {
-  const when = day === 1 ? dayAfter(at, now) : todayWord(at, now);
+  const when = day >= 2 ? `on ${eveningName(at)}` : day === 1 ? dayAfter(at, now) : todayWord(at, now);
   const known = film.runtimeMin || film.rating ? [filmMeta(film)] : [];
   return [...known, ...formats, `${plural(cinemas, "sinima", "sinimas")} ${when}`].join(" · ");
 }
@@ -41,9 +45,9 @@ export function comingMeta(film: { runtimeMin: number | null; rating: string | n
   return [...(film.runtimeMin || film.rating ? [filmMeta(film)] : []), COMING_SECTION.title].join(" · ");
 }
 
-/** "Next 6:00 PM · Grand Cinemas Lekki", or "Tomorrow 2:00 PM · …" when nothing is left tonight. */
+/** "Next 6:00 PM · Grand Cinemas Lekki", or "Tomorrow 2:00 PM · …" when nothing is left tonight, or "Sunday 4:00 PM · …" for a later day. */
 export function resultNext(next: { at: string; cinema: string }, day: Day, now: string): string {
-  const word = day === 1 ? (dayAfter(next.at, now) === "today" ? "Today" : "Tomorrow") : "Next";
+  const word = day >= 2 ? eveningName(next.at) : day === 1 ? (dayAfter(next.at, now) === "today" ? "Today" : "Tomorrow") : "Next";
   return `${word} ${formatLateTime(next.at)} · ${next.cinema}`;
 }
 
@@ -51,6 +55,9 @@ export function resultNext(next: { at: string; cinema: string }, day: Day, now: 
 export function enterHint(n: number): string {
   return `Press Enter to see ${n === 1 ? "it" : n === 2 ? "both" : `all ${n}`} on Films.`;
 }
+
+/** Under the results when Films would list none of them: Enter opens the top one. */
+export const enterOpen = (title: string) => `Press Enter to open ${title}.`;
 
 /** Nothing matched in the cities searched. `home` is the page's city, whose Films the action opens. */
 export function noMatch(query: string, scope: Scope, home: City): { title: string; body: string; action: string } {

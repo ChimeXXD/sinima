@@ -50,6 +50,12 @@ export function linkTapped(to: string, event: React.MouseEvent): void {
   pending = notATap(event) || path === from || posterTravels(from, path) ? null : { direction: depth(path) >= depth(from) ? 1 : -1, at: Date.now() };
 }
 
+/** A move made from the keyboard (Enter in search): the page arrives as it is, with no slide. */
+export function keyMoved(to: string): void {
+  if (to.split(/[?#]/)[0] !== window.location.pathname) arrived();
+  pending = null;
+}
+
 /** On a tab's click (after its link's): between tabs, the side of the tab that was tapped. */
 export function tabTapped(from: number, to: number, event: React.MouseEvent): void {
   if (notATap(event) || from === to || !pending) return void (pending = null);

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { matchesTitle, searchFilms, type SearchIndex } from "@/lib/data/search";
+import { enterTarget, matchesTitle, searchFilms, type City, type Scope, type SearchIndex } from "@/lib/data/search";
 import { searchIndex } from "@/lib/data/searchIndex";
 import type { ShowtimesFile } from "@/lib/data/types";
 
@@ -113,6 +113,20 @@ describe("searchFilms", () => {
     // An index without coming films (one read before D-151) finds none.
     expect(searchFilms(index, "spi", "lagos", NOW)[0]!.coming).toEqual([]);
   });
+
+  // Five days (D-142): a film whose first showing is on the third to fifth day is found on that day.
+  it("finds a film showing only on a later day, at its first time that day", () => {
+    const later: SearchIndex = {
+      ...index,
+      films: [...index.films, { id: "wicked", title: "Wicked: For Good", poster: null, rating: null, runtimeMin: null }],
+      rows: [...index.rows, ["2026-11-15T18:00:00Z", 3, 0, null], ["2026-11-15T15:00:00Z", 3, 1, null], ["2026-11-17T15:00:00Z", 3, 0, null]],
+    };
+    const [lagos] = searchFilms(later, "wicked", "lagos", NOW);
+    expect(lagos!.results.map((r) => [r.film.id, r.day, r.next.at, r.next.cinema, r.cinemas])).toEqual([["wicked", 2, "2026-11-15T15:00:00Z", "Sky Cinemas Sangotedo", 2]]);
+    // Past the fifth day it is not found: the site shows five days.
+    const tooFar: SearchIndex = { ...later, rows: [...index.rows, ["2026-11-18T18:00:00Z", 3, 0, null]] };
+    expect(searchFilms(tooFar, "wicked", "lagos", NOW)[0]!.results).toEqual([]);
+  });
 });
 
 describe("searchIndex", () => {
@@ -174,8 +188,59 @@ describe("searchIndex", () => {
     expect(both.coming).toEqual([[1, "lagos", "Opens Fri 18 Dec at Filmhouse"], [1, "abuja", "Coming to Silverbird, date not announced"]]);
   });
 
+  // D-147: days three to five are files of their own; search reads them too, so a film on only
+  // Saturday is found. A later file's films and sources join the index once each.
+  it("adds the later days' files: their showings, and films only they have", () => {
+    const cinemas = [{ id: "grand-lekki", name: "Grand Cinemas Lekki", area: "lekki", chain: "grand" }];
+    const sources = [{ id: "s", name: "S", method: "html", url: "https://s" }];
+    const spider = { id: "spider", title: "Spider-Man", posterPath: null, rating: null, runtimeMin: null };
+    const show = (id: string, filmId: string, startsAt: string) => ({ id, cinemaId: "grand-lekki", filmId, startsAt, format: null, bookingUrl: null, sourceId: "s", fetchedAt: NOW });
+    const file = { generatedAt: NOW, sample: false, films: [spider], cinemas, sources, showings: [show("a", "spider", "2026-11-13T17:00:00Z")] } as unknown as ShowtimesFile;
+    const saturday = { generatedAt: NOW, sample: false, films: [spider, { id: "wicked", title: "Wicked: For Good", posterPath: "/w.jpg", rating: "PG", runtimeMin: 137 }], cinemas, sources, showings: [show("b", "spider", "2026-11-15T17:00:00Z"), show("c", "wicked", "2026-11-15T18:00:00Z")] } as unknown as ShowtimesFile;
+    const built = searchIndex(file, () => "lagos", {}, [saturday]);
+    expect(built.films.map((f) => f.id)).toEqual(["spider", "wicked"]);
+    expect(built.fresh).toHaveLength(1);
+    expect(built.rows).toEqual([
+      ["2026-11-13T17:00:00Z", 0, 0, null],
+      ["2026-11-15T17:00:00Z", 0, 0, null],
+      ["2026-11-15T18:00:00Z", 1, 0, null],
+    ]);
+    expect(searchFilms(built, "wicked", "lagos", NOW)[0]!.results.map((r) => [r.film.id, r.day])).toEqual([["wicked", 2]]);
+  });
+
   it("refuses a cinema whose area has no city, rather than guess one", () => {
     const file = { generatedAt: NOW, sample: false, films: [], cinemas: [{ id: "x", name: "X", area: "nowhere", chain: "X" }], showings: [], sources: [] } as unknown as ShowtimesFile;
     expect(() => searchIndex(file, () => undefined)).toThrow('No city for the area "nowhere"');
+  });
+});
+
+// Enter lists today's matches on Films; when Films would list none of them, it opens the top result
+// instead of a Films page where nothing matches (HANDOFF 19 Nov, search leftovers).
+describe("enterTarget", () => {
+  const withComing: SearchIndex = {
+    ...index,
+    films: [...index.films, { id: "dune", title: "Dune: Part Three", poster: null, rating: null, runtimeMin: null }],
+    coming: [[3, "lagos", "Opens Fri 18 Dec at Filmhouse"]],
+  };
+  /** Enter's target on a page in `home`, with `scope` shown. */
+  const enter = (at: SearchIndex, query: string, scope: Scope, home: City) => enterTarget(searchFilms(at, query, scope, NOW), searchFilms(at, query, home, NOW)[0]);
+
+  it("lists the matches on Films when the page's Films has some today, counting only those", () => {
+    expect(enter(index, "sp", "lagos", "lagos")).toEqual({ films: 2 });
+    // Ramayana is on today in Abuja: an Abuja page's Films lists it.
+    expect(enter(index, "rama", "both", "abuja")).toEqual({ films: 1 });
+    // Whatever cities are shown: on a Lagos page with only Abuja shown, Lagos's Films still lists Spider-Man.
+    expect(enter(index, "spider", "abuja", "lagos")).toEqual({ films: 1 });
+  });
+
+  it("opens the top result shown when Films would list nothing: a coming film, or one only on a later day", () => {
+    expect(enter(withComing, "dune", "lagos", "lagos")).toEqual({ film: withComing.films[3], city: "lagos" });
+    expect(enter(index, "rama", "lagos", "lagos")).toEqual({ film: index.films[2], city: "lagos" });
+    // Searching both cities, the top result is the first city's that has one.
+    expect(enter(index, "rama", "both", "lagos")).toEqual({ film: index.films[2], city: "lagos" });
+  });
+
+  it("does nothing when nothing matches", () => {
+    expect(enter(index, "zzz", "both", "lagos")).toBeNull();
   });
 });

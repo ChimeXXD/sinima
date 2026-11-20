@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CITY_SHEET, cityLine, comingMeta, enterHint, matchCount, noMatch, resultMeta, resultNext, ABUJA_SOON } from "@/lib/wording/search";
+import { CITY_SHEET, cityLine, comingMeta, enterHint, enterOpen, matchCount, noMatch, resultMeta, resultNext, ABUJA_SOON } from "@/lib/wording/search";
 
 // Every sentence of Figma's Search and city section (192:7519), filled from the data.
 
@@ -33,6 +33,20 @@ describe("search wording", () => {
     // Once last night's shows are over, today is the new day: a 2:00 PM show is "today", not "tonight".
     expect(resultMeta({ runtimeMin: null, rating: null }, [], 1, 0, now, "2026-11-14T13:00:00Z")).toBe("1 sinima today");
     expect(resultMeta({ runtimeMin: null, rating: null }, [], 1, 0, now, "2026-11-14T01:30:00Z")).toBe("1 sinima tonight");
+  });
+
+  // Five days (D-142): a film whose next showing is on the third to fifth day names that day.
+  it("a later day's result names its weekday", () => {
+    const now = "2026-11-13T16:30:00Z"; // Friday, 5:30 PM in Lagos
+    expect(resultMeta({ runtimeMin: 137, rating: "PG" }, [], 2, 2, now, "2026-11-15T15:00:00Z")).toBe("2 h 17 min · PG · 2 sinimas on Sunday");
+    expect(resultNext({ at: "2026-11-15T15:00:00Z", cinema: "Sky" }, 2, now)).toBe("Sunday 4:00\u00a0PM · Sky");
+    // A 12:30 AM show belongs to the evening before: Sunday's, after midnight on Monday.
+    expect(resultNext({ at: "2026-11-15T23:30:00Z", cinema: "Sky" }, 2, now)).toBe("Sunday 12:30\u00a0AM (Mon) · Sky");
+    expect(resultMeta({ runtimeMin: null, rating: null }, [], 1, 4, now, "2026-11-17T15:00:00Z")).toBe("1 sinima on Tuesday");
+  });
+
+  it("Enter opens the film when Films would list none", () => {
+    expect(enterOpen("Dune: Part Three")).toBe("Press Enter to open Dune: Part Three.");
   });
 
   it("Enter shows them on Films", () => {

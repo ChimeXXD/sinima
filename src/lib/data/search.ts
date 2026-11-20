@@ -1,5 +1,5 @@
 import type { FormatTag } from "@/lib/data/format";
-import { byFilm, formatsOf, showingOn, type Day } from "@/lib/data/programme";
+import { anchorFor, byFilm, DAYS, formatsOf, showingOn, type Day } from "@/lib/data/programme";
 import type { ListFresh, ListRow } from "@/lib/data/select";
 
 // Search (Figma Search and city, 192:7519): the films whose title matches, per city, each with its
@@ -40,7 +40,8 @@ export function matchesTitle(title: string, query: string): boolean {
 
 /**
  * The matching films in each city of the scope, Lagos first. A film's result is its next showing
- * today that has not started (D-05), or else its first tomorrow; with neither it is left out.
+ * today that has not started (D-05), or else its first on the soonest of the next four days (D-142);
+ * with none it is left out.
  * Soonest first; the matching films only coming to the city are apart, in `coming` (D-151). Today is
  * worked out from all of the city's times, as on Films, so a film's words never depend on which other
  * films match.
@@ -50,9 +51,10 @@ export function searchFilms(index: SearchIndex, query: string, scope: Scope, now
   const rows: ListRow[] = index.rows.map(([at, film, cinema, format]) => ({ at, film, cinema, format, book: null, fresh: 0 }));
   return CITIES.filter((city) => scope === "both" || scope === city).map((city) => {
     const here = rows.filter((row) => index.cinemas[row.cinema]!.city === city);
+    const anchor = anchorFor(here, now); // worked out once for the city, not once per day
     const results: SearchResult[] = [];
-    for (const day of [0, 1] as const) {
-      for (const group of byFilm(showingOn(here, day, now))) {
+    for (const day of Array.from({ length: DAYS }, (_, i) => i as Day)) {
+      for (const group of byFilm(showingOn(here, day, now, null, false, anchor))) {
         if (!wanted.has(group.film) || results.some((result) => result.film === index.films[group.film])) continue;
         const first = group.rows[0]!;
         results.push({
@@ -68,4 +70,23 @@ export function searchFilms(index: SearchIndex, query: string, scope: Scope, now
     const coming = (index.coming ?? []).filter(([film, where]) => where === city && wanted.has(film)).map(([film, , opens]) => ({ film: index.films[film]!, opens }));
     return { city, results, coming };
   });
+}
+
+/** What Enter does in search: list the matches on Films, or open one film. */
+export type EnterTarget = { films: number } | { film: SearchFilm; city: City } | null;
+
+/**
+ * Enter lists the matches on Films when Films has some of them today: `onFilms` is the search in
+ * the city whose Films Enter opens (the page's), whatever cities are shown; the count is those.
+ * Otherwise Films would list none, so it opens the top result shown: the first city's first film,
+ * one with times before one only coming. Null when nothing shown matches.
+ */
+export function enterTarget(shown: SearchGroup[], onFilms: SearchGroup | undefined): EnterTarget {
+  const films = onFilms?.results.filter((result) => result.day === 0).length ?? 0;
+  if (films > 0) return { films };
+  for (const group of shown) {
+    const film = group.results[0]?.film ?? group.coming[0]?.film;
+    if (film) return { film, city: group.city };
+  }
+  return null;
 }

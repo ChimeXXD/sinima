@@ -1,17 +1,19 @@
 "use client";
 
 import { Link, useCity } from "@/components/ui/CityLink";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Chip } from "@/components/ui/Actions";
 import { Icon } from "@/components/ui/Icon";
 import { Notice } from "@/components/ui/Notices";
+import { keyMoved } from "@/components/ui/tabSlide";
 import { CitySticker, TicketFaceSticker } from "@/components/ui/Stickers";
-import { hasCinemas, searchFilms, type Scope, type SearchFilm, type SearchGroup, type SearchIndex } from "@/lib/data/search";
+import { enterTarget, hasCinemas, searchFilms, type Scope, type SearchFilm, type SearchGroup, type SearchIndex } from "@/lib/data/search";
 import type { City } from "@/lib/city";
 import { posterSrc, posterSrcSet } from "@/lib/data/posters";
 import { pageBanner } from "@/lib/data/select";
 import { useNow } from "@/lib/time/useNow";
-import { ABUJA_SOON, CITY_NAME, comingMeta, enterHint, matchCount, noMatch, resultMeta, resultNext, SEARCH_FAILED } from "@/lib/wording/search";
+import { ABUJA_SOON, CITY_NAME, comingMeta, enterHint, enterOpen, matchCount, noMatch, resultMeta, resultNext, SEARCH_FAILED } from "@/lib/wording/search";
 import a from "@/components/ui/actions.module.css";
 import s from "./search.module.css";
 
@@ -43,6 +45,7 @@ export default function SearchOverlay({ query, onQuery, onSubmit, onClose, city 
   const field = useRef<HTMLInputElement>(null);
   const now = useNow();
   const home = useCity();
+  const router = useRouter();
 
   useEffect(() => {
     field.current?.focus();
@@ -64,9 +67,10 @@ export default function SearchOverlay({ query, onQuery, onSubmit, onClose, city 
   const banner = loaded && pageBanner(loaded, now);
   // A city with no cinemas in the index (Abuja before a live run reads it): say so, rather than suggest a spelling mistake.
   const abujaSoon = loaded !== null && !hasCinemas(loaded, "abuja");
-  // Enter shows today's matches on Films, in its city (Lagos when both are searched): only those count.
-  const filmsCity = city === "both" ? "lagos" : city;
-  const listed = groups?.find((group) => group.city === filmsCity)?.results.filter((result) => result.day === 0).length ?? 0;
+  // Enter shows today's matches on Films, the page's own city's, whichever cities are shown: only those
+  // count. When Films would list none (a coming film, one on a later day), it opens the top result.
+  const onFilms = groups && (groups.find((group) => group.city === home) ?? searchFilms(loaded!, text, home, now!)[0]);
+  const enter = groups ? enterTarget(groups, onFilms ?? undefined) : null;
 
   return (
     <>
@@ -77,7 +81,14 @@ export default function SearchOverlay({ query, onQuery, onSubmit, onClose, city 
         aria-label="Find a film"
         onSubmit={(event) => {
           event.preventDefault();
-          if (text) onSubmit();
+          // Before the index is in, Enter keeps the old way: Films lists whatever matches.
+          if (!text || (groups && !enter)) return;
+          if (enter && "film" in enter) {
+            const to = `/${enter.city}/film/${enter.film.id}`;
+            onClose();
+            keyMoved(to);
+            router.push(to);
+          } else onSubmit();
         }}
         onKeyDown={(event) => {
           if (event.key !== "Escape") return;
@@ -147,7 +158,7 @@ export default function SearchOverlay({ query, onQuery, onSubmit, onClose, city 
                   </p>
                 ) : null,
               )}
-            {listed > 0 && <p className={s.line}>{enterHint(listed)}</p>}
+            {enter && <p className={s.line}>{"films" in enter ? enterHint(enter.films) : enterOpen(enter.film.title)}</p>}
           </div>
         </div>
       </form>
