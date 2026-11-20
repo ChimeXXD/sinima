@@ -161,3 +161,26 @@ test("a screen reader's activation (a click with no press before it) switches th
   await page.keyboard.press("Enter");
   await expect(page.locator("body")).toHaveCSS("background-color", rgb("#ffffff"));
 });
+
+test.describe("on a phone, with no pointer to hover first", () => {
+  test.use({ realClock: true }); // the physics load when the page is idle: a fake clock holds that back
+
+  test("the first touch drag on the cord pulls it and switches the theme", async ({ page, browserName }) => {
+    test.skip(browserName !== "chromium", "touch drag through the DevTools protocol");
+    await page.emulateMedia({ colorScheme: "light" });
+    await page.goto("/lagos");
+    // No hover, no focus: a phone's first touch must find the cord alive (Chime, 20 Nov 2026: "the cord is not moving").
+    await expect(page.getByTestId("theme.toggle")).toHaveAttribute("data-ready", "", { timeout: 5000 });
+    const bead = (await page.getByTestId("theme.toggle").boundingBox())!;
+    const x = bead.x + bead.width / 2;
+    const y = bead.y + bead.height / 2;
+    const cdp = await page.context().newCDPSession(page);
+    await cdp.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x, y }] });
+    for (let i = 1; i <= 10; i++) {
+      await cdp.send("Input.dispatchTouchEvent", { type: "touchMove", touchPoints: [{ x, y: y + i * 6 }] });
+      await page.waitForTimeout(16);
+    }
+    await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+    await expect(page.locator("body")).toHaveCSS("background-color", rgb("#000000"));
+  });
+});

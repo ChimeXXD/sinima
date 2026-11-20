@@ -69,12 +69,18 @@ export function PullCord({ on, onFlip, label, testId, className }: { on: boolean
       early = false;
       flip.current(null);
     };
+    // Once the page is idle the physics arrive anyway: a phone has no pointer to hover first, and a
+    // finger that lands before they have would only get a tap, never its drag (Chime, 20 Nov 2026).
+    const hasIdle = typeof window.requestIdleCallback === "function"; // Safari has no idle callback
+    const idle = hasIdle ? window.requestIdleCallback(wake, { timeout: 2000 }) : window.setTimeout(wake, 1200);
     button.addEventListener("pointerenter", wake);
     button.addEventListener("focus", wake);
     button.addEventListener("pointerdown", press);
     button.addEventListener("click", clicked);
     return () => {
       gone = true;
+      if (hasIdle) window.cancelIdleCallback(idle);
+      else window.clearTimeout(idle);
       button.removeEventListener("pointerenter", wake);
       button.removeEventListener("focus", wake);
       button.removeEventListener("pointerdown", press);
