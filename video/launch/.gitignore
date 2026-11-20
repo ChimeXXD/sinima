@@ -1,4 +1,7 @@
 renders/
 .hyperframes/
-# 60 MB of screen captures: made by scripts/capture*.mjs, kept local
+# Kept local: 60 MB of screen captures (made by scripts/capture*.mjs), Chime's own wallpaper,
+# and Chime's screen recording of Filmhouse's pages (no saved cinema pages in the public repo, D-24)
 assets/capture/
+assets/lock/
+assets/filmhouse/

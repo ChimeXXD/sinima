@@ -23,12 +23,13 @@
     .bar { position: absolute; top: 730px; height: 114px; }
 
     /* Lock screen */
-    #lock { background: linear-gradient(160deg, #5b8def 0%, #2f5fd0 45%, #0b1b3f 100%); color: #fff; text-align: center; }
-    #lock .date { position: absolute; top: 92px; width: 100%; font-size: 21px; font-weight: 500; opacity: 0.9; }
-    #lock .time { position: absolute; top: 112px; width: 100%; font-size: 104px; font-weight: 300; letter-spacing: -2px; display: flex; justify-content: center; }
-    #lock .digit { position: relative; display: inline-block; width: 0.56em; height: 1.2em; overflow: hidden; }
+    #lock { background: #191919; color: #fff; text-align: center; }
+    #lock .wall { position: absolute; left: 0; top: 0; width: 390px; height: 845px; }
+    #lock .time { position: absolute; left: 195px; top: 96px; width: 0; height: 340px; }
+    #lock .time .t { position: absolute; left: 0; top: 0; display: inline-flex; white-space: nowrap; font-family: "Oswald", sans-serif; font-weight: 200; font-size: 400px; line-height: 340px; letter-spacing: -6px; color: #8d8d8d; transform: translateX(-50%) scaleX(0.5); transform-origin: 50% 0; -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.22); }
+    #lock .digit { position: relative; display: inline-block; width: 0.42em; height: 340px; overflow: hidden; }
     #lock .digit span { position: absolute; left: 0; right: 0; }
-    #notif { opacity: 0; position: absolute; left: 12px; top: 300px; width: 366px; padding: 14px 16px; border-radius: 26px; background: rgba(255, 255, 255, 0.86); color: #111; text-align: left; display: flex; gap: 12px; align-items: center; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18); }
+    #notif { opacity: 0; position: absolute; left: 12px; top: 560px; width: 366px; padding: 14px 16px; border-radius: 26px; background: rgba(255, 255, 255, 0.86); color: #111; text-align: left; display: flex; gap: 12px; align-items: center; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18); }
     #notif .icon { flex: none; width: 40px; height: 40px; border-radius: 10px; background: #25d366; display: grid; place-items: center; }
     #notif .who { font-size: 16px; font-weight: 700; display: flex; justify-content: space-between; }
     #notif .who span { font-weight: 400; color: #666; font-size: 14px; }
@@ -58,11 +59,12 @@
     .poster { position: absolute; width: 252px; opacity: 0; filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.45)); }
     .poster img { width: 100%; display: block; border-radius: 20px; outline: 6px solid #fff; }
     #stamp { position: absolute; left: 560px; top: 120px; width: 330px; height: 140px; border: 8px solid #ef4444; border-radius: 22px; color: #ef4444; font-weight: 800; font-size: 70px; line-height: 124px; white-space: nowrap; text-align: center; letter-spacing: 2px; transform: rotate(-8deg); opacity: 0; background: rgba(255, 255, 255, 0.06); }
+    #booked { position: absolute; left: 1100px; top: 430px; width: 460px; padding: 22px 30px; border-radius: 30px; background: #fff; box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4); outline: 6px solid #fff; display: flex; gap: 18px; align-items: center; color: var(--navy); opacity: 0; }
+    #booked .mark { width: 92px; height: 78px; flex: none; overflow: visible; }
+    #booked b { display: block; font-size: 52px; font-weight: 700; line-height: 1; }
+    #booked span { display: block; font-size: 21px; margin-top: 8px; }
     #addr { position: absolute; left: 0; right: 0; top: 640px; text-align: center; font-size: 64px; font-weight: 500; color: var(--navy); opacity: 0; }
     #free { position: absolute; left: 0; right: 0; top: 730px; text-align: center; font-family: "Story Script", cursive; font-size: 58px; color: var(--corn); clip-path: inset(0 100% 0 0); }
-    #fh { background: #f2f2f2; color: #444; display: grid; place-items: center; text-align: center; }
-    #fh .box { width: 300px; padding: 28px 20px; border: 3px dashed #999; border-radius: 22px; font-size: 19px; line-height: 1.35; }
-    #fh .box b { display: block; font-size: 24px; margin-bottom: 10px; color: #111; }
     #scrim { background: #000; opacity: 0; }
   </style>
 
@@ -86,9 +88,8 @@
 
     <div id="phone">
       <div id="screen">
-        <div class="layer" id="L-soonL"><img class="page" id="soonL" src="assets/capture/soon-full-light.png" alt="" /><img class="bar" src="assets/capture/bar-soon-light.png" style="left: 3.4px; width: 383.2px;" alt="" /></div>
-        <div class="layer" id="L-dark" style="clip-path: circle(0px at 358px 48px);">
-          <img class="page" id="soonD" src="assets/capture/soon-full-dark.png" alt="" />
+        <div class="layer" id="L-dark">
+          <div class="page" id="soonD"><img class="page" src="assets/capture/soon-full-nocord-dark.png" alt="" /><svg class="cord" width="44" height="94" viewBox="0 0 44 94" style="position: absolute; left: 330px; top: 0; overflow: visible;"><path d="M22 0L22 14" stroke="#d4d4d8" stroke-width="1.5" stroke-linecap="round" fill="none"/><g class="lamp" transform="translate(0 14)"><circle r="4" cx="22" cy="11" fill="#3f3f46"/><rect x="19" y="-3" width="6" height="4" rx="1.5" fill="#d4d4d8"/><path d="M11 11 Q11 0 22 0 Q33 0 33 11 Z" fill="#e4e4e7"/></g><line class="cordline" x1="28" y1="23" x2="28" y2="48" stroke="#d4d4d8" stroke-width="1.5" stroke-linecap="round"/><g class="bead"><rect x="24.5" y="46.5" width="7" height="12" rx="3.5" fill="#fafafa"/></g></svg></div>
           <img class="bar" id="barSoonD" src="assets/capture/bar-soon-dark.png" style="left: 3.4px; width: 383.2px;" alt="" />
           <div class="layer" id="L-film" style="background: #000;">
             <img class="page" id="film1" src="assets/capture/film-full-dark.png" alt="" />
@@ -97,12 +98,19 @@
           <div class="layer" id="L-stay" style="opacity: 0;"><img class="page" src="assets/capture/stay-dark.png" alt="" /></div>
           <img class="bar" id="barFilm" src="assets/capture/bar-film-dark.png" style="left: 30.9px; width: 328.2px; opacity: 0;" alt="" />
           <div class="layer" id="scrim"></div>
-          <img id="sheet" src="assets/capture/sheet-panel-dark.png" alt="" style="position: absolute; left: 8px; top: 278px; width: 374px;" />
+          <img id="sheet" src="assets/capture/sheet750-panel-dark.png" alt="" style="position: absolute; left: 8px; top: 278px; width: 374px;" />
           <div class="layer" id="L-films" style="opacity: 0; background: #000;"><img class="page" id="filmsL" src="assets/capture/films-lagos-full-dark.png" alt="" /></div>
           <div class="layer" id="L-filmsA" style="opacity: 0; background: #000; clip-path: circle(0px at 320px 96px);"><img class="page" src="assets/capture/films-abuja-full-dark.png" alt="" /></div>
           <img class="bar" id="barFilms" src="assets/capture/bar-films-dark.png" style="left: 33.2px; width: 323.6px; opacity: 0;" alt="" />
-          <div class="layer" id="fh" style="opacity: 0;"><div class="box"><b>Filmhouse's booking page</b>Placeholder. Their site refused our automated visit; a screen recording of booking on filmhouseng.com goes here.</div></div>
+          <div class="layer" id="fh" style="opacity: 0; background: #000;">
+            <img class="page" src="assets/filmhouse/first.png" alt="" id="fhFirst" />
+            <img class="page" src="assets/filmhouse/last.png" alt="" id="fhLast" style="opacity: 0;" />
+            <!-- Chime's own screen recording of booking this showing on filmhouseng.com, 20 Nov 2026 -->
+            <video id="fhv" class="clip" data-start="27.0" data-duration="4.6" data-track-index="2" muted playsinline src="assets/filmhouse/booking.mp4" style="position: absolute; left: 0; top: 0; width: 390px; height: 845px; object-fit: cover;"></video>
+            <div style="position: absolute; left: 0; right: 0; top: 0; height: 50px; background: #000;"></div>
+          </div>
         </div>
+        <div class="layer" id="L-soonL"><div class="page" id="soonL"><img class="page" src="assets/capture/soon-full-nocord-light.png" alt="" /><svg class="cord" width="44" height="94" viewBox="0 0 44 94" style="position: absolute; left: 330px; top: 0; overflow: visible;"><path d="M22 0L22 14" stroke="#71717a" stroke-width="1.5" stroke-linecap="round" fill="none"/><g class="lamp" transform="translate(0 14)"><circle r="4" cx="22" cy="11" fill="#fdba4d"/><rect x="19" y="-3" width="6" height="4" rx="1.5" fill="#71717a"/><path d="M11 11 Q11 0 22 0 Q33 0 33 11 Z" fill="#3f3f46"/></g><line class="cordline" x1="28" y1="23" x2="28" y2="48" stroke="#71717a" stroke-width="1.5" stroke-linecap="round"/><g class="bead"><rect x="24.5" y="46.5" width="7" height="12" rx="3.5" fill="#18181b"/></g></svg></div><img class="bar" src="assets/capture/bar-soon-light.png" style="left: 3.4px; width: 383.2px;" alt="" /></div>
         <div class="layer" id="tabs">
           <div class="head"><span class="n" style="opacity: 1;">Tabs</span></div>
           <div class="tab" id="t1" style="left: 17px; top: 100px;"><div class="shot"><img src="assets/logos/filmhouse.png" alt="" /><i style="top: 84px;"></i><i style="top: 102px; right: 50px;"></i><i style="top: 120px;"></i></div><div class="label">Filmhouse</div></div>
@@ -115,8 +123,8 @@
           <div class="tab" id="t8" style="left: 203px; top: 676px;"><div class="shot"><img src="assets/logos/bluepictures.png" alt="" /><i style="top: 84px;"></i><i style="top: 102px; right: 36px;"></i><i style="top: 120px;"></i></div><div class="label">Blue Pictures</div></div>
         </div>
         <div class="layer" id="lock">
-          <div class="date">Friday 20 November</div>
-          <div class="time"><span>6:4</span><span class="digit"><span id="d0">0</span><span id="d1">1</span></span></div>
+          <img class="wall" src="assets/lock/wallpaper.png" alt="" />
+          <div class="time"><div class="t"><span>6:4</span><span class="digit"><span id="d0">0</span><span id="d1">1</span></span></div></div>
           <div id="notif">
             <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#fff" d="M12 2.5a9.5 9.5 0 0 0-8.2 14.3L2.5 21.5l4.8-1.3A9.5 9.5 0 1 0 12 2.5Z"/></svg></div>
             <div style="flex: 1;"><div class="who">Tolu <span>now</span></div><div class="msg">film tonight?</div></div>
@@ -127,6 +135,8 @@
       <div id="island"></div>
     </div>
 
+    <svg id="trail" width="1920" height="1080" viewBox="0 0 1920 1080" style="position: absolute; left: 0; top: 0; overflow: visible;"><path id="trailPath" d="" fill="none" stroke="#0b1b3f" stroke-width="4" stroke-linecap="round" opacity="0.85"/></svg>
+    <div id="booked"><svg viewBox="2.7 -0.1 61.4 52" class="mark"><use href="#logo-body"/></svg><div><b>Booked!</b><span>7:50 PM · Filmhouse Lekki IMAX</span></div></div>
     <div class="ftab" id="f1"></div><div class="ftab" id="f2"></div><div class="ftab" id="f3"></div>
 
     <div id="logo">
@@ -153,29 +163,60 @@
 
   <script>
     (function () {
-      window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
       const SX = 1095, SY = 118; // the screen's top-left on the stage when the phone rests
       const spring = "back.out(2)", land = "elastic.out(1, 0.55)";
 
       // ---------- initial states ----------
-      tl.set("#phone", { x: 0, y: 760, rotation: -14, rotationY: 70, transformPerspective: 1600 }, 0);
-      tl.set("#notif", { y: -220, rotation: -10 }, 0);
-      tl.set("#d1", { yPercent: 100 }, 0);
-      tl.set(".tab", { scale: 0.3 }, 0);
-      tl.set("#logo", { x: 700, y: 520, scale: 0.4, rotation: 0 }, 0);
-      tl.set("#word span", { y: 60 }, 0);
-      tl.set("#sheet", { y: 600 }, 0);
-      tl.set("#L-film", { x: 390 }, 0);
-      tl.set(["#r1", "#r2", "#r3"], { yPercent: 110 }, 0);
+      // gsap.set, not tl.set at 0: a zero-length set at 0 in a paused timeline does not render on frame 0
+      gsap.set("#phone", { x: 0, y: 760, rotation: -14, rotationY: 70, transformPerspective: 1600 });
+      gsap.set("#notif", { y: -220, rotation: -10 });
+      gsap.set("#d1", { yPercent: 100 });
+      gsap.set(".tab", { scale: 0.3 });
+      gsap.set("#word span", { y: 60 });
+      gsap.set("#sheet", { y: 600 });
+      gsap.set("#L-film", { x: 390 });
+      gsap.set(["#r1", "#r2", "#r3"], { yPercent: 110 });
+      gsap.set("#L-soonL", { clipPath: "circle(900px at 352px 25px)" });
+      gsap.set("#trailPath", { opacity: 0 });
 
-      // dot helpers: screen coordinates
+      // helpers: the touch dot works in the screen's coordinates
       const dotTo = (t, x, y, d = 0.35) => tl.to("#dot", { x, y, duration: d, ease: "power2.inOut" }, t - d);
       const tap = (t) => tl.to("#dot", { scale: 0.72, duration: 0.08, ease: "power2.out" }, t).to("#dot", { scale: 1, duration: 0.3, ease: spring }, t + 0.08);
       const dotIn = (t, x, y) => tl.set("#dot", { x, y, scale: 1.4 }, t).to("#dot", { opacity: 1, scale: 1, duration: 0.2, ease: "power2.out" }, t);
       const dotOut = (t) => tl.to("#dot", { opacity: 0, scale: 1.3, duration: 0.15, ease: "power2.in" }, t);
       const wordsIn = (sel, t, gap = 0.09) => tl.fromTo(`${sel} .w`, { opacity: 0, y: 26, scale: 0.85 }, { opacity: 1, y: 0, scale: 1, duration: 0.42, ease: spring, stagger: gap }, t).set(sel, { opacity: 1 }, t);
       const capOut = (sel, t) => tl.to(`${sel} .w, ${sel} small`, { opacity: 0, filter: "blur(6px)", duration: 0.18, ease: "power2.in", stagger: 0.03 }, t);
+      const blink = (t) => tl.to("#logo .eye", { scaleY: 0.1, transformOrigin: "50% 50%", duration: 0.06, ease: "power2.in" }, t).to("#logo .eye", { scaleY: 1, duration: 0.12, ease: "power2.out" }, t + 0.08);
+      // One thrown arc, as reference #85 (Bouncy Logo): x moves at a constant speed, y rises on an
+      // ease-out and falls on an ease-in, so the path is a true parabola with no corners.
+      const arc = (sel, t, from, to, peakY, up, down) => {
+        tl.fromTo(sel, { x: from.x }, { x: to.x, duration: up + down, ease: "none", immediateRender: false }, t);
+        tl.fromTo(sel, { y: from.y }, { y: peakY, duration: up, ease: "power2.out", immediateRender: false }, t);
+        tl.to(sel, { y: to.y, duration: down, ease: "power2.in" }, t + up);
+      };
+      const arcPoints = (from, to, peakY, up, down, n = 48) => {
+        const pts = [];
+        for (let i = 0; i <= n; i++) {
+          const time = ((up + down) * i) / n;
+          const x = from.x + (to.x - from.x) * (time / (up + down));
+          const y = time <= up ? from.y + (peakY - from.y) * (1 - (1 - time / up) ** 2) : peakY + (to.y - peakY) * ((time - up) / down) ** 2;
+          pts.push([x, y]);
+        }
+        return pts;
+      };
+      const pathOf = (pts) => pts.map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`).join(" ");
+      // the dash's head sits on the mark at every sample: offset = dash length minus the distance flown
+      const trail = (t, pts, total, dash = 170) => {
+        let run = 0;
+        const steps = pts.slice(1).map((p, i) => {
+          run += Math.hypot(p[0] - pts[i][0], p[1] - pts[i][1]);
+          return { attr: { "stroke-dashoffset": dash - run }, duration: total / (pts.length - 1), ease: "none" };
+        });
+        tl.set("#trailPath", { attr: { d: pathOf(pts), "stroke-dasharray": `${dash} 6000`, "stroke-dashoffset": dash }, opacity: 0.85 }, t);
+        tl.to("#trailPath", { keyframes: steps }, t);
+        tl.to("#trailPath", { opacity: 0, duration: 0.2, ease: "power1.out" }, t + total);
+      };
 
       // ---------- 01 · 6:40 PM. Lekki. (0–3) ----------
       tl.to("#phone", { y: 0, rotationY: 0, rotation: -4, duration: 0.95, ease: "back.out(1.6)" }, 0.05);
@@ -194,140 +235,153 @@
       ["#t1", "#t2", "#t3", "#t4", "#t5", "#t6", "#t7", "#t8"].forEach((id, i) => {
         tl.to(id, { opacity: 1, duration: 0.1 }, 3.3 + i * 0.3).to(id, { scale: 1, duration: 0.45, ease: "back.out(2.6)" }, 3.3 + i * 0.3);
       });
-      // the tabs squash together and leave the phone as a pile
+      // the tabs squash into one pile in the middle of the screen
       tl.to(".tab", { x: (i) => [94, -92, 94, -92, 94, -92, 94, -92][i], y: (i) => [234, 234, 42, 42, -150, -150, -342, -342][i], scale: 0.9, rotation: (i) => (i % 2 ? 6 : -6), duration: 0.42, ease: "power3.in" }, 6.0);
       tl.set(".tab", { opacity: 0 }, 6.42);
       tl.set(["#f1", "#f2", "#f3"], { x: 1290, y: 540, rotation: (i) => [-8, 4, 12][i], opacity: 1 }, 6.42);
-      tl.to("#phone", { x: 860, rotation: 10, duration: 0.6, ease: "power3.inOut" }, 6.4);
-      tl.to(["#f1", "#f2", "#f3"], { x: 960, y: 470, duration: 0.55, ease: "power3.inOut", stagger: 0.04 }, 6.42);
+      tl.to(["#f1", "#f2", "#f3"], { scaleX: 1.25, scaleY: 0.55, duration: 0.14, ease: "power2.in" }, 6.45);
+      tl.to(["#f1", "#f2", "#f3"], { scale: 0.05, opacity: 0, duration: 0.1, ease: "power3.in" }, 6.59);
       tl.to("#cap02 .roll", { opacity: 0, filter: "blur(6px)", duration: 0.18 }, 6.3);
 
-      // ---------- 03 · Every sinima's times, in one place. (7–10) ----------
-      tl.to(["#f1", "#f2", "#f3"], { scaleX: 1.25, scaleY: 0.55, duration: 0.14, ease: "power2.in" }, 7.0);
-      tl.to(["#f1", "#f2", "#f3"], { scale: 0.05, opacity: 0, duration: 0.12, ease: "power3.in" }, 7.14);
-      tl.set("#logo", { x: 960, y: 470, scale: 0.3, opacity: 1 }, 7.18);
-      tl.to("#logo", { scale: 1, duration: 0.5, ease: land }, 7.18);
-      // a loop round the stage, then the landing beside the wordmark
-      tl.to("#logo", { keyframes: [
-        { x: 700, y: 300, rotation: -22, duration: 0.32, ease: "power1.inOut" },
-        { x: 520, y: 520, rotation: 14, duration: 0.3, ease: "power1.inOut" },
-        { x: 760, y: 660, rotation: -10, duration: 0.28, ease: "power1.inOut" },
-        { x: 760, y: 470, rotation: -6, duration: 0.24, ease: "power2.out" },
-      ] }, 7.5);
-      tl.to("#logo", { scaleX: 1.22, scaleY: 0.74, duration: 0.09, ease: "power2.out" }, 8.62).to("#logo", { scaleX: 1, scaleY: 1, duration: 0.5, ease: land }, 8.71);
-      tl.to("#word span", { opacity: 1, duration: 0.08, stagger: 0.07 }, 8.7).to("#word span", { y: 0, duration: 0.5, ease: "back.out(2.4)", stagger: 0.07 }, 8.7);
-      const blink = (t) => tl.to("#logo .eye", { scaleY: 0.1, transformOrigin: "50% 50%", duration: 0.06, ease: "power2.in" }, t).to("#logo .eye", { scaleY: 1, duration: 0.12, ease: "power2.out" }, t + 0.08);
-      blink(8.95);
-      wordsIn("#cap03", 8.75, 0.08);
-      blink(9.45);
-      // the mark flies back into the phone's header; the phone comes home
-      capOut("#cap03", 10.25);
-      tl.to("#word span", { y: 50, opacity: 0, duration: 0.18, ease: "power2.in", stagger: 0.03 }, 10.25);
-      tl.to("#phone", { x: 0, rotation: 0, duration: 0.55, ease: "power3.inOut" }, 10.3);
-      tl.to("#logo", { x: SX + 35, y: SY + 36, scale: 0.16, rotation: -6, duration: 0.5, ease: "power3.inOut" }, 10.4);
-      tl.set("#logo", { opacity: 0 }, 10.9);
+      // ---------- 03 · Every sinima's times, in one place. (7–10.6) ----------
+      // the mark pops out of the pile and is thrown in one arc to its place beside the wordmark
+      const A = { x: 1290, y: 540 }, B = { x: 760, y: 470 };
+      tl.set("#logo", { x: A.x, y: A.y, scale: 0.3, rotation: 0, opacity: 1 }, 6.65);
+      tl.to("#logo", { scale: 1, duration: 0.35, ease: "back.out(2)" }, 6.65);
+      tl.to("#phone", { x: 860, rotation: 10, duration: 0.6, ease: "power3.inOut" }, 6.7);
+      arc("#logo", 6.8, A, B, 130, 0.42, 0.5);
+      tl.to("#logo", { rotation: -366, duration: 0.92, ease: "none" }, 6.8);
+      trail(6.8, arcPoints(A, B, 130, 0.42, 0.5), 0.92);
+      tl.to("#logo", { scaleX: 0.88, scaleY: 1.14, duration: 0.3, ease: "power2.in" }, 7.4);
+      tl.to("#logo", { scaleX: 1.28, scaleY: 0.68, duration: 0.08, ease: "power2.out" }, 7.72).to("#logo", { scaleX: 1, scaleY: 1, duration: 0.6, ease: land }, 7.8);
+      // the letters burst out of the landing and hop into their places
+      tl.fromTo("#word span", { x: (i) => -150 - i * 90, y: 30, scale: 0.3, rotation: (i) => (i % 2 ? 25 : -25), opacity: 0 }, { x: 0, y: 0, scale: 1, rotation: 0, opacity: 1, duration: 0.55, ease: "back.out(2.2)", stagger: 0.06 }, 7.78);
+      wordsIn("#cap03", 8.25, 0.08);
+      blink(8.75);
+      blink(9.5);
+      // and is thrown back into the phone's header as the phone comes home
+      const C = { x: SX + 35, y: SY + 36 };
+      capOut("#cap03", 9.95);
+      tl.to("#word span", { y: 50, opacity: 0, duration: 0.18, ease: "power2.in", stagger: 0.03 }, 9.95);
+      tl.to("#phone", { x: 0, rotation: 0, duration: 0.55, ease: "power3.inOut" }, 9.95);
+      arc("#logo", 10.05, B, C, 110, 0.22, 0.33);
+      tl.to("#logo", { scale: 0.16, rotation: -360, duration: 0.55, ease: "power2.in" }, 10.05);
+      tl.set("#logo", { opacity: 0 }, 10.6);
       tl.set("#tabs", { opacity: 0 }, 10.3);
 
-      // ---------- 04 · What's starting soon near you (10–15) ----------
-      wordsIn("#cap04", 10.9, 0.09);
-      dotIn(11.15, 158, 284); tap(11.35);
-      // pull to refresh: the page follows the thumb, short of nothing, then springs home
-      dotTo(11.95, 195, 420, 0.4);
-      tl.to("#dot", { y: 520, duration: 0.5, ease: "power1.inOut" }, 12.0).to(["#soonL", "#soonD"], { y: 64, duration: 0.5, ease: "power1.out" }, 12.0);
-      tl.to(["#soonL", "#soonD"], { y: 0, duration: 0.6, ease: land }, 12.55).to("#dot", { y: 470, duration: 0.3, ease: "power2.out" }, 12.55);
-      // scroll down the list
-      tl.to("#dot", { y: 200, duration: 0.5, ease: "power2.inOut" }, 13.2).to(["#soonL", "#soonD"], { y: -520, duration: 0.75, ease: "power3.out" }, 13.2);
-      // the lamp cord: pulled, let go, the app turns dark from the lamp
-      dotTo(14.1, 358, 52, 0.38);
-      tl.to("#dot", { y: 96, duration: 0.22, ease: "power2.in" }, 14.12).to("#dot", { y: 52, duration: 0.3, ease: spring }, 14.34);
-      tl.to("#L-dark", { clipPath: "circle(1000px at 358px 48px)", duration: 0.55, ease: "power2.in" }, 14.34);
-      tl.to("#ground", { backgroundColor: "#0b1b3f", duration: 0.5, ease: "power2.inOut" }, 14.45);
-      capOut("#cap04", 14.4);
+      // ---------- 04 · What's starting soon near you (10.6–15) ----------
+      wordsIn("#cap04", 10.65, 0.09);
+      dotIn(11.0, 158, 284); tap(11.2);
+      // down the list a little, then back up to the top
+      dotTo(11.7, 195, 640, 0.35);
+      tl.to("#dot", { y: 340, duration: 0.45, ease: "power2.inOut" }, 11.72).to(["#soonL", "#soonD"], { y: -300, duration: 0.7, ease: "power3.out" }, 11.75);
+      dotTo(12.65, 195, 260, 0.3);
+      tl.to("#dot", { y: 600, duration: 0.45, ease: "power2.inOut" }, 12.67).to(["#soonL", "#soonD"], { y: 26, duration: 0.5, ease: "power2.out" }, 12.7).to(["#soonL", "#soonD"], { y: 0, duration: 0.45, ease: land }, 13.2);
+      // the lamp cord: the camera leans in on the lamp; the bead is pulled down, let go, and the light
+      // page closes into the bulb (the app's own switch, D-107); then the camera pulls back
+      capOut("#cap04", 13.3);
+      tl.to("#phone", { scale: 2.3, x: -140, y: 250, transformOrigin: "366px 39px", duration: 0.55, ease: "power3.inOut" }, 13.3);
+      tl.to("#phone", { scale: 1, x: 0, y: 0, duration: 0.55, ease: "power3.inOut" }, 14.85);
+      dotTo(13.75, 358, 53, 0.45);
+      tl.to("#dot", { y: 95, duration: 0.3, ease: "power2.in" }, 13.8);
+      tl.to(".bead", { y: 42, duration: 0.3, ease: "power2.in" }, 13.8).to(".cordline", { attr: { y2: 90 }, duration: 0.3, ease: "power2.in" }, 13.8).to(".lamp", { rotation: 3, svgOrigin: "22 0", duration: 0.3 }, 13.8);
+      tl.to("#dot", { y: 53, duration: 0.5, ease: land }, 14.12);
+      tl.to(".bead", { y: 0, duration: 0.7, ease: land }, 14.12).to(".cordline", { attr: { y2: 48 }, duration: 0.7, ease: land }, 14.12).to(".lamp", { rotation: 0, svgOrigin: "22 0", duration: 0.8, ease: land }, 14.12);
+      tl.to("#L-soonL", { clipPath: "circle(0px at 352px 25px)", duration: 0.6, ease: "power3.out" }, 14.15).set("#L-soonL", { opacity: 0 }, 14.76);
+      tl.to("#ground", { backgroundColor: "#0b1b3f", duration: 0.5, ease: "power2.inOut" }, 14.25);
 
-      // ---------- 05 · Every showing, by time and area (15–20) ----------
-      wordsIn("#cap05", 15.0, 0.09);
-      dotTo(15.35, 102, 410, 0.4); tap(15.4);
-      tl.to("#L-film", { x: 0, duration: 0.42, ease: "power3.out" }, 15.5).to("#soonD", { x: -120, duration: 0.42, ease: "power3.out" }, 15.5);
-      tl.set("#barSoonD", { opacity: 0 }, 15.7).set("#barFilm", { opacity: 1 }, 15.7);
-      tl.to("#dot", { y: 600, duration: 0.3, ease: "power2.inOut" }, 15.75);
-      tl.to("#dot", { y: 240, duration: 0.6, ease: "power2.inOut" }, 16.2).to(["#film1", "#film2"], { y: -440, duration: 0.9, ease: "power3.out" }, 16.3);
-      dotTo(17.4, 124, 327, 0.4); tap(17.45);
-      tl.to("#film1", { opacity: 0, filter: "blur(4px)", duration: 0.12 }, 17.55).fromTo("#film2", { opacity: 0, filter: "blur(4px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.16 }, 17.6);
-      dotTo(18.55, 53, 327, 0.4); tap(18.6);
-      tl.to("#film2", { opacity: 0, filter: "blur(4px)", duration: 0.12 }, 18.7).to("#film1", { opacity: 1, filter: "blur(0px)", duration: 0.16 }, 18.75);
-      capOut("#cap05", 19.6);
-      dotOut(19.55);
+      // ---------- 05 · Every showing, by time and area (15–20.3) ----------
+      wordsIn("#cap05", 15.25, 0.09);
+      dotTo(15.45, 195, 650, 0.3);
+      tl.to("#dot", { y: 250, duration: 0.5, ease: "power2.inOut" }, 15.5).to("#soonD", { y: -520, duration: 0.65, ease: "power3.out" }, 15.52);
+      dotTo(16.15, 102, 410, 0.4); tap(16.2);
+      tl.to("#L-film", { x: 0, duration: 0.42, ease: "power3.out" }, 16.3).to("#soonD", { x: -120, duration: 0.42, ease: "power3.out" }, 16.3);
+      tl.set("#barSoonD", { opacity: 0 }, 16.5).set("#barFilm", { opacity: 1 }, 16.5);
+      tl.to("#dot", { y: 600, duration: 0.3, ease: "power2.inOut" }, 16.55);
+      tl.to("#dot", { y: 240, duration: 0.6, ease: "power2.inOut" }, 17.0).to(["#film1", "#film2"], { y: -440, duration: 0.9, ease: "power3.out" }, 17.1);
+      dotTo(18.25, 124, 327, 0.4); tap(18.3);
+      tl.to("#film1", { opacity: 0, filter: "blur(4px)", duration: 0.12 }, 18.4).fromTo("#film2", { opacity: 0, filter: "blur(4px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.16 }, 18.45);
+      dotTo(19.25, 53, 327, 0.4); tap(19.3);
+      tl.to("#film2", { opacity: 0, filter: "blur(4px)", duration: 0.12 }, 19.4).to("#film1", { opacity: 1, filter: "blur(0px)", duration: 0.16 }, 19.45);
+      capOut("#cap05", 20.1);
+      dotOut(20.05);
 
-      // ---------- 06 · Stay after the credits? It says. (20–24) ----------
-      // a whip inside the screen to Street Fighter's page
-      tl.to("#L-film", { y: -844, filter: "blur(10px)", duration: 0.22, ease: "power3.in" }, 19.75);
-      tl.fromTo("#L-stay", { y: 844, opacity: 1, filter: "blur(10px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.3, ease: "power3.out" }, 19.95);
-      wordsIn("#cap06", 20.35, 0.1);
-      // the chip lifts out of the screen and lands like a sticker
-      tl.set("#lift", { x: SX + 16 - 160, y: SY + 474 - 640, scale: 273 / 560, transformOrigin: "0 0", opacity: 1 }, 21.2);
-      tl.to("#lift", { x: 0, y: 0, scale: 1, rotation: -5, duration: 0.55, ease: "back.out(1.8)" }, 21.2);
-      tl.to("#lift", { scaleX: 1.08, scaleY: 0.9, duration: 0.08 }, 21.75).to("#lift", { scaleX: 1, scaleY: 1, duration: 0.45, ease: land }, 21.83);
-      tl.to("#lift", { rotation: -2, duration: 0.5, ease: "sine.inOut", yoyo: true, repeat: 1 }, 22.3);
-      capOut("#cap06", 23.55);
-      tl.to("#lift", { x: SX + 16 - 160, y: SY + 474 - 640, scale: 273 / 560, rotation: 0, duration: 0.35, ease: "power3.in" }, 23.5).set("#lift", { opacity: 0 }, 23.85);
+      // ---------- 06 · Stay after the credits? It says. (20.3–24.4) ----------
+      tl.to("#L-film", { y: -844, filter: "blur(10px)", duration: 0.22, ease: "power3.in" }, 20.3);
+      tl.fromTo("#L-stay", { y: 844, opacity: 1, filter: "blur(10px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.3, ease: "power3.out" }, 20.5);
+      wordsIn("#cap06", 20.9, 0.1);
+      tl.set("#lift", { x: SX + 16 - 160, y: SY + 474 - 640, scale: 273 / 560, transformOrigin: "0 0", opacity: 1 }, 21.75);
+      tl.to("#lift", { x: 0, y: 0, scale: 1, rotation: -5, duration: 0.55, ease: "back.out(1.8)" }, 21.75);
+      tl.to("#lift", { scaleX: 1.08, scaleY: 0.9, duration: 0.08 }, 22.3).to("#lift", { scaleX: 1, scaleY: 1, duration: 0.45, ease: land }, 22.38);
+      tl.to("#lift", { rotation: -2, duration: 0.5, ease: "sine.inOut", yoyo: true, repeat: 1 }, 22.85);
+      capOut("#cap06", 24.05);
+      tl.to("#lift", { x: SX + 16 - 160, y: SY + 474 - 640, scale: 273 / 560, rotation: 0, duration: 0.35, ease: "power3.in" }, 24.0).set("#lift", { opacity: 0 }, 24.35);
 
-      // ---------- 07 · Book on the sinima's own site. (24–28) ----------
-      tl.set(["#film1", "#film2"], { y: -1284 }, 23.8).set("#L-film", { y: -844, filter: "blur(10px)" }, 23.8);
-      tl.to("#L-stay", { y: 844, filter: "blur(10px)", duration: 0.22, ease: "power3.in" }, 23.8);
-      tl.to("#L-film", { y: 0, filter: "blur(0px)", duration: 0.3, ease: "power3.out" }, 24.0);
-      wordsIn("#cap07", 24.3, 0.1);
-      dotIn(24.6, 160, 560); dotTo(25.05, 122, 422, 0.35); tap(25.1);
-      tl.to("#scrim", { opacity: 0.55, duration: 0.3 }, 25.2).to("#sheet", { y: 0, duration: 0.5, ease: "back.out(1.3)" }, 25.2);
-      dotTo(26.15, 195, 486, 0.4); tap(26.2);
-      // press-down on Book, then the screen whips to Filmhouse's own page
-      tl.to("#fh", { opacity: 1, duration: 0.01 }, 26.45).fromTo("#fh", { x: 390, filter: "blur(10px)" }, { x: 0, filter: "blur(0px)", duration: 0.32, ease: "power3.out" }, 26.45);
-      dotTo(27.2, 195, 600, 0.4); tap(27.25);
-      capOut("#cap07", 27.6);
+      // ---------- 07 · Book on the sinima's own site. (24.35–32.2) ----------
+      // back to The Hunger Games at Filmhouse Lekki IMAX, 7:50 PM: the showing Chime booked
+      tl.set(["#film1", "#film2"], { y: -1629 }, 24.35).set("#L-film", { y: -844, filter: "blur(10px)" }, 24.35);
+      tl.to("#L-stay", { y: 844, filter: "blur(10px)", duration: 0.22, ease: "power3.in" }, 24.35);
+      tl.to("#L-film", { y: 0, filter: "blur(0px)", duration: 0.3, ease: "power3.out" }, 24.55);
+      wordsIn("#cap07", 24.85, 0.1);
+      dotIn(25.15, 160, 560); dotTo(25.6, 95, 422, 0.35); tap(25.65);
+      tl.to("#scrim", { opacity: 0.55, duration: 0.3 }, 25.75).to("#sheet", { y: 0, duration: 0.5, ease: "back.out(1.3)" }, 25.75);
+      dotTo(26.6, 195, 486, 0.4); tap(26.65);
+      // Book on Filmhouse's site: the screen whips to their page, and Chime's own booking plays
+      tl.to("#fh", { opacity: 1, duration: 0.01 }, 26.8).fromTo("#fh", { x: 390, filter: "blur(10px)" }, { x: 0, filter: "blur(0px)", duration: 0.3, ease: "power3.out" }, 26.8);
+      tl.set("#fhFirst", { opacity: 0 }, 27.0).set("#fhLast", { opacity: 1 }, 31.55);
+      [[27.47, 56, 614], [28.0, 350, 231], [28.53, 195, 652], [29.58, 156, 231], [30.22, 323, 773], [31.0, 329, 757], [31.5, 329, 757]].forEach(([t, x, y], i) => {
+        dotTo(t, x, y, i ? 0.28 : 0.3);
+        tap(t);
+      });
+      // paid: a Sinima ticket slaps on
+      tl.fromTo("#booked", { opacity: 0, scale: 1.7, rotation: -14 }, { opacity: 1, scale: 1, rotation: -6, duration: 0.22, ease: "power4.in" }, 31.6);
+      tl.to("#all", { y: 10, duration: 0.05, ease: "power2.out" }, 31.82).to("#all", { y: 0, duration: 0.35, ease: land }, 31.87);
+      capOut("#cap07", 32.05);
+      tl.to("#booked", { y: -40, opacity: 0, filter: "blur(6px)", duration: 0.22, ease: "power2.in" }, 33.2);
 
-      // ---------- 08 · Lagos and Abuja. (28–32) ----------
-      tl.set("#L-films", { opacity: 1 }, 27.75).set(["#barFilm", "#scrim", "#sheet"], { opacity: 0 }, 27.75);
-      tl.to("#fh", { x: 390, filter: "blur(10px)", duration: 0.28, ease: "power3.in" }, 27.75);
-      tl.set("#barFilms", { opacity: 1 }, 28.0);
-      wordsIn("#cap08", 28.1, 0.1);
-      tl.fromTo("#cap08 small", { opacity: 0 }, { opacity: 0.75, duration: 0.3 }, 28.6);
-      dotTo(29.2, 320, 96, 0.45); tap(29.25);
-      tl.set("#L-filmsA", { opacity: 1 }, 29.3).to("#L-filmsA", { clipPath: "circle(1000px at 320px 96px)", duration: 0.5, ease: "power2.in" }, 29.3);
-      tl.to("#w-lagos", { scaleX: 0.82, duration: 0.3, ease: spring, transformOrigin: "0 50%" }, 29.35).to("#w-abuja", { scale: 1.14, duration: 0.4, ease: spring, transformOrigin: "0 70%" }, 29.35);
-      tap(30.7);
-      tl.to("#L-filmsA", { clipPath: "circle(0px at 320px 96px)", duration: 0.4, ease: "power2.out" }, 30.75);
-      tl.to("#w-lagos", { scaleX: 1, duration: 0.3, ease: spring }, 30.8).to("#w-abuja", { scale: 1, duration: 0.3, ease: spring }, 30.8);
-      capOut("#cap08", 31.5);
+      // ---------- 08 · Lagos and Abuja. (32.3–36) ----------
+      tl.set("#L-films", { opacity: 1 }, 32.3).set(["#barFilm", "#scrim", "#sheet"], { opacity: 0 }, 32.3);
+      tl.to("#fh", { x: 390, filter: "blur(10px)", duration: 0.28, ease: "power3.in" }, 32.3);
+      tl.set("#barFilms", { opacity: 1 }, 32.55);
+      wordsIn("#cap08", 32.65, 0.1);
+      tl.fromTo("#cap08 small", { opacity: 0 }, { opacity: 0.75, duration: 0.3 }, 33.15);
+      dotTo(33.75, 320, 96, 0.45); tap(33.8);
+      tl.set("#L-filmsA", { opacity: 1 }, 33.85).to("#L-filmsA", { clipPath: "circle(1000px at 320px 96px)", duration: 0.5, ease: "power2.in" }, 33.85);
+      tl.to("#w-lagos", { scaleX: 0.82, duration: 0.3, ease: spring, transformOrigin: "0 50%" }, 33.9).to("#w-abuja", { scale: 1.14, duration: 0.4, ease: spring, transformOrigin: "0 70%" }, 33.9);
+      tap(35.25);
+      tl.to("#L-filmsA", { clipPath: "circle(0px at 320px 96px)", duration: 0.4, ease: "power2.out" }, 35.3);
+      tl.to("#w-lagos", { scaleX: 1, duration: 0.3, ease: spring }, 35.35).to("#w-abuja", { scale: 1, duration: 0.3, ease: spring }, 35.35);
+      capOut("#cap08", 36.05);
 
-      // ---------- 09 · Dunesday. Fri 18 Dec. (32–37) ----------
-      tl.to("#dot", { x: 200, y: 700, duration: 0.35, ease: "power2.inOut" }, 31.55);
-      tl.to("#dot", { y: 220, duration: 0.6, ease: "power2.inOut" }, 31.9).to("#filmsL", { y: -3868 /* the page is 4712 px tall; 3868 is the end of its scroll */, duration: 1.0, ease: "power3.inOut" }, 31.95);
-      dotOut(32.6);
-      // the two posters lift out of Coming soon and slap down side by side
-      tl.set("#pDune", { x: SX + 176 - 230, y: SY + 281 - 150, scale: 148 / 252, transformOrigin: "0 0", opacity: 1 }, 33.0);
-      tl.to("#pDune", { x: 0, y: 0, scale: 1, rotation: -6, duration: 0.5, ease: "back.out(1.6)" }, 33.0);
-      tl.set("#pDoom", { x: SX + 336 - 560, y: SY + 281 - 150, scale: 148 / 252, transformOrigin: "0 0", opacity: 1 }, 33.25);
-      tl.to("#pDoom", { x: 0, y: 0, scale: 1, rotation: 5, duration: 0.5, ease: "back.out(1.6)" }, 33.25);
-      tl.to("#pDune", { scaleX: 1.05, scaleY: 0.94, duration: 0.07 }, 33.5).to("#pDune", { scaleX: 1, scaleY: 1, duration: 0.4, ease: land }, 33.57);
-      tl.to("#pDoom", { scaleX: 1.05, scaleY: 0.94, duration: 0.07 }, 33.75).to("#pDoom", { scaleX: 1, scaleY: 1, duration: 0.4, ease: land }, 33.82);
-      wordsIn("#cap09", 34.0, 0.14);
-      // the stamp thumps down; the frame jolts on the hit
-      tl.fromTo("#stamp", { opacity: 0, scale: 1.8, rotation: -14 }, { opacity: 1, scale: 1, rotation: -8, duration: 0.2, ease: "power4.in" }, 34.9);
-      tl.to("#all", { y: 12, duration: 0.05, ease: "power2.out" }, 35.1).to("#all", { y: 0, duration: 0.35, ease: land }, 35.15);
-      capOut("#cap09", 36.75);
+      // ---------- 09 · Dunesday. Fri 18 Dec. (36–41.3) ----------
+      tl.to("#dot", { x: 200, y: 700, duration: 0.35, ease: "power2.inOut" }, 36.1);
+      tl.to("#dot", { y: 220, duration: 0.6, ease: "power2.inOut" }, 36.45).to("#filmsL", { y: -3868 /* the page is 4712 px tall; 3868 is the end of its scroll */, duration: 1.0, ease: "power3.inOut" }, 36.5);
+      dotOut(37.15);
+      tl.set("#pDune", { x: SX + 176 - 230, y: SY + 281 - 150, scale: 148 / 252, transformOrigin: "0 0", opacity: 1 }, 37.55);
+      tl.to("#pDune", { x: 0, y: 0, scale: 1, rotation: -6, duration: 0.5, ease: "back.out(1.6)" }, 37.55);
+      tl.set("#pDoom", { x: SX + 336 - 560, y: SY + 281 - 150, scale: 148 / 252, transformOrigin: "0 0", opacity: 1 }, 37.8);
+      tl.to("#pDoom", { x: 0, y: 0, scale: 1, rotation: 5, duration: 0.5, ease: "back.out(1.6)" }, 37.8);
+      tl.to("#pDune", { scaleX: 1.05, scaleY: 0.94, duration: 0.07 }, 38.05).to("#pDune", { scaleX: 1, scaleY: 1, duration: 0.4, ease: land }, 38.12);
+      tl.to("#pDoom", { scaleX: 1.05, scaleY: 0.94, duration: 0.07 }, 38.3).to("#pDoom", { scaleX: 1, scaleY: 1, duration: 0.4, ease: land }, 38.37);
+      wordsIn("#cap09", 38.55, 0.14);
+      tl.fromTo("#stamp", { opacity: 0, scale: 1.8, rotation: -14 }, { opacity: 1, scale: 1, rotation: -8, duration: 0.2, ease: "power4.in" }, 39.45);
+      tl.to("#all", { y: 12, duration: 0.05, ease: "power2.out" }, 39.65).to("#all", { y: 0, duration: 0.35, ease: land }, 39.7);
+      capOut("#cap09", 41.2);
 
-      // ---------- 10 · sinima.com.ng · Free. No sign-up. (37–40) ----------
-      tl.to(["#pDune", "#pDoom", "#stamp"], { y: 1100, rotation: 20, duration: 0.45, ease: "power3.in", stagger: 0.05 }, 36.8);
-      tl.to("#phone", { y: 1000, rotation: 8, duration: 0.5, ease: "power3.in" }, 36.85);
-      tl.to("#ground", { backgroundColor: "#eef3ff", duration: 0.45, ease: "power2.inOut" }, 37.1);
-      tl.set("#logo", { x: 760, y: 470, scale: 0.2, rotation: -6, opacity: 1 }, 37.35);
-      tl.to("#logo", { scale: 1, duration: 0.6, ease: land }, 37.35);
-      tl.set("#word span", { y: 60, opacity: 0 }, 37.3);
-      tl.to("#word span", { opacity: 1, duration: 0.08, stagger: 0.06 }, 37.55).to("#word span", { y: 0, duration: 0.5, ease: "back.out(2.4)", stagger: 0.06 }, 37.55);
-      tl.fromTo("#addr", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.4, ease: spring }, 37.6);
-      tl.to("#free", { clipPath: "inset(0 0% 0 0)", duration: 0.5, ease: "power1.inOut" }, 37.85);
-      blink(38.55);
-      blink(39.35);
+      // ---------- 10 · sinima.com.ng · Free. No sign-up. (41.3–44.5) ----------
+      tl.to(["#pDune", "#pDoom", "#stamp"], { y: 1100, rotation: 20, duration: 0.45, ease: "power3.in", stagger: 0.05 }, 41.25);
+      tl.to("#phone", { y: 1000, rotation: 8, duration: 0.5, ease: "power3.in" }, 41.3);
+      tl.to("#ground", { backgroundColor: "#eef3ff", duration: 0.45, ease: "power2.inOut" }, 41.55);
+      tl.set("#logo", { x: 760, y: 470, scale: 0.2, rotation: -6, opacity: 1 }, 41.8);
+      tl.to("#logo", { scale: 1, duration: 0.6, ease: land }, 41.8);
+      tl.set("#word span", { x: 0, y: 60, opacity: 0, scale: 1, rotation: 0 }, 41.75);
+      tl.to("#word span", { opacity: 1, duration: 0.08, stagger: 0.06 }, 42.0).to("#word span", { y: 0, duration: 0.5, ease: "back.out(2.4)", stagger: 0.06 }, 42.0);
+      tl.fromTo("#addr", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.4, ease: spring }, 42.05);
+      tl.to("#free", { clipPath: "inset(0 0% 0 0)", duration: 0.5, ease: "power1.inOut" }, 42.3);
+      blink(43.0);
+      blink(43.85);
 
+      window.__timelines = window.__timelines || {};
       window.__timelines["film"] = tl;
     })();
   </script>
