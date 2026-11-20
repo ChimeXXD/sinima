@@ -33,7 +33,7 @@
     #lock .wall { position: absolute; left: -1px; top: -1px; width: 392px; height: 847px; }
     #lock .time { position: absolute; left: 195px; top: 96px; width: 0; height: 340px; }
     #lock .time .t { position: absolute; left: 0; top: 0; display: inline-flex; white-space: nowrap; font-family: "Oswald", sans-serif; font-weight: 200; font-size: 400px; line-height: 340px; letter-spacing: -6px; color: #8d8d8d; transform: translateX(-50%) scaleX(0.5); transform-origin: 50% 0; -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.22); }
-    #lock .digit { position: relative; display: inline-block; width: 0.5em; height: 340px; overflow: hidden; }
+    #lock .digit { position: relative; display: inline-block; width: 0.5em; height: 340px; } /* no clipping: the digits swap by moving and fading, so the 0 keeps its whole shape */
     #lock .digit span { position: absolute; left: 0; right: 0; text-align: center; }
     #notif { opacity: 0; position: absolute; left: 12px; top: 560px; width: 366px; padding: 14px 16px; border-radius: 26px; background: rgba(255, 255, 255, 0.86); color: #111; text-align: left; display: flex; gap: 12px; align-items: center; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18); }
     #notif .icon { flex: none; width: 40px; height: 40px; border-radius: 10px; background: #25d366; display: grid; place-items: center; }
@@ -183,7 +183,7 @@
       // gsap.set, not tl.set at 0: a zero-length set at 0 in a paused timeline does not render on frame 0
       gsap.set("#phone", { x: 0, y: 900, rotation: 0, rotationY: -540, transformPerspective: 1600 });
       gsap.set("#notif", { y: -220, rotation: -10 });
-      gsap.set("#d1", { yPercent: 70, opacity: 0 });
+      gsap.set("#d1", { y: 40, opacity: 0 });
       gsap.set(".tab", { scale: 0.3 });
       gsap.set("#word span", { y: 60 });
       gsap.set("#sheet", { y: 600 });
@@ -234,7 +234,7 @@
       tl.fromTo("#phone", { y: 900, rotationY: -540, rotation: 0 }, { y: 0, rotationY: 0, rotation: 0, duration: 1.5, ease: "power3.out", immediateRender: false }, 0.05);
       wordsIn("#cap01", 0.45, 0.14);
       tl.to("#notif", { opacity: 1, duration: 0.12 }, 1.55).to("#notif", { y: 0, duration: 0.55, ease: "back.out(2.2)" }, 1.55).to("#notif", { rotation: 0, duration: 0.8, ease: land }, 1.7);
-      tl.to("#d0", { yPercent: -70, opacity: 0, duration: 0.22, ease: "power2.in" }, 2.15).fromTo("#d1", { yPercent: 70, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.4, ease: spring }, 2.25);
+      tl.to("#d0", { y: -40, opacity: 0, duration: 0.22, ease: "power2.in" }, 2.15).fromTo("#d1", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 2.25);
       capOut("#cap01", 2.75);
 
       // ---------- 02 · Which sinima? What time? Still on? (3–7) ----------
