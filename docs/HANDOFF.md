@@ -1,6 +1,41 @@
 # Handoff: read this first when you pick the project back up
 
-## Now: session of 19 Nov 2026 (midday to late night, Lagos): handoff list done, calendar fixed for iPhone, pull to refresh, the Home Screen guide (latest)
+## Now: session of 20 Nov 2026 (night, Lagos): video script, search leftovers, flaky tests, the Figma storyboard, motion references (latest)
+
+**Where we stopped, exactly:** Chime paused for the night ("let's pause here for now … we'll continue tomorrow"). Code and docs are committed and pushed: `f63f9da` (search), `d6b6f61` (M9 test), `17b88aa` (script + D-164/D-165), `bb325f6` (storyboard records). Nothing is running (the board's local server was stopped). Left untracked on purpose (local, like earlier rounds): `docs/design/reference-board/round9-motion.html` and its source `round9-motion/` (a.json, b.json, c.json, build.mjs), plus the older `round8-coming-soon.html` and `mockup/home-screen/`.
+
+**Next, in order:**
+1. **Chime picks motion references** on the board (Keep → "Copy my picks" → paste). To reopen it with YouTube working: `cd docs/design/reference-board && python3 -m http.server 8765 --bind 127.0.0.1` (in the background), then `open -a Dia http://127.0.0.1:8765/round9-motion.html`; stop the server after. Opened as a file, YouTube refuses to play (Error 153: no web address). Rebuild after editing the JSON: `node docs/design/reference-board/round9-motion/build.mjs docs/design/reference-board/round9-motion.html`.
+2. **Fold the picks into the storyboard** (Figma page Storyboard, section `298:4`), beat by beat; Chime approves it (PLAN week 3).
+3. **Choose the video tool (O-15)** with Chime. Candidates on the board's Template sites: Jitter, Figma Motion, Remotion, HyperFrames (installed as a skill here; HTML rendered to video, and it has a handwritten write-on block), Rive, LottieFiles; $0 only.
+4. Still waiting on Chime from 19 Nov: the **name server change** at Whogohost (the X card picture), Android checks, the X in-app browser line.
+5. Dated: **Tue 24 Nov** draft the outreach follow-ups (OUTREACH §4), show Chime first.
+6. Then week 4: Lighthouse ≥ 90 mobile, accessibility pass, both cities on real phones, Doomsday presales check, launch kit.
+
+### What Chime asked this session, and what was done
+
+1. **"Read the handoff file and let me know where we stood."** Summarised.
+2. **"So for number 1 to 3, do your recommendation. Then after you're done with everything, we'll think about this storyboard."** Read as Claude's Next list 1–3:
+   - **Video script** (D-164): `docs/video/SCRIPT.md`, three scripts; **A, "The evening question" (40 s)** picked; B (two cities) and C (Doomsday countdown) kept; a 15 s cut of A.
+   - **Search leftovers** (D-165): search reads all five days (later-day files merged into `/data/search.json`; "2 sinimas on Sunday", "Sunday 4:00 PM · …"); Enter lists the page's own city's Films when it has today's matches, otherwise opens the top result ("Press Enter to open Dune: Part Three."), nothing when nothing matches. Live index est. ~5 → ~10 KB gzipped, fetched only when search opens. Verifier caught Enter counting the wrong city (fixed); /code-review 8 findings, 5 fixed.
+   - **Flaky tests:** M9 tab slide test now records each slide as it starts (fixed). `coming.spec.ts:64` **not reproduced** in 29 stressed runs (CPU hogs, 4–12× throttle); left as is.
+   - **Gate clash, for next time:** the review agent ran `npm run build` while the gate tested; its prebuild rewrote `public/data` and broke an unrelated spec. Don't let an agent build while the gate runs.
+3. **"Can we create a new page on the Figma file and name it storyboard? And let's do the storyboard there."** Page **Storyboard** (after Design System), section "Launch video · Script A · The evening question (40 s)" (`298:4`): header + ten 16:9 beats (frame, time, caption, picture, motion). Beats 04–09 are clones of the real Design screens in a phone; the clones' old Today | Tomorrow is swapped for the Day row (five tiles); beat 06 has the real Stay or Go chip enlarged. Not drawn: 4:5 frames, the Home Screen icon in beat 10. Not yet reviewed by Chime.
+4. **"Surf the internet and find out more motion graphics references, so we can copy some elements from them"**, then **"resource websites that have motion graphics templates … won't be bad"**: three research agents → board `round9-motion.html`: 112 references in six sections (Openers 15, Captions 19, The app in motion 20, Stickers and play 20, Logo reveals and end cards 20, Whole launch videos 18) + 14 template sites with free/freemium/paid and the tool each opens in. Each card: beat, the technique to borrow, Keep.
+5. **"If I click play, it takes me to the link. So I should be able to play the video on the reference board."** A click now opens a large player on the board (72 own video files, 25 through YouTube; 29 are stills only: GIF-only Dribbble shots and the template sites). YouTube needs the page served over http (above).
+6. **"Let's pause here for now. Save our conversation at the end of file."** This section (at the top, where each session's "Now" goes).
+
+### Decisions this session
+
+D-164 (video script A), D-165 (search covers five days; Enter never opens an empty Films).
+
+### Watch out
+
+- **Firecrawl credits** ran low during the research (refresh ~22 h after 20 Nov night). Dribbble, Behance, Canva and Motion Array block plain `curl`; the agents confirmed those pages through Firecrawl.
+- The research agents' working files (contact sheets, candidate lists) were in the session scratchpad and will be gone; the JSON and build script are kept in `round9-motion/`.
+- Budget unchanged by today's code (search code is in the lazily loaded search chunk); the search index itself is outside the page budget.
+
+## Earlier: session of 19 Nov 2026 (midday to late night, Lagos): handoff list done, calendar fixed for iPhone, pull to refresh, the Home Screen guide
 
 **Where we stopped, exactly:** everything below is committed, pushed (last code commit `75e947f`; handoff `d077f1d` and this update after it) and deploying from main. Nothing is running. `mockup/home-screen/` (the guide's pick page) and `docs/design/reference-board/round8-coming-soon.html` are left untracked on purpose (local, like `mockup/coming-soon/`).
 

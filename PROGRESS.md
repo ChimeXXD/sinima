@@ -2,6 +2,13 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 20 Nov 2026 (night, Lagos) — Motion reference board (round 9)
+
+- **Asked:** "surf the internet and find out more motion graphics references, so we can copy some elements from them"; "resource websites that have motion graphics templates … won't be bad"; "if I click play, it takes me to the link. So I should be able to play the video on the reference board."
+- **Changed (local, untracked):** `docs/design/reference-board/round9-motion.html`, built by `round9-motion/build.mjs` from three research agents' JSON: 112 references in six sections plus 14 template sites (price as each site states, the tool it opens in). A click plays the reference in a large player on the page (mp4, or YouTube's no-cookie embed); hover previews in the card on a computer; Keep and "Copy my picks".
+- **Checked:** at 1440 and 390 px no sideways scroll and no broken image (126 cards); an mp4 plays in the player (currentTime > 0); a YouTube video plays when served from `http://127.0.0.1:8765` (from `file://` it shows Error 153).
+- **Not verified:** every one of the 97 playable entries by hand (the agents checked each file returns 200 with a video type).
+
 ## 20 Nov 2026 (night, Lagos) — The storyboard in Figma (script A)
 
 - **Asked:** "can we create a new page on the Figma file and name it storyboard? And let's do the storyboard there."
