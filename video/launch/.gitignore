@@ -5,3 +5,7 @@ renders/
 assets/capture/
 assets/lock/
 assets/filmhouse/
+.venv/
+.venv-tts/
+# voice files are made on this Mac from assets/voice/lines.json (Kokoro)
+assets/voice/*/
