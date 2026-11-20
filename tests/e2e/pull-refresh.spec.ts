@@ -1,3 +1,4 @@
+import type { Request } from "@playwright/test";
 import { expect, test, type Page } from "./test";
 
 // Pull to refresh (D-161), in the app added to the Home Screen only: pulled past 88 px and let go, the
@@ -20,6 +21,10 @@ async function drag(page: Page, by: number) {
   return { release: () => cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] }) };
 }
 
+/** A read of the page's data, not Next's prefetch of a link on screen (those carry next-router-prefetch). */
+const isRead = (request: Request) =>
+  (request.url().includes("_rsc") || request.headers()["rsc"] === "1") && !request.headers()["next-router-prefetch"];
+
 const offset = (page: Page) => page.locator("main").evaluate((el) => parseFloat(getComputedStyle(el).translate.split(" ")[1] ?? "0") || 0);
 
 test("in the Home Screen app, a pull past the threshold reads the page again and springs home", async ({ page }) => {
@@ -34,7 +39,7 @@ test("in the Home Screen app, a pull past the threshold reads the page again and
   // The footer moves with the content; the bar at the top stays.
   expect(await page.locator("footer").evaluate((el) => getComputedStyle(el).translate)).not.toBe("none");
   expect(await page.locator("header").evaluate((el) => getComputedStyle(el).translate)).toBe("none");
-  const read = page.waitForRequest((request) => request.url().includes("_rsc") || request.headers()["rsc"] === "1");
+  const read = page.waitForRequest(isRead);
   await finger.release();
   await read; // the page's data, read again
   await expect(page.getByText("Checking for new times")).toBeAttached();
@@ -49,7 +54,7 @@ test("in the Home Screen app, a short pull springs home and reads nothing", asyn
   await expect(page.getByRole("status").filter({ hasText: /^$/ })).toHaveCount(1);
   let reads = 0;
   page.on("request", (request) => {
-    if (request.url().includes("_rsc") || request.headers()["rsc"] === "1") reads += 1;
+    if (isRead(request)) reads += 1;
   });
   const finger = await drag(page, 100); // 55 px of page: short of 88
   await expect.poll(() => offset(page)).toBeGreaterThan(20);
