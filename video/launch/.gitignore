@@ -1,0 +1,4 @@
+renders/
+.hyperframes/
+# 60 MB of screen captures: made by scripts/capture*.mjs, kept local
+assets/capture/

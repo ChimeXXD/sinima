@@ -112,7 +112,7 @@ Dates are a target. If a week slips, cut its Should items first; never cut the c
 ## Week 4: harden, make the video, prepare the launch (7–13 Dec)
 
 - [ ] Budget, Lighthouse ≥ 90 (mobile), accessibility pass, real phones on mobile data in both cities
-- [ ] **Motion-graphics video** produced (tool chosen at $0, O-15), exported for X (16:9 and 4:5); captions burned in for silent autoplay
+- [ ] **Motion-graphics video** produced (tool chosen at $0, O-15), exported for X (16:9 and 4:5); captions burned in for silent autoplay · draft 1 made 20 Nov (D-168: HyperFrames, one continuous shot, `video/launch/`); next: Chime's notes, Filmhouse's booking screens, sound, the 4:5 cut
 - [ ] Launch kit: launch post, a 4–5 post thread, screenshots, the link card (OG image) checked in X's composer
 - [ ] Doomsday check: if presales are listed, the film page shows them in both cities
 - [ ] Soft launch to a few friends in Lagos and Abuja; fix what they hit

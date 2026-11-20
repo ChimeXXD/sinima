@@ -1,0 +1,334 @@
+<template>
+  <style>
+    @font-face { font-family: "Urbanist"; src: url("assets/fonts/urbanist-sinima.woff2") format("woff2"); font-weight: 300 800; }
+    @font-face { font-family: "Story Script"; src: url("assets/fonts/story-script-sinima.woff2") format("woff2"); font-weight: 400; }
+    #root { position: absolute; inset: 0; overflow: hidden; font-family: "Urbanist", sans-serif; --navy: #0b1b3f; --sky: #eef3ff; --corn: #5b8def; }
+    #ground { position: absolute; inset: 0; background: var(--sky); }
+
+    /* Captions: left third, title-safe */
+    .cap { position: absolute; left: 160px; top: 540px; width: 760px; transform: translateY(-50%); color: var(--navy); font-weight: 300; font-size: 76px; line-height: 1.08; letter-spacing: -0.02em; opacity: 0; }
+    .cap.on-dark { color: #fff; }
+    .cap .w { display: inline-block; white-space: pre; }
+    .cap b { font-weight: 600; }
+    .cap small { display: block; font-size: 30px; font-weight: 400; margin-top: 18px; opacity: 0.75; letter-spacing: 0; }
+    #cap02 { height: 92px; overflow: hidden; top: 500px; transform: none; }
+    #cap02 .roll { position: absolute; left: 0; top: 0; }
+
+    /* The phone */
+    #phone { position: absolute; left: 1081px; top: 104px; width: 418px; height: 872px; border-radius: 64px; background: #111318; box-shadow: 0 40px 80px rgba(11, 27, 63, 0.28), inset 0 0 0 2px #2a2d35; }
+    #screen { position: absolute; left: 14px; top: 14px; width: 390px; height: 844px; border-radius: 50px; overflow: hidden; background: #fff; }
+    #island { position: absolute; left: 50%; top: 24px; width: 118px; height: 34px; margin-left: -59px; border-radius: 20px; background: #000; z-index: 50; }
+    .layer { position: absolute; inset: 0; overflow: hidden; }
+    .page { position: absolute; left: 0; top: 0; width: 390px; display: block; }
+    .bar { position: absolute; top: 730px; height: 114px; }
+
+    /* Lock screen */
+    #lock { background: linear-gradient(160deg, #5b8def 0%, #2f5fd0 45%, #0b1b3f 100%); color: #fff; text-align: center; }
+    #lock .date { position: absolute; top: 92px; width: 100%; font-size: 21px; font-weight: 500; opacity: 0.9; }
+    #lock .time { position: absolute; top: 112px; width: 100%; font-size: 104px; font-weight: 300; letter-spacing: -2px; display: flex; justify-content: center; }
+    #lock .digit { position: relative; display: inline-block; width: 0.56em; height: 1.2em; overflow: hidden; }
+    #lock .digit span { position: absolute; left: 0; right: 0; }
+    #notif { opacity: 0; position: absolute; left: 12px; top: 300px; width: 366px; padding: 14px 16px; border-radius: 26px; background: rgba(255, 255, 255, 0.86); color: #111; text-align: left; display: flex; gap: 12px; align-items: center; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18); }
+    #notif .icon { flex: none; width: 40px; height: 40px; border-radius: 10px; background: #25d366; display: grid; place-items: center; }
+    #notif .who { font-size: 16px; font-weight: 700; display: flex; justify-content: space-between; }
+    #notif .who span { font-weight: 400; color: #666; font-size: 14px; }
+    #notif .msg { font-size: 16px; margin-top: 2px; }
+
+    /* Safari's tab view */
+    #tabs { background: #e9e9ef; }
+    #tabs .head { position: absolute; top: 62px; width: 100%; text-align: center; font-size: 17px; font-weight: 600; color: #111; }
+    #tabs .head span { position: absolute; left: 0; right: 0; }
+    .tab { opacity: 0; position: absolute; width: 170px; height: 176px; border-radius: 14px; background: #fff; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12); overflow: hidden; }
+    .tab .shot { position: absolute; inset: 0 0 30px 0; background: #f6f6f8; }
+    .tab .shot img { position: absolute; left: 50%; top: 18px; width: 92px; height: 46px; margin-left: -46px; object-fit: contain; }
+    .tab .shot i { position: absolute; left: 14px; right: 14px; height: 9px; border-radius: 5px; background: #dcdce2; }
+    .tab .label { position: absolute; left: 0; right: 0; bottom: 0; height: 30px; line-height: 30px; font-size: 12px; font-weight: 600; color: #333; text-align: center; background: #fff; }
+
+    /* Touch dot */
+    #dot { position: absolute; left: -23px; top: -23px; width: 46px; height: 46px; border-radius: 50%; background: rgba(255, 255, 255, 0.55); border: 3px solid rgba(255, 255, 255, 0.95); box-shadow: 0 4px 16px rgba(11, 27, 63, 0.35); z-index: 60; opacity: 0; }
+
+    /* Things that leave the phone */
+    .ftab { position: absolute; left: -85px; top: -88px; width: 170px; height: 176px; border-radius: 14px; background: #fff; box-shadow: 0 8px 22px rgba(11, 27, 63, 0.18); opacity: 0; }
+    #logo { position: absolute; left: -120px; top: -102px; width: 240px; height: 204px; opacity: 0; }
+    #logo svg { width: 100%; height: 100%; overflow: visible; }
+    #word { position: absolute; left: 905px; top: 400px; font-size: 150px; font-weight: 600; color: var(--navy); letter-spacing: -3px; display: flex; }
+    #word span { display: inline-block; opacity: 0; }
+    #lift { position: absolute; left: 160px; top: 640px; width: 560px; opacity: 0; filter: drop-shadow(0 14px 24px rgba(0, 0, 0, 0.35)); }
+    #lift img { width: 100%; border-radius: 40px; outline: 6px solid #fff; }
+    .poster { position: absolute; width: 252px; opacity: 0; filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.45)); }
+    .poster img { width: 100%; display: block; border-radius: 20px; outline: 6px solid #fff; }
+    #stamp { position: absolute; left: 560px; top: 120px; width: 330px; height: 140px; border: 8px solid #ef4444; border-radius: 22px; color: #ef4444; font-weight: 800; font-size: 70px; line-height: 124px; white-space: nowrap; text-align: center; letter-spacing: 2px; transform: rotate(-8deg); opacity: 0; background: rgba(255, 255, 255, 0.06); }
+    #addr { position: absolute; left: 0; right: 0; top: 640px; text-align: center; font-size: 64px; font-weight: 500; color: var(--navy); opacity: 0; }
+    #free { position: absolute; left: 0; right: 0; top: 730px; text-align: center; font-family: "Story Script", cursive; font-size: 58px; color: var(--corn); clip-path: inset(0 100% 0 0); }
+    #fh { background: #f2f2f2; color: #444; display: grid; place-items: center; text-align: center; }
+    #fh .box { width: 300px; padding: 28px 20px; border: 3px dashed #999; border-radius: 22px; font-size: 19px; line-height: 1.35; }
+    #fh .box b { display: block; font-size: 24px; margin-bottom: 10px; color: #111; }
+    #scrim { background: #000; opacity: 0; }
+  </style>
+
+  <div id="root" data-composition-id="film" data-width="1920" data-height="1080" data-layout-allow-overlap data-layout-allow-overflow>
+    <div id="ground"></div>
+    <div id="all" style="position: absolute; inset: 0;">
+
+    <div id="cap01" class="cap"><span class="w">6:40 PM. </span><span class="w"><b>Lekki.</b></span></div>
+    <div id="cap02" class="cap">
+      <div class="roll" id="r1">Which <b>sinima?</b></div>
+      <div class="roll" id="r2">What <b>time?</b></div>
+      <div class="roll" id="r3">Still <b>on?</b></div>
+    </div>
+    <div id="cap03" class="cap" style="left: 0; width: 1920px; text-align: center; top: 700px;"><span class="w">Every </span><span class="w">sinima's </span><span class="w">times, </span><span class="w"><b>in one place.</b></span></div>
+    <div id="cap04" class="cap"><span class="w">What's </span><span class="w">starting </span><span class="w"><b>soon </b></span><span class="w">near you</span></div>
+    <div id="cap05" class="cap on-dark"><span class="w">Every </span><span class="w">showing, </span><span class="w">by <b>time </b></span><span class="w">and <b>area</b></span></div>
+    <div id="cap06" class="cap on-dark" style="top: 420px;"><span class="w">Stay after </span><span class="w">the credits? </span><span class="w"><b>It says.</b></span></div>
+    <div id="cap07" class="cap on-dark"><span class="w">Book on </span><span class="w">the sinima's </span><span class="w"><b>own site.</b></span></div>
+    <div id="cap08" class="cap on-dark"><span class="w"><b id="w-lagos" style="display:inline-block">Lagos</b> </span><span class="w">and </span><span class="w"><b id="w-abuja" style="display:inline-block">Abuja.</b></span><small>22 sinimas in Lagos · 5 in Abuja</small></div>
+    <div id="cap09" class="cap on-dark" style="top: 900px; font-size: 64px;"><span class="w"><b>Dunesday.</b> </span><span class="w">Fri 18 Dec.</span></div>
+
+    <div id="phone">
+      <div id="screen">
+        <div class="layer" id="L-soonL"><img class="page" id="soonL" src="assets/capture/soon-full-light.png" alt="" /><img class="bar" src="assets/capture/bar-soon-light.png" style="left: 3.4px; width: 383.2px;" alt="" /></div>
+        <div class="layer" id="L-dark" style="clip-path: circle(0px at 358px 48px);">
+          <img class="page" id="soonD" src="assets/capture/soon-full-dark.png" alt="" />
+          <img class="bar" id="barSoonD" src="assets/capture/bar-soon-dark.png" style="left: 3.4px; width: 383.2px;" alt="" />
+          <div class="layer" id="L-film" style="background: #000;">
+            <img class="page" id="film1" src="assets/capture/film-full-dark.png" alt="" />
+            <img class="page" id="film2" src="assets/capture/film-day2-full-dark.png" alt="" style="opacity: 0;" />
+          </div>
+          <div class="layer" id="L-stay" style="opacity: 0;"><img class="page" src="assets/capture/stay-dark.png" alt="" /></div>
+          <img class="bar" id="barFilm" src="assets/capture/bar-film-dark.png" style="left: 30.9px; width: 328.2px; opacity: 0;" alt="" />
+          <div class="layer" id="scrim"></div>
+          <img id="sheet" src="assets/capture/sheet-panel-dark.png" alt="" style="position: absolute; left: 8px; top: 278px; width: 374px;" />
+          <div class="layer" id="L-films" style="opacity: 0; background: #000;"><img class="page" id="filmsL" src="assets/capture/films-lagos-full-dark.png" alt="" /></div>
+          <div class="layer" id="L-filmsA" style="opacity: 0; background: #000; clip-path: circle(0px at 320px 96px);"><img class="page" src="assets/capture/films-abuja-full-dark.png" alt="" /></div>
+          <img class="bar" id="barFilms" src="assets/capture/bar-films-dark.png" style="left: 33.2px; width: 323.6px; opacity: 0;" alt="" />
+          <div class="layer" id="fh" style="opacity: 0;"><div class="box"><b>Filmhouse's booking page</b>Placeholder. Their site refused our automated visit; a screen recording of booking on filmhouseng.com goes here.</div></div>
+        </div>
+        <div class="layer" id="tabs">
+          <div class="head"><span class="n" style="opacity: 1;">Tabs</span></div>
+          <div class="tab" id="t1" style="left: 17px; top: 100px;"><div class="shot"><img src="assets/logos/filmhouse.png" alt="" /><i style="top: 84px;"></i><i style="top: 102px; right: 50px;"></i><i style="top: 120px;"></i></div><div class="label">Filmhouse</div></div>
+          <div class="tab" id="t2" style="left: 203px; top: 100px;"><div class="shot"><img src="assets/logos/genesis.png" alt="" /><i style="top: 84px;"></i><i style="top: 102px; right: 40px;"></i><i style="top: 120px;"></i></div><div class="label">Genesis Cinemas</div></div>
+          <div class="tab" id="t3" style="left: 17px; top: 292px;"><div class="shot"><img src="assets/logos/silverbird.png" alt="" /><i style="top: 84px;"></i><i style="top: 102px; right: 60px;"></i><i style="top: 120px;"></i></div><div class="label">Silverbird</div></div>
+          <div class="tab" id="t4" style="left: 203px; top: 292px;"><div class="shot"><img src="assets/logos/viva.png" alt="" /><i style="top: 84px;"></i><i style="top: 102px; right: 30px;"></i><i style="top: 120px;"></i></div><div class="label">Viva Cinemas</div></div>
+          <div class="tab" id="t5" style="left: 17px; top: 484px;"><div class="shot"><img src="assets/logos/nova.png" alt="" /><i style="top: 84px;"></i><i style="top: 102px; right: 50px;"></i><i style="top: 120px;"></i></div><div class="label">Nova Cinemas</div></div>
+          <div class="tab" id="t6" style="left: 203px; top: 484px;"><div class="shot"><img src="assets/logos/ozone.png" alt="" /><i style="top: 84px;"></i><i style="top: 102px; right: 44px;"></i><i style="top: 120px;"></i></div><div class="label">Ozone Cinemas</div></div>
+          <div class="tab" id="t7" style="left: 17px; top: 676px;"><div class="shot"><img src="assets/logos/sky.png" alt="" /><i style="top: 84px;"></i><i style="top: 102px; right: 56px;"></i><i style="top: 120px;"></i></div><div class="label">Sky Cinemas</div></div>
+          <div class="tab" id="t8" style="left: 203px; top: 676px;"><div class="shot"><img src="assets/logos/bluepictures.png" alt="" /><i style="top: 84px;"></i><i style="top: 102px; right: 36px;"></i><i style="top: 120px;"></i></div><div class="label">Blue Pictures</div></div>
+        </div>
+        <div class="layer" id="lock">
+          <div class="date">Friday 20 November</div>
+          <div class="time"><span>6:4</span><span class="digit"><span id="d0">0</span><span id="d1">1</span></span></div>
+          <div id="notif">
+            <div class="icon"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#fff" d="M12 2.5a9.5 9.5 0 0 0-8.2 14.3L2.5 21.5l4.8-1.3A9.5 9.5 0 1 0 12 2.5Z"/></svg></div>
+            <div style="flex: 1;"><div class="who">Tolu <span>now</span></div><div class="msg">film tonight?</div></div>
+          </div>
+        </div>
+        <div id="dot"></div>
+      </div>
+      <div id="island"></div>
+    </div>
+
+    <div class="ftab" id="f1"></div><div class="ftab" id="f2"></div><div class="ftab" id="f3"></div>
+
+    <div id="logo">
+      <svg viewBox="2.7 -0.1 61.4 52">
+        <g id="logo-body">
+          <path fill="#fff" stroke="#fff" stroke-width="6.3" stroke-linejoin="round" d="M15.3787 8.6548L46.5789 4.2699C48.2339 4.03731 49.9135 4.47168 51.2482 5.47744C52.5829 6.48321 53.4634 7.978 53.696 9.63296L54.4633 15.093C53.2221 15.2674 52.101 15.9278 51.3467 16.9288C50.5924 17.9299 50.2666 19.1895 50.441 20.4308C50.6155 21.672 51.2758 22.7931 52.2769 23.5474C53.2779 24.3017 54.5376 24.6275 55.7788 24.4531L56.5462 29.9131C56.7787 31.5681 56.3444 33.2476 55.3386 34.5823C54.3328 35.917 52.8381 36.7975 51.1831 37.0301L19.9829 41.415C18.3279 41.6476 16.6483 41.2133 15.3136 40.2075C13.9789 39.2017 13.0984 37.7069 12.8658 36.052L12.0985 30.5919C13.3397 30.4175 14.4608 29.7571 15.2151 28.7561C15.9694 27.7551 16.2952 26.4954 16.1208 25.2542C15.9463 24.0129 15.286 22.8919 14.2849 22.1375C13.2839 21.3832 12.0242 21.0574 10.783 21.2319L10.0157 15.7718C9.78306 14.1169 10.2174 12.4373 11.2232 11.1026C12.229 9.76789 13.7238 8.88739 15.3787 8.6548Z"/>
+          <path fill="#5B8DEF" fill-rule="evenodd" d="M15.3787 8.6548L46.5789 4.2699C48.2339 4.03731 49.9135 4.47168 51.2482 5.47744C52.5829 6.48321 53.4634 7.978 53.696 9.63296L54.4633 15.093C53.2221 15.2674 52.101 15.9278 51.3467 16.9288C50.5924 17.9299 50.2666 19.1895 50.441 20.4308C50.6155 21.672 51.2758 22.7931 52.2769 23.5474C53.2779 24.3017 54.5376 24.6275 55.7788 24.4531L56.5462 29.9131C56.7787 31.5681 56.3444 33.2476 55.3386 34.5823C54.3328 35.917 52.8381 36.7975 51.1831 37.0301L19.9829 41.415C18.3279 41.6476 16.6483 41.2133 15.3136 40.2075C13.9789 39.2017 13.0984 37.7069 12.8658 36.052L12.0985 30.5919C13.3397 30.4175 14.4608 29.7571 15.2151 28.7561C15.9694 27.7551 16.2952 26.4954 16.1208 25.2542C15.9463 24.0129 15.286 22.8919 14.2849 22.1375C13.2839 21.3832 12.0242 21.0574 10.783 21.2319L10.0157 15.7718C9.78306 14.1169 10.2174 12.4373 11.2232 11.1026C12.229 9.76789 13.7238 8.88739 15.3787 8.6548ZM41.9105 12.0847C41.9468 12.3433 42.0844 12.5769 42.293 12.734C42.5015 12.8912 42.764 12.959 43.0225 12.9227C43.2811 12.8863 43.5147 12.7488 43.6718 12.5402C43.829 12.3317 43.8969 12.0692 43.8605 11.8107C43.8242 11.5521 43.6866 11.3185 43.4781 11.1614C43.2695 11.0042 43.0071 10.9363 42.7485 10.9727C42.4899 11.009 42.2563 11.1466 42.0992 11.3551C41.942 11.5637 41.8742 11.8261 41.9105 12.0847ZM42.5682 16.7647C42.6046 17.0233 42.7422 17.2569 42.9507 17.414C43.1593 17.5712 43.4217 17.6391 43.6803 17.6027C43.9389 17.5664 44.1724 17.4288 44.3296 17.2203C44.4867 17.0117 44.5546 16.7493 44.5183 16.4907C44.4819 16.2321 44.3443 15.9985 44.1358 15.8414C43.9272 15.6842 43.6648 15.6164 43.4062 15.6527C43.1476 15.6891 42.9141 15.8266 42.7569 16.0352C42.5998 16.2437 42.5319 16.5062 42.5682 16.7647ZM43.226 21.4448C43.2623 21.7034 43.3999 21.9369 43.6084 22.0941C43.817 22.2512 44.0794 22.3191 44.338 22.2828C44.5966 22.2464 44.8302 22.1088 44.9873 21.9003C45.1445 21.6917 45.2123 21.4293 45.176 21.1707C45.1396 20.9121 45.0021 20.6786 44.7935 20.5214C44.585 20.3643 44.3225 20.2964 44.064 20.3327C43.8054 20.3691 43.5718 20.5067 43.4147 20.7152C43.2575 20.9238 43.1896 21.1862 43.226 21.4448ZM43.8837 26.1248C43.9201 26.3834 44.0576 26.617 44.2662 26.7741C44.4747 26.9313 44.7372 26.9991 44.9957 26.9628C45.2543 26.9264 45.4879 26.7889 45.645 26.5803C45.8022 26.3718 45.8701 26.1093 45.8337 25.8508C45.7974 25.5922 45.6598 25.3586 45.4513 25.2015C45.2427 25.0443 44.9803 24.9764 44.7217 25.0128C44.4631 25.0491 44.2295 25.1867 44.0724 25.3952C43.9152 25.6038 43.8474 25.8662 43.8837 26.1248ZM44.5415 30.8048C44.5778 31.0634 44.7154 31.297 44.9239 31.4541C45.1325 31.6113 45.3949 31.6792 45.6535 31.6428C45.9121 31.6065 46.1456 31.4689 46.3028 31.2604C46.4599 31.0518 46.5278 30.7894 46.4915 30.5308C46.4551 30.2722 46.3175 30.0386 46.109 29.8815C45.9004 29.7243 45.638 29.6565 45.3794 29.6928C45.1208 29.7292 44.8873 29.8667 44.7301 30.0753C44.573 30.2838 44.5051 30.5463 44.5415 30.8048Z"/>
+          <path class="eye" fill="#0B1B3F" d="M26.8361 27.9241C28.3439 27.7122 29.3085 25.707 28.9906 23.4454C28.6728 21.1838 27.1928 19.5221 25.6851 19.734C24.1773 19.9459 23.2127 21.9511 23.5306 24.2128C23.8484 26.4744 25.3284 28.136 26.8361 27.9241Z"/>
+          <path class="eye" fill="#0B1B3F" d="M36.1955 26.6086C37.7033 26.3967 38.6679 24.3915 38.35 22.1299C38.0322 19.8683 36.5522 18.2067 35.0445 18.4186C33.5367 18.6305 32.5721 20.6357 32.89 22.8973C33.2078 25.1589 34.6878 26.8205 36.1955 26.6086Z"/>
+        </g>
+      </svg>
+    </div>
+    <div id="word"><span>S</span><span>i</span><span>n</span><span>i</span><span>m</span><span>a</span></div>
+
+    <div id="lift"><img src="assets/capture/stay-chip-dark.png" alt="" /></div>
+    <div class="poster" id="pDune" style="left: 230px; top: 150px;"><img src="assets/capture/coming-dune-dark.png" alt="" /></div>
+    <div class="poster" id="pDoom" style="left: 560px; top: 150px;"><img src="assets/capture/coming-doomsday-dark.png" alt="" /></div>
+    <div id="stamp">18 DEC</div>
+
+    <div id="addr">sinima.com.ng</div>
+    <div id="free">Free. No sign-up.</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const SX = 1095, SY = 118; // the screen's top-left on the stage when the phone rests
+      const spring = "back.out(2)", land = "elastic.out(1, 0.55)";
+
+      // ---------- initial states ----------
+      tl.set("#phone", { x: 0, y: 760, rotation: -14, rotationY: 70, transformPerspective: 1600 }, 0);
+      tl.set("#notif", { y: -220, rotation: -10 }, 0);
+      tl.set("#d1", { yPercent: 100 }, 0);
+      tl.set(".tab", { scale: 0.3 }, 0);
+      tl.set("#logo", { x: 700, y: 520, scale: 0.4, rotation: 0 }, 0);
+      tl.set("#word span", { y: 60 }, 0);
+      tl.set("#sheet", { y: 600 }, 0);
+      tl.set("#L-film", { x: 390 }, 0);
+      tl.set(["#r1", "#r2", "#r3"], { yPercent: 110 }, 0);
+
+      // dot helpers: screen coordinates
+      const dotTo = (t, x, y, d = 0.35) => tl.to("#dot", { x, y, duration: d, ease: "power2.inOut" }, t - d);
+      const tap = (t) => tl.to("#dot", { scale: 0.72, duration: 0.08, ease: "power2.out" }, t).to("#dot", { scale: 1, duration: 0.3, ease: spring }, t + 0.08);
+      const dotIn = (t, x, y) => tl.set("#dot", { x, y, scale: 1.4 }, t).to("#dot", { opacity: 1, scale: 1, duration: 0.2, ease: "power2.out" }, t);
+      const dotOut = (t) => tl.to("#dot", { opacity: 0, scale: 1.3, duration: 0.15, ease: "power2.in" }, t);
+      const wordsIn = (sel, t, gap = 0.09) => tl.fromTo(`${sel} .w`, { opacity: 0, y: 26, scale: 0.85 }, { opacity: 1, y: 0, scale: 1, duration: 0.42, ease: spring, stagger: gap }, t).set(sel, { opacity: 1 }, t);
+      const capOut = (sel, t) => tl.to(`${sel} .w, ${sel} small`, { opacity: 0, filter: "blur(6px)", duration: 0.18, ease: "power2.in", stagger: 0.03 }, t);
+
+      // ---------- 01 · 6:40 PM. Lekki. (0–3) ----------
+      tl.to("#phone", { y: 0, rotationY: 0, rotation: -4, duration: 0.95, ease: "back.out(1.6)" }, 0.05);
+      wordsIn("#cap01", 0.45, 0.14);
+      tl.to("#notif", { opacity: 1, duration: 0.12 }, 1.15).to("#notif", { y: 0, duration: 0.55, ease: "back.out(2.2)" }, 1.15).to("#notif", { rotation: 0, duration: 0.8, ease: land }, 1.3);
+      tl.to("#d0", { yPercent: -100, duration: 0.28, ease: "power3.in" }, 2.15).to("#d1", { yPercent: 0, duration: 0.42, ease: spring }, 2.3);
+      capOut("#cap01", 2.75);
+
+      // ---------- 02 · Which sinima? What time? Still on? (3–7) ----------
+      tl.to("#lock", { yPercent: -100, duration: 0.42, ease: "power3.in" }, 2.95).set("#lock", { opacity: 0 }, 3.4);
+      tl.to("#phone", { rotation: 3, duration: 0.7, ease: land }, 3.0);
+      tl.set("#cap02", { opacity: 1 }, 3.1);
+      tl.to("#r1", { yPercent: 0, duration: 0.4, ease: spring }, 3.15);
+      tl.to("#r1", { yPercent: -110, duration: 0.16, ease: "power2.in" }, 4.35).to("#r2", { yPercent: 0, duration: 0.36, ease: spring }, 4.45);
+      tl.to("#r2", { yPercent: -110, duration: 0.16, ease: "power2.in" }, 5.45).to("#r3", { yPercent: 0, duration: 0.36, ease: spring }, 5.55);
+      ["#t1", "#t2", "#t3", "#t4", "#t5", "#t6", "#t7", "#t8"].forEach((id, i) => {
+        tl.to(id, { opacity: 1, duration: 0.1 }, 3.3 + i * 0.3).to(id, { scale: 1, duration: 0.45, ease: "back.out(2.6)" }, 3.3 + i * 0.3);
+      });
+      // the tabs squash together and leave the phone as a pile
+      tl.to(".tab", { x: (i) => [94, -92, 94, -92, 94, -92, 94, -92][i], y: (i) => [234, 234, 42, 42, -150, -150, -342, -342][i], scale: 0.9, rotation: (i) => (i % 2 ? 6 : -6), duration: 0.42, ease: "power3.in" }, 6.0);
+      tl.set(".tab", { opacity: 0 }, 6.42);
+      tl.set(["#f1", "#f2", "#f3"], { x: 1290, y: 540, rotation: (i) => [-8, 4, 12][i], opacity: 1 }, 6.42);
+      tl.to("#phone", { x: 860, rotation: 10, duration: 0.6, ease: "power3.inOut" }, 6.4);
+      tl.to(["#f1", "#f2", "#f3"], { x: 960, y: 470, duration: 0.55, ease: "power3.inOut", stagger: 0.04 }, 6.42);
+      tl.to("#cap02 .roll", { opacity: 0, filter: "blur(6px)", duration: 0.18 }, 6.3);
+
+      // ---------- 03 · Every sinima's times, in one place. (7–10) ----------
+      tl.to(["#f1", "#f2", "#f3"], { scaleX: 1.25, scaleY: 0.55, duration: 0.14, ease: "power2.in" }, 7.0);
+      tl.to(["#f1", "#f2", "#f3"], { scale: 0.05, opacity: 0, duration: 0.12, ease: "power3.in" }, 7.14);
+      tl.set("#logo", { x: 960, y: 470, scale: 0.3, opacity: 1 }, 7.18);
+      tl.to("#logo", { scale: 1, duration: 0.5, ease: land }, 7.18);
+      // a loop round the stage, then the landing beside the wordmark
+      tl.to("#logo", { keyframes: [
+        { x: 700, y: 300, rotation: -22, duration: 0.32, ease: "power1.inOut" },
+        { x: 520, y: 520, rotation: 14, duration: 0.3, ease: "power1.inOut" },
+        { x: 760, y: 660, rotation: -10, duration: 0.28, ease: "power1.inOut" },
+        { x: 760, y: 470, rotation: -6, duration: 0.24, ease: "power2.out" },
+      ] }, 7.5);
+      tl.to("#logo", { scaleX: 1.22, scaleY: 0.74, duration: 0.09, ease: "power2.out" }, 8.62).to("#logo", { scaleX: 1, scaleY: 1, duration: 0.5, ease: land }, 8.71);
+      tl.to("#word span", { opacity: 1, duration: 0.08, stagger: 0.07 }, 8.7).to("#word span", { y: 0, duration: 0.5, ease: "back.out(2.4)", stagger: 0.07 }, 8.7);
+      const blink = (t) => tl.to("#logo .eye", { scaleY: 0.1, transformOrigin: "50% 50%", duration: 0.06, ease: "power2.in" }, t).to("#logo .eye", { scaleY: 1, duration: 0.12, ease: "power2.out" }, t + 0.08);
+      blink(8.95);
+      wordsIn("#cap03", 8.75, 0.08);
+      blink(9.45);
+      // the mark flies back into the phone's header; the phone comes home
+      capOut("#cap03", 10.25);
+      tl.to("#word span", { y: 50, opacity: 0, duration: 0.18, ease: "power2.in", stagger: 0.03 }, 10.25);
+      tl.to("#phone", { x: 0, rotation: 0, duration: 0.55, ease: "power3.inOut" }, 10.3);
+      tl.to("#logo", { x: SX + 35, y: SY + 36, scale: 0.16, rotation: -6, duration: 0.5, ease: "power3.inOut" }, 10.4);
+      tl.set("#logo", { opacity: 0 }, 10.9);
+      tl.set("#tabs", { opacity: 0 }, 10.3);
+
+      // ---------- 04 · What's starting soon near you (10–15) ----------
+      wordsIn("#cap04", 10.9, 0.09);
+      dotIn(11.15, 158, 284); tap(11.35);
+      // pull to refresh: the page follows the thumb, short of nothing, then springs home
+      dotTo(11.95, 195, 420, 0.4);
+      tl.to("#dot", { y: 520, duration: 0.5, ease: "power1.inOut" }, 12.0).to(["#soonL", "#soonD"], { y: 64, duration: 0.5, ease: "power1.out" }, 12.0);
+      tl.to(["#soonL", "#soonD"], { y: 0, duration: 0.6, ease: land }, 12.55).to("#dot", { y: 470, duration: 0.3, ease: "power2.out" }, 12.55);
+      // scroll down the list
+      tl.to("#dot", { y: 200, duration: 0.5, ease: "power2.inOut" }, 13.2).to(["#soonL", "#soonD"], { y: -520, duration: 0.75, ease: "power3.out" }, 13.2);
+      // the lamp cord: pulled, let go, the app turns dark from the lamp
+      dotTo(14.1, 358, 52, 0.38);
+      tl.to("#dot", { y: 96, duration: 0.22, ease: "power2.in" }, 14.12).to("#dot", { y: 52, duration: 0.3, ease: spring }, 14.34);
+      tl.to("#L-dark", { clipPath: "circle(1000px at 358px 48px)", duration: 0.55, ease: "power2.in" }, 14.34);
+      tl.to("#ground", { backgroundColor: "#0b1b3f", duration: 0.5, ease: "power2.inOut" }, 14.45);
+      capOut("#cap04", 14.4);
+
+      // ---------- 05 · Every showing, by time and area (15–20) ----------
+      wordsIn("#cap05", 15.0, 0.09);
+      dotTo(15.35, 102, 410, 0.4); tap(15.4);
+      tl.to("#L-film", { x: 0, duration: 0.42, ease: "power3.out" }, 15.5).to("#soonD", { x: -120, duration: 0.42, ease: "power3.out" }, 15.5);
+      tl.set("#barSoonD", { opacity: 0 }, 15.7).set("#barFilm", { opacity: 1 }, 15.7);
+      tl.to("#dot", { y: 600, duration: 0.3, ease: "power2.inOut" }, 15.75);
+      tl.to("#dot", { y: 240, duration: 0.6, ease: "power2.inOut" }, 16.2).to(["#film1", "#film2"], { y: -440, duration: 0.9, ease: "power3.out" }, 16.3);
+      dotTo(17.4, 124, 327, 0.4); tap(17.45);
+      tl.to("#film1", { opacity: 0, filter: "blur(4px)", duration: 0.12 }, 17.55).fromTo("#film2", { opacity: 0, filter: "blur(4px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.16 }, 17.6);
+      dotTo(18.55, 53, 327, 0.4); tap(18.6);
+      tl.to("#film2", { opacity: 0, filter: "blur(4px)", duration: 0.12 }, 18.7).to("#film1", { opacity: 1, filter: "blur(0px)", duration: 0.16 }, 18.75);
+      capOut("#cap05", 19.6);
+      dotOut(19.55);
+
+      // ---------- 06 · Stay after the credits? It says. (20–24) ----------
+      // a whip inside the screen to Street Fighter's page
+      tl.to("#L-film", { y: -844, filter: "blur(10px)", duration: 0.22, ease: "power3.in" }, 19.75);
+      tl.fromTo("#L-stay", { y: 844, opacity: 1, filter: "blur(10px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.3, ease: "power3.out" }, 19.95);
+      wordsIn("#cap06", 20.35, 0.1);
+      // the chip lifts out of the screen and lands like a sticker
+      tl.set("#lift", { x: SX + 16 - 160, y: SY + 474 - 640, scale: 273 / 560, transformOrigin: "0 0", opacity: 1 }, 21.2);
+      tl.to("#lift", { x: 0, y: 0, scale: 1, rotation: -5, duration: 0.55, ease: "back.out(1.8)" }, 21.2);
+      tl.to("#lift", { scaleX: 1.08, scaleY: 0.9, duration: 0.08 }, 21.75).to("#lift", { scaleX: 1, scaleY: 1, duration: 0.45, ease: land }, 21.83);
+      tl.to("#lift", { rotation: -2, duration: 0.5, ease: "sine.inOut", yoyo: true, repeat: 1 }, 22.3);
+      capOut("#cap06", 23.55);
+      tl.to("#lift", { x: SX + 16 - 160, y: SY + 474 - 640, scale: 273 / 560, rotation: 0, duration: 0.35, ease: "power3.in" }, 23.5).set("#lift", { opacity: 0 }, 23.85);
+
+      // ---------- 07 · Book on the sinima's own site. (24–28) ----------
+      tl.set(["#film1", "#film2"], { y: -1284 }, 23.8).set("#L-film", { y: -844, filter: "blur(10px)" }, 23.8);
+      tl.to("#L-stay", { y: 844, filter: "blur(10px)", duration: 0.22, ease: "power3.in" }, 23.8);
+      tl.to("#L-film", { y: 0, filter: "blur(0px)", duration: 0.3, ease: "power3.out" }, 24.0);
+      wordsIn("#cap07", 24.3, 0.1);
+      dotIn(24.6, 160, 560); dotTo(25.05, 122, 422, 0.35); tap(25.1);
+      tl.to("#scrim", { opacity: 0.55, duration: 0.3 }, 25.2).to("#sheet", { y: 0, duration: 0.5, ease: "back.out(1.3)" }, 25.2);
+      dotTo(26.15, 195, 486, 0.4); tap(26.2);
+      // press-down on Book, then the screen whips to Filmhouse's own page
+      tl.to("#fh", { opacity: 1, duration: 0.01 }, 26.45).fromTo("#fh", { x: 390, filter: "blur(10px)" }, { x: 0, filter: "blur(0px)", duration: 0.32, ease: "power3.out" }, 26.45);
+      dotTo(27.2, 195, 600, 0.4); tap(27.25);
+      capOut("#cap07", 27.6);
+
+      // ---------- 08 · Lagos and Abuja. (28–32) ----------
+      tl.set("#L-films", { opacity: 1 }, 27.75).set(["#barFilm", "#scrim", "#sheet"], { opacity: 0 }, 27.75);
+      tl.to("#fh", { x: 390, filter: "blur(10px)", duration: 0.28, ease: "power3.in" }, 27.75);
+      tl.set("#barFilms", { opacity: 1 }, 28.0);
+      wordsIn("#cap08", 28.1, 0.1);
+      tl.fromTo("#cap08 small", { opacity: 0 }, { opacity: 0.75, duration: 0.3 }, 28.6);
+      dotTo(29.2, 320, 96, 0.45); tap(29.25);
+      tl.set("#L-filmsA", { opacity: 1 }, 29.3).to("#L-filmsA", { clipPath: "circle(1000px at 320px 96px)", duration: 0.5, ease: "power2.in" }, 29.3);
+      tl.to("#w-lagos", { scaleX: 0.82, duration: 0.3, ease: spring, transformOrigin: "0 50%" }, 29.35).to("#w-abuja", { scale: 1.14, duration: 0.4, ease: spring, transformOrigin: "0 70%" }, 29.35);
+      tap(30.7);
+      tl.to("#L-filmsA", { clipPath: "circle(0px at 320px 96px)", duration: 0.4, ease: "power2.out" }, 30.75);
+      tl.to("#w-lagos", { scaleX: 1, duration: 0.3, ease: spring }, 30.8).to("#w-abuja", { scale: 1, duration: 0.3, ease: spring }, 30.8);
+      capOut("#cap08", 31.5);
+
+      // ---------- 09 · Dunesday. Fri 18 Dec. (32–37) ----------
+      tl.to("#dot", { x: 200, y: 700, duration: 0.35, ease: "power2.inOut" }, 31.55);
+      tl.to("#dot", { y: 220, duration: 0.6, ease: "power2.inOut" }, 31.9).to("#filmsL", { y: -3868 /* the page is 4712 px tall; 3868 is the end of its scroll */, duration: 1.0, ease: "power3.inOut" }, 31.95);
+      dotOut(32.6);
+      // the two posters lift out of Coming soon and slap down side by side
+      tl.set("#pDune", { x: SX + 176 - 230, y: SY + 281 - 150, scale: 148 / 252, transformOrigin: "0 0", opacity: 1 }, 33.0);
+      tl.to("#pDune", { x: 0, y: 0, scale: 1, rotation: -6, duration: 0.5, ease: "back.out(1.6)" }, 33.0);
+      tl.set("#pDoom", { x: SX + 336 - 560, y: SY + 281 - 150, scale: 148 / 252, transformOrigin: "0 0", opacity: 1 }, 33.25);
+      tl.to("#pDoom", { x: 0, y: 0, scale: 1, rotation: 5, duration: 0.5, ease: "back.out(1.6)" }, 33.25);
+      tl.to("#pDune", { scaleX: 1.05, scaleY: 0.94, duration: 0.07 }, 33.5).to("#pDune", { scaleX: 1, scaleY: 1, duration: 0.4, ease: land }, 33.57);
+      tl.to("#pDoom", { scaleX: 1.05, scaleY: 0.94, duration: 0.07 }, 33.75).to("#pDoom", { scaleX: 1, scaleY: 1, duration: 0.4, ease: land }, 33.82);
+      wordsIn("#cap09", 34.0, 0.14);
+      // the stamp thumps down; the frame jolts on the hit
+      tl.fromTo("#stamp", { opacity: 0, scale: 1.8, rotation: -14 }, { opacity: 1, scale: 1, rotation: -8, duration: 0.2, ease: "power4.in" }, 34.9);
+      tl.to("#all", { y: 12, duration: 0.05, ease: "power2.out" }, 35.1).to("#all", { y: 0, duration: 0.35, ease: land }, 35.15);
+      capOut("#cap09", 36.75);
+
+      // ---------- 10 · sinima.com.ng · Free. No sign-up. (37–40) ----------
+      tl.to(["#pDune", "#pDoom", "#stamp"], { y: 1100, rotation: 20, duration: 0.45, ease: "power3.in", stagger: 0.05 }, 36.8);
+      tl.to("#phone", { y: 1000, rotation: 8, duration: 0.5, ease: "power3.in" }, 36.85);
+      tl.to("#ground", { backgroundColor: "#eef3ff", duration: 0.45, ease: "power2.inOut" }, 37.1);
+      tl.set("#logo", { x: 760, y: 470, scale: 0.2, rotation: -6, opacity: 1 }, 37.35);
+      tl.to("#logo", { scale: 1, duration: 0.6, ease: land }, 37.35);
+      tl.set("#word span", { y: 60, opacity: 0 }, 37.3);
+      tl.to("#word span", { opacity: 1, duration: 0.08, stagger: 0.06 }, 37.55).to("#word span", { y: 0, duration: 0.5, ease: "back.out(2.4)", stagger: 0.06 }, 37.55);
+      tl.fromTo("#addr", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.4, ease: spring }, 37.6);
+      tl.to("#free", { clipPath: "inset(0 0% 0 0)", duration: 0.5, ease: "power1.inOut" }, 37.85);
+      blink(38.55);
+      blink(39.35);
+
+      window.__timelines["film"] = tl;
+    })();
+  </script>
+</template>
