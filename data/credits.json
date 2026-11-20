@@ -329,22 +329,6 @@
       ],
       "checkedAt": "2026-11-18T15:25:48Z"
     },
-    "verity": {
-      "tmdbId": 1283515,
-      "tmdbTitle": "Verity",
-      "runtimeMin": 117,
-      "posterPath": "/rmaNMA1seHqpjtnYKzyynFAr1g8.jpg",
-      "trailerKey": "xdPMKhjMSFs",
-      "keywordIds": [
-        818,
-        12565,
-        155251,
-        180724,
-        207767,
-        210726
-      ],
-      "checkedAt": "2026-11-16T22:32:15Z"
-    },
     "whalefall": {
       "tmdbId": 1255833,
       "tmdbTitle": "Whalefall",
@@ -427,6 +411,22 @@
         249530,
         336497,
         372834
+      ],
+      "checkedAt": "2026-11-16T22:32:15Z"
+    },
+    "verity": {
+      "tmdbId": 1283515,
+      "tmdbTitle": "Verity",
+      "runtimeMin": 117,
+      "posterPath": "/rmaNMA1seHqpjtnYKzyynFAr1g8.jpg",
+      "trailerKey": "xdPMKhjMSFs",
+      "keywordIds": [
+        818,
+        12565,
+        155251,
+        180724,
+        207767,
+        210726
       ],
       "checkedAt": "2026-11-16T22:32:15Z"
     }
