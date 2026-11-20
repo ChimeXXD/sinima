@@ -1,12 +1,62 @@
 [
-  ["v01", 0.55, "Six forty, Friday evening. Lekki."],
-  ["v02", 3.2, "Film tonight? But which cinema? What time? Is it still on?"],
-  ["v03", 7.85, "Sinima. Every cinema's times, in one place."],
-  ["v04", 10.8, "See what's starting soon, near you."],
-  ["v05", 15.3, "Every showing, by time and by area."],
-  ["v06", 20.9, "Stay after the credits? It tells you."],
-  ["v07", 24.9, "Then book on the cinema's own site."],
-  ["v08", 32.7, "Lagos and Abuja."],
-  ["v09", 38.5, "And Friday, December eighteenth? It's Dunesday."],
-  ["v10", 42.0, "sinima dot com dot N G. Free. No sign-up."]
+ [
+  "v01",
+  0.4,
+  "Friday. Six-forty. And Tolu wants to see a film."
+ ],
+ [
+  "v02",
+  3.5,
+  "So you open one cinema's site... then another... then another..."
+ ],
+ [
+  "v03",
+  7.9,
+  "Sinima. Every cinema in Lagos, in one place."
+ ],
+ [
+  "v04",
+  11.2,
+  "See what's starting near you, right now."
+ ],
+ [
+  "v05",
+  15.5,
+  "Every showing. Every time. Every area."
+ ],
+ [
+  "v06",
+  20.9,
+  "It even tells you if there's a scene after the credits."
+ ],
+ [
+  "v07",
+  24.9,
+  "Found one? Book it on the cinema's own site."
+ ],
+ [
+  "v07b",
+  31.7,
+  "Popcorn's on you."
+ ],
+ [
+  "v08",
+  32.95,
+  "Lagos. Abuja."
+ ],
+ [
+  "v09",
+  36.6,
+  "And December eighteenth? Dune and Doomsday, same day."
+ ],
+ [
+  "v09b",
+  39.6,
+  "Happy Dunesday!"
+ ],
+ [
+  "v10",
+  41.6,
+  "Sinima dot com dot N G. Free. No sign-up."
+ ]
 ]
