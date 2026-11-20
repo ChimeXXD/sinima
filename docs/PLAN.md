@@ -107,7 +107,7 @@ Dates are a target. If a week slips, cut its Should items first; never cut the c
 - [x] **Coming soon** (D-144): films a sinima lists as coming soon (Filmhouse's home page, Grand, Blue Pictures; others to check), a date only when a source gives one; ~~designed first~~ (D-150, D-151) · ~~1 the data: Filmhouse's coming list, dates, TMDB posters on a sure match~~ (19 Nov, D-152) · ~~2 the screens: Films section, a coming film's page, date sticker, add to calendar~~ (19 Nov) · ~~search finds coming films~~ (19 Nov, D-157) · ~~a coming film's link preview promises no times~~ (19 Nov, D-158) · ~~3 Chime checks on the phone~~ (19 Nov: search showed "Coming soon" and "Opens … at Filmhouse"; Coming soon: "do your recommendation", so kept as built)
 - [ ] Reminder (.ics with a 30-min alert, checked on iPhone and Android) and share · ~~iPhone~~ (19 Nov, D-160: Add to calendar links to files the build writes; Chime: from the Home Screen app "it just popped up" with Add to Calendar) · Android (Google Calendar) still to check
 - [x] **Video script** (30–45 s): the evening problem, then the app answering it in both cities, then the Doomsday hook and the link (20 Nov, D-164: A, "The evening question", 40 s, in `docs/video/SCRIPT.md`; Chime: "do your recommendation")
-- [ ] **Storyboard** in Figma from the approved screens; Chime approves
+- [ ] **Storyboard** in Figma from the approved screens; Chime approves · ~~drawn~~ (20 Nov: Chime, "create a new page on the Figma file and name it storyboard": page **Storyboard**, section "Launch video · Script A · The evening question (40 s)" (298:4), ten 16:9 frames from the real screens with each beat's time, caption, picture and motion) · Chime approves
 
 ## Week 4: harden, make the video, prepare the launch (7–13 Dec)
 

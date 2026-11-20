@@ -2,6 +2,14 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 20 Nov 2026 (night, Lagos) — The storyboard in Figma (script A)
+
+- **Asked:** "can we create a new page on the Figma file and name it storyboard? And let's do the storyboard there."
+- **Changed (Figma only):** new page **Storyboard** (after Design System), section "Launch video · Script A · The evening question (40 s)" (`298:4`): a header (script source, silent autoplay so captions burned in, 16:9 drawn at 800 × 450, 4:5 stacks caption over picture, the brand rule, counts checked at launch) and ten beats, each a 16:9 frame plus its time, caption, picture and motion, copied from `docs/video/SCRIPT.md`. Frames 04–09 use clones of the real Design screens (Starting soon, Film, the showing sheet, Films Lagos and Abuja, the coming Doomsday page) in a phone cropped below Safari's bar; 01 (lock screen at 6:40 with "film tonight?"), 02 (three blurred listing pages), 03 and 10 (the share card's Sinima lockup; "sinima.com.ng", "Free. No sign-up." in the handwritten style) drawn from the file's tokens and text styles. In the cloned Film and Films screens the old Today | Tomorrow control is swapped for the Day row component (five date tiles, D-148); beat 06 has the real Stay or Go chip enlarged beside the phone.
+- **Checked:** screenshots of the whole board and of beat 06; no text runs out of its frame after two fixes (beat 03's logo overflowed the right edge, beat 02's tabs crowded it); 1,655 editable layers, no placeholder left; text in Urbanist and Story Script (Inter only inside the cloned screens).
+- **Not done:** the 4:5 frames (noted in the header: caption over picture); the Home Screen icon in beat 10 (no app icon in Figma yet). The tool (O-15) is still to choose.
+- **Next:** Chime reviews the storyboard.
+
 ## 20 Nov 2026 (night, Lagos) — Video script, search leftovers, the flaky tests (D-164, D-165)
 
 - **Asked:** Chime, on the next list: "for number 1 to 3, do your recommendation. Then after you're done with everything, we'll think about this storyboard."
