@@ -2,6 +2,18 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 20 Nov 2026 (night, Lagos) — Video script, search leftovers, the flaky tests (D-164, D-165)
+
+- **Asked:** Chime, on the next list: "for number 1 to 3, do your recommendation. Then after you're done with everything, we'll think about this storyboard."
+- **1 Video script** (D-164): `docs/video/SCRIPT.md`, three scripts (A the evening question 40 s, B two cities, C countdown to Doomsday); A picked, with a 15 s cut. Storyboard waits for Chime.
+- **2 Search leftovers** (D-165): `/data/search.json` adds each city's later-day files (`withLater` in `searchIndex.ts`: their showings, and each film, sinima and source once; sample if any file is); `searchFilms` looks through all five days ("2 sinimas on Sunday", "Sunday 4:00 PM · …", a 12:30 AM show named by its evening); `enterTarget`: Enter lists the page's own city's Films when it has today's matches (whichever cities are shown), otherwise opens the top result ("Press Enter to open Dune: Part Three."), nothing when nothing matches; `keyMoved` in `tabSlide.ts` marks the move as in-site (no slide: a key press).
+  - **Red:** unit 7 failed (`enterTarget is not a function`; `expected [] to deeply equal [['wicked', 2, …]]`; `expected '2 h 17 min · PG · 2 sinimas tonight' to be '… on Sunday'`; `enterOpen is not a function`); e2e on the old build: the Enter hint not found; index rows `695` not `> 695`.
+  - **Green:** unit search 27/27; e2e `search.spec.ts`, `motion-m5-m9.spec.ts`, `motion-sheet.spec.ts` 35/35 on a fresh sample build. Sample index 33.5 → 35.5 KB; live estimate ~28.7 → ~55 KB raw (~5 → ~10 KB gzipped), fetched only when search first opens.
+  - **Review:** proof:verifier: Enter counted Films from the opening scope, not the page's city (fixed: `onFilms` is always the page's city); asked for an e2e of Enter with no match (added). /code-review medium --fix, 8 findings, 3 fixed by it (later files' sinimas and sample flag merged; today worked out once per city), 2 more fixed here (Films' city; `keyMoved`), left: the search banner can read the later files' fetch times; the index isn't under the page budget (it is fetched, not carried).
+  - **Gate clash:** the review agent ran `npm run build` while the gate was testing; its prebuild rewrote `public/data`, so the gate's `motion-sheet.spec.ts` found no Filmhouse times. Passed on a clean build.
+- **3 Flaky tests:** `motion-m5-m9.spec.ts` M9 now records each tab slide as it starts (an init script around `Element.prototype.animate`), so a 300 ms slide that ended before the check no longer fails it; same contract. `coming.spec.ts:64` **not reproduced**: 20/20 with 8 CPU hogs, 9/9 with Chrome's CPU slowed 4×, 8×, 12×; nothing on Films changes the address on its own. Left unchanged rather than guess.
+- **Not verified:** a film only on days 3–5 on live data (the sample has none); on Chime's phone.
+
 ## 19 Nov 2026 (late night, Lagos) — The guide's first step per browser (D-163)
 
 - **Asked:** Chime: "Share is under [•••] on Safari, while on Chrome, share is above."
