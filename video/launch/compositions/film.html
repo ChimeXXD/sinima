@@ -15,8 +15,14 @@
     #cap02 .roll { position: absolute; left: 0; top: 0; }
 
     /* The phone */
-    #phone { position: absolute; left: 1081px; top: 104px; width: 418px; height: 872px; border-radius: 64px; background: #111318; box-shadow: 0 40px 80px rgba(11, 27, 63, 0.28), inset 0 0 0 2px #2a2d35; }
-    #screen { position: absolute; left: 14px; top: 14px; width: 390px; height: 844px; border-radius: 50px; overflow: hidden; background: #fff; }
+    #phone { position: absolute; left: 1081px; top: 104px; width: 418px; height: 872px; transform-style: preserve-3d; }
+    #phone .slab { position: absolute; inset: 0; border-radius: 64px; background: linear-gradient(90deg, #6e727b 0%, #2b2e35 50%, #6e727b 100%); }
+    #phone .back { position: absolute; inset: 0; border-radius: 64px; background: linear-gradient(160deg, #4a4d55 0%, #24262b 55%, #34373e 100%); box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.3); transform: translateZ(-30px) rotateY(180deg); backface-visibility: hidden; }
+    #phone .back .cam { position: absolute; left: 26px; top: 26px; width: 170px; height: 170px; border-radius: 46px; background: rgba(255, 255, 255, 0.08); box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.18); }
+    #phone .back .cam i { position: absolute; width: 62px; height: 62px; border-radius: 50%; background: radial-gradient(circle at 40% 40%, #3b4250, #07080a 60%); box-shadow: 0 0 0 5px #2a2c31; }
+    #phone .front { position: absolute; inset: 0; backface-visibility: hidden; box-shadow: 0 40px 80px rgba(11, 27, 63, 0.3); border-radius: 64px; }
+    #phone .body { position: absolute; inset: 0; border-radius: 64px; background: linear-gradient(135deg, #8b8f98 0%, #3a3d45 14%, #1c1e23 48%, #34373e 84%, #9a9ea8 100%); box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.35), inset 0 0 0 6px #0b0c0f, inset 0 2px 3px rgba(255, 255, 255, 0.25); }
+    #screen { position: absolute; left: 14px; top: 14px; width: 390px; height: 844px; border-radius: 50px; overflow: hidden; background: #000; }
     #island { position: absolute; left: 50%; top: 24px; width: 118px; height: 34px; margin-left: -59px; border-radius: 20px; background: #000; z-index: 50; }
     .layer { position: absolute; inset: 0; overflow: hidden; }
     .page { position: absolute; left: 0; top: 0; width: 390px; display: block; }
@@ -24,11 +30,11 @@
 
     /* Lock screen */
     #lock { background: #191919; color: #fff; text-align: center; }
-    #lock .wall { position: absolute; left: 0; top: 0; width: 390px; height: 845px; }
+    #lock .wall { position: absolute; left: -1px; top: -1px; width: 392px; height: 847px; }
     #lock .time { position: absolute; left: 195px; top: 96px; width: 0; height: 340px; }
     #lock .time .t { position: absolute; left: 0; top: 0; display: inline-flex; white-space: nowrap; font-family: "Oswald", sans-serif; font-weight: 200; font-size: 400px; line-height: 340px; letter-spacing: -6px; color: #8d8d8d; transform: translateX(-50%) scaleX(0.5); transform-origin: 50% 0; -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.22); }
-    #lock .digit { position: relative; display: inline-block; width: 0.42em; height: 340px; overflow: hidden; }
-    #lock .digit span { position: absolute; left: 0; right: 0; }
+    #lock .digit { position: relative; display: inline-block; width: 0.5em; height: 340px; overflow: hidden; }
+    #lock .digit span { position: absolute; left: 0; right: 0; text-align: center; }
     #notif { opacity: 0; position: absolute; left: 12px; top: 560px; width: 366px; padding: 14px 16px; border-radius: 26px; background: rgba(255, 255, 255, 0.86); color: #111; text-align: left; display: flex; gap: 12px; align-items: center; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18); }
     #notif .icon { flex: none; width: 40px; height: 40px; border-radius: 10px; background: #25d366; display: grid; place-items: center; }
     #notif .who { font-size: 16px; font-weight: 700; display: flex; justify-content: space-between; }
@@ -56,8 +62,8 @@
     #word span { display: inline-block; opacity: 0; }
     #lift { position: absolute; left: 160px; top: 640px; width: 560px; opacity: 0; filter: drop-shadow(0 14px 24px rgba(0, 0, 0, 0.35)); }
     #lift img { width: 100%; border-radius: 40px; outline: 6px solid #fff; }
-    .poster { position: absolute; width: 252px; opacity: 0; filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.45)); }
-    .poster img { width: 100%; display: block; border-radius: 20px; outline: 6px solid #fff; }
+    .poster { position: absolute; width: 290px; opacity: 0; filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.45)); }
+    .poster img { width: 100%; display: block; }
     #stamp { position: absolute; left: 560px; top: 120px; width: 330px; height: 140px; border: 8px solid #ef4444; border-radius: 22px; color: #ef4444; font-weight: 800; font-size: 70px; line-height: 124px; white-space: nowrap; text-align: center; letter-spacing: 2px; transform: rotate(-8deg); opacity: 0; background: rgba(255, 255, 255, 0.06); }
     #booked { position: absolute; left: 1100px; top: 430px; width: 460px; padding: 22px 30px; border-radius: 30px; background: #fff; box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4); outline: 6px solid #fff; display: flex; gap: 18px; align-items: center; color: var(--navy); opacity: 0; }
     #booked .mark { width: 92px; height: 78px; flex: none; overflow: visible; }
@@ -87,13 +93,18 @@
     <div id="cap09" class="cap on-dark" style="top: 900px; font-size: 64px;"><span class="w"><b>Dunesday.</b> </span><span class="w">Fri 18 Dec.</span></div>
 
     <div id="phone">
+      <div class="back"><div class="cam"><i style="left: 18px; top: 18px;"></i><i style="left: 90px; top: 18px;"></i><i style="left: 18px; top: 90px;"></i></div></div>
+      <div class="slab" style="transform: translateZ(-2px);"></div><div class="slab" style="transform: translateZ(-4px);"></div><div class="slab" style="transform: translateZ(-6px);"></div><div class="slab" style="transform: translateZ(-8px);"></div><div class="slab" style="transform: translateZ(-10px);"></div><div class="slab" style="transform: translateZ(-12px);"></div><div class="slab" style="transform: translateZ(-14px);"></div><div class="slab" style="transform: translateZ(-16px);"></div><div class="slab" style="transform: translateZ(-18px);"></div><div class="slab" style="transform: translateZ(-20px);"></div><div class="slab" style="transform: translateZ(-22px);"></div><div class="slab" style="transform: translateZ(-24px);"></div><div class="slab" style="transform: translateZ(-26px);"></div><div class="slab" style="transform: translateZ(-28px);"></div>
+      <div class="front">
+      <div class="body"></div>
       <div id="screen">
         <div class="layer" id="L-dark">
-          <div class="page" id="soonD"><img class="page" src="assets/capture/soon-full-nocord-dark.png" alt="" /><svg class="cord" width="44" height="94" viewBox="0 0 44 94" style="position: absolute; left: 330px; top: 0; overflow: visible;"><path d="M22 0L22 14" stroke="#d4d4d8" stroke-width="1.5" stroke-linecap="round" fill="none"/><g class="lamp" transform="translate(0 14)"><circle r="4" cx="22" cy="11" fill="#3f3f46"/><rect x="19" y="-3" width="6" height="4" rx="1.5" fill="#d4d4d8"/><path d="M11 11 Q11 0 22 0 Q33 0 33 11 Z" fill="#e4e4e7"/></g><line class="cordline" x1="28" y1="23" x2="28" y2="48" stroke="#d4d4d8" stroke-width="1.5" stroke-linecap="round"/><g class="bead"><rect x="24.5" y="46.5" width="7" height="12" rx="3.5" fill="#fafafa"/></g></svg></div>
+          <div class="page" id="soonD"><img class="page" src="assets/capture/soon-full-nocord-dark.png" alt="" /><svg class="cord" width="44" height="94" viewBox="0 0 44 94" style="position: absolute; left: 330px; top: 0; overflow: visible;"><path d="M22 0L22 14" stroke="#d4d4d8" stroke-width="1.5" stroke-linecap="round" fill="none"/><line class="cordline" x1="28" y1="23" x2="28" y2="48" stroke="#d4d4d8" stroke-width="1.5" stroke-linecap="round"/><g class="lamp" transform="translate(0 14)"><circle r="4" cx="22" cy="11" fill="#3f3f46"/><rect x="19" y="-3" width="6" height="4" rx="1.5" fill="#d4d4d8"/><path d="M11 11 Q11 0 22 0 Q33 0 33 11 Z" fill="#e4e4e7"/></g><g class="bead"><rect x="24.5" y="46.5" width="7" height="12" rx="3.5" fill="#fafafa"/></g></svg></div>
           <img class="bar" id="barSoonD" src="assets/capture/bar-soon-dark.png" style="left: 3.4px; width: 383.2px;" alt="" />
           <div class="layer" id="L-film" style="background: #000;">
             <img class="page" id="film1" src="assets/capture/film-full-dark.png" alt="" />
-            <img class="page" id="film2" src="assets/capture/film-day2-full-dark.png" alt="" style="opacity: 0;" />
+            <!-- The website's day switch (M1, D-103), recorded from sinima.com.ng frame by frame (scripts/capture-draft3.mjs) -->
+            <div class="layer" id="days" style="opacity: 0;"><img class="page dayf" src="assets/capture/days/sat-00.jpg" alt="" style="opacity: 0;" data-day="sat" data-at="0.0" /><img class="page dayf" src="assets/capture/days/sat-04.jpg" alt="" style="opacity: 0;" data-day="sat" data-at="0.0333" /><img class="page dayf" src="assets/capture/days/sat-09.jpg" alt="" style="opacity: 0;" data-day="sat" data-at="0.0667" /><img class="page dayf" src="assets/capture/days/sat-14.jpg" alt="" style="opacity: 0;" data-day="sat" data-at="0.1" /><img class="page dayf" src="assets/capture/days/sat-19.jpg" alt="" style="opacity: 0;" data-day="sat" data-at="0.1333" /><img class="page dayf" src="assets/capture/days/sat-24.jpg" alt="" style="opacity: 0;" data-day="sat" data-at="0.1667" /><img class="page dayf" src="assets/capture/days/sat-29.jpg" alt="" style="opacity: 0;" data-day="sat" data-at="0.2" /><img class="page dayf" src="assets/capture/days/sat-34.jpg" alt="" style="opacity: 0;" data-day="sat" data-at="0.2333" /><img class="page dayf" src="assets/capture/days/sat-41.jpg" alt="" style="opacity: 0;" data-day="sat" data-at="0.2667" /><img class="page dayf" src="assets/capture/days/sat-48.jpg" alt="" style="opacity: 0;" data-day="sat" data-at="0.3" /><img class="page dayf" src="assets/capture/days/sat-51.jpg" alt="" style="opacity: 0;" data-day="sat" data-at="0.3333" /><img class="page dayf" src="assets/capture/days/today-00.jpg" alt="" style="opacity: 0;" data-day="today" data-at="0.0" /><img class="page dayf" src="assets/capture/days/today-06.jpg" alt="" style="opacity: 0;" data-day="today" data-at="0.0333" /><img class="page dayf" src="assets/capture/days/today-13.jpg" alt="" style="opacity: 0;" data-day="today" data-at="0.0667" /><img class="page dayf" src="assets/capture/days/today-20.jpg" alt="" style="opacity: 0;" data-day="today" data-at="0.1" /><img class="page dayf" src="assets/capture/days/today-26.jpg" alt="" style="opacity: 0;" data-day="today" data-at="0.1333" /><img class="page dayf" src="assets/capture/days/today-33.jpg" alt="" style="opacity: 0;" data-day="today" data-at="0.1667" /><img class="page dayf" src="assets/capture/days/today-40.jpg" alt="" style="opacity: 0;" data-day="today" data-at="0.2" /><img class="page dayf" src="assets/capture/days/today-46.jpg" alt="" style="opacity: 0;" data-day="today" data-at="0.2333" /><img class="page dayf" src="assets/capture/days/today-53.jpg" alt="" style="opacity: 0;" data-day="today" data-at="0.2667" /><img class="page dayf" src="assets/capture/days/today-60.jpg" alt="" style="opacity: 0;" data-day="today" data-at="0.3" /><img class="page dayf" src="assets/capture/days/today-63.jpg" alt="" style="opacity: 0;" data-day="today" data-at="0.3333" /></div>
           </div>
           <div class="layer" id="L-stay" style="opacity: 0;"><img class="page" src="assets/capture/stay-dark.png" alt="" /></div>
           <img class="bar" id="barFilm" src="assets/capture/bar-film-dark.png" style="left: 30.9px; width: 328.2px; opacity: 0;" alt="" />
@@ -110,7 +121,7 @@
             <div style="position: absolute; left: 0; right: 0; top: 0; height: 50px; background: #000;"></div>
           </div>
         </div>
-        <div class="layer" id="L-soonL"><div class="page" id="soonL"><img class="page" src="assets/capture/soon-full-nocord-light.png" alt="" /><svg class="cord" width="44" height="94" viewBox="0 0 44 94" style="position: absolute; left: 330px; top: 0; overflow: visible;"><path d="M22 0L22 14" stroke="#71717a" stroke-width="1.5" stroke-linecap="round" fill="none"/><g class="lamp" transform="translate(0 14)"><circle r="4" cx="22" cy="11" fill="#fdba4d"/><rect x="19" y="-3" width="6" height="4" rx="1.5" fill="#71717a"/><path d="M11 11 Q11 0 22 0 Q33 0 33 11 Z" fill="#3f3f46"/></g><line class="cordline" x1="28" y1="23" x2="28" y2="48" stroke="#71717a" stroke-width="1.5" stroke-linecap="round"/><g class="bead"><rect x="24.5" y="46.5" width="7" height="12" rx="3.5" fill="#18181b"/></g></svg></div><img class="bar" src="assets/capture/bar-soon-light.png" style="left: 3.4px; width: 383.2px;" alt="" /></div>
+        <div class="layer" id="L-soonL"><div class="page" id="soonL"><img class="page" src="assets/capture/soon-full-nocord-light.png" alt="" /><svg class="cord" width="44" height="94" viewBox="0 0 44 94" style="position: absolute; left: 330px; top: 0; overflow: visible;"><path d="M22 0L22 14" stroke="#71717a" stroke-width="1.5" stroke-linecap="round" fill="none"/><line class="cordline" x1="28" y1="23" x2="28" y2="48" stroke="#71717a" stroke-width="1.5" stroke-linecap="round"/><g class="lamp" transform="translate(0 14)"><circle r="4" cx="22" cy="11" fill="#fdba4d"/><rect x="19" y="-3" width="6" height="4" rx="1.5" fill="#71717a"/><path d="M11 11 Q11 0 22 0 Q33 0 33 11 Z" fill="#3f3f46"/></g><g class="bead"><rect x="24.5" y="46.5" width="7" height="12" rx="3.5" fill="#18181b"/></g></svg></div><img class="bar" src="assets/capture/bar-soon-light.png" style="left: 3.4px; width: 383.2px;" alt="" /></div>
         <div class="layer" id="tabs">
           <div class="head"><span class="n" style="opacity: 1;">Tabs</span></div>
           <div class="tab" id="t1" style="left: 17px; top: 100px;"><div class="shot"><img src="assets/logos/filmhouse.png" alt="" /><i style="top: 84px;"></i><i style="top: 102px; right: 50px;"></i><i style="top: 120px;"></i></div><div class="label">Filmhouse</div></div>
@@ -133,6 +144,7 @@
         <div id="dot"></div>
       </div>
       <div id="island"></div>
+      </div>
     </div>
 
     <svg id="trail" width="1920" height="1080" viewBox="0 0 1920 1080" style="position: absolute; left: 0; top: 0; overflow: visible;"><path id="trailPath" d="" fill="none" stroke="#0b1b3f" stroke-width="4" stroke-linecap="round" opacity="0.85"/></svg>
@@ -152,8 +164,8 @@
     <div id="word"><span>S</span><span>i</span><span>n</span><span>i</span><span>m</span><span>a</span></div>
 
     <div id="lift"><img src="assets/capture/stay-chip-dark.png" alt="" /></div>
-    <div class="poster" id="pDune" style="left: 230px; top: 150px;"><img src="assets/capture/coming-dune-dark.png" alt="" /></div>
-    <div class="poster" id="pDoom" style="left: 560px; top: 150px;"><img src="assets/capture/coming-doomsday-dark.png" alt="" /></div>
+    <div class="poster" id="pDune" style="left: 230px; top: 150px;"><img src="assets/capture/coming-dune-sharp.png" alt="" /></div>
+    <div class="poster" id="pDoom" style="left: 560px; top: 150px;"><img src="assets/capture/coming-doomsday-sharp.png" alt="" /></div>
     <div id="stamp">18 DEC</div>
 
     <div id="addr">sinima.com.ng</div>
@@ -169,9 +181,9 @@
 
       // ---------- initial states ----------
       // gsap.set, not tl.set at 0: a zero-length set at 0 in a paused timeline does not render on frame 0
-      gsap.set("#phone", { x: 0, y: 760, rotation: -14, rotationY: 70, transformPerspective: 1600 });
+      gsap.set("#phone", { x: 0, y: 900, rotation: 0, rotationY: -540, transformPerspective: 1600 });
       gsap.set("#notif", { y: -220, rotation: -10 });
-      gsap.set("#d1", { yPercent: 100 });
+      gsap.set("#d1", { yPercent: 70, opacity: 0 });
       gsap.set(".tab", { scale: 0.3 });
       gsap.set("#word span", { y: 60 });
       gsap.set("#sheet", { y: 600 });
@@ -219,16 +231,15 @@
       };
 
       // ---------- 01 · 6:40 PM. Lekki. (0–3) ----------
-      tl.to("#phone", { y: 0, rotationY: 0, rotation: -4, duration: 0.95, ease: "back.out(1.6)" }, 0.05);
+      tl.fromTo("#phone", { y: 900, rotationY: -540, rotation: 0 }, { y: 0, rotationY: 0, rotation: 0, duration: 1.5, ease: "power3.out", immediateRender: false }, 0.05);
       wordsIn("#cap01", 0.45, 0.14);
-      tl.to("#notif", { opacity: 1, duration: 0.12 }, 1.15).to("#notif", { y: 0, duration: 0.55, ease: "back.out(2.2)" }, 1.15).to("#notif", { rotation: 0, duration: 0.8, ease: land }, 1.3);
-      tl.to("#d0", { yPercent: -100, duration: 0.28, ease: "power3.in" }, 2.15).to("#d1", { yPercent: 0, duration: 0.42, ease: spring }, 2.3);
+      tl.to("#notif", { opacity: 1, duration: 0.12 }, 1.55).to("#notif", { y: 0, duration: 0.55, ease: "back.out(2.2)" }, 1.55).to("#notif", { rotation: 0, duration: 0.8, ease: land }, 1.7);
+      tl.to("#d0", { yPercent: -70, opacity: 0, duration: 0.22, ease: "power2.in" }, 2.15).fromTo("#d1", { yPercent: 70, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.4, ease: spring }, 2.25);
       capOut("#cap01", 2.75);
 
       // ---------- 02 · Which sinima? What time? Still on? (3–7) ----------
       tl.to("#lock", { yPercent: -100, duration: 0.42, ease: "power3.in" }, 2.95).set("#lock", { opacity: 0 }, 3.4);
-      tl.to("#phone", { rotation: 3, duration: 0.7, ease: land }, 3.0);
-      tl.set("#cap02", { opacity: 1 }, 3.1);
+            tl.set("#cap02", { opacity: 1 }, 3.1);
       tl.to("#r1", { yPercent: 0, duration: 0.4, ease: spring }, 3.15);
       tl.to("#r1", { yPercent: -110, duration: 0.16, ease: "power2.in" }, 4.35).to("#r2", { yPercent: 0, duration: 0.36, ease: spring }, 4.45);
       tl.to("#r2", { yPercent: -110, duration: 0.16, ease: "power2.in" }, 5.45).to("#r3", { yPercent: 0, duration: 0.36, ease: spring }, 5.55);
@@ -298,11 +309,23 @@
       tl.to("#L-film", { x: 0, duration: 0.42, ease: "power3.out" }, 16.3).to("#soonD", { x: -120, duration: 0.42, ease: "power3.out" }, 16.3);
       tl.set("#barSoonD", { opacity: 0 }, 16.5).set("#barFilm", { opacity: 1 }, 16.5);
       tl.to("#dot", { y: 600, duration: 0.3, ease: "power2.inOut" }, 16.55);
-      tl.to("#dot", { y: 240, duration: 0.6, ease: "power2.inOut" }, 17.0).to(["#film1", "#film2"], { y: -440, duration: 0.9, ease: "power3.out" }, 17.1);
+      tl.to("#dot", { y: 240, duration: 0.6, ease: "power2.inOut" }, 17.0).to("#film1", { y: -440, duration: 0.9, ease: "power3.out" }, 17.1);
       dotTo(18.25, 124, 327, 0.4); tap(18.3);
-      tl.to("#film1", { opacity: 0, filter: "blur(4px)", duration: 0.12 }, 18.4).fromTo("#film2", { opacity: 0, filter: "blur(4px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.16 }, 18.45);
+      // the day switch as the website does it: each recorded frame at the moment it was drawn
+      const dayFrames = (name, t) => {
+        const list = [...document.querySelectorAll("#days .dayf")].filter((img) => img.dataset.day === name);
+        list.forEach((img, i) => {
+          tl.set(img, { opacity: 1 }, t + Number(img.dataset.at));
+          if (list[i + 1]) tl.set(img, { opacity: 0 }, t + Number(list[i + 1].dataset.at));
+        });
+        return list[list.length - 1];
+      };
+      tl.set("#days", { opacity: 1 }, 18.35);
+      const satLast = dayFrames("sat", 18.35);
       dotTo(19.25, 53, 327, 0.4); tap(19.3);
-      tl.to("#film2", { opacity: 0, filter: "blur(4px)", duration: 0.12 }, 19.4).to("#film1", { opacity: 1, filter: "blur(0px)", duration: 0.16 }, 19.45);
+      tl.set(satLast, { opacity: 0 }, 19.35);
+      const todayLast = dayFrames("today", 19.35);
+      // the last frame stays up while the film page leaves (20.3); hidden once it is off screen (24.35)
       capOut("#cap05", 20.1);
       dotOut(20.05);
 
@@ -319,7 +342,8 @@
 
       // ---------- 07 · Book on the sinima's own site. (24.35–32.2) ----------
       // back to The Hunger Games at Filmhouse Lekki IMAX, 7:50 PM: the showing Chime booked
-      tl.set(["#film1", "#film2"], { y: -1629 }, 24.35).set("#L-film", { y: -844, filter: "blur(10px)" }, 24.35);
+      tl.set("#days", { opacity: 0 }, 24.35).set(todayLast, { opacity: 0 }, 24.35);
+      tl.set("#film1", { y: -1629 }, 24.35).set("#L-film", { y: -844, filter: "blur(10px)" }, 24.35);
       tl.to("#L-stay", { y: 844, filter: "blur(10px)", duration: 0.22, ease: "power3.in" }, 24.35);
       tl.to("#L-film", { y: 0, filter: "blur(0px)", duration: 0.3, ease: "power3.out" }, 24.55);
       wordsIn("#cap07", 24.85, 0.1);
@@ -357,9 +381,9 @@
       tl.to("#dot", { x: 200, y: 700, duration: 0.35, ease: "power2.inOut" }, 36.1);
       tl.to("#dot", { y: 220, duration: 0.6, ease: "power2.inOut" }, 36.45).to("#filmsL", { y: -3868 /* the page is 4712 px tall; 3868 is the end of its scroll */, duration: 1.0, ease: "power3.inOut" }, 36.5);
       dotOut(37.15);
-      tl.set("#pDune", { x: SX + 176 - 230, y: SY + 281 - 150, scale: 148 / 252, transformOrigin: "0 0", opacity: 1 }, 37.55);
+      tl.set("#pDune", { x: SX + 172 - 230, y: SY + 263 - 150, scale: 170 / 290, transformOrigin: "0 0", opacity: 1 }, 37.55);
       tl.to("#pDune", { x: 0, y: 0, scale: 1, rotation: -6, duration: 0.5, ease: "back.out(1.6)" }, 37.55);
-      tl.set("#pDoom", { x: SX + 336 - 560, y: SY + 281 - 150, scale: 148 / 252, transformOrigin: "0 0", opacity: 1 }, 37.8);
+      tl.set("#pDoom", { x: SX + 332 - 560, y: SY + 263 - 150, scale: 170 / 290, transformOrigin: "0 0", opacity: 1 }, 37.8);
       tl.to("#pDoom", { x: 0, y: 0, scale: 1, rotation: 5, duration: 0.5, ease: "back.out(1.6)" }, 37.8);
       tl.to("#pDune", { scaleX: 1.05, scaleY: 0.94, duration: 0.07 }, 38.05).to("#pDune", { scaleX: 1, scaleY: 1, duration: 0.4, ease: land }, 38.12);
       tl.to("#pDoom", { scaleX: 1.05, scaleY: 0.94, duration: 0.07 }, 38.3).to("#pDoom", { scaleX: 1, scaleY: 1, duration: 0.4, ease: land }, 38.37);
