@@ -86,8 +86,10 @@ const sameUrl = (a: string, b: string) => new URL(a).href.replace(/#.*$/, "") ==
 export const chromiumLauncher: Launcher = async ({ userAgent }) => {
   const { chromium } = await import("@playwright/test");
   const browser = await chromium.launch({ headless: true });
-  // A service worker's requests would pass the route below unseen, so the page gets none.
-  const context = await browser.newContext({ userAgent, serviceWorkers: "block" });
+  // A service worker's requests would pass the route below unseen, so the page gets none. The page is
+  // read as a visitor in Lagos: Reach's sites draw each time in the visitor's own clock, and on the
+  // refresh job's UTC machine Viva's 11:15 AM read as 10:15 AM (Chime, 21 Nov 2026).
+  const context = await browser.newContext({ userAgent, serviceWorkers: "block", timezoneId: "Africa/Lagos", locale: "en-NG" });
   return {
     newPage: async () => chromiumPage(await context.newPage()),
     close: () => browser.close(),

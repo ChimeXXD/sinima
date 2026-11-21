@@ -196,6 +196,30 @@ describe.skipIf(!existsSync(chromiumPath))("politeBrowser with Chromium (local s
     }
   }, 60_000);
 
+  // Reach's sites (Viva, Nova, Ozone, Sky) draw each time in the visitor's own clock. Read from a
+  // runner on UTC, Viva Ikeja's 11:15 AM came out as 10:15 AM (Chime, 21 Nov 2026): the reader must
+  // be a visitor in Lagos whatever the machine's zone (run this with TZ=UTC, as the refresh job does).
+  it("reads a page as a visitor in Lagos: times a page draws in the visitor's clock are Lagos times", async () => {
+    const server = createServer((request: IncomingMessage, response) => {
+      const path = request.url ?? "/";
+      if (path === "/robots.txt") return response.end("User-agent: *\nAllow: /");
+      if (path === "/showtimes")
+        return response.end(
+          `<!doctype html><ul id="times"></ul><script>document.getElementById("times").innerHTML = "<li>" + new Date("2026-11-21T10:15:00Z").toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }) + "</li>";</script>`,
+        );
+      response.writeHead(404).end("not here");
+    });
+    await new Promise<void>((done) => server.listen(0, "127.0.0.1", done));
+    const port = (server.address() as AddressInfo).port;
+    const render = politeBrowser({ userAgent: UA, minGapMs: 0, launcher: chromiumLauncher });
+    try {
+      expect(await render(`http://127.0.0.1:${port}/showtimes`, { waitFor: "#times li" })).toContain("11:15 AM");
+    } finally {
+      await render.close();
+      await new Promise((done) => server.close(done));
+    }
+  }, 60_000);
+
   // A date tab that loads its day's times when tapped, as Sky's and EbonyLife's pages do.
   it("clicks a tab, waits for what it loads, and marks the control it clicked", async () => {
     const server = createServer((request: IncomingMessage, response) => {
