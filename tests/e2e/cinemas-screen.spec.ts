@@ -215,3 +215,18 @@ test("with nothing left to start today there is no Format picker; tomorrow's for
   await page.getByTestId("day.option.tomorrow").click();
   await expect(page.getByTestId("pick.format")).toBeVisible();
 });
+
+// Chime, 21 Nov 2026: on the Cinemas tab the search finds cinemas, not films, and filters the list in place.
+test("on Cinemas the search reads \"Find a cinema\" and filters the list to the cinemas that match", async ({ page }) => {
+  await page.goto("/lagos/cinemas");
+  const field = page.getByTestId("search.field");
+  await expect(field).toHaveAttribute("placeholder", "Find a cinema");
+  await field.fill("genesis");
+  const names = page.locator('[data-testid^="cinema.card."] [data-testid="cinema.name"]');
+  await expect(names.first()).toBeVisible();
+  for (const name of await names.allTextContents()) expect(name.toLowerCase()).toContain("genesis");
+  await expect(page.getByTestId("search.query")).toHaveCount(0); // no film search panel opens
+  await field.fill("no such sinima");
+  await expect(names).toHaveCount(0);
+  await expect(page.getByText("No sinima matches “no such sinima”")).toBeVisible();
+});

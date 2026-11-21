@@ -62,7 +62,8 @@ test("old addresses were Lagos pages: an Abuja cinema has none", async ({ page }
 });
 
 test("Enter in search on an Abuja page lists the matches on Abuja's Films", async ({ page }) => {
-  await page.goto("/abuja/cinemas");
+  // Starting soon, not Cinemas: on Cinemas the field finds cinemas instead (Chime, 21 Nov 2026).
+  await page.goto("/abuja/soon");
   await page.getByTestId("search.field").click(); // opens search over the page
   await page.getByTestId("search.query").fill("spider");
   await page.keyboard.press("Enter");

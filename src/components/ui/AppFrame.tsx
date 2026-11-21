@@ -102,7 +102,7 @@ function NowMark() {
  * A screen below the home screens (Figma Film) passes `bar`: on phones and iPads it takes the
  * header's place, a back button, the screen's name and a share button; the desktop navbar stays.
  */
-export function AppFrame({ active, search, city: chosen, bg, bar, footer, onAbout = false, children }: { active: SectionId; search: { value: string; onChange: (text: string) => void; onSubmit?: () => void }; city?: CityChoice; bg: { light: string; dark: string }; bar?: React.ReactNode; /** The page's own footer lines, in place of the note (Figma Cinemas). */ footer?: React.ReactNode; /** About itself: no link to About in the footer. */ onAbout?: boolean; children: React.ReactNode }) {
+export function AppFrame({ active, search, city: chosen, bg, bar, footer, onAbout = false, children }: { active: SectionId; search: { value: string; onChange: (text: string) => void; onSubmit?: () => void; /** Cinemas: the field filters the page's list in place and opens no film search (Chime, 21 Nov 2026). */ cinemas?: boolean }; city?: CityChoice; bg: { light: string; dark: string }; bar?: React.ReactNode; /** The page's own footer lines, in place of the note (Figma Cinemas). */ footer?: React.ReactNode; /** About itself: no link to About in the footer. */ onAbout?: boolean; children: React.ReactNode }) {
   const pageCity = useCity();
   // The tab's count is this city's saved cinemas: Your cinemas lists only those (D-136).
   const cinemaCities = useCinemaCities();
@@ -128,7 +128,7 @@ export function AppFrame({ active, search, city: chosen, bg, bar, footer, onAbou
   useEffect(() => {
     // A tap on the field before the page was ready focused it with no onFocus to hear it (a slow
     // phone, a busy test machine): open search now, as that tap meant to.
-    if (field.current && document.activeElement === field.current) {
+    if (field.current && document.activeElement === field.current && !search.cinemas) {
       // Letters typed before then are in the field but not in the page's query: hand them over.
       if (field.current.value !== search.value) search.onChange(field.current.value);
       load();
@@ -170,9 +170,10 @@ export function AppFrame({ active, search, city: chosen, bg, bar, footer, onAbou
           <SearchBar
             city={cityChoice}
             value={search.value}
-            onChange={(text) => (search.onChange(text), load(), setOpen(true))}
+            onChange={(text) => (search.cinemas ? search.onChange(text) : (search.onChange(text), load(), setOpen(true)))}
             onSubmit={search.onSubmit}
-            onFocus={() => quiet.current || (load(), setOpen(true))}
+            onFocus={() => search.cinemas || quiet.current || (load(), setOpen(true))}
+            placeholder={search.cinemas ? "Find a cinema" : "Find a film"}
             onCity={(event) => openCity(event, "bar")}
             cityOpen={city === true && cityFrom === "bar"}
             inputRef={field}

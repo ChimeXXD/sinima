@@ -95,7 +95,7 @@ test.describe("no motion on keyboard actions (F4, F5, C7)", () => {
 
   test("C7: on a computer, search reached with the keyboard opens with no fade", async ({ browser }) => {
     const { context, page } = await computer(browser);
-    await page.goto("/lagos/cinemas");
+    await page.goto("/lagos/soon"); // not Cinemas: there the field finds cinemas and opens no panel (21 Nov 2026)
     await page.getByTestId("search.field").focus();
     await page.keyboard.press("a");
     const panel = page.getByTestId("search.panel");

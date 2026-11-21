@@ -14,7 +14,7 @@ const CITY_NAMES: Record<CityChoice, string> = { lagos: "Lagos", abuja: "Abuja",
  * sheet. Both cities shows a globe instead of the pin. Enter calls `onSubmit`. In the app, focus
  * opens the search panel (components/search), which takes over from this field.
  */
-export function SearchBar({ city, value, onChange, onSubmit, onCity, cityOpen = false, onFocus, inputRef, testId = "search" }: { city: CityChoice; value: string; onChange: (text: string) => void; onSubmit?: () => void; onCity?: (event: React.MouseEvent<HTMLButtonElement>) => void; /** The city picker is open from this pill: its chevron turns up. */ cityOpen?: boolean; onFocus?: () => void; inputRef?: React.Ref<HTMLInputElement>; testId?: string }) {
+export function SearchBar({ city, value, onChange, onSubmit, onCity, cityOpen = false, onFocus, inputRef, testId = "search", placeholder = "Find a film" }: { city: CityChoice; value: string; onChange: (text: string) => void; onSubmit?: () => void; onCity?: (event: React.MouseEvent<HTMLButtonElement>) => void; /** The city picker is open from this pill: its chevron turns up. */ cityOpen?: boolean; onFocus?: () => void; inputRef?: React.Ref<HTMLInputElement>; testId?: string; /** What the field finds: "Find a film", or "Find a cinema" on Cinemas. */ placeholder?: string }) {
   const desktop = useDesktop();
   const pill = (
     <>
@@ -28,7 +28,7 @@ export function SearchBar({ city, value, onChange, onSubmit, onCity, cityOpen = 
   return (
     <div className={s.bar} data-testid={testId}>
       <Icon name="search" size={18} className={s.searchIcon} />
-      <input ref={inputRef} onFocus={onFocus} className={s.field} type="search" placeholder="Find a film" aria-label="Find a film" value={value} onChange={(event) => onChange(event.target.value)} onKeyDown={(event) => event.key === "Enter" && !event.nativeEvent.isComposing && onSubmit?.()} autoComplete="off" enterKeyHint="search" data-testid={`${testId}.field`} />
+      <input ref={inputRef} onFocus={onFocus} className={s.field} type="search" placeholder={placeholder} aria-label={placeholder} value={value} onChange={(event) => onChange(event.target.value)} onKeyDown={(event) => event.key === "Enter" && !event.nativeEvent.isComposing && onSubmit?.()} autoComplete="off" enterKeyHint="search" data-testid={`${testId}.field`} />
       {onCity ? (
         <button type="button" className={s.city} aria-haspopup={desktop ? "listbox" : "dialog"} aria-expanded={cityOpen} aria-label={`City: ${CITY_NAMES[city]}. Change city`} onClick={onCity} data-testid={`${testId}.city`}>
           {pill}

@@ -30,7 +30,8 @@ export type SearchGroup = { city: City; results: SearchResult[]; coming: SearchC
 export const hasCinemas = (index: SearchIndex, city: City) => index.cinemas.some((cinema) => cinema.city === city);
 
 /** Lower case, no accents, letters and digits only: "Spider-Man" and "spiderman" match. */
-const fold = (text: string) => text.normalize("NFD").toLowerCase().replace(/[^a-z0-9]/g, "");
+/** Lower case, no accents, letters and digits only: "Ọ̀zọ́ne Yaba" finds "ozone". */
+export const fold = (text: string) => text.normalize("NFD").toLowerCase().replace(/[^a-z0-9]/g, "");
 
 /** True when the title holds the query. An empty query matches nothing. */
 export function matchesTitle(title: string, query: string): boolean {

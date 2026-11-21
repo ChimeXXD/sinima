@@ -1,6 +1,5 @@
 "use client";
 
-import { useCityRouter as useRouter } from "@/components/ui/CityLink";
 import { useCallback, useState } from "react";
 import { AppFrame, LogoNote } from "@/components/ui/AppFrame";
 import { PageNotice } from "@/components/ui/Notices";
@@ -12,6 +11,7 @@ import { CITY_NAMES, type City } from "@/lib/city";
 import { rememberArea } from "@/lib/area";
 import { useSavedArea } from "@/lib/browser";
 import { cinemaSections, type CinemaSection } from "@/lib/data/cinemas";
+import { fold } from "@/lib/data/search";
 import { formatCoverage } from "@/lib/data/films";
 import { formatTag, type FormatTag } from "@/lib/data/format";
 import type { Area } from "@/lib/data/load";
@@ -44,7 +44,6 @@ export function CinemasScreen({ data, areas, city, bg }: { data: ListData; areas
   const swap = useSwapIn(day, days.status === "ready");
   const [format, setFormat] = useState<FormatTag | null>(null);
   const [search, setSearch] = useState("");
-  const router = useRouter();
   const saved = useSavedArea();
   // Picking an area keeps it on this phone; until the store answers, the pick shows at once.
   const [picked, setPicked] = useState<string | null>(null);
@@ -65,7 +64,10 @@ export function CinemasScreen({ data, areas, city, bg }: { data: ListData; areas
   // A later day's rows are only that day's (D-147): a sinima with times on another day is still listed.
   // A sinima listing only a later day has times too: "nothing today", not "not available" (D-146).
   const alsoListed = days.shown.flatMap((shown) => shown.cinemas ?? []);
-  const sections = days.load ? [] : cinemaSections({ rows: view.rows, known: data.rows, alsoListed, cinemas: data.cinemas.length, areaOf, day, now, live, format, home, anchor: days.anchor });
+  const all = days.load ? [] : cinemaSections({ rows: view.rows, known: data.rows, alsoListed, cinemas: data.cinemas.length, areaOf, day, now, live, format, home, anchor: days.anchor });
+  // The search finds cinemas here: each section keeps the cinemas whose name or area has what was typed.
+  const wanted = fold(search.trim());
+  const sections = wanted ? all.map((section) => ({ ...section, cinemas: section.cinemas.filter((entry) => { const cinema = data.cinemas[entry.cinema]!; return fold(`${cinema.name} ${areas.find((area) => area.slug === cinema.area)?.name ?? cinema.area}`).includes(wanted); }) })).filter((section) => section.cinemas.length > 0) : all;
   const banner = pageBanner(data, clock);
   const coverage = format ? formatCoverage(view.rows, day, now, live, (cinema) => data.cinemas[cinema]!.chain, days.anchor) : null;
   const note = coverage ? formatNote(coverage.chains, coverage.silent) : null;
@@ -91,7 +93,7 @@ export function CinemasScreen({ data, areas, city, bg }: { data: ListData; areas
   );
 
   return (
-    <AppFrame active="cinemas" search={{ value: search, onChange: setSearch, onSubmit: () => router.push(`/?q=${encodeURIComponent(search.trim())}`) }} bg={bg} footer={footer}>
+    <AppFrame active="cinemas" search={{ value: search, onChange: setSearch, cinemas: true }} bg={bg} footer={footer}>
       <CinemasHero city={city} count={data.cinemas.length} />
       <Pickers
         areas={areas}
@@ -150,7 +152,12 @@ export function CinemasScreen({ data, areas, city, bg }: { data: ListData; areas
           {note}
         </p>
       )}
-      {!days.load && sections.length === 0 && (
+      {!days.load && wanted && sections.length === 0 && (
+        <p className={s.none} data-testid="cinemas.no-match">
+          {`No sinima matches “${search.trim()}”.`}
+        </p>
+      )}
+      {!days.load && !wanted && sections.length === 0 && (
         <p className={s.none} data-testid="cinemas.none" data-swap>
           {`No sinima is showing a film in ${format} ${dayWords(day, current.date, live).on}.`}
         </p>
