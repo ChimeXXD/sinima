@@ -103,3 +103,17 @@ export const readVeezi: Reader = async ({ now, days, fetchText, pages }) => {
   }
   return read;
 };
+
+/**
+ * Filmworld's sessions page (21 Nov 2026): read like Silverbird's, except that a page listing nothing
+ * is a failed read. Filmworld's page says "No shows currently scheduled" in the small hours while its
+ * programme runs (17 Nov, 01:18 and 02:52 Lagos), so an empty page keeps the last good times (D-119).
+ */
+export const readVeeziProgramme: Reader = async (context) => {
+  const read = await readVeezi(context); // one page per cinema, in the order they were given
+  const ids = Object.keys(context.pages);
+  read.forEach((page, i) => {
+    if (page.showings.length === 0) throw new Error(`${ids[i]}: the page lists no showings ("${NOTHING_ON}"); its last good times are kept.`);
+  });
+  return read;
+};

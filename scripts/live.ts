@@ -24,7 +24,7 @@ import { pageMissingOrSlow, type FetchText } from "./sources/polite.ts";
 import type { ParsedPage, Reader } from "./sources/raw.ts";
 import { readReach } from "./sources/reach.ts";
 import { readThc } from "./sources/thc.ts";
-import { readVeezi } from "./sources/veezi.ts";
+import { readVeezi, readVeeziProgramme } from "./sources/veezi.ts";
 import { properTitle, titleLookup } from "./titles.ts";
 
 export const LIVE_DIR = "data/live";
@@ -72,6 +72,8 @@ export const READERS: Record<string, Reader> = {
   },
   // Each cinema's own Veezi sessions page (Lagos and Abuja); the siteToken is in data/sources.json.
   silverbird: readVeezi,
+  // Filmworld's own Veezi page (21 Nov 2026: Lagocine had 11:00 for its 11:20); an empty page is a failed read.
+  filmworld: readVeeziProgramme,
   // Each location page, then one page per film for tomorrow's times (D-122).
   genesis: genesisReader(MAX_FILM_PAGES),
   grand: readGrand,

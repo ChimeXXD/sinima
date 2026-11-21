@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { parseVeeziSessions, readVeezi } from "../../../../scripts/sources/veezi";
+import { parseVeeziSessions, readVeezi, readVeeziProgramme } from "../../../../scripts/sources/veezi";
 
 // Silverbird Ikeja's Veezi listing, saved on 11 Nov 2026 and cut down (D-24). Its dates have no
 // year ("Wednesday 11, November") and its times are on a 12-hour clock ("6:35 PM").
@@ -192,5 +192,18 @@ describe("readVeezi: each cinema's own sessions page (D-122)", () => {
     const { asked, read } = run(saved, { "silverbird-sec": "https://ticketing.eu.veezi.com/purchase/323428?siteToken=ntfpkgyc0phrmzxb2ctk828vd4" });
     await expect(read).rejects.toThrow("silverbird-sec: https://ticketing.eu.veezi.com/purchase/323428?siteToken=ntfpkgyc0phrmzxb2ctk828vd4 is not a Veezi sessions page with a siteToken");
     expect(asked).toEqual([]);
+  });
+});
+
+// Filmworld (21 Nov 2026): Lagocine had its times wrong (11:00 for its own page's 11:20), so it reads
+// its own Veezi page. That page says "No shows currently scheduled" in the small hours (17 Nov,
+// 01:18 and 02:52), so for Filmworld an empty page is a failed read: the last good times are kept (D-119).
+describe("readVeeziProgramme: an empty page is a failed read, not an empty programme", () => {
+  const page = "https://ticketing.eu.veezi.com/sessions/?siteToken=327ra3p1mr5tzhta0g0s8ajf8m";
+  const empty = readFileSync(join(import.meta.dirname, "../../../fixtures/filmworld/2026-11-17-idimu-empty.html"), "utf8");
+  const renderText = Object.assign(async () => "", { close: async () => {} });
+  it("fails when Filmworld's page lists nothing", async () => {
+    const read = readVeeziProgramme({ now: "2026-11-17T00:18:00Z", days: 2, fetchText: async () => empty, renderText, pages: { "filmworld-idimu": page } });
+    await expect(read).rejects.toThrow(/filmworld-idimu: the page lists no showings/);
   });
 });

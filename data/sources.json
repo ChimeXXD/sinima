@@ -40,7 +40,6 @@
         "filmhouse-palms-lekki",
         "filmhouse-oniru",
         "filmhouse-landmark",
-        "filmworld-idimu",
         "ozone-yaba",
         "sky-sangotedo"
       ],
@@ -387,7 +386,7 @@
       "cinemaPages": {
         "filmworld-idimu": "https://ticketing.eu.veezi.com/sessions/?siteToken=327ra3p1mr5tzhta0g0s8ajf8m"
       },
-      "notes": "15 Nov 2026 (D-77): cleared; the copying clause is recorded as a risk (showtimes are facts), and we stop if asked. Booking links must carry Filmworld's own siteToken (327ra3p1mr5tzhta0g0s8ajf8m): Veezi is shared with Silverbird, so the host alone does not prove whose link it is. 15 Nov 2026: Veezi sessions page is server-rendered (10 distinct times in the HTML). Same reader as Silverbird. filmworldcinemas.com/showtime/daily-showtime/ did not load for us. Terms not read yet. 17 Nov 2026 (D-122): the Veezi reader works for this page, but it is not run: at 01:18 Lagos on 17 Nov the page said \"No shows currently scheduled\" while Lagocine, reading filmworldcinemas.com, listed 22 times for the day. Filmworld stays on Lagocine until its Veezi page is shown to carry its programme (tests/fixtures/filmworld/2026-11-17-idimu-empty.html). 17 Nov 2026 (D-125): checked once more at 02:52 Lagos: still \"No shows currently scheduled\"; stays on Lagocine."
+      "notes": "15 Nov 2026 (D-77): cleared; the copying clause is recorded as a risk (showtimes are facts), and we stop if asked. Booking links must carry Filmworld's own siteToken (327ra3p1mr5tzhta0g0s8ajf8m): Veezi is shared with Silverbird, so the host alone does not prove whose link it is. 15 Nov 2026: Veezi sessions page is server-rendered (10 distinct times in the HTML). Same reader as Silverbird. filmworldcinemas.com/showtime/daily-showtime/ did not load for us. Terms not read yet. 17 Nov 2026 (D-122): the Veezi reader works for this page, but it is not run: at 01:18 Lagos on 17 Nov the page said \"No shows currently scheduled\" while Lagocine, reading filmworldcinemas.com, listed 22 times for the day. Filmworld stays on Lagocine until its Veezi page is shown to carry its programme (tests/fixtures/filmworld/2026-11-17-idimu-empty.html). 17 Nov 2026 (D-125): checked once more at 02:52 Lagos: still \"No shows currently scheduled\"; stays on Lagocine. 21 Nov 2026 (D-175): the page carries the programme by day (11:20 The Perfect Spec, while Lagocine said 11:00), so Filmworld leaves Lagocine and is read here by readVeeziProgramme: an empty page fails the read and keeps the last good times."
     },
     {
       "id": "grand",
