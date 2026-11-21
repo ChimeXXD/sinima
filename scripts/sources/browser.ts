@@ -17,7 +17,17 @@ import { MAX_REDIRECTS, PAGE_TIMEOUT_MS, refusal, rulesFrom, type PoliteOptions,
  * `data-sinima-clicked` so the parser can see which one, and the page read once the network is
  * quiet again; when no control matches, the page is read as it is, for the parser to judge.
  */
-export type RenderText = (url: string, opts?: { waitFor?: string; click?: string }) => Promise<string>;
+export type RenderText = (url: string, opts?: { waitFor?: string; click?: string; steps?: Step[] }) => Promise<string>;
+
+/**
+ * What a visitor does on a page after it has settled, in order (D-176): `click` a control (a
+ * cinema in a picker, a date), or `tap` each control matching a selector and note the address
+ * each tap would open under the path `capture`, without opening it: the request is cancelled before
+ * it leaves the browser. What each `tap` step found is added to the HTML as a
+ * `<script type="application/json" data-sinima-taps="<label>">` block of `{ text, href }`.
+ */
+export type Step = { click: string } | { tap: string; capture: string; label: string };
+export type Tapped = { text: string; href: string };
 
 /** What the rules need from one browser tab. The real one is below; tests use a fake. */
 export type BrowserPage = {
@@ -26,7 +36,9 @@ export type BrowserPage = {
   /** Waits until `selector` is on the page, or with none until the network has been quiet a moment. */
   settle: (selector: string | null, timeoutMs: number) => Promise<void>;
   /** Clicks the first control matching `selector`, marked, and waits for the network to go quiet; false when there is none. */
-  click: (selector: string, timeoutMs: number) => Promise<boolean>;
+  click: (selector: string, timeoutMs: number, force?: boolean) => Promise<boolean>;
+  /** Taps each enabled control matching `selector`, noting the same-site address under `capture` each tap would open, unopened. */
+  tapAll: (selector: string, capture: string, timeoutMs: number) => Promise<Tapped[]>;
   html: () => Promise<string>;
   close: () => Promise<void>;
 };
@@ -56,7 +68,12 @@ export function politeBrowser(options: (PoliteOptions | { rules: PoliteRules }) 
         if (status < 200 || status >= 300) throw refusal(url, status);
         await page.settle(opts.waitFor ?? null, PAGE_TIMEOUT_MS);
         if (opts.click !== undefined) await page.click(opts.click, PAGE_TIMEOUT_MS);
-        return await page.html();
+        let found = "";
+        for (const step of opts.steps ?? []) {
+          if ("click" in step) await page.click(step.click, PAGE_TIMEOUT_MS, true);
+          else found += `<script type="application/json" data-sinima-taps="${step.label}">${JSON.stringify(await page.tapAll(step.tap, step.capture, PAGE_TIMEOUT_MS)).replace(/</g, "\\u003c")}</script>`;
+        }
+        return (await page.html()) + found;
       }
     } finally {
       await page.close();
@@ -75,6 +92,8 @@ export function politeBrowser(options: (PoliteOptions | { rules: PoliteRules }) 
 /** After a click: time for the request it starts to begin, then how long the network must stay quiet. */
 const CLICK_GRACE_MS = 300;
 const QUIET_MS = 500;
+/** How long a tap has to ask for the page it opens before it is taken as opening none. */
+const TAP_WAIT_MS = 2500;
 
 /** What a visitor's eye needs and a listing does not: never downloaded. */
 const BLOCKED = new Set(["image", "font", "media"]);
@@ -137,8 +156,20 @@ async function chromiumPage(page: Page): Promise<BrowserPage> {
     }
   }
 
+  // While `tapAll` runs: same-site requests under this path are noted and answered here, never sent.
+  let capture: { path: string; seen: string[] } | null = null;
+  let site: string | null = null; // the origin of the page asked for, kept after it has loaded
   await page.route("**/*", async (route, request) => {
     if (BLOCKED.has(request.resourceType())) return route.abort();
+    if (capture !== null && site !== null) {
+      const url = new URL(request.url());
+      if (url.origin === site && url.pathname.startsWith(capture.path)) {
+        capture.seen.push(url.pathname);
+        // Answered here with 204, never sent: a 204 leaves the page where it is (an aborted
+        // navigation would swap it for an error page and lose the next time to tap).
+        return route.fulfill({ status: 204, body: "" });
+      }
+    }
     if (request.isNavigationRequest() && request.frame() === page.mainFrame()) {
       if (asked !== null && sameUrl(request.url(), asked)) return openOnce(route);
       // The page moving itself somewhere else by script: we read only the page we asked for.
@@ -150,6 +181,7 @@ async function chromiumPage(page: Page): Promise<BrowserPage> {
   return {
     async open(url, timeoutMs) {
       asked = url;
+      site = new URL(url).origin;
       answer = null;
       failure = null;
       try {
@@ -165,13 +197,29 @@ async function chromiumPage(page: Page): Promise<BrowserPage> {
       if (selector === null) await page.waitForLoadState("networkidle", { timeout: timeoutMs });
       else await page.waitForSelector(selector, { state: "attached", timeout: timeoutMs });
     },
-    async click(selector, timeoutMs) {
+    async click(selector, timeoutMs, force = false) {
       const control = page.locator(selector).first();
       if ((await control.count()) === 0) return false;
       await control.evaluate((element) => element.setAttribute("data-sinima-clicked", ""));
-      await control.click({ timeout: timeoutMs });
+      await control.click({ timeout: timeoutMs, force });
       await quiet(timeoutMs);
       return true;
+    },
+    async tapAll(selector, path, timeoutMs) {
+      const controls = page.locator(selector);
+      const found: Tapped[] = [];
+      for (let i = 0; i < (await controls.count()); i += 1) {
+        const control = controls.nth(i);
+        if (await control.isDisabled()) continue; // a showing that has started, or is sold out
+        capture = { path, seen: [] };
+        await control.dispatchEvent("click");
+        const deadline = Date.now() + Math.min(timeoutMs, TAP_WAIT_MS);
+        while (capture.seen.length === 0 && Date.now() < deadline) await page.waitForTimeout(50);
+        const href = capture.seen[0];
+        capture = null;
+        if (href !== undefined) found.push({ text: (await control.innerText()).replace(/\s+/g, " ").trim(), href });
+      }
+      return found;
     },
     html: () => page.content(),
     close: () => page.close(),

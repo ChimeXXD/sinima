@@ -10,7 +10,7 @@ import { chromiumLauncher, politeBrowser, type BrowserPage, type Launcher } from
 const UA = "SinimaBot/0.1 (+https://github.com/ChimeXXD/sinima)";
 
 /** `tabs`: what the page shows after a control (by selector) is clicked. */
-type FakePage = { status: number; location?: string; html?: string; tabs?: Record<string, string> };
+type FakePage = { status: number; location?: string; html?: string; tabs?: Record<string, string>; taps?: Record<string, { text: string; href: string }[]> };
 
 /** A fake browser and clock: records each page opened, each wait and what was launched. */
 function fakeBrowser(pages: Record<string, FakePage>, robots: Record<string, { status: number; body: string }> = {}) {
@@ -42,13 +42,18 @@ function fakeBrowser(pages: Record<string, FakePage>, robots: Record<string, { s
             events.push({ what: `settle ${selector}`, url: "", at: clock });
             timeouts.push(timeoutMs);
           },
-          async click(selector, timeoutMs) {
-            events.push({ what: `click ${selector}`, url: "", at: clock });
+          async click(selector, timeoutMs, force) {
+            events.push({ what: `click${force ? "!" : ""} ${selector}`, url: "", at: clock });
             timeouts.push(timeoutMs);
             const after = shown?.tabs?.[selector];
             if (after === undefined) return false;
             shown = { ...shown!, html: after };
             return true;
+          },
+          async tapAll(selector, capture, timeoutMs) {
+            events.push({ what: `tap ${selector} ${capture}`, url: "", at: clock });
+            timeouts.push(timeoutMs);
+            return shown?.taps?.[selector] ?? [];
           },
           async html() {
             return shown?.html ?? "";
@@ -116,6 +121,17 @@ describe("politeBrowser", () => {
     // No such control on the page (no tab for that day): the page as it is, for the parser to judge.
     expect(await render("https://sky.example/showtimes", { click: "button:text-is('Nov 21st')" })).toBe("today");
     expect(net.opened()).toEqual(["https://sky.example/showtimes", "https://sky.example/showtimes"]);
+    await render.close();
+  });
+
+  it("runs a visitor's steps in order: clicks, then taps each time and adds what each tap would open (D-176)", async () => {
+    const film = "https://web.vivacinemas.com/movies/039f28cf";
+    const fake = fakeBrowser({ [film]: { status: 200, html: "<main>film</main>", taps: { "section button": [{ text: "11:15 AM Screen 3", href: "/book/b05cc3a0" }] } } });
+    const render = fake.make();
+    const html = await render(film, { steps: [{ click: 'text="Viva Ikeja"' }, { click: 'text="Sat 21"' }, { tap: "section button", capture: "/book/", label: "2026-11-21" }] });
+    expect(fake.events.map((e) => e.what).filter((w) => !w.startsWith("fetch") && w !== "open")).toEqual(["settle null", 'click! text="Viva Ikeja"', 'click! text="Sat 21"', "tap section button /book/"]);
+    expect(html).toBe('<main>film</main><script type="application/json" data-sinima-taps="2026-11-21">[{"text":"11:15 AM Screen 3","href":"/book/b05cc3a0"}]</script>');
+    expect(fake.opened()).toEqual([film]);
     await render.close();
   });
 
@@ -214,6 +230,37 @@ describe.skipIf(!existsSync(chromiumPath))("politeBrowser with Chromium (local s
     const render = politeBrowser({ userAgent: UA, minGapMs: 0, launcher: chromiumLauncher });
     try {
       expect(await render(`http://127.0.0.1:${port}/showtimes`, { waitFor: "#times li" })).toContain("11:15 AM");
+    } finally {
+      await render.close();
+      await new Promise((done) => server.close(done));
+    }
+  }, 60_000);
+
+  // Viva's and Nova's film pages (D-176): a time tapped opens /book/<showing>; the reader notes that
+  // address and cancels the request, so the booking page is never asked for. A past time is disabled.
+  it("taps each time and notes the booking address it would open, without the request reaching the site", async () => {
+    const seen: string[] = [];
+    const server = createServer((request: IncomingMessage, response) => {
+      const path = request.url ?? "/";
+      seen.push(path);
+      if (path === "/robots.txt") return response.end("User-agent: *\nAllow: /");
+      if (path === "/movies/f1")
+        return response.end(
+          `<!doctype html><section><h3>Viva Ikeja</h3><button disabled>11:15 AM Screen 3</button><button onclick="location.href='/book/b2'">2:00 PM Screen 2</button><button onclick="fetch('/book/b3?_rsc=1')">4:50 PM Screen 2</button></section>`,
+        );
+      response.writeHead(404).end("not here");
+    });
+    await new Promise<void>((done) => server.listen(0, "127.0.0.1", done));
+    const port = (server.address() as AddressInfo).port;
+    const render = politeBrowser({ userAgent: UA, minGapMs: 0, launcher: chromiumLauncher });
+    try {
+      const html = await render(`http://127.0.0.1:${port}/movies/f1`, { waitFor: "section", steps: [{ tap: "section button", capture: "/book/", label: "today" }] });
+      const block = /data-sinima-taps="today">(.*?)<\/script>/.exec(html)?.[1];
+      expect(JSON.parse(block!)).toEqual([
+        { text: "2:00 PM Screen 2", href: "/book/b2" },
+        { text: "4:50 PM Screen 2", href: "/book/b3" },
+      ]);
+      expect(seen.some((path) => path.startsWith("/book/"))).toBe(false);
     } finally {
       await render.close();
       await new Promise((done) => server.close(done));
