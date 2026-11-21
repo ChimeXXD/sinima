@@ -48,7 +48,7 @@ try {
       let text = "";
       try {
         await page.goto(url, { waitUntil: "domcontentloaded", timeout: 45000 });
-        await page.waitForTimeout(6000);
+        await page.waitForTimeout(process.argv.includes("--slow") ? 15000 : 6000);
         text = await page.evaluate(() => document.body.innerText);
       } catch (e) { text = `ERROR ${(e as Error).message.split("\n")[0]}`; }
       await page.close();
