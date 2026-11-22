@@ -181,33 +181,6 @@
       ],
       "checkedAt": "2026-11-16T22:32:15Z"
     },
-    "resident-evil": {
-      "tmdbId": 1423191,
-      "tmdbTitle": "Resident Evil",
-      "runtimeMin": 94,
-      "posterPath": "/gAgWJhUSQWCgtKR8170nMkYlBda.jpg",
-      "trailerKey": "mNd1gb19A-c",
-      "keywordIds": [
-        1533,
-        4884,
-        9744,
-        10349,
-        11181,
-        10794,
-        12377,
-        41645,
-        50009,
-        161184,
-        186565,
-        188839,
-        188957,
-        283085,
-        325770,
-        360949,
-        388461
-      ],
-      "checkedAt": "2026-11-16T22:32:15Z"
-    },
     "spider-man-brand-new-day": {
       "tmdbId": 969681,
       "tmdbTitle": "Spider-Man: Brand New Day",
@@ -305,6 +278,22 @@
       ],
       "checkedAt": "2026-11-18T15:25:48Z"
     },
+    "verity": {
+      "tmdbId": 1283515,
+      "tmdbTitle": "Verity",
+      "runtimeMin": 117,
+      "posterPath": "/rmaNMA1seHqpjtnYKzyynFAr1g8.jpg",
+      "trailerKey": "xdPMKhjMSFs",
+      "keywordIds": [
+        818,
+        12565,
+        155251,
+        180724,
+        207767,
+        210726
+      ],
+      "checkedAt": "2026-11-16T22:32:15Z"
+    },
     "alahun-the-weaver": {
       "tmdbId": 1755101,
       "tmdbTitle": "Alahun: The Weaver",
@@ -393,19 +382,30 @@
       ],
       "checkedAt": "2026-11-16T22:32:15Z"
     },
-    "verity": {
-      "tmdbId": 1283515,
-      "tmdbTitle": "Verity",
-      "runtimeMin": 117,
-      "posterPath": "/rmaNMA1seHqpjtnYKzyynFAr1g8.jpg",
-      "trailerKey": "xdPMKhjMSFs",
+    "resident-evil": {
+      "tmdbId": 1423191,
+      "tmdbTitle": "Resident Evil",
+      "runtimeMin": 94,
+      "posterPath": "/gAgWJhUSQWCgtKR8170nMkYlBda.jpg",
+      "trailerKey": "mNd1gb19A-c",
       "keywordIds": [
-        818,
-        12565,
-        155251,
-        180724,
-        207767,
-        210726
+        1533,
+        4884,
+        9744,
+        10349,
+        11181,
+        10794,
+        12377,
+        41645,
+        50009,
+        161184,
+        186565,
+        188839,
+        188957,
+        283085,
+        325770,
+        360949,
+        388461
       ],
       "checkedAt": "2026-11-16T22:32:15Z"
     },
