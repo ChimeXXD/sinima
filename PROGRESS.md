@@ -2,6 +2,14 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 22 Nov 2026 (late morning, Lagos) — Viva's and Nova's time buttons no longer hang the reader
+
+- **Found:** the 06:17 refresh gave every Viva and Nova showing its film page (0 exact links on both days) and took 26 of its 30 minutes. Its log: each film page "locator.evaluate: Timeout 30000ms exceeded … waiting for "/book/…" navigation to finish". The time button's page change was answered with a 204, and Playwright waited for a navigation that never finished. CI was also red on the last two pushes: `calFiles.test.ts` called `calFiles()` in a skipped suite's body, which Vitest runs while collecting, and CI's unit step runs before `public/data` exists.
+- **Changed:** `scripts/sources/browser.ts` aborts a captured navigation with "aborted" (a browser's Stop: no error page, nothing waiting), keeps the 204 for other captured requests, and aborts other script navigations the same way. `calFiles.test.ts` reads the files in `beforeAll`.
+- **Checked:** browser + reach tests 39 pass; the film-page test (Sunday's button now a real page change) fails with the old 204 with the live error and passes with the fix (verifier's mutation run). Clean worktree without `public/data`: old calFiles test errors, new one 2 pass and 3 skip; full suite 994 pass there. Live Viva Ikeja at about 11:30: Sunday 18 of 18 exact links, Monday 1 of 18 (17 noted "could not be moved to 2026-11-23", film page kept, none wrong). Code review: one more abort switched to "aborted"; verifier PASS.
+- **Not verified:** why Monday's slide won't light up after Sunday's taps on the live site. A probe at about 11:40 timed out on all four page loads (Viva's back end, max-api-readonly.fusionintel.io, unstable again).
+- **Next:** when Viva answers, probe one film page with and without Sunday's taps to see whether the taps stop the date switch; then fix day two.
+
 ## 22 Nov 2026 (small hours, Lagos) — Viva's and Nova's day-two links went to the wrong showing (D-176)
 
 - **Found:** the published data had 19 Lagos and 12 Abuja /book/ links each serving two showings (Sunday's 3:05 PM linked to Saturday's 3:05 PM booking page). Cause: the film-page date selector wrote `\s` once inside Playwright's quoted regex, which Playwright reads as "s", so no date ever matched; the page stayed on the day it opened on and its times were filed under the next day.
