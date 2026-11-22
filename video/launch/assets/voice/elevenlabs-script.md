@@ -15,6 +15,9 @@ where Chime had said "your friend" (D-178). So take 2 keeps two sounds and lets 
   every time" (the answer).
 - Two sounds only: a sigh at the pile of tabs and a laugh at "Happy Dunesday".
 - "Seenima" is spelt the way it is said, so the voice doesn't say "SIN-ima". The captions keep "Sinima".
+- Lagos and Abuja the way Nigerians say them (Chime, 22 Nov 2026: take 1 said "LAH-gos"): "Laygoss" is
+  LAY-goss, "Abooja" is ah-BOO-ja. If either still comes out wrong, swap in Eleven v4's phonetic
+  spelling between slashes: `/ˈleɪɡɒs/` for Lagos, `/aˈbudʒa/` for Abuja.
 
 ## Paste this into ElevenLabs (one block)
 
@@ -35,7 +38,7 @@ Found one? Book it straight on the cinema's own site.
 
 Popcorn's on you, though.
 
-Lagos… and yes, Abuja too.
+Laygoss… and yes, Abooja too.
 
 And December eighteenth? Dune AND Doomsday. Same day.
 
@@ -56,7 +59,7 @@ Seenima dot com dot N-G. It's free… no sign-up.
 | v06 | 20.9 s | the Stay chip lands | [playful] Oh, and | Oh, and (no tag) |
 | v07 | 24.9 s | Book on Filmhouse's site | same | same |
 | v07b | 31.7 s | after booking | [chuckles] Popcorn's on you, though. | no tag |
-| v08 | 32.95 s | Lagos peels to Abuja | same | same |
+| v08 | 32.95 s | Lagos peels to Abuja | Lagos… and yes, Abuja too. | Laygoss… and yes, Abooja too. |
 | v09 | 36.6 s | Dune and Doomsday lift out | [excited, hushed] | no tag; "AND" still stressed |
 | v09b | 39.6 s | 18 DEC stamped | [laughs] kept | [laughs] kept |
 | v10 | 41.6 s | end card | [warm, slower] | no tag |
