@@ -24,9 +24,11 @@ export type RenderText = (url: string, opts?: { waitFor?: string; click?: string
  * cinema in a picker, a date), or `tap` each control matching a selector and note the address
  * each tap would open under the path `capture`, without opening it: the request is cancelled before
  * it leaves the browser. What each `tap` step found is added to the HTML as a
- * `<script type="application/json" data-sinima-taps="<label>">` block of `{ text, href }`.
+ * `<script type="application/json" data-sinima-taps="<label>">` block of `{ text, href }`. A `tap`
+ * with `when` taps only while that selector is on the page (the day asked for is the one shown) and
+ * otherwise notes `null`: a date that could not be picked must not lend its label to another day's times.
  */
-export type Step = { click: string } | { tap: string; capture: string; label: string };
+export type Step = { click: string } | { tap: string; capture: string; label: string; when?: string };
 export type Tapped = { text: string; href: string };
 
 /** What the rules need from one browser tab. The real one is below; tests use a fake. */
@@ -37,6 +39,8 @@ export type BrowserPage = {
   settle: (selector: string | null, timeoutMs: number) => Promise<void>;
   /** Clicks the first control matching `selector`, marked, and waits for the network to go quiet; false when there is none. */
   click: (selector: string, timeoutMs: number, force?: boolean) => Promise<boolean>;
+  /** Whether anything on the page matches `selector` now. */
+  has: (selector: string) => Promise<boolean>;
   /** Taps each enabled control matching `selector`, noting the same-site address under `capture` each tap would open, unopened. */
   tapAll: (selector: string, capture: string, timeoutMs: number) => Promise<Tapped[]>;
   html: () => Promise<string>;
@@ -71,7 +75,10 @@ export function politeBrowser(options: (PoliteOptions | { rules: PoliteRules }) 
         let found = "";
         for (const step of opts.steps ?? []) {
           if ("click" in step) await page.click(step.click, PAGE_TIMEOUT_MS, true);
-          else found += `<script type="application/json" data-sinima-taps="${step.label}">${JSON.stringify(await page.tapAll(step.tap, step.capture, PAGE_TIMEOUT_MS)).replace(/</g, "\\u003c")}</script>`;
+          else {
+            const taps = step.when === undefined || (await page.has(step.when)) ? await page.tapAll(step.tap, step.capture, PAGE_TIMEOUT_MS) : null;
+            found += `<script type="application/json" data-sinima-taps="${step.label}">${JSON.stringify(taps).replace(/</g, "\\u003c")}</script>`;
+          }
         }
         return (await page.html()) + found;
       }
@@ -156,15 +163,16 @@ async function chromiumPage(page: Page): Promise<BrowserPage> {
     }
   }
 
-  // While `tapAll` runs: same-site requests under this path are noted and answered here, never sent.
-  let capture: { path: string; seen: string[] } | null = null;
+  // Once `tapAll` has run: same-site requests under its path are answered here, never sent, and noted
+  // while a tap waits for its own (`seen`); one arriving later is still never sent, and noted nowhere.
+  let capture: { path: string; seen: string[] | null } | null = null;
   let site: string | null = null; // the origin of the page asked for, kept after it has loaded
   await page.route("**/*", async (route, request) => {
     if (BLOCKED.has(request.resourceType())) return route.abort();
     if (capture !== null && site !== null) {
       const url = new URL(request.url());
       if (url.origin === site && url.pathname.startsWith(capture.path)) {
-        capture.seen.push(url.pathname);
+        capture.seen?.push(url.pathname);
         // Answered here with 204, never sent: a 204 leaves the page where it is (an aborted
         // navigation would swap it for an error page and lose the next time to tap).
         return route.fulfill({ status: 204, body: "" });
@@ -205,19 +213,23 @@ async function chromiumPage(page: Page): Promise<BrowserPage> {
       await quiet(timeoutMs);
       return true;
     },
+    has: async (selector) => (await page.locator(selector).count()) > 0,
     async tapAll(selector, path, timeoutMs) {
       const controls = page.locator(selector);
       const found: Tapped[] = [];
       for (let i = 0; i < (await controls.count()); i += 1) {
         const control = controls.nth(i);
         if (await control.isDisabled()) continue; // a showing that has started, or is sold out
-        capture = { path, seen: [] };
+        const seen: string[] = [];
+        capture = { path, seen };
         await control.dispatchEvent("click");
         const deadline = Date.now() + Math.min(timeoutMs, TAP_WAIT_MS);
-        while (capture.seen.length === 0 && Date.now() < deadline) await page.waitForTimeout(50);
-        const href = capture.seen[0];
-        capture = null;
-        if (href !== undefined) found.push({ text: (await control.innerText()).replace(/\s+/g, " ").trim(), href });
+        while (seen.length === 0 && Date.now() < deadline) await page.waitForTimeout(50);
+        capture = { path, seen: null };
+        // A tap that opened nothing in time ends the step: its page asked for late would be taken
+        // for the next tap's (the verifier, 22 Nov 2026).
+        if (seen[0] === undefined) break;
+        found.push({ text: (await control.innerText()).replace(/\s+/g, " ").trim(), href: seen[0] });
       }
       return found;
     },

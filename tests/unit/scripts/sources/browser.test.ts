@@ -3,14 +3,15 @@ import { createServer, type IncomingMessage } from "node:http";
 import type { AddressInfo } from "node:net";
 import { describe, expect, it } from "vitest";
 import { chromiumLauncher, politeBrowser, type BrowserPage, type Launcher } from "../../../../scripts/sources/browser.ts";
+import { filmDateSelector, pickedDateSelector } from "../../../../scripts/sources/reach.ts";
 
 // The headless reader for listings built by script (D-77): the same rules as polite.ts. Our real
 // bot name (never a browser's), robots.txt checked before the page is opened, 5 s between page
 // loads to a host, 30 s to answer, a refusal is final and a redirect to another site is refused.
 const UA = "SinimaBot/0.1 (+https://github.com/ChimeXXD/sinima)";
 
-/** `tabs`: what the page shows after a control (by selector) is clicked. */
-type FakePage = { status: number; location?: string; html?: string; tabs?: Record<string, string>; taps?: Record<string, { text: string; href: string }[]> };
+/** `tabs`: what the page shows after a control (by selector) is clicked. `shows`: the selectors on the page as it opens. */
+type FakePage = { status: number; location?: string; html?: string; tabs?: Record<string, string>; taps?: Record<string, { text: string; href: string }[]>; shows?: string[] };
 
 /** A fake browser and clock: records each page opened, each wait and what was launched. */
 function fakeBrowser(pages: Record<string, FakePage>, robots: Record<string, { status: number; body: string }> = {}) {
@@ -49,6 +50,10 @@ function fakeBrowser(pages: Record<string, FakePage>, robots: Record<string, { s
             if (after === undefined) return false;
             shown = { ...shown!, html: after };
             return true;
+          },
+          async has(selector) {
+            events.push({ what: `has ${selector}`, url: "", at: clock });
+            return shown?.shows?.includes(selector) ?? false;
           },
           async tapAll(selector, capture, timeoutMs) {
             events.push({ what: `tap ${selector} ${capture}`, url: "", at: clock });
@@ -132,6 +137,17 @@ describe("politeBrowser", () => {
     expect(fake.events.map((e) => e.what).filter((w) => !w.startsWith("fetch") && w !== "open")).toEqual(["settle null", 'click! text="Viva Ikeja"', 'click! text="Sat 21"', "tap section button /book/"]);
     expect(html).toBe('<main>film</main><script type="application/json" data-sinima-taps="2026-11-21">[{"text":"11:15 AM Screen 3","href":"/book/b05cc3a0"}]</script>');
     expect(fake.opened()).toEqual([film]);
+    await render.close();
+  });
+
+  // 21 Nov 2026: Viva's page could not be moved to Sunday, so Saturday's times were noted as Sunday's.
+  it("taps a step's controls only while its `when` is on the page, and otherwise notes null", async () => {
+    const film = "https://web.vivacinemas.com/movies/039f28cf";
+    const fake = fakeBrowser({ [film]: { status: 200, html: "<main>film</main>", shows: ["picked Sat"], taps: { "section button": [{ text: "11:15 AM Screen 3", href: "/book/b05cc3a0" }] } } });
+    const render = fake.make();
+    const html = await render(film, { steps: [{ tap: "section button", capture: "/book/", label: "2026-11-21", when: "picked Sat" }, { click: "Sun" }, { tap: "section button", capture: "/book/", label: "2026-11-22", when: "picked Sun" }] });
+    expect(fake.events.map((e) => e.what).filter((w) => w.startsWith("tap"))).toEqual(["tap section button /book/"]);
+    expect(html).toBe('<main>film</main><script type="application/json" data-sinima-taps="2026-11-21">[{"text":"11:15 AM Screen 3","href":"/book/b05cc3a0"}]</script><script type="application/json" data-sinima-taps="2026-11-22">null</script>');
     await render.close();
   });
 
@@ -261,6 +277,65 @@ describe.skipIf(!existsSync(chromiumPath))("politeBrowser with Chromium (local s
         { text: "4:50 PM Screen 2", href: "/book/b3" },
       ]);
       expect(seen.some((path) => path.startsWith("/book/"))).toBe(false);
+    } finally {
+      await render.close();
+      await new Promise((done) => server.close(done));
+    }
+  }, 60_000);
+
+  // Viva's film page (22 Nov 2026): a strip of date slides ("Sun22 Nov"), the picked one lit yellow, and
+  // a tap on a slide's weekday shows that day's times. With the pattern's backslash single, no date
+  // matched, the page stayed on Sunday, and Sunday's times were noted as Monday's.
+  it("moves a film page to each day before tapping its times, and notes null for a day it cannot pick", async () => {
+    const page = `<!doctype html><div class="swiper"><div class="swiper-slide bg-grad-yellow" data-d="sun"><span>Sun</span><span>22 Nov</span></div><div class="swiper-slide" data-d="mon"><span>Mon</span><span>23 Nov</span></div></div>
+<section><h3>Viva Ikeja</h3><div id="t"></div></section><script>
+const times = { sun: "<button onclick=\\"fetch('/book/s1?_rsc=1')\\">11:15 AM Screen 3</button>", mon: "<button onclick=\\"fetch('/book/m1?_rsc=1')\\">12:05 PM Screen 3</button>" };
+const pick = (d) => { document.querySelectorAll(".swiper-slide").forEach((s) => s.classList.toggle("bg-grad-yellow", s.dataset.d === d)); document.getElementById("t").innerHTML = times[d]; };
+document.querySelectorAll(".swiper-slide span").forEach((span) => (span.onclick = () => pick(span.parentElement.dataset.d)));
+pick("sun");
+</script>`;
+    const server = createServer((request: IncomingMessage, response) => {
+      const path = request.url ?? "/";
+      if (path === "/robots.txt") return response.end("User-agent: *\nAllow: /");
+      if (path === "/movies/f1") return response.end(page);
+      response.writeHead(404).end("not here");
+    });
+    await new Promise<void>((done) => server.listen(0, "127.0.0.1", done));
+    const port = (server.address() as AddressInfo).port;
+    const render = politeBrowser({ userAgent: UA, minGapMs: 0, launcher: chromiumLauncher });
+    const sun = { year: 2026, month: 11, day: 22 };
+    const mon = { year: 2026, month: 11, day: 23 };
+    const tue = { year: 2026, month: 11, day: 24 };
+    const tap = (label: string, day: typeof sun) => ({ tap: "section button", capture: "/book/", label, when: pickedDateSelector(day) });
+    try {
+      const html = await render(`http://127.0.0.1:${port}/movies/f1`, {
+        waitFor: "section button",
+        steps: [{ click: filmDateSelector(sun) }, tap("sun", sun), { click: filmDateSelector(mon) }, tap("mon", mon), { click: filmDateSelector(tue) }, tap("tue", tue)],
+      });
+      const block = (label: string) => JSON.parse(new RegExp(`data-sinima-taps="${label}">(.*?)</script>`).exec(html)![1]!);
+      expect(block("sun")).toEqual([{ text: "11:15 AM Screen 3", href: "/book/s1" }]);
+      expect(block("mon")).toEqual([{ text: "12:05 PM Screen 3", href: "/book/m1" }]);
+      expect(block("tue")).toBeNull();
+    } finally {
+      await render.close();
+      await new Promise((done) => server.close(done));
+    }
+  }, 60_000);
+
+  // A tap that opens nothing in time ends its step: what it asked for late would pass for the next tap's.
+  it("stops tapping a step after a tap that opens nothing", async () => {
+    const server = createServer((request: IncomingMessage, response) => {
+      const path = request.url ?? "/";
+      if (path === "/robots.txt") return response.end("User-agent: *\nAllow: /");
+      if (path === "/movies/f1") return response.end(`<!doctype html><section><button>11:15 AM Screen 3</button><button onclick="fetch('/book/b2?_rsc=1')">2:00 PM Screen 2</button></section>`);
+      response.writeHead(404).end("not here");
+    });
+    await new Promise<void>((done) => server.listen(0, "127.0.0.1", done));
+    const port = (server.address() as AddressInfo).port;
+    const render = politeBrowser({ userAgent: UA, minGapMs: 0, launcher: chromiumLauncher });
+    try {
+      const html = await render(`http://127.0.0.1:${port}/movies/f1`, { waitFor: "section", steps: [{ tap: "section button", capture: "/book/", label: "today" }] });
+      expect(/data-sinima-taps="today">(.*?)<\/script>/.exec(html)?.[1]).toBe("[]");
     } finally {
       await render.close();
       await new Promise((done) => server.close(done));

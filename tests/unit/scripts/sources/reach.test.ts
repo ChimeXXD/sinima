@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { bookingLinks, filmDateSelector, parseReachDay, parseReachTabs, reachDayUrl, reachTabSelector, readReach } from "../../../../scripts/sources/reach";
+import { bookingLinks, filmDateSelector, parseReachDay, pickedDateSelector, parseReachTabs, reachDayUrl, reachTabSelector, readReach } from "../../../../scripts/sources/reach";
 
 // The Reach Cinema platform (Fusion Intelligence, D-125): Ozone, Viva and Nova show each day on its
 // own address (?cinemaId=…&date=Tue+Nov+17+2026) with the day as the highlighted slide; Sky shows
@@ -183,7 +183,7 @@ describe("bookingLinks: each showing's own /book/ page, found by tapping its tim
     expect(two.bookingUrl).toBe("https://web.vivacinemas.com/book/b05cc3a0-9cf9-48ce-b8a7-fdbd9f99bc87");
     expect(late.bookingUrl).toBe(film);
     expect(asked).toHaveLength(1); // one film page, opened once
-    expect(asked[0]!.opts).toEqual({ steps: [{ click: 'text="Viva Ikeja"' }, { click: filmDateSelector(day) }, { tap: 'section:has(:text-is("Viva Ikeja")) button', capture: "/book/", label: "2026-11-21" }] });
+    expect(asked[0]!.opts).toEqual({ steps: [{ click: 'text="Viva Ikeja"' }, { click: filmDateSelector(day) }, { tap: 'section:has(:text-is("Viva Ikeja")) button', capture: "/book/", label: "2026-11-21", when: pickedDateSelector(day) }] });
     expect(notes).toEqual([]);
   });
   it("keeps the film page and notes it when the film page cannot be read", async () => {
@@ -193,5 +193,39 @@ describe("bookingLinks: each showing's own /book/ page, found by tapping its tim
     await bookingLinks(renderText, [{ cinemaId: "viva-ikeja", name: "Viva Ikeja", origin: "https://web.vivacinemas.com", day, showings: [two] }], notes);
     expect(two.bookingUrl).toBe(film);
     expect(notes[0]).toMatch(/viva-ikeja: .* kept as the link \(timed out\)/);
+  });
+  // 21 Nov 2026: Sunday's date could not be picked, so the page stayed on Saturday and Saturday's
+  // 3:05 PM booking page went to Sunday's 3:05 PM showing too. A booking page is one showing's.
+  it("keeps the film page, with a note, for a day the film page could not be moved to", async () => {
+    const two = showing("2:00 PM", "2026-11-21T13:00:00Z");
+    const renderText = Object.assign(async () => `<script type="application/json" data-sinima-taps="2026-11-21">null</script>`, { close: async () => {} });
+    const notes: string[] = [];
+    await bookingLinks(renderText, [{ cinemaId: "viva-ikeja", name: "Viva Ikeja", origin: "https://web.vivacinemas.com", day, showings: [two] }], notes);
+    expect(two.bookingUrl).toBe(film);
+    expect(notes).toEqual([`viva-ikeja: ${film} could not be moved to 2026-11-21; its showings keep the film page`]);
+  });
+  it("gives a booking page found for two showings to neither", async () => {
+    const sun = { year: 2026, month: 11, day: 22 };
+    const sat = showing("3:05 PM", "2026-11-21T14:05:00Z");
+    const sunday = showing("3:05 PM", "2026-11-22T14:05:00Z");
+    const tap = `[{"text":"03:05 PM Screen 2","href":"/book/7530b3ca"}]`;
+    const renderText = Object.assign(async () => `<script type="application/json" data-sinima-taps="2026-11-21">${tap}</script><script type="application/json" data-sinima-taps="2026-11-22">${tap}</script>`, { close: async () => {} });
+    const notes: string[] = [];
+    await bookingLinks(renderText, [{ cinemaId: "viva-ikeja", name: "Viva Ikeja", origin: "https://web.vivacinemas.com", day, showings: [sat] }, { cinemaId: "viva-ikeja", name: "Viva Ikeja", origin: "https://web.vivacinemas.com", day: sun, showings: [sunday] }], notes);
+    expect(sat.bookingUrl).toBe(film);
+    expect(sunday.bookingUrl).toBe(film);
+    expect(notes).toEqual(["viva-ikeja: https://web.vivacinemas.com/book/7530b3ca was found for 2 showings; each keeps its film page"]);
+  });
+  it("keeps the film page for a showing given two booking pages", async () => {
+    const two = showing("2:00 PM", "2026-11-21T13:00:00Z");
+    const taps = `[{"text":"02:00 PM Screen 1","href":"/book/aaaa"},{"text":"02:00 PM Screen 2","href":"/book/bbbb"}]`;
+    const renderText = Object.assign(async () => `<script type="application/json" data-sinima-taps="2026-11-21">${taps}</script>`, { close: async () => {} });
+    await bookingLinks(renderText, [{ cinemaId: "viva-ikeja", name: "Viva Ikeja", origin: "https://web.vivacinemas.com", day, showings: [two] }], []);
+    expect(two.bookingUrl).toBe(film);
+  });
+  it("names the date slide to tap and the one that shows it picked", () => {
+    const mon = { year: 2026, month: 11, day: 23 };
+    expect(filmDateSelector(mon)).toBe('.swiper-slide:text-matches("^Mon\\\\s*0?23\\\\s*Nov$", "i") > *');
+    expect(pickedDateSelector(mon)).toBe('.swiper-slide.bg-grad-yellow:text-matches("^Mon\\\\s*0?23\\\\s*Nov$", "i")');
   });
 });

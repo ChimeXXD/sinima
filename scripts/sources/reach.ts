@@ -99,13 +99,24 @@ export function parseReachTabs(html: string, options: Options): RawShowing[] {
 /** At most this many film pages a cinema a run for booking links (D-176): Nova Lagos showed 13 films on 21 Nov. */
 export const MAX_FILM_PAGES = 25;
 
-/** The date a visitor taps on a film page: "Sat21 Nov" (the weekday, then the day and month). */
-export const filmDateSelector = (day: Day) => `:text-matches("^${shortWeekday(day)}\\s*0?${day.day}\\s*${shortMonth(day)}$", "i")`;
+/**
+ * A film page's date slide reads "Mon23 Nov" (the weekday, then the day and month). Inside a quoted
+ * selector Playwright reads `\s` as "s", so the pattern's backslash is doubled: with one, no date
+ * matched, the page stayed on the day it opened on, and that day's times went to the next day's
+ * showings (22 Nov 2026).
+ */
+const slideDate = (day: Day) => `"^${shortWeekday(day)}\\\\s*0?${day.day}\\\\s*${shortMonth(day)}$", "i"`;
 
-/** What each `tap` step found on a film page: day (YYYY-MM-DD) -> taps. */
-export function tapsOf(html: string): Map<string, Tapped[]> {
-  const found = new Map<string, Tapped[]>();
-  for (const [, label, json] of html.matchAll(/<script type="application\/json" data-sinima-taps="([^"]+)">(.*?)<\/script>/gs)) found.set(label!, JSON.parse(json!) as Tapped[]);
+/** The date a visitor taps on a film page: the slide's first line, the weekday. */
+export const filmDateSelector = (day: Day) => `.swiper-slide:text-matches(${slideDate(day)}) > *`;
+
+/** The date slide when it is the one picked (lit yellow, as the day a page opens on is). */
+export const pickedDateSelector = (day: Day) => `.swiper-slide.bg-grad-yellow:text-matches(${slideDate(day)})`;
+
+/** What each `tap` step found on a film page: day (YYYY-MM-DD) -> taps, or null when that day could not be picked. */
+export function tapsOf(html: string): Map<string, Tapped[] | null> {
+  const found = new Map<string, Tapped[] | null>();
+  for (const [, label, json] of html.matchAll(/<script type="application\/json" data-sinima-taps="([^"]+)">(.*?)<\/script>/gs)) found.set(label!, JSON.parse(json!) as Tapped[] | null);
   return found;
 }
 
@@ -115,6 +126,11 @@ export function tapsOf(html: string): Map<string, Tapped[]> {
  * /book/<showing>. Each film's page is opened once (one page load, paced like any other); the times
  * are tapped and each address noted unopened (politeBrowser's `tap`). A showing whose time is found
  * gets that address; any other keeps its film page. A film page that fails leaves a note, not a failed read.
+ *
+ * A day's times are tapped only while the page shows that day picked: on 21 Nov a date that could
+ * not be picked left the page on the day before, and its times went to the next day's showings at
+ * the same hour. A booking page is one showing's, so one found for two showings goes to neither,
+ * and a showing given two booking pages keeps its film page.
  */
 export async function bookingLinks(renderText: RenderText, read: { cinemaId: string; name: string; origin: string; day: Day; showings: RawShowing[] }[], notes: string[]): Promise<void> {
   for (const cinemaId of new Set(read.map((entry) => entry.cinemaId))) {
@@ -122,10 +138,11 @@ export async function bookingLinks(renderText: RenderText, read: { cinemaId: str
     const { name, origin } = mine[0]!;
     const films = [...new Set(mine.flatMap((entry) => entry.showings.map((showing) => showing.bookingUrl!)))];
     if (films.length > MAX_FILM_PAGES) notes.push(`${cinemaId}: ${films.length - MAX_FILM_PAGES} films over the cap keep their film page as the link`);
+    const found = new Map<RawShowing, string | null>(); // null: two booking pages for one showing, so neither
     for (const film of films.slice(0, MAX_FILM_PAGES)) {
       const days = mine.filter((entry) => entry.showings.some((showing) => showing.bookingUrl === film));
-      const steps = [{ click: `text="${name}"` }, ...days.flatMap(({ day }) => [{ click: filmDateSelector(day) }, { tap: `section:has(:text-is("${name}")) button`, capture: "/book/", label: isoDay(day) }])];
-      let taps: Map<string, Tapped[]>;
+      const steps = [{ click: `text="${name}"` }, ...days.flatMap(({ day }) => [{ click: filmDateSelector(day) }, { tap: `section:has(:text-is("${name}")) button`, capture: "/book/", label: isoDay(day), when: pickedDateSelector(day) }])];
+      let taps: Map<string, Tapped[] | null>;
       try {
         taps = tapsOf(await renderText(film, { steps }));
       } catch (error) {
@@ -133,14 +150,22 @@ export async function bookingLinks(renderText: RenderText, read: { cinemaId: str
         continue;
       }
       for (const { day, showings } of days) {
+        if (taps.get(isoDay(day)) === null) notes.push(`${cinemaId}: ${film} could not be moved to ${isoDay(day)}; its showings keep the film page`);
         for (const tap of taps.get(isoDay(day)) ?? []) {
           const time = clock12(/\d{1,2}:\d{2}\s*[AP]M/i.exec(tap.text)?.[0] ?? "");
           if (!time) continue;
           const startsAt = showStart(day, time);
-          for (const showing of showings) if (showing.bookingUrl === film && showing.startsAt === startsAt) showing.bookingUrl = `${origin}${tap.href}`;
+          for (const showing of showings) if (showing.bookingUrl === film && showing.startsAt === startsAt) {
+            const href = `${origin}${tap.href}`;
+            found.set(showing, found.has(showing) && found.get(showing) !== href ? null : href);
+          }
         }
       }
     }
+    const uses = new Map<string, number>();
+    for (const href of found.values()) if (href !== null) uses.set(href, (uses.get(href) ?? 0) + 1);
+    for (const [showing, href] of found) if (href !== null && uses.get(href) === 1) showing.bookingUrl = href;
+    for (const [href, count] of uses) if (count > 1) notes.push(`${cinemaId}: ${href} was found for ${count} showings; each keeps its film page`);
   }
 }
 

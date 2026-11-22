@@ -2,6 +2,14 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 22 Nov 2026 (small hours, Lagos) — Viva's and Nova's day-two links went to the wrong showing (D-176)
+
+- **Found:** the published data had 19 Lagos and 12 Abuja /book/ links each serving two showings (Sunday's 3:05 PM linked to Saturday's 3:05 PM booking page). Cause: the film-page date selector wrote `\s` once inside Playwright's quoted regex, which Playwright reads as "s", so no date ever matched; the page stayed on the day it opened on and its times were filed under the next day.
+- **Changed:** `scripts/sources/reach.ts` doubles the backslash; a day's times are tapped only while its slide is the picked one (`when: pickedDateSelector`), else the day is noted ("could not be moved to …") and keeps the film page; a booking page found for two showings, or two pages for one showing, goes to none. `scripts/sources/browser.ts`: `Step.when`, `BrowserPage.has`, an unpicked day writes `null`; a tap that opens nothing ends its step, and a late /book/ request is still answered here, never sent. Still one film-page load per film (a page per film per day would add about 90 loads to a 9.6-minute job with a 30-minute limit).
+- **Checked:** reach + browser tests 39 pass, including a real-Chromium film page (Sunday picked, tap "Mon", no Tuesday): red with the single backslash (`expected null to deeply equal [...]`), green with the fix. Typecheck clean. Live probe at 00:05: on every Viva film page the old selector found no Monday slide (`dateFound: 0`) while the doubled one found it.
+- **Not verified:** a live run of the fixed reader. Viva's and Nova's back end (max-api-readonly.fusionintel.io) stopped answering from about 22:40 to 00:05 and again from 00:08 (five more tries failed by 00:58).
+- **Next:** live-check Viva and Nova for two days once the back end answers; then a refresh to replace the shared links.
+
 ## 20 Nov 2026 (night, Lagos) — Motion reference board (round 9)
 
 - **Asked:** "surf the internet and find out more motion graphics references, so we can copy some elements from them"; "resource websites that have motion graphics templates … won't be bad"; "if I click play, it takes me to the link. So I should be able to play the video on the reference board."
