@@ -123,6 +123,32 @@ https://chimexd.work
 
 ---
 
+## 5. Cozy Ctrl: the UP UP instrumental for the launch video (22 Nov 2026, D-180)
+
+Not about showtimes: the music under the launch video. "UP UP" by Cozy Ctrl and OBM Carter (2025, ℗ sabisounds / 1705 Wayv Music). Address from Cozy Ctrl's Instagram bio (@cozyctrl) and SoundCloud: cozyenquiry@gmail.com. Instagram also names management (@umehzingrace). An Instagram DM works too.
+
+**Lines that commit Chime to something (check before sending):** credit and tag in the video and post; use only in the launch video and the case study; send the video before it goes out.
+
+**Subject:** Could I use the UP UP instrumental in a 45-second launch video?
+
+Hi Cozy Ctrl,
+
+I'm Chimezie, a product designer in Lagos. I've built Sinima, a free website that shows every cinema's showtimes in Lagos and Abuja in one place. No ads, no sign-up, and it's open source.
+
+I'm launching it on X on 15 December with a 45-second video, and the beat of UP UP is exactly the feeling I want under it: calm, Lagos, a night out at the cinema. Would you let me use the instrumental for that video?
+
+- It would be used only in that video, on X and in the project's case study on my portfolio. Not in paid ads, and nothing is sold.
+- You and OBM Carter would be credited in the video and tagged in the post.
+- If you have the instrumental or stems, I'd use those. If the label needs to agree as well, could you point me to the right person?
+
+Happy to send you the video before it goes out.
+
+Thanks,
+Chimezie Ekpendu
+chimexd.work
+
+---
+
 ## Follow-up (one week later, once only)
 
 Hi again. Just checking you saw my note below about listing your showtimes with links to your booking. A quick yes or no is perfect. Thanks, Chimezie.
