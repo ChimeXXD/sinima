@@ -125,7 +125,7 @@ https://chimexd.work
 
 ## 5. Cozy Ctrl: the UP UP instrumental for the launch video (22 Nov 2026, D-180)
 
-Not about showtimes: the music under the launch video. "UP UP" by Cozy Ctrl and OBM Carter (2025, ℗ sabisounds / 1705 Wayv Music). Address from Cozy Ctrl's Instagram bio (@cozyctrl) and SoundCloud: cozyenquiry@gmail.com. Instagram also names management (@umehzingrace). An Instagram DM works too.
+Not about showtimes: the music under the launch video. "UP UP" by Cozy Ctrl and OBM Carter (2025, ℗ sabisounds / 1705 Wayv Music). Cozy Ctrl's Instagram bio (@cozyctrl) and SoundCloud list an enquiries email (not copied here); Instagram also names management (@umehzingrace). An Instagram DM works too.
 
 **Lines that commit Chime to something (check before sending):** credit and tag in the video and post; use only in the launch video and the case study; send the video before it goes out.
 
