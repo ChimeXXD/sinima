@@ -1,73 +1,73 @@
-# Launch film voice-over for ElevenLabs (D-177)
+# Launch film voice-over for ElevenLabs (D-177, D-178)
 
 Chime, 22 Nov 2026: the current read "sounds so AI … there's no human touch"; use ElevenLabs so the voice
 can "laugh, breathe". Same 12 beats and start times as `lines.json`, so the new read drops into the cut.
 
+Take 1 (Jessica, Eleven v4, stability 50, similarity 75) was "kind of better than the last one", but
+"too many emotions or tags … it's like we're forcing it": the opening exhale was off, and it said Tolu
+where Chime had said "your friend" (D-178). So take 2 keeps two sounds and lets the words do the rest.
+
 ## What makes it sound human
 
 - She is a friend telling you about her Friday, not an announcer. Contractions, "like", "oh, and", a
-  sentence that trails off.
+  sentence that trails off. The words and punctuation carry the feeling; tags don't.
 - One phrase repeats and turns: "then another … then another" (the problem) becomes "every showing,
   every time" (the answer).
-- Four sounds, no more: a breath to open, a sigh at the tab pile, a chuckle at popcorn, a laugh at
-  Dunesday. Each one reacts to something on screen. More than that and it sounds performed.
+- Two sounds only: a sigh at the pile of tabs and a laugh at "Happy Dunesday".
 - "Seenima" is spelt the way it is said, so the voice doesn't say "SIN-ima". The captions keep "Sinima".
 
 ## Paste this into ElevenLabs (one block)
 
 ```
-[exhales] Friday. Six-forty. And Tolu goes… "film tonight?"
+Friday. Six-forty. And your friend wants to see a film.
 
 So you check one cinema's site. Then another. [sighs] Then another…
 
-[relieved] Or — you just open Seenima. Every cinema. One place.
+Or — you just open Seenima. Every cinema. One place.
 
 See what's starting near you… like, right now.
 
 Every showing. Every time. Every area.
 
-[playful] Oh, and it tells you if there's a scene after the credits.
+Oh, and it tells you if there's a scene after the credits.
 
 Found one? Book it straight on the cinema's own site.
 
-[chuckles] Popcorn's on you, though.
+Popcorn's on you, though.
 
 Lagos… and yes, Abuja too.
 
-[excited, hushed] And December eighteenth? Dune AND Doomsday. Same day.
+And December eighteenth? Dune AND Doomsday. Same day.
 
 [laughs] Happy Dunesday!
 
-[warm, slower] Seenima dot com dot N-G. It's free… no sign-up.
+Seenima dot com dot N-G. It's free… no sign-up.
 ```
 
 ## Line by line (where each lands in the film)
 
-| Line | Starts at | Beat on screen | Was |
-|---|---|---|---|
-| v01 | 0.4 s | 6:40 PM, Tolu's text | Friday. Six-forty. And your friend wants to see a film. |
-| v02 | 3.5 s | too many cinema tabs | So you open one cinema's site... then another... then another... |
-| v03 | 7.9 s | the tabs fly into the logo | Sinima. Every cinema in Lagos, in one place. |
-| v04 | 11.2 s | Starting soon near you | See what's starting near you, right now. |
-| v05 | 15.5 s | a film's times by area | Every showing. Every time. Every area. |
-| v06 | 20.9 s | the Stay chip lands | It even tells you if there's a scene after the credits. |
-| v07 | 24.9 s | Book on Filmhouse's site | Found one? Book it on the cinema's own site. |
-| v07b | 31.7 s | after booking | Popcorn's on you. |
-| v08 | 32.95 s | Lagos peels to Abuja | Lagos. Abooja. |
-| v09 | 36.6 s | Dune and Doomsday lift out | And December eighteenth? Dune and Doomsday, same day. |
-| v09b | 39.6 s | 18 DEC stamped | Happy Dunesday! |
-| v10 | 41.6 s | end card | Sinima dot com dot N G. Free. No sign-up. |
+| Line | Starts at | Beat on screen | Take 1 | Take 2 |
+|---|---|---|---|---|
+| v01 | 0.4 s | 6:40 PM, the friend's text | [exhales] … And Tolu goes… "film tonight?" | And your friend wants to see a film. |
+| v02 | 3.5 s | too many cinema tabs | [sighs] kept | [sighs] kept |
+| v03 | 7.9 s | the tabs fly into the logo | [relieved] Or — | Or — (no tag) |
+| v04 | 11.2 s | Starting soon near you | same | same |
+| v05 | 15.5 s | a film's times by area | same | same |
+| v06 | 20.9 s | the Stay chip lands | [playful] Oh, and | Oh, and (no tag) |
+| v07 | 24.9 s | Book on Filmhouse's site | same | same |
+| v07b | 31.7 s | after booking | [chuckles] Popcorn's on you, though. | no tag |
+| v08 | 32.95 s | Lagos peels to Abuja | same | same |
+| v09 | 36.6 s | Dune and Doomsday lift out | [excited, hushed] | no tag; "AND" still stressed |
+| v09b | 39.6 s | 18 DEC stamped | [laughs] kept | [laughs] kept |
+| v10 | 41.6 s | end card | [warm, slower] | no tag |
 
 ## Settings
 
-- **Model:** Eleven v4 (ElevenLabs recommends it; v3 takes the same tags).
-- **Voice:** an American woman from the Voice Library whose sample already sounds relaxed and
-  conversational. ElevenLabs warns that a stiff voice may read the tags aloud instead of acting them.
-- **Stability:** start at the default (the middle). If it sounds flat, lower it a notch; if the laughs
-  go over the top, raise it.
+- **Model and voice:** keep take 1's: Eleven v4, Jessica (Playful, Bright, Warm), stability 50,
+  similarity 75. Only the text changed, so any difference is the script.
+- If she still sounds pushed, raise stability a notch (60): steadier, fewer flourishes.
 - Generate the whole block at once, three times, and keep the best take: one take carries the mood
-  from line to line, where separate lines each start cold. Re-generating the same text is free twice
-  within two hours on the website.
+  from line to line, where separate lines each start cold.
 
 ## Then
 
