@@ -1,4 +1,11 @@
-# Launch film voice-over for ElevenLabs, take 3 (D-186)
+# Launch film voice-over for ElevenLabs, take 4 (D-189)
+
+Take 4 (22 Nov 2026, D-189): Chime on take 3, "doesn't explain some things well … You should be like, you check for
+cinemas, film house, Genesis, Viva". The film was slowed to 52 s to make room (D-188); every line now says what
+its moment means. Storyboard over draft 17: `docs/design/reference-board/round14-script.html`. The table below is
+take 3's, on the old 46.2 s film.
+
+## How the script is written (from take 3, D-186)
 
 Chime, 22 Nov 2026, on take 2 placed in the film: "the writing did not go with the visuals … we need a new
 script that will actually go with the visuals." So this script is written from the film, not the other
@@ -11,39 +18,39 @@ only (a sigh at the tabs, a laugh at the stamp), and "Seenima", "Laygoss", "Aboo
 Lagos or Abuja still comes out wrong, Eleven v4's phonetic spelling between slashes: `/ˈleɪɡɒs/`,
 `/aˈbudʒa/`.
 
-## Paste this into ElevenLabs (one block)
+## Paste this into ElevenLabs (one block, take 4)
 
 ```
 Friday. Six-forty. Your friend: "film tonight?"
 
-Filmhouse… Genesis… Viva… [sighs] and on.
+So you start checking: Filmhouse… Genesis… Viva… every cinema's website, one by one. [sighs]
 
-Or — just Seenima. Every cinema. One place.
+Or — just open Seenima. Every cinema's times, in one place.
 
-Tap Lekki. See what's starting soon.
+Tap your area. See what's starting soon.
 
-Late show? Pull the lamp.
+Watching late? Pull the lamp for dark mode.
 
-Pick a film. Every showing, every area… today, or Saturday.
+Pick a film: every showing, by time and area… even Saturday's.
 
-Oh, and — stay after the credits? It tells you.
+Should you stay after the credits? Seenima tells you.
 
-Seven-fifty at Filmhouse? Book it right on their own site.
+Seven-fifty at Filmhouse? Book it right on their own website.
 
 One ticket. Popcorn, obviously.
 
 Booked!
 
-Laygoss… and Abooja too.
+It works in Laygoss… and Abooja too.
 
-Coming soon? Dune AND Doomsday. Same day.
+Coming soon: Dune and Doomsday, the same day.
 
 [laughs] Happy Dunesday!
 
-Seenima dot com dot N-G. Free… no sign-up.
+Seenima dot com dot N-G. Free, with no sign-up.
 ```
 
-## Line by line (film time, what is on screen)
+## Line by line, take 3 (old 46.2 s film times, what is on screen)
 
 | Line | Plays | On screen | Fit |
 |---|---|---|---|
