@@ -285,11 +285,12 @@ describe.skipIf(!existsSync(chromiumPath))("politeBrowser with Chromium (local s
 
   // Viva's film page (22 Nov 2026): a strip of date slides ("Sun22 Nov"), the picked one lit yellow, and
   // a tap on a slide's weekday shows that day's times. With the pattern's backslash single, no date
-  // matched, the page stayed on Sunday, and Sunday's times were noted as Monday's.
+  // matched, the page stayed on Sunday, and Sunday's times were noted as Monday's. Sunday's time opens its
+  // booking page as a page of its own: the next date must still be tappable after it (22 Nov 2026).
   it("moves a film page to each day before tapping its times, and notes null for a day it cannot pick", async () => {
     const page = `<!doctype html><div class="swiper"><div class="swiper-slide bg-grad-yellow" data-d="sun"><span>Sun</span><span>22 Nov</span></div><div class="swiper-slide" data-d="mon"><span>Mon</span><span>23 Nov</span></div></div>
 <section><h3>Viva Ikeja</h3><div id="t"></div></section><script>
-const times = { sun: "<button onclick=\\"fetch('/book/s1?_rsc=1')\\">11:15 AM Screen 3</button>", mon: "<button onclick=\\"fetch('/book/m1?_rsc=1')\\">12:05 PM Screen 3</button>" };
+const times = { sun: "<button onclick=\\"location.href = '/book/s1'\\">11:15 AM Screen 3</button>", mon: "<button onclick=\\"fetch('/book/m1?_rsc=1')\\">12:05 PM Screen 3</button>" };
 const pick = (d) => { document.querySelectorAll(".swiper-slide").forEach((s) => s.classList.toggle("bg-grad-yellow", s.dataset.d === d)); document.getElementById("t").innerHTML = times[d]; };
 document.querySelectorAll(".swiper-slide span").forEach((span) => (span.onclick = () => pick(span.parentElement.dataset.d)));
 pick("sun");

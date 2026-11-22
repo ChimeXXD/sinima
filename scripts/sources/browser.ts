@@ -173,15 +173,18 @@ async function chromiumPage(page: Page): Promise<BrowserPage> {
       const url = new URL(request.url());
       if (url.origin === site && url.pathname.startsWith(capture.path)) {
         capture.seen?.push(url.pathname);
-        // Answered here with 204, never sent: a 204 leaves the page where it is (an aborted
-        // navigation would swap it for an error page and lose the next time to tap).
+        // Never sent. A page change is cancelled as a visitor's Stop would ("aborted": no error page,
+        // and nothing left waiting for it, so the next date can still be tapped, 22 Nov 2026); any
+        // other request is answered with an empty 204, which leaves the page where it is.
+        if (request.isNavigationRequest()) return route.abort("aborted");
         return route.fulfill({ status: 204, body: "" });
       }
     }
     if (request.isNavigationRequest() && request.frame() === page.mainFrame()) {
       if (asked !== null && sameUrl(request.url(), asked)) return openOnce(route);
-      // The page moving itself somewhere else by script: we read only the page we asked for.
-      return route.abort();
+      // The page moving itself somewhere else by script (another site's booking page, say): we read only
+      // the page we asked for. Cancelled as a Stop would be, so the page we have stays tappable.
+      return route.abort("aborted");
     }
     return route.continue();
   });

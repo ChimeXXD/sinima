@@ -1,6 +1,6 @@
 import { existsSync } from "node:fs";
 import { join } from "node:path";
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import { calFiles } from "@/lib/ics/calFiles";
 import { comingCal, showingCal } from "@/lib/ics/calHref";
 import { comingIn } from "@/lib/data/filmPages";
@@ -24,8 +24,13 @@ describe("calendar file addresses", () => {
 
 const built = existsSync(join(process.cwd(), "public/data/lagos.json"));
 
+// CI runs the unit tests before the build writes public/data. A skipped suite's body still runs to
+// collect its tests, so the files are read in beforeAll, which a skipped suite never calls.
 describe.skipIf(!built)("calFiles, from the data the pages are built from", () => {
-  const files = calFiles();
+  let files: ReturnType<typeof calFiles>;
+  beforeAll(() => {
+    files = calFiles();
+  });
 
   it("has a file for every showing on every day a page offers, in both cities", () => {
     for (const city of ["lagos", "abuja"] as const) {
