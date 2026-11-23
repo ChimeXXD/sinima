@@ -181,33 +181,6 @@
       ],
       "checkedAt": "2026-11-16T22:32:15Z"
     },
-    "resident-evil": {
-      "tmdbId": 1423191,
-      "tmdbTitle": "Resident Evil",
-      "runtimeMin": 94,
-      "posterPath": "/gAgWJhUSQWCgtKR8170nMkYlBda.jpg",
-      "trailerKey": "mNd1gb19A-c",
-      "keywordIds": [
-        1533,
-        4884,
-        9744,
-        10349,
-        11181,
-        10794,
-        12377,
-        41645,
-        50009,
-        161184,
-        186565,
-        188839,
-        188957,
-        283085,
-        325770,
-        360949,
-        388461
-      ],
-      "checkedAt": "2026-11-16T22:32:15Z"
-    },
     "spider-man-brand-new-day": {
       "tmdbId": 969681,
       "tmdbTitle": "Spider-Man: Brand New Day",
@@ -393,6 +366,33 @@
       ],
       "checkedAt": "2026-11-16T22:32:15Z"
     },
+    "resident-evil": {
+      "tmdbId": 1423191,
+      "tmdbTitle": "Resident Evil",
+      "runtimeMin": 94,
+      "posterPath": "/gAgWJhUSQWCgtKR8170nMkYlBda.jpg",
+      "trailerKey": "mNd1gb19A-c",
+      "keywordIds": [
+        1533,
+        4884,
+        9744,
+        10349,
+        11181,
+        10794,
+        12377,
+        41645,
+        50009,
+        161184,
+        186565,
+        188839,
+        188957,
+        283085,
+        325770,
+        360949,
+        388461
+      ],
+      "checkedAt": "2026-11-16T22:32:15Z"
+    },
     "verity": {
       "tmdbId": 1283515,
       "tmdbTitle": "Verity",
@@ -429,6 +429,36 @@
         336497
       ],
       "checkedAt": "2026-11-16T22:32:15Z"
+    },
+    "focker-in-law": {
+      "tmdbId": 1400336,
+      "tmdbTitle": "Focker In-Law",
+      "runtimeMin": 105,
+      "posterPath": "/iHJhSfqFpDMOyeMc6h6BOeHxse2.jpg",
+      "trailerKey": "9CKu3WoMYCg",
+      "keywordIds": [
+        9799,
+        10235,
+        9663,
+        154796,
+        252875
+      ],
+      "checkedAt": "2026-11-23T05:29:05Z"
+    },
+    "hershey": {
+      "tmdbId": 1461490,
+      "tmdbTitle": "Hershey",
+      "runtimeMin": 110,
+      "posterPath": "/ojd8Gu2bPsOzdMz6Ip5AYDu4Vki.jpg",
+      "trailerKey": "NsHJw58wWRg",
+      "keywordIds": [
+        715,
+        5683,
+        9672,
+        340972,
+        343974
+      ],
+      "checkedAt": "2026-11-23T05:29:05Z"
     }
   }
 }
