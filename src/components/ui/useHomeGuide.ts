@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { bannerDue, getConsent } from "@/lib/consent";
 import { isStandalone } from "./usePullRefresh";
 
 // The Home Screen guide (D-162) for a phone's or tablet's browser. Its code loads only there, a
@@ -55,6 +56,9 @@ export function useHomeGuide(): { Guide: Guide } | null {
   const [guide, setGuide] = useState<{ Guide: Guide } | null>(null);
   useEffect(() => {
     if (isStandalone() || !matchMedia("(pointer: coarse)").matches) return;
+    // Not while the Cookie bite banner still waits for an answer: one ask at a time (D-191).
+    const { consent, storage } = getConsent();
+    if (bannerDue(consent, storage)) return;
     let gone = false;
     const id = setTimeout(() => {
       import("@/components/home/HomeScreenGuide").then(

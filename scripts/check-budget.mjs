@@ -30,7 +30,9 @@ const BUDGET = {
   // 225 from the motion pass (D-104, Chime 16 Nov 2026): Starting soon was 217.1 before any motion,
   // and the twelve motions (D-103) need about 4-6 KB; the day's data moves pages a few tenths too.
   // 228 for five days (D-153): Cinemas measured 226.8 and Films 225.5.
-  totalKb: 228,
+  // 229 for counting visits (D-192, Chime 24 Nov 2026): the consent code every page carries (the kept
+  // answer, the banner's and the counter's loaders, about 0.4 KB) put Films at 228.3.
+  totalKb: 229,
 };
 
 /** The largest page in a folder of out/, e.g. "area/lekki.html". Pages of one kind share their scripts. */

@@ -18,7 +18,8 @@ describe("fixed words", () => {
   it("the title, the note and the footer", () => {
     expect(ABOUT.title).toBe("About Sinima");
     expect(ABOUT.note).toBe("made in Lagos");
-    expect(ABOUT.footer).toBe("Sinima is free and has no ads, accounts or tracking. Your city and area are kept on your phone.");
+    // "tracking" became "cookies" with counting visits (D-191): a count is asked for, and Privacy says what it sees.
+    expect(ABOUT.footer).toBe("Sinima is free and has no ads, accounts or cookies. Your city and area are kept on your phone.");
   });
 });
 

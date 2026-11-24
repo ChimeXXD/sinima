@@ -9,7 +9,9 @@ const registry = JSON.parse(readFileSync("data/sources.json", "utf8")) as Regist
 test("About: how it works, every source with cinemas and its real status, TMDB, and takedown (Figma)", async ({ page }) => {
   await page.goto("/about");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("About Sinima");
-  await expect(page.getByRole("heading", { level: 3 })).toHaveText(["We read each sinima's public listings", "Old times say so", "You book on the sinima's own site"]);
+  // The three steps of How it works (Privacy has its own level-3 headings since D-191).
+  const how = page.getByRole("region", { name: "How it works" });
+  await expect(how.getByRole("heading", { level: 3 })).toHaveText(["We read each sinima's public listings", "Old times say so", "You book on the sinima's own site"]);
 
   const listed = registry.sources.filter((s) => s.status !== "do-not-use" && (s.cinemaIds?.length ?? 0) > 0).sort((a, b) => b.cinemaIds!.length - a.cinemaIds!.length);
   const rows = page.getByTestId("about.sources").locator("tbody tr");

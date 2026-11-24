@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/Actions";
 import { AppFrame } from "@/components/ui/AppFrame";
 import { CitySticker } from "@/components/ui/Stickers";
+import { PrivacySection } from "./PrivacySection";
 import type { City } from "@/lib/city";
 import type { CityReading, SourceRow } from "@/lib/data/about";
 import { ABOUT, ISSUES_URL, REPO_URL, STEPS, cityReadingLine, sourceStatus } from "@/lib/wording/about";
@@ -91,6 +92,8 @@ export function AboutScreen({ sources, reading, bg }: { sources: SourceRow[]; re
           <span data-testid="about.reading.abuja">{cityReadingLine("abuja", reading.abuja ?? NONE)}</span>
         </p>
       </section>
+
+      <PrivacySection />
 
       <section className={s.block} aria-labelledby="about.films">
         <h2 id="about.films">{ABOUT.films}</h2>

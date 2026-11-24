@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Counting } from "@/components/consent/Counting";
 import { CinemaCities } from "@/components/ui/CinemaCities";
 import { THEME_KEY } from "@/lib/area";
 import { cinemaCityMap } from "@/lib/data/load";
@@ -44,6 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <CinemaCities value={cinemaCities}>{children}</CinemaCities>
+        <Counting />
       </body>
     </html>
   );

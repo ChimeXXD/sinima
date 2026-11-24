@@ -1,6 +1,20 @@
 # Handoff: read this first when you pick the project back up
 
-## Now: session of 20 Nov 2026 (night, Lagos): video script, search leftovers, flaky tests, the Figma storyboard, motion references (latest)
+## Now: session of 24 Nov 2026 (night, Lagos): the Cookie bite banner and counting visits (latest)
+
+**Where we stopped, exactly:** the banner, counting and About › Privacy are built, checked and committed (D-191, D-192; PROGRESS 24 Nov). Sessions since this file was last rewritten: 22 Nov, the Viva/Nova booking-link fixes (`9ef5cbe`, `31c50ff`; day two is still 1 of 18 exact links, PROGRESS 22 Nov) and the launch video up to drafts 19 and 20 (D-177 to D-190).
+
+**Next, in order:**
+1. **Chime: enable Web Analytics** in the Vercel dashboard (Sinima → Analytics → Enable). Then say Sure on sinima.com.ng and look for the view in the dashboard (nothing counts until it's on).
+2. **Chime picks draft 19 or 20** of the launch film (`video/launch/renders/`); Claude recommended 19 (the film-cut music lifts on the logo).
+3. **Viva/Nova day two:** probe one film page with and without day one's taps (PROGRESS 22 Nov).
+4. **Today, Tue 24 Nov:** draft the outreach follow-ups (OUTREACH §4) for Chime.
+5. Look into why the local `npm run build` stops on Lagos's data budget while Vercel deploys pass.
+6. Save the launch-week analytics numbers within the month (Hobby keeps one month).
+
+**Watch out:** memory. Dia, Figma and Brave together hold 10–14 GB; with them open, builds and e2e are refused by proof's 85% ceiling. A leftover `serve-out.mjs 4173` from a stopped run blocks the next e2e run: stop it first.
+
+## Earlier: session of 20 Nov 2026 (night, Lagos): video script, search leftovers, flaky tests, the Figma storyboard, motion references
 
 **Where we stopped, exactly:** Chime paused for the night ("let's pause here for now … we'll continue tomorrow"). Code and docs are committed and pushed: `f63f9da` (search), `d6b6f61` (M9 test), `17b88aa` (script + D-164/D-165), `bb325f6` (storyboard records). Nothing is running (the board's local server was stopped). Left untracked on purpose (local, like earlier rounds): `docs/design/reference-board/round9-motion.html` and its source `round9-motion/` (a.json, b.json, c.json, build.mjs), plus the older `round8-coming-soon.html` and `mockup/home-screen/`.
 

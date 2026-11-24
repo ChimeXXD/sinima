@@ -1,4 +1,5 @@
 import { test as base } from "@playwright/test";
+import { CONSENT_KEY } from "../../src/lib/consent";
 import { sampleTime } from "./helpers";
 
 // Every e2e test runs on a fixed clock (CLAUDE.md, Working style): noon on the sample day, so the
@@ -11,8 +12,28 @@ import { sampleTime } from "./helpers";
 
 export * from "@playwright/test";
 
-export const test = base.extend<{ realClock: boolean; sampleNoon: void }>({
+// Every page also opens as a visitor who answered the Cookie bite banner (D-191) with No thanks, so it
+// never covers what a test taps; consent.spec.ts sets `consent: null` to meet it. A test's own answer
+// is kept: only a phone with none gets "no".
+
+export const test = base.extend<{ realClock: boolean; consent: "yes" | "no" | null; sampleNoon: void; answered: void }>({
   realClock: [false, { option: true }],
+  consent: ["no", { option: true }],
+  answered: [
+    async ({ page, consent }, use) => {
+      if (consent)
+        await page.addInitScript(
+          ([key, value]) => {
+            try {
+              if (localStorage.getItem(key) === null) localStorage.setItem(key, value);
+            } catch {}
+          },
+          [CONSENT_KEY, consent] as const,
+        );
+      await use();
+    },
+    { auto: true },
+  ],
   sampleNoon: [
     async ({ page, request, realClock }, use) => {
       if (!realClock) await page.clock.install({ time: await sampleTime(request, "12:00") });

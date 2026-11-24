@@ -1,0 +1,55 @@
+{
+  "springs": "stiffness damping, mass 1, from Design Bookmark's shared/tokens.css: pop 520 16, settle 280 22, soft 260 24, fade 420 32; bites 700 22, wobble 190 9, height 230 22, tick 160 20. Reduced motion: each spring critically damped (damping = 2·√stiffness) and no crumbs.",
+  "interactions": [
+    {
+      "element": "consent-sure",
+      "trigger": "tap",
+      "states": ["default", "pressed", "focus"],
+      "effect": "store consent 'yes' (localStorage sinima.count); load Vercel Web Analytics; three bites 0.1 s, 0.37 s, 0.64 s apart (bite spring 700/22, wobble 190/9 kicked ±520, cookie pops to 0.86 on pop 520/16, 5 crumbs each); last piece shrinks (600/34) at 0.91 s; at 1.2 s the card folds (soft 260/24 width, 230/22 height) into the note 'Thanks! Your visit counts', tick draws (160/20) from +0.28 s; note fades and drops 8 px (fade 420/32) at +2.4 s; banner removed",
+      "duration_ms": 3800,
+      "easing": "spring 520/16 press scale 0.92 → 1",
+      "delay_ms": 0,
+      "reduced_motion": "springs critically damped, no crumbs; same order and timing"
+    },
+    {
+      "element": "consent-no",
+      "trigger": "tap",
+      "states": ["default", "pressed", "focus"],
+      "effect": "store consent 'no'; nothing loads; the cookie rolls off the left of the card (velocity -60, accel -620 px/s²) and drops (1500 px/s²); at 0.8 s the card folds into 'Not counted · change it in About'; note goes at +2.4 s; banner removed",
+      "duration_ms": 3200,
+      "easing": "spring 520/16 press scale 0.92 → 1",
+      "delay_ms": 0,
+      "reduced_motion": "springs critically damped; the cookie still rolls off"
+    },
+    {
+      "element": "consent-banner",
+      "trigger": "first visit, 1.5 s after the location question is answered (or after load when it is not asked)",
+      "states": ["hidden", "shown", "folding", "note", "gone"],
+      "effect": "appears with the cookie dropped onto the plate (settle 280/22 from -46 px, scale 0.4 → 1 on pop 520/16) and the card rising 8 px while fading in (fade 420/32); never shown again once answered; never in a private tab where storage is blocked (no answer is kept, so nothing is counted)",
+      "duration_ms": 600,
+      "easing": "spring 280/22",
+      "delay_ms": 1500,
+      "reduced_motion": "fades in, no drop"
+    },
+    {
+      "element": "privacy-count-toggle",
+      "trigger": "tap",
+      "states": ["default", "pressed", "focus"],
+      "effect": "flips consent: 'Stop counting' stores 'no' (analytics stop on the next page) and the line reads 'Off, on this phone'; 'Count my visits' stores 'yes', loads analytics and reads 'On, on this phone'; a toast confirms ('Visits won't be counted' / 'Visits will be counted')",
+      "duration_ms": 120,
+      "easing": "var(--ease-out), scale 0.97 on press (Sinima's Button)",
+      "delay_ms": 0,
+      "reduced_motion": "no scale"
+    },
+    {
+      "element": "play-both",
+      "trigger": "tap",
+      "states": ["default"],
+      "effect": "mockup only: plays Sure and No thanks in their phones",
+      "duration_ms": 0,
+      "easing": "none",
+      "delay_ms": 0,
+      "reduced_motion": "n/a"
+    }
+  ]
+}

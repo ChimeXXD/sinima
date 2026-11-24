@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cookie bite · consent and privacy</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;500;600;700&display=swap">
+<style>
+/* Sinima's tokens (src/styles/tokens.css), light and the dark stand-ins. */
+:root {
+  --bg-page: #ffffff; --bg-surface: #f4f4f5; --bg-raised: #ffffff;
+  --text-primary: #18181b; --text-secondary: #71717a; --text-on-action: #ffffff; --text-accent: #3b82f6;
+  --border-hairline: #e4e4e7; --action-primary: #3b82f6; --action-primary-edge: #2563eb;
+  --tint-secondary: color-mix(in srgb, #18181b 4%, transparent); --tint-secondary-pressed: color-mix(in srgb, #18181b 8%, transparent);
+  --fx-button-gloss: 0 1px 1px #18181b3d, inset 0 8px 16px #ffffff29;
+  --fx-shadow-floating: 0 12px 32px #18181b1f; --fx-shadow-tabbar: 0 8px 24px #18181b1f;
+  --fx-focus-ring: 0 0 0 3px #eef3ff;
+  --radius-button: 12px; --radius-card: 24px; --radius-poster: 18px; --radius-full: 999px;
+  --p-amber-500: #f59e0b; --p-amber-300: #fdba4d; --p-neutral-0: #ffffff; --p-neutral-1000: #000000;
+  /* New (build adds these to tokens.css): the cookie, Design Bookmark's recipe on Sinima's ambers. */
+  --cookie-dough: color-mix(in srgb, var(--p-amber-500) 60%, var(--p-amber-300));
+  --cookie-chip: color-mix(in srgb, var(--p-amber-500) 36%, var(--p-neutral-1000));
+  --font-sans: "Urbanist", system-ui, -apple-system, sans-serif;
+  --type-title: 600 17px/1.2 var(--font-sans); --type-body-m: 500 15px/1.4 var(--font-sans);
+  --type-button: 600 16px/1.2 var(--font-sans); --type-heading-s: 600 20px/1.25 var(--font-sans);
+  --type-heading-m: 600 26px/1.2 var(--font-sans); --type-meta: 500 13px/1.35 var(--font-sans);
+  --board: #e9e9ec; --muted: #5d5d66;
+}
+[data-theme="dark"] {
+  --bg-page: #000000; --bg-surface: #18181b; --bg-raised: #18181b;
+  --text-primary: #fafafa; --text-secondary: #d4d4d8; --border-hairline: #3f3f46;
+  --action-primary: #2563eb; --action-primary-edge: #3b82f6;
+  --tint-secondary: color-mix(in srgb, #3f3f46 60%, transparent); --tint-secondary-pressed: color-mix(in srgb, #3f3f46 80%, transparent);
+  --fx-shadow-floating: 0 12px 32px #00000066; --fx-focus-ring: 0 0 0 3px #0b1b3f;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--board); color: #18181b; font-family: var(--font-sans); }
+.board { max-width: 1500px; margin: 0 auto; padding: 32px 20px 80px; display: flex; flex-direction: column; gap: 48px; }
+.intro { max-width: 880px; display: flex; flex-direction: column; gap: 10px; }
+.intro h1 { font-size: 34px; font-weight: 700; line-height: 1.1; }
+.intro p, .part > p { color: var(--muted); font-size: 16px; line-height: 1.5; font-weight: 500; max-width: 900px; }
+.part { display: flex; flex-direction: column; gap: 14px; }
+.part h2 { font-size: 26px; font-weight: 700; }
+.row { display: flex; gap: 32px; align-items: flex-start; overflow-x: auto; padding: 12px 12px 16px; }
+.cap { display: flex; flex-direction: column; gap: 10px; flex: none; }
+.cap > span { font-size: 14px; color: var(--muted); font-weight: 600; }
+.replay { align-self: flex-start; font: 600 14px/1 var(--font-sans); border: 0; border-radius: 999px; padding: 10px 14px; background: #18181b; color: #fff; cursor: pointer; }
+
+/* A phone at 393 × 852 (iPhone 16). */
+[data-screen] { position: relative; flex: none; width: 393px; height: 852px; overflow: hidden; border-radius: 44px; background: var(--bg-page); color: var(--text-primary); box-shadow: 0 0 0 10px #18181b, 0 18px 40px #0000002e; }
+.status { height: 54px; display: flex; justify-content: space-between; align-items: center; padding: 8px 32px 0; font: 600 16px/1 var(--font-sans); }
+.app { padding: 4px 16px 0; }
+.brand { font: 700 22px/1 var(--font-sans); height: 44px; display: flex; align-items: center; }
+.h1 { margin-top: 18px; font: var(--type-heading-m); }
+.cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 18px; }
+.poster { aspect-ratio: 2 / 3; border-radius: var(--radius-poster); }
+.p1 { background: #b8cdf6; } .p2 { background: #f3c2d4; }
+[data-theme="dark"] .p1 { background: #24365c; } [data-theme="dark"] .p2 { background: #4d2a38; }
+.cardTitle { margin-top: 8px; font: 600 15px/1.2 var(--font-sans); }
+.meta { color: var(--text-secondary); font: var(--type-meta); margin-top: 2px; }
+.tabbar { position: absolute; left: 16px; right: 16px; bottom: 30px; height: 64px; border-radius: var(--radius-full); background: var(--bg-raised); box-shadow: var(--fx-shadow-tabbar); display: grid; grid-template-columns: repeat(4, 1fr); align-items: center; text-align: center; font: 600 12px/1.2 var(--font-sans); color: var(--text-secondary); }
+.tabbar .on { color: var(--text-accent); }
+
+/* ---- The banner (Cookie Bite, rebuilt on Sinima's tokens) ----
+   Floats 12 px above the tab bar, centred, at most 361 wide (16 px from each edge of a 393 phone).
+   No scrim: the page stays usable while it is up. It folds down into a one-line note, anchored
+   at its bottom edge, so it shrinks toward the tab bar it sits on. */
+.banner { position: absolute; left: 50%; bottom: 106px; z-index: 5; background: var(--bg-raised); border-radius: var(--radius-card); box-shadow: var(--fx-shadow-floating); will-change: transform, width, height; }
+.bbody { position: absolute; left: 0; bottom: 0; padding: 20px; will-change: opacity, transform; }
+.top { display: flex; gap: 14px; align-items: center; }
+.plate { position: relative; flex: none; width: 64px; height: 64px; }
+.cookie { position: absolute; inset: 0; width: 64px; height: 64px; overflow: visible; will-change: transform; }
+.d0 { stop-color: color-mix(in srgb, var(--cookie-dough) 62%, var(--p-neutral-0)); }
+.d1 { stop-color: var(--cookie-dough); }
+.d2 { stop-color: color-mix(in srgb, var(--cookie-dough) 80%, var(--cookie-chip)); }
+.c0 { stop-color: color-mix(in srgb, var(--cookie-chip) 72%, var(--cookie-dough)); }
+.c1 { stop-color: color-mix(in srgb, var(--cookie-chip) 78%, var(--p-neutral-1000)); }
+.n0 { stop-color: color-mix(in srgb, var(--cookie-dough) 74%, var(--cookie-chip)); }
+.n1 { stop-color: color-mix(in srgb, var(--cookie-dough) 74%, var(--cookie-chip)); stop-opacity: 0; }
+.edge { fill: color-mix(in srgb, var(--cookie-dough) 58%, var(--cookie-chip)); }
+.keep { fill: var(--p-neutral-0); }
+.bites circle { fill: var(--p-neutral-1000); }
+.crumbs { position: absolute; left: 0; top: 0; width: 0; height: 0; }
+.crumbs i { position: absolute; left: 0; top: 0; width: 5px; height: 5px; margin: -2.5px; border-radius: 2px; background: var(--cookie-dough); opacity: 0; will-change: transform, opacity; }
+.crumbs i:nth-child(3n) { background: var(--cookie-chip); }
+.copy h3 { font: var(--type-title); letter-spacing: -0.01em; }
+.copy p { margin-top: 4px; font: var(--type-body-m); color: var(--text-secondary); }
+.actions { display: flex; gap: 8px; margin-top: 18px; }
+.btn { flex: 1; display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 14px 20px; border-radius: var(--radius-button); font: var(--type-button); cursor: pointer; -webkit-tap-highlight-color: transparent; will-change: transform; }
+.no { background: var(--tint-secondary); border: 0; color: var(--text-primary); }
+.sure { background: var(--action-primary); border: 1px solid var(--action-primary-edge); color: var(--text-on-action); box-shadow: var(--fx-button-gloss); }
+.btn:focus-visible { outline: none; box-shadow: var(--fx-focus-ring); }
+.sure:focus-visible { box-shadow: var(--fx-button-gloss), var(--fx-focus-ring); }
+.note { position: absolute; left: 50%; top: 50%; display: flex; align-items: center; gap: 8px; height: 48px; padding: 0 18px 0 14px; white-space: nowrap; font: var(--type-body-m); font-weight: 600; color: var(--text-primary); opacity: 0; pointer-events: none; will-change: opacity, transform; }
+.note svg { width: 22px; height: 22px; border-radius: 50%; background: var(--bg-surface); }
+.note.is-yes svg { background: var(--action-primary); }
+.note path { fill: none; stroke: var(--text-primary); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1 1; }
+.note.is-yes path { stroke: var(--text-on-action); }
+
+/* ---- About › Privacy ---- */
+.about { padding: 4px 20px 0; }
+.about .crumb { color: var(--text-secondary); font: var(--type-meta); margin-top: 10px; }
+.about h2 { margin-top: 10px; font: var(--type-heading-s); }
+.lead { margin-top: 6px; font: var(--type-body-m); color: var(--text-secondary); }
+.facts { list-style: none; margin-top: 16px; border-top: 1px solid var(--border-hairline); }
+.facts li { padding: 16px 0; border-bottom: 1px solid var(--border-hairline); }
+.facts h3 { font: var(--type-title); }
+.facts p { margin-top: 4px; font: var(--type-body-m); color: var(--text-secondary); }
+.switch { margin-top: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.switch .state { font: var(--type-body-m); font-weight: 600; color: var(--text-primary); }
+.switch .btn { flex: none; }
+</style>
+</head>
+<body>
+<main class="board">
+  <header class="intro">
+    <h1>Cookie bite, for Sinima</h1>
+    <p>Sinima still sets no cookies. The banner asks one honest thing: may we count this visit (Vercel Web Analytics, which uses no cookies either)? <b>Sure</b> eats the cookie in three bites; <b>No thanks</b> flicks it off the card. Either way the card folds into a one-line note, then goes. It shows once, on a first visit, after the location question is answered. Springs are Design Bookmark's own: pop 520/16, settle 280/22, soft 260/24, fade 420/32.</p>
+  </header>
+
+  <section class="part">
+    <h2>1 · The banner on a first visit</h2>
+    <p>Light and dark. Tap the buttons in any phone to play it; "Play both" runs Sure and No thanks side by side.</p>
+    <button class="replay" id="play-both">Play both</button>
+    <div class="row">
+      <div class="cap"><span>First visit (light)</span><div data-screen="banner" data-banner="banner"></div></div>
+      <div class="cap"><span>After Sure: eaten, then the note</span><div data-screen="banner--sure" data-banner="banner--sure" data-play="sure"></div></div>
+      <div class="cap"><span>After No thanks: flicked, then the note</span><div data-screen="banner--no-thanks" data-banner="banner--no-thanks" data-play="no"></div></div>
+      <div class="cap"><span>Dark</span><div data-screen="banner--dark" data-banner="banner--dark" data-theme="dark"></div></div>
+    </div>
+  </section>
+
+  <section class="part">
+    <h2>2 · About › Privacy</h2>
+    <p>A new section on About, after Sources: the plain facts, and the one switch to change your mind. Counting on and off.</p>
+    <div class="row">
+      <div class="cap"><span>Counting on</span><div data-screen="about--privacy-on" data-about="on"></div></div>
+      <div class="cap"><span>Counting off</span><div data-screen="about--privacy-off" data-about="off"></div></div>
+    </div>
+  </section>
+</main>
+
+<script>
+const STILL = new URLSearchParams(location.search).has('still') || navigator.webdriver; // still frames for the check
+const NS = 'http://www.w3.org/2000/svg';
+const COPY = {
+  title: 'Cookies? Not here.',
+  body: 'Can we count your visit instead? We’d see which films get opened, never who you are.',
+  no: 'No thanks', sure: 'Sure',
+  noteYes: 'Thanks! Your visit counts', noteNo: 'Not counted · change it in About',
+};
+
+// The page under the banner: Films, as it opens.
+function films(id) {
+  return `<div class="status"><span data-testid="${id}-clock">9:41</span><span data-testid="${id}-signal">5G</span></div>
+  <div class="app">
+    <div class="brand" data-testid="${id}-brand">Sinima</div>
+    <h1 class="h1" data-testid="${id}-heading">Films in Lagos</h1>
+    <div class="cards">
+      <div><div class="poster p1" data-testid="${id}-poster-1"></div><p class="cardTitle" data-testid="${id}-film-1">Agbara Nla: The Return</p><p class="meta" data-testid="${id}-film-1-meta">12 sinimas today</p></div>
+      <div><div class="poster p2" data-testid="${id}-poster-2"></div><p class="cardTitle" data-testid="${id}-film-2">Clayface</p><p class="meta" data-testid="${id}-film-2-meta">9 sinimas today</p></div>
+    </div>
+  </div>
+  <nav class="tabbar"><span class="on" data-testid="${id}-tab-films">Films</span><span data-testid="${id}-tab-cinemas">Cinemas</span><span data-testid="${id}-tab-soon">Starting soon</span><span data-testid="${id}-tab-yours">Your cinemas</span></nav>`;
+}
+
+// The banner's markup; ids are suffixed per phone so each SVG keeps its own gradients and mask.
+function banner(k) {
+  return `<div class="banner" role="region" aria-label="Counting visits" data-testid="consent-banner">
+    <div class="bbody">
+      <div class="top">
+        <div class="plate" data-testid="consent-cookie">
+          <svg class="cookie" viewBox="0 0 64 64" aria-hidden="true">
+            <defs>
+              <radialGradient id="dough-${k}" cx=".34" cy=".26" r=".86"><stop class="d0" offset="0"/><stop class="d1" offset=".5"/><stop class="d2" offset="1"/></radialGradient>
+              <radialGradient id="chip-${k}" cx=".36" cy=".3" r=".8"><stop class="c0" offset="0"/><stop class="c1" offset="1"/></radialGradient>
+              <radialGradient id="dent-${k}" cx=".5" cy=".62" r=".6"><stop class="n0" offset="0"/><stop class="n1" offset="1"/></radialGradient>
+              <mask id="bites-${k}" maskUnits="userSpaceOnUse" x="-8" y="-8" width="80" height="80"><rect class="keep" x="-8" y="-8" width="80" height="80"/><g class="bites"></g></mask>
+            </defs>
+            <g mask="url(#bites-${k})">
+              <circle class="edge" cx="32" cy="32" r="30"/>
+              <circle cx="32" cy="31.2" r="29" fill="url(#dough-${k})"/>
+              <g fill="url(#dent-${k})"><ellipse cx="14" cy="27" rx="3.2" ry="2.4"/><ellipse cx="34" cy="26" rx="2.6" ry="2"/><ellipse cx="50" cy="42" rx="2.8" ry="2.2"/><ellipse cx="27" cy="43" rx="2.2" ry="1.7"/></g>
+              <g fill="url(#chip-${k})"><circle cx="22" cy="19" r="4.4"/><circle cx="41" cy="16" r="3.3"/><circle cx="46" cy="31" r="4.2"/><circle cx="30" cy="34" r="3.5"/><circle cx="17" cy="38" r="3.1"/><circle cx="38" cy="48" r="4.4"/><circle cx="24" cy="51" r="2.7"/></g>
+            </g>
+          </svg>
+          <i class="crumbs"></i>
+        </div>
+        <div class="copy"><h3 data-testid="consent-title">${COPY.title}</h3><p data-testid="consent-body">${COPY.body}</p></div>
+      </div>
+      <div class="actions">
+        <button class="btn no" data-testid="consent-no">${COPY.no}</button>
+        <button class="btn sure" data-testid="consent-sure">${COPY.sure}</button>
+      </div>
+    </div>
+    <div class="note" aria-live="polite" data-testid="consent-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M6.5 12.5l3.8 3.8 7.2-8.1"/></svg><span></span></div>
+  </div>`;
+}
+
+// ---- Springs: Design Bookmark's motion.js, as is (stiffness, damping; mass 1; 4 sub-steps a frame) ----
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const S = (x, k = 400, c = 30) => ({ x, v: 0, t: x, k, c: reduce ? 2 * Math.sqrt(k) : c });
+const tune = (s, k, c) => { s.k = k; s.c = reduce ? 2 * Math.sqrt(k) : c; };
+const step = (s, dt) => { const a = -s.k * (s.x - s.t) - s.c * s.v; s.v += a * dt; s.x += s.v * dt; };
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const T = { pop: [520, 16], settle: [280, 22], soft: [260, 24], fade: [420, 32] };
+const timers = [], comps = [];
+const after = (sec, fn) => timers.push({ t: sec, fn });
+let last = performance.now();
+requestAnimationFrame(function loop(now) {
+  const dt = Math.min((now - last) / 1000, 1 / 30); last = now;
+  for (let i = timers.length - 1; i >= 0; i--) if ((timers[i].t -= dt) <= 0) timers.splice(i, 1)[0].fn();
+  for (let k = 0; k < 4; k++) comps.forEach(c => c.frame(dt / 4));
+  comps.forEach(c => c.render());
+  requestAnimationFrame(loop);
+});
+
+// ---- One banner: cookie.js, anchored to the bottom, and gone after its note (no reopening in the app) ----
+function mount(phone, k) {
+  phone.insertAdjacentHTML('beforeend', banner(k));
+  const q = sel => phone.querySelector(sel);
+  const el = q('.banner'), body = q('.bbody'), cookie = q('.cookie'), bitesG = q('.bites'), crumbsEl = q('.crumbs');
+  const yes = q('.sure'), no = q('.no'), note = q('.note'), msg = q('.note span'), tick = q('.note path');
+
+  const BITES = [-42, 28, 196].map(a => {
+    const r = a * Math.PI / 180, cx = 32 + Math.cos(r) * 30, cy = 32 + Math.sin(r) * 30;
+    const parts = [[cx, cy, 13]];
+    [-52, 0, 52].forEach(t => { const q2 = r + Math.PI + t * Math.PI / 180; parts.push([cx + Math.cos(q2) * 11.5, cy + Math.sin(q2) * 11.5, 5.2]); });
+    const els = parts.map(() => bitesG.appendChild(document.createElementNS(NS, 'circle')));
+    return { parts, els, s: S(0, 700, 22), x: cx, y: cy };
+  });
+  const crumbs = Array.from({ length: 18 }, () => ({ el: crumbsEl.appendChild(document.createElement('i')), life: 0, x: 0, y: 0, vx: 0, vy: 0, r: 0, vr: 0 }));
+  let ci = 0;
+  const M = S(0, ...T.soft), WW = S(0, ...T.soft), HH = S(0, 230, 22);
+  const CS = S(1, ...T.pop), CR = S(0, 190, 9), CY = S(0, ...T.settle);
+  const PY = S(1, ...T.pop), PN = S(1, ...T.pop), TK = S(0, 160, 20), GO = S(0, ...T.fade);
+  let W0 = 0, H0 = 0, W1 = 0, busy = false, flick = null;
+
+  function measure() {
+    W0 = Math.min(361, phone.clientWidth - 32);
+    body.style.width = W0 + 'px';
+    H0 = body.offsetHeight; W1 = note.offsetWidth;
+    WW.t = M.t ? W1 : W0; HH.t = M.t ? 48 : H0;
+    if (!WW.x) { WW.x = WW.t; HH.x = HH.t; }
+  }
+  measure();
+  document.fonts.ready.then(measure);
+
+  function spray(x, y, n, power) {
+    if (reduce) return;
+    for (let i = 0; i < n; i++) {
+      const c = crumbs[ci++ % crumbs.length], a = Math.random() * Math.PI * 2;
+      c.life = .75 + Math.random() * .35; c.x = x - 32; c.y = y - 32;
+      c.vx = Math.cos(a) * power * (.4 + Math.random()); c.vy = -Math.abs(Math.sin(a)) * power * (.6 + Math.random()) - 40;
+      c.r = 0; c.vr = (Math.random() - .5) * 900;
+    }
+  }
+  function bite(i) { const b = BITES[i]; b.s.t = 1; CR.v += (i % 2 ? -1 : 1) * 520; CS.x = .86; spray(b.x, b.y, 5, 150); }
+  function fold(text, ok) {
+    msg.textContent = text; note.classList.toggle('is-yes', ok);
+    W1 = note.offsetWidth;
+    M.t = 1; WW.t = W1; HH.t = 48; TK.x = 0; TK.t = 0;
+    after(.28, () => { TK.t = 1; });
+    after(2.4, () => { GO.t = 1; });               // the note goes; in the app the banner is then removed
+    after(3.6, reset);                               // mockup only: back for another look
+  }
+  function reset() {
+    BITES.forEach(b => { b.s.x = b.s.t = b.s.v = 0; });
+    flick = null; CS.x = .4; CS.t = 1; CS.v = 0; CR.x = CR.v = 0; CY.x = -46; CY.v = 0; CY.t = 0;
+    M.t = 0; WW.t = W0; HH.t = H0; GO.x = GO.t = 0;
+    after(.5, () => { busy = false; });
+  }
+  function accept() {
+    if (busy) return; busy = true; PY.x = .92;
+    [0, 1, 2].forEach(i => after(.1 + i * .27, () => bite(i)));
+    after(.1 + 3 * .27, () => { tune(CS, 600, 34); CS.t = 0; spray(32, 32, 6, 110); });
+    after(1.2, () => { tune(CS, ...T.pop); fold(COPY.noteYes, true); });
+  }
+  function decline() {
+    if (busy) return; busy = true; PN.x = .92;
+    flick = { x: 0, y: 0, vx: -60, vy: 0 };
+    after(.8, () => fold(COPY.noteNo, false));
+  }
+  yes.addEventListener('click', accept);
+  no.addEventListener('click', decline);
+
+  comps.push({
+    frame(dt) {
+      [M, WW, HH, CS, CR, CY, PY, PN, TK, GO].forEach(s => step(s, dt));
+      BITES.forEach(b => step(b.s, dt));
+      if (flick) { flick.vx -= 620 * dt; flick.x += flick.vx * dt; if (flick.x < -46) { flick.vy += 1500 * dt; flick.y += flick.vy * dt; } }
+      crumbs.forEach(c => { if (c.life <= 0) return; c.life -= dt; c.vy += 900 * dt; c.x += c.vx * dt; c.y += c.vy * dt; c.r += c.vr * dt; });
+    },
+    render() {
+      const m = clamp(M.x, 0, 1), g = clamp(GO.x, 0, 1);
+      el.style.width = WW.x.toFixed(1) + 'px'; el.style.height = HH.x.toFixed(1) + 'px';
+      el.style.transform = `translate(${(-WW.x / 2).toFixed(1)}px,${(g * 8).toFixed(2)}px)`;
+      el.style.opacity = (1 - g).toFixed(3);
+      el.style.borderRadius = Math.min(24, HH.x / 2).toFixed(1) + 'px';
+      body.style.opacity = clamp(1 - m * 2.2, 0, 1).toFixed(3);
+      body.style.transform = `translateX(${((WW.x - W0) / 2).toFixed(1)}px)`;
+      body.style.pointerEvents = m > .1 ? 'none' : 'auto';
+      el.style.overflow = M.t || m > .01 ? 'hidden' : 'visible';
+      const d = clamp(m * 2.2 - 1.2, 0, 1);
+      note.style.opacity = d.toFixed(3);
+      note.style.transform = `translate(-50%,-50%) translateY(${((1 - d) * 8).toFixed(2)}px)`;
+      tick.style.strokeDashoffset = (1 - clamp(TK.x, 0, 1)).toFixed(4);
+      BITES.forEach(b => b.parts.forEach((p, i) => { const r = Math.max(0, b.s.x); b.els[i].setAttribute('cx', p[0].toFixed(2)); b.els[i].setAttribute('cy', p[1].toFixed(2)); b.els[i].setAttribute('r', (p[2] * r).toFixed(2)); }));
+      const fx = flick ? flick.x : 0, fy = flick ? flick.y : 0;
+      cookie.style.transform = `translate(${fx.toFixed(1)}px,${(fy + CY.x).toFixed(1)}px) rotate(${(CR.x * .012 + fx / 28).toFixed(4)}rad) scale(${Math.max(0, CS.x).toFixed(4)})`;
+      crumbs.forEach(c => { const o = c.life <= 0 ? 0 : Math.min(1, c.life * 3); c.el.style.opacity = o.toFixed(2); if (o) c.el.style.transform = `translate(${(32 + c.x).toFixed(1)}px,${(32 + c.y).toFixed(1)}px) rotate(${c.r.toFixed(0)}deg)`; });
+      yes.style.transform = `scale(${PY.x.toFixed(4)})`; no.style.transform = `scale(${PN.x.toFixed(4)})`;
+    },
+  });
+  return { accept, decline };
+}
+
+const players = {};
+document.querySelectorAll('[data-banner]').forEach((phone, i) => {
+  phone.innerHTML = films(phone.dataset.banner);
+  players[phone.dataset.banner] = { phone, ...mount(phone, i) };
+});
+function playBoth() { players['banner--sure'].accept(); players['banner--no-thanks'].decline(); }
+document.getElementById('play-both').addEventListener('click', playBoth);
+if (!STILL) after(1.2, playBoth);
+
+// ---- About › Privacy ----
+const PRIVACY = {
+  title: 'Privacy',
+  lead: 'What Sinima keeps, and what it never does.',
+  facts: [
+    ['No cookies', 'Sinima doesn’t set any. Not one.'],
+    ['Your picks stay on your phone', 'Your city, area, theme and saved cinemas are kept in this browser. They’re never sent to us.'],
+    ['Location', 'Asked once, to pick Lagos or Abuja, and again only when you tap “Use my location”. It never leaves your phone.'],
+  ],
+  countTitle: 'Counting visits',
+  countBody: 'With your OK, Vercel Web Analytics counts the pages you open, with your country, city, device and browser. We see totals, like “120 people opened Clayface today”. Never your name, your exact location, or anything that follows you to other sites.',
+  on: 'On, on this phone', off: 'Off, on this phone', stop: 'Stop counting', start: 'Count my visits',
+};
+document.querySelectorAll('[data-about]').forEach(phone => {
+  const on = phone.dataset.about === 'on', id = phone.dataset.screen;
+  phone.innerHTML = `<div class="status"><span data-testid="${id}-clock">9:41</span><span data-testid="${id}-signal">5G</span></div>
+  <div class="about">
+    <div class="brand" data-testid="${id}-brand">Sinima</div>
+    <p class="crumb" data-testid="privacy-crumb">About · after Sources</p>
+    <h2 data-testid="privacy-title">${PRIVACY.title}</h2>
+    <p class="lead" data-testid="privacy-lead">${PRIVACY.lead}</p>
+    <ul class="facts">
+      ${PRIVACY.facts.map(([h, p], i) => `<li><h3 data-testid="privacy-fact-${i + 1}-title">${h}</h3><p data-testid="privacy-fact-${i + 1}-body">${p}</p></li>`).join('')}
+      <li><h3 data-testid="privacy-count-title">${PRIVACY.countTitle}</h3><p data-testid="privacy-count-body">${PRIVACY.countBody}</p>
+        <div class="switch"><span class="state" data-testid="privacy-count-state">${on ? PRIVACY.on : PRIVACY.off}</span>
+        <button class="btn ${on ? 'no' : 'sure'}" data-testid="privacy-count-toggle">${on ? PRIVACY.stop : PRIVACY.start}</button></div></li>
+    </ul>
+  </div>`;
+  phone.querySelector('button').addEventListener('click', e => {
+    const nowOn = e.target.textContent === PRIVACY.start;
+    e.target.textContent = nowOn ? PRIVACY.stop : PRIVACY.start;
+    e.target.className = `btn ${nowOn ? 'no' : 'sure'}`;
+    phone.querySelector('.state').textContent = nowOn ? PRIVACY.on : PRIVACY.off;
+  });
+});
+</script>
+</body>
+</html>

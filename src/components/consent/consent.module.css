@@ -1,0 +1,212 @@
+/* The Cookie bite banner (D-191, mockup/consent/): Design Bookmark's cookie-bite on Sinima's tokens.
+   It floats 12 px over the tab bar (the bar is 64 tall at max(24 px, the safe area) from the bottom),
+   centred, at most 384 wide (as the toast). No scrim. It folds down into a one-line note, anchored at
+   its bottom edge, so it shrinks toward the tab bar. Sizes, the transform and the opacity are written
+   by cookieBite.ts on every frame. */
+
+.card {
+  position: fixed;
+  z-index: 19; /* under the tab bar (20), sheets and toasts */
+  bottom: calc(max(24px, env(safe-area-inset-bottom)) + 64px + var(--space-12));
+  left: 50%;
+  border-radius: var(--radius-card);
+  background: var(--bg-raised);
+  box-shadow: var(--fx-shadow-floating);
+  opacity: 0;
+  will-change: transform, width, height;
+}
+/* From 1200 px the tabs are in the top bar: the card sits 24 px off the bottom. */
+@media (min-width: 1200px) {
+  .card {
+    bottom: var(--space-24);
+  }
+}
+.body {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding: var(--space-20);
+  will-change: opacity, transform;
+}
+.top {
+  display: flex;
+  align-items: center;
+  gap: var(--space-14);
+}
+.plate {
+  position: relative;
+  flex: none;
+  width: 64px;
+  height: 64px;
+}
+.cookie {
+  position: absolute;
+  inset: 0;
+  width: 64px;
+  height: 64px;
+  overflow: visible;
+  will-change: transform;
+}
+/* The cookie is lit from the top left: a lighter face and a baked edge, all from its two tokens. */
+.d0 {
+  stop-color: color-mix(in srgb, var(--cookie-dough) 62%, var(--p-neutral-0));
+}
+.d1 {
+  stop-color: var(--cookie-dough);
+}
+.d2 {
+  stop-color: color-mix(in srgb, var(--cookie-dough) 80%, var(--cookie-chip));
+}
+.c0 {
+  stop-color: color-mix(in srgb, var(--cookie-chip) 72%, var(--cookie-dough));
+}
+.c1 {
+  stop-color: color-mix(in srgb, var(--cookie-chip) 78%, var(--p-neutral-1000));
+}
+.n0 {
+  stop-color: color-mix(in srgb, var(--cookie-dough) 74%, var(--cookie-chip));
+}
+.n1 {
+  stop-color: color-mix(in srgb, var(--cookie-dough) 74%, var(--cookie-chip));
+  stop-opacity: 0;
+}
+.edge {
+  fill: color-mix(in srgb, var(--cookie-dough) 58%, var(--cookie-chip));
+}
+.keep {
+  fill: var(--p-neutral-0); /* mask: white keeps */
+}
+.bites circle {
+  fill: var(--p-neutral-1000); /* mask: black is the bite */
+}
+.crumbs {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+}
+.crumbs i {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px;
+  border-radius: 2px;
+  background: var(--cookie-dough);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.crumbs i:nth-child(3n) {
+  background: var(--cookie-chip);
+}
+.copy h2 {
+  margin: 0;
+  color: var(--text-primary);
+  font: var(--type-title);
+  letter-spacing: -0.01em;
+}
+.copy p {
+  margin: var(--space-4) 0 0;
+  color: var(--text-secondary);
+  font: var(--type-body-m);
+}
+.actions {
+  display: flex;
+  gap: var(--space-8);
+  margin-top: 18px;
+}
+/* Sinima's buttons (ui/actions.module.css), stretched to share the row; the press is the spring's. */
+.button {
+  display: inline-flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: var(--space-14) var(--space-20);
+  border-radius: var(--radius-button);
+  font: var(--type-button);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: background-color var(--dur-fast) ease;
+  will-change: transform;
+}
+/* The picker rows' fill: the secondary tint in light, a step up from the dark card in dark (the
+   tint alone vanishes on it; the approved mockup shows a grey button in both). */
+.no {
+  border: 0;
+  background: var(--hover-fill-option);
+  color: var(--text-primary);
+}
+.sure {
+  border: 1px solid var(--action-primary-edge);
+  background: var(--action-primary);
+  color: var(--text-on-action);
+  box-shadow: var(--fx-button-gloss);
+}
+.button:focus-visible {
+  outline: none;
+}
+.no:focus-visible {
+  box-shadow: inset 0 0 0 1px var(--action-primary), var(--fx-focus-ring);
+}
+.sure:focus-visible {
+  border-color: var(--action-primary);
+  box-shadow: var(--fx-button-gloss), var(--fx-focus-ring);
+}
+@media (hover: hover) and (pointer: fine) {
+  .button.no:hover {
+    background: color-mix(in srgb, var(--hover-fill-option), var(--text-primary) 6%);
+  }
+  .button.sure:hover {
+    background: var(--action-primary-edge);
+  }
+}
+.note {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  height: 48px;
+  padding: 0 18px 0 var(--space-14);
+  color: var(--text-primary);
+  font: var(--type-body-m);
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+/* Focus lands here when the card folds under a keyboard user's finger: a ring inside its pill. */
+.note:focus {
+  outline: none;
+}
+.note:focus-visible {
+  border-radius: var(--radius-full);
+  box-shadow: inset 0 0 0 2px var(--action-primary);
+}
+.note svg {
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface);
+}
+.note[data-yes] svg {
+  background: var(--action-primary);
+}
+.note path {
+  fill: none;
+  stroke: var(--text-primary);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+}
+.note[data-yes] path {
+  stroke: var(--text-on-action);
+}

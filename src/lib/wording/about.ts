@@ -47,7 +47,7 @@ export const ABOUT = {
   removal: "Run a sinima and want your times or logo taken down? Open an issue on GitHub and we'll remove them the same day.",
   ask: "Ask for removal on GitHub",
   code: "Read the code (MIT)",
-  footer: "Sinima is free and has no ads, accounts or tracking. Your city and area are kept on your phone.",
+  footer: "Sinima is free and has no ads, accounts or cookies. Your city and area are kept on your phone.",
   stickers: "The film stickers are Fluent Emoji by Microsoft (MIT licence).",
 } as const;
 

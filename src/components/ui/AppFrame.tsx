@@ -16,6 +16,7 @@ import { SectionNav, type SectionId } from "./SectionNav";
 import { useTabSlide } from "./tabSlide";
 import { usePullRefresh } from "./usePullRefresh";
 import { useHomeGuide } from "./useHomeGuide";
+import { useConsentBanner } from "@/components/consent/useConsentBanner";
 import { TicketFace } from "./Stickers";
 import s from "./frame.module.css";
 
@@ -124,6 +125,7 @@ export function AppFrame({ active, search, city: chosen, bg, bar, footer, onAbou
   useTabSlide(content);
   usePullRefresh([content, foot]);
   const home = useHomeGuide();
+  const consent = useConsentBanner();
   const load = () => void loadParts().then(setLoaded, () => {});
   useEffect(() => {
     // A tap on the field before the page was ready focused it with no onFocus to hear it (a slow
@@ -201,6 +203,7 @@ export function AppFrame({ active, search, city: chosen, bg, bar, footer, onAbou
       </footer>
       {city !== null && loaded && <loaded.City open={city} onClose={closeCity} anchor={cityAt} instant={cityKeys} />}
       {home && <home.Guide />}
+      {consent && <consent.Banner onGone={consent.done} />}
     </OpenCity>
   );
 }
