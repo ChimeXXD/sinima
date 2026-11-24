@@ -30,8 +30,9 @@ import type { ParsedPage } from "./sources/raw.ts";
  * 11 Nov 2026 (D-45); live rows carry booking links and will weigh more.
  */
 // 24 for 19 Nov (D-155), when five days filled tomorrow for every Lagos sinima (21.9 KB); back to
-// 20 once page files stopped storing each showing's usual id (D-156).
-export const DATA_FILE_LIMIT_KB = 20;
+// 20 once page files stopped storing each showing's usual id (D-156). 24 again from 24 Nov (D-193):
+// at night Lagos's file holds every showing left in five days (21.3 KB) and Vercel refused to build.
+export const DATA_FILE_LIMIT_KB = 24;
 
 type FixtureEntry = {
   file: string; sourceId: string; page: string; cinemaId?: string; savedAt: string; sample: boolean;
