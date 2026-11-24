@@ -1,4 +1,5 @@
 import { formatDate, lagosNoon } from "@/lib/time/lagos";
+import { longDate } from "@/lib/wording/filmPage";
 import { list } from "@/lib/wording/list";
 
 // Coming soon's words (D-151): the section on Films, a card's line and date sticker, and a coming
@@ -7,7 +8,8 @@ import { list } from "@/lib/wording/list";
 
 // The section's heading is in films.ts, which the Films page's script carries anyway; this file's
 // date and calendar words are used only on the server.
-export { COMING_SECTION } from "@/lib/wording/films";
+export { COMING_SECTION, ON_SALE } from "@/lib/wording/films";
+import { ON_SALE } from "@/lib/wording/films";
 
 /** "Fri 18 Dec". */
 const opening = (firstDay: string) => formatDate(lagosNoon(firstDay));
@@ -24,6 +26,30 @@ export function leafWords(firstDay: string): { month: string; day: string } {
 
 /** The chip under a coming film's title: "Opens Fri 18 Dec at Filmhouse". */
 export const opensChip = (firstDay: string | null, sinimas: string[]) => (firstDay ? `Opens ${opening(firstDay)} at ${list(sinimas)}` : `Coming to ${list(sinimas)}, date not announced`);
+
+// Tickets on sale before a film opens (D-194, mockup/presales/): the sticker on its card, who sells
+// them, and its page's chip, line and one day tile.
+
+/** Under the card's date: one sinima by name, one chain's several as "6 Filmhouses", else "8 sinimas". */
+export function onSaleLine(cinemas: { name: string; chain: string }[]): string {
+  if (cinemas.length === 1) return cinemas[0]!.name;
+  const chains = new Set(cinemas.map((cinema) => cinema.chain));
+  const [chain] = chains;
+  // "6 Filmhouses"; a name ending in s takes no s ("4 sinimas", never "4 Genesiss").
+  return chains.size === 1 && !chain!.endsWith("s") ? `${cinemas.length} ${chain}s` : `${cinemas.length} sinimas`;
+}
+
+/** The chip under the title: "Opens Fri 18 Dec · tickets on sale". */
+export const opensOnSaleChip = (firstDay: string) => `Opens ${opening(firstDay)} · ${ON_SALE.toLowerCase()}`;
+
+/** Under Times in Lagos: "Friday 18 December · opening day · tickets on sale". */
+export const openingSubtitle = (firstDay: string) => `${longDate(lagosNoon(firstDay))} · opening day · ${ON_SALE.toLowerCase()}`;
+
+/** The page's one day tile: "Opens" over "Fri 18". */
+export function openingTile(firstDay: string): { weekday: string; date: string; label: string } {
+  const [weekday, day] = opening(firstDay).split(" ");
+  return { weekday: "Opens", date: `${weekday} ${day}`, label: `Opening day, ${longDate(lagosNoon(firstDay))}` };
+}
 
 /** Who lists it, and who will put the times up: one sinima by name, more as "they". */
 function whose(sinimas: string[]) {

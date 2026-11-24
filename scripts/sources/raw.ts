@@ -53,6 +53,8 @@ export type Reader = (input: {
   pages: Record<string, string>;
   sites?: Record<string, string>;
   names?: Record<string, string>;
+  /** Coming films' first dates (Lagos, yyyy-mm-dd) to read too when they fall after the days asked for (D-194). */
+  openings?: string[];
 }) => Promise<ParsedPage[]>;
 
 const OFFSET_TIME = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\+01:00$/;

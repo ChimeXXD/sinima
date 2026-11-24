@@ -2,7 +2,10 @@
 // and a cinema's page (its programme for each day it lists). They read saved HTML only; fetching
 // is refresh's job. Lagocine's cinema ids are the ids in data/cinemas.json.
 import * as cheerio from "cheerio";
+import { publicBookingPage } from "../../src/lib/data/bookingPage.ts";
 import { clean, lagosOffsetTimeToUtc, type ParsedPage, type RawShowing } from "./raw.ts";
+
+export { publicBookingPage };
 
 /** Lagocine's badge for a film it has no rating for. */
 const NOT_RATED = "NR";
@@ -41,7 +44,7 @@ export function parseLagocineDay(html: string): ParsedPage {
         rating: filmRating,
         startsAt: lagosOffsetTimeToUtc(at),
         format: clean($(time).attr("data-format")),
-        bookingUrl: clean($(time).attr("data-booking")),
+        bookingUrl: publicBookingPage(clean($(time).attr("data-booking"))),
       });
     });
   });
@@ -69,7 +72,7 @@ export function parseLagocineCinema(html: string, cinemaId: string): ParsedPage 
         rating: filmRating,
         startsAt: lagosOffsetTimeToUtc(at),
         format: clean($(chip).attr("data-format")),
-        bookingUrl: clean($(chip).attr("href")),
+        bookingUrl: publicBookingPage(clean($(chip).attr("href"))),
       });
     });
   });

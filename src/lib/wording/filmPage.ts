@@ -31,8 +31,13 @@ const MONTHS = ["January", "February", "March", "April", "May", "June", "July", 
 
 /** Under "Times in Lagos": "Friday 13 November · your area first". `date` is any instant that day. */
 export function timesSubtitle(date: string, homeKnown: boolean): string {
+  return `${longDate(date)} · ${homeKnown ? "your area first" : "soonest first"}`;
+}
+
+/** "Friday 18 December", the day in Lagos. */
+export function longDate(date: string): string {
   const p = toLagos(date);
-  return `${WEEKDAYS[p.weekday] ?? p.weekday} ${p.day} ${MONTHS[p.month - 1]} · ${homeKnown ? "your area first" : "soonest first"}`;
+  return `${WEEKDAYS[p.weekday] ?? p.weekday} ${p.day} ${MONTHS[p.month - 1]}`;
 }
 
 /** The tag beside an area's name. */

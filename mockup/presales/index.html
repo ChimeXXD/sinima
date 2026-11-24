@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tickets on sale · pick one</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Urbanist:wght@500;600;700&display=swap">
+<style>
+:root { --board: #e9e9ec; --ink: #18181b; --muted: #5d5d66; --accent: #3b82f6; --card: #ffffff; --line: #d4d4d8; }
+* { box-sizing: border-box; margin: 0; }
+body { background: var(--board); color: var(--ink); font-family: "Urbanist", system-ui, sans-serif; }
+.page { max-width: 1700px; margin: 0 auto; padding: 32px 20px 120px; display: flex; flex-direction: column; gap: 56px; }
+.intro { max-width: 900px; display: flex; flex-direction: column; gap: 10px; }
+.intro h1 { font-size: 34px; font-weight: 700; line-height: 1.1; }
+.intro p, .part > p { color: var(--muted); font-size: 16px; line-height: 1.5; font-weight: 500; }
+.part { display: flex; flex-direction: column; gap: 18px; }
+.part h2 { font-size: 28px; font-weight: 700; }
+.option { background: var(--card); border-radius: 24px; padding: 20px; display: flex; flex-direction: column; gap: 14px; border: 2px solid transparent; }
+.option.kept { border-color: var(--accent); }
+.head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.head h3 { font-size: 22px; font-weight: 700; }
+.head h3 small { color: var(--muted); font-size: 15px; font-weight: 600; margin-left: 8px; }
+.head p { color: var(--muted); font-size: 15px; font-weight: 500; max-width: 760px; line-height: 1.45; flex-basis: 100%; }
+.keep { font: 600 15px/1 inherit; font-family: inherit; border: 0; border-radius: 999px; padding: 12px 18px; min-height: 44px; background: #f4f4f5; color: var(--ink); cursor: pointer; }
+.kept .keep { background: var(--accent); color: #fff; }
+.devices { display: flex; gap: 20px; align-items: flex-start; overflow-x: auto; padding-bottom: 6px; }
+.device { flex: none; display: flex; flex-direction: column; gap: 8px; }
+.device span { font-size: 13px; font-weight: 600; color: var(--muted); }
+.device img { display: block; border-radius: 14px; border: 1px solid var(--line); background: #fff; cursor: zoom-in; }
+.cards .iphone img { width: 260px; } .cards .ipad img { width: 360px; } .cards .desktop img { width: 680px; }
+.pages .iphone img { width: 260px; } .pages .ipad img { width: 360px; } .pages .desktop img { width: 680px; }
+.bar { position: fixed; left: 50%; bottom: 20px; translate: -50% 0; display: flex; gap: 12px; align-items: center; background: var(--ink); color: #fff; border-radius: 999px; padding: 8px 8px 8px 20px; font-size: 15px; font-weight: 600; box-shadow: 0 12px 32px #0000003d; }
+.bar button { font: inherit; border: 0; border-radius: 999px; padding: 12px 18px; background: var(--accent); color: #fff; cursor: pointer; }
+dialog { border: 0; padding: 0; background: transparent; max-width: 96vw; max-height: 96vh; }
+dialog img { max-width: 96vw; max-height: 92vh; border-radius: 14px; display: block; }
+dialog::backdrop { background: #000000b3; }
+</style>
+</head>
+<body>
+<main class="page">
+  <header class="intro">
+    <h1>Tickets on sale before a film opens</h1>
+    <p>Filmhouse already sells opening-day tickets for Dune: Part Three (15 showings at 6 Filmhouses) and Avengers: Doomsday (21 at 7). These are the live site with those real times from Lagocine's page for Fri 18 Dec, put in place for this board only; nothing on the site has changed. Keep one card and one page, then "Copy my picks" and paste it to me.</p>
+  </header>
+
+  <section class="part cards">
+    <h2>1 · The card in Films › Coming soon</h2>
+    <p>Each film on sale says so on its card. The line under it names how many sinimas sell it.</p>
+    <div id="cards"></div>
+  </section>
+
+  <section class="part pages">
+    <h2>2 · The film's own page</h2>
+    <p>Today the page says "Times aren't up yet". With tickets on sale, it shows them. The chip reads "Opens Fri 18 Dec · tickets on sale" in both.</p>
+    <div id="pages"></div>
+  </section>
+</main>
+<div class="bar"><span id="picked">Nothing kept yet</span><button id="copy">Copy my picks</button></div>
+<dialog id="zoom"><img alt=""></dialog>
+<script>
+const CARDS = [
+  { id: "now", title: "Today", note: "As it is live now, for comparison.", keep: false },
+  { id: "A", title: "A · Sticker", note: "A blue “Tickets on sale” sticker on the poster, tilted like the date sticker (Keepsy). The loudest: you see it while scrolling past." },
+  { id: "B", title: "B · Blue line", note: "A blue “Tickets on sale” line under the date, the sinimas under it. Quietest: nothing on the poster changes." },
+  { id: "C", title: "C · Badge", note: "A dark “On sale” pill on the poster's top-left, where the IMAX · 4D badge sits on films that are showing." },
+];
+const PAGES = [
+  { id: "now", title: "Today", note: "As it is live now: “Times aren't up yet”.", keep: false },
+  { id: "1", title: "1 · Like any film", note: "Times in Lagos, exactly as a film that's showing: one day tile (Opens · Fri 18), then each area and its cinemas with their times. Nothing new to learn." },
+  { id: "2", title: "2 · Opening-day card", note: "One card, “Opening day · Fri 18 Dec · tickets on sale at 6 sinimas · 15 showings”, then each cinema (soonest first) with its times. Shorter, and it reads as a special day." },
+];
+const kept = { card: null, page: null };
+function render(list, el, kind, folder) {
+  el.innerHTML = list.map((o) => `
+    <article class="option" data-id="${o.id}">
+      <div class="head"><h3>${o.title}</h3>${o.keep === false ? "" : `<button class="keep" type="button">Keep</button>`}<p>${o.note}</p></div>
+      <div class="devices">${["iphone", "ipad", "desktop"].map((d) => `<div class="device ${d}"><span>${{ iphone: "iPhone · 390", ipad: "iPad · 834", desktop: "Desktop · 1440" }[d]}</span><img src="${folder}-${o.id}-${d}.png" alt="${o.title}, ${d}"></div>`).join("")}</div>
+    </article>`).join("");
+  el.querySelectorAll(".keep").forEach((b) => b.addEventListener("click", () => {
+    const art = b.closest(".option"); const id = art.dataset.id;
+    kept[kind] = kept[kind] === id ? null : id;
+    el.querySelectorAll(".option").forEach((a) => a.classList.toggle("kept", a.dataset.id === kept[kind]));
+    el.querySelectorAll(".keep").forEach((k) => (k.textContent = k.closest(".option").dataset.id === kept[kind] ? "Kept" : "Keep"));
+    say();
+  }));
+}
+function say() {
+  const card = CARDS.find((c) => c.id === kept.card), page = PAGES.find((p) => p.id === kept.page);
+  document.getElementById("picked").textContent = [card && `Card ${card.title}`, page && `Page ${page.title}`].filter(Boolean).join(" · ") || "Nothing kept yet";
+}
+render(CARDS, document.getElementById("cards"), "card", "card");
+render(PAGES, document.getElementById("pages"), "page", "page");
+document.getElementById("copy").addEventListener("click", async () => {
+  const text = `Presales picks: card ${kept.card ?? "none"}, page ${kept.page ?? "none"}`;
+  try { await navigator.clipboard.writeText(text); document.getElementById("copy").textContent = "Copied"; } catch { prompt("Copy this:", text); }
+  setTimeout(() => (document.getElementById("copy").textContent = "Copy my picks"), 1500);
+});
+const zoom = document.getElementById("zoom");
+document.addEventListener("click", (e) => { if (e.target.matches(".device img")) { zoom.querySelector("img").src = e.target.src; zoom.showModal(); } else if (e.target === zoom || e.target.closest("dialog")) zoom.close(); });
+</script>
+</body>
+</html>

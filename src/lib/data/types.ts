@@ -128,4 +128,9 @@ export type ShowtimesFile = {
   featured?: Featured[];
   /** Left out when no sinima lists a film as coming (D-151). By first date, undated last. */
   coming?: Coming[];
+  /**
+   * Showings already on sale on a coming film's first date, after the shown days (D-194): kept in
+   * the whole file and "all" (build time) only, never in a file a page loads. Left out when none.
+   */
+  presales?: Showing[];
 };

@@ -11,11 +11,11 @@ import { gzipSync } from "node:zlib";
 import { CITIES } from "../src/lib/city.ts";
 import { withoutShowingIds } from "../src/lib/data/showingId.ts";
 import type { ShowtimesFile } from "../src/lib/data/types.ts";
-import { lagosDayKey, toLagos } from "../src/lib/time/lagos.ts";
+import { EVENING_ENDS_HOUR, lagosDayKey, lagosLocalToUtc, lagosNoon, toLagos, utcMs, utcString } from "../src/lib/time/lagos.ts";
 import { assemble, readJson, readSources, SAMPLE_PATHS } from "./assemble.ts";
-import { sampleDay } from "./coming.ts";
+import { comingTitle, sampleDay } from "./coming.ts";
 import { LIVE_DIR, liveBuildFiles, refreshLive } from "./live.ts";
-import { toSampleDays, type Batch } from "./pipeline.ts";
+import { filmIdFromTitle, toSampleDays, type Batch } from "./pipeline.ts";
 import { parseFilmhouseHome } from "./sources/filmhouse.ts";
 import { parseLagocineCinema, parseLagocineDay } from "./sources/lagocine.ts";
 import { parseVeeziSessions } from "./sources/veezi.ts";
@@ -36,9 +36,13 @@ export const DATA_FILE_LIMIT_KB = 24;
 
 type FixtureEntry = {
   file: string; sourceId: string; page: string; cinemaId?: string; savedAt: string; sample: boolean;
+  /** A coming film's opening day read ahead (D-194): its rows move onto their film's sample first date. */
+  opening?: boolean;
   /** Cinemas whose rows on this page the sample leaves out, with the reason in the entry's `why` (D-131). */
   leaveOut?: string[];
 };
+
+const DAY_MS = 86_400_000;
 
 /** Our bot's name and contact page, on every request (D-77). */
 const USER_AGENT = "SinimaBot/0.1 (+https://github.com/ChimeXXD/sinima)";
@@ -59,7 +63,8 @@ function parseFixture(entry: FixtureEntry, html: string): ParsedPage {
 /** Sample data from the saved fixtures, as the files to write (path under the repo root -> file). */
 export function refreshFromFixtures(options: { now: string; root: string }): { files: Map<string, ShowtimesFile>; log: string[] } {
   const { now, root } = options;
-  const entries = readJson<{ fixtures: FixtureEntry[] }>(join(root, "tests/fixtures/index.json")).fixtures.filter((entry) => entry.sample);
+  const sampled = readJson<{ fixtures: FixtureEntry[] }>(join(root, "tests/fixtures/index.json")).fixtures.filter((entry) => entry.sample);
+  const entries = sampled.filter((entry) => !entry.opening);
   const registry = readSources(root);
 
   // One batch per source: its pages were saved in one sitting, and a cinema's tomorrow may be on
@@ -87,6 +92,21 @@ export function refreshFromFixtures(options: { now: string; root: string }): { f
       ...(list && featuredFor.length > 0 ? { featured: { cinemaIds: featuredFor, day: lagosDayKey(now), titles: list.films.map((film) => film.title) } } : {}),
       ...(coming.length > 0 && featuredFor.length > 0 ? { coming: { cinemaIds: featuredFor, films: coming } } : {}),
     });
+  }
+  // Opening days read ahead (D-194): each row onto its film's sample first date, at its own clock time.
+  const firstDays = new Map(batches.flatMap((batch) => batch.coming?.films ?? []).flatMap((film) => (film.firstDay ? [[filmIdFromTitle(comingTitle(film.title)), film.firstDay] as const] : [])));
+  for (const entry of sampled.filter((page) => page.opening)) {
+    const batch = batches.find((candidate) => candidate.sourceId === entry.sourceId);
+    if (!batch) continue;
+    for (const row of parseFixture(entry, readFileSync(join(root, "tests/fixtures", entry.file), "utf8")).showings) {
+      const day = firstDays.get(filmIdFromTitle(comingTitle(row.filmTitle)));
+      if (!day) continue;
+      const { hour, minute } = toLagos(row.startsAt);
+      // A show after midnight belongs to the evening before (SPEC §3): it moves with that evening.
+      const on = toLagos(utcString(utcMs(lagosNoon(day)) + (hour < EVENING_ENDS_HOUR ? DAY_MS : 0)));
+      const start = lagosLocalToUtc({ year: on.year, month: on.month, day: on.day, hour, minute });
+      batch.showings.push({ ...row, startsAt: start, bookingUrl: null });
+    }
   }
   return assemble({ now, root, batches, method: "fixture", paths: SAMPLE_PATHS });
 }

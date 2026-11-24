@@ -25,8 +25,10 @@ export function inCity(file: ShowtimesFile, city: City, cityOfArea: CityOfArea):
   const coming = cutComing(file, ids);
   const films = new Set([...showings, ...coming].map((row) => row.filmId));
   const sources = new Set([...showings, ...featured, ...coming].map((row) => row.sourceId));
+  const rest = { ...file };
+  delete rest.presales; // presales never reach a city's file (D-194)
   return withComing(withFeatured({
-    ...file,
+    ...rest,
     sources: file.sources.filter((source) => sources.has(source.id)),
     cinemas,
     films: file.films.filter((film) => films.has(film.id)),

@@ -113,6 +113,26 @@
   margin-top: var(--space-2);
 }
 
+/* Tickets on sale before the film opens (D-194, mockup/presales/ card A): a blue sticker across the
+   poster's foot, tilted the other way from the date's, outlined white like every sticker (Keepsy). */
+.onSale {
+  position: absolute;
+  bottom: var(--space-12);
+  left: var(--space-10);
+  padding: 7px 11px;
+  border-radius: var(--radius-button);
+  background: var(--action-primary);
+  color: var(--text-on-action);
+  box-shadow: 0 0 0 3px var(--sticker-outline);
+  filter: drop-shadow(var(--fx-sticker-small));
+  rotate: -5deg;
+  z-index: 2; /* over the poster, as in card A, whatever the poster's own layer does */
+  font: var(--type-badge);
+  letter-spacing: var(--type-badge-tracking);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
 .formatNote {
   color: var(--text-secondary);
   font: var(--type-meta);

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { CITIES } from "@/lib/city";
 import { cityParam, loadCity, loadDays } from "@/lib/data/load";
 import { FilmsScreen } from "@/components/films/FilmsScreen";
-import { comingCards } from "@/lib/data/comingPage";
-import { comingIn } from "@/lib/data/filmPages";
+import { comingCards, soldBy } from "@/lib/data/comingPage";
+import { comingIn, presalesIn } from "@/lib/data/filmPages";
 import { toListData } from "@/lib/data/listData";
 import { pageMeta } from "@/lib/share/meta";
 import { pageColours } from "@/lib/theme/pageColours";
@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: CityProps): Promise<Metadata>
 export default async function FilmsPage({ params }: CityProps) {
   const city = cityParam((await params).city);
   // Coming soon (D-151): its cards' words are made here; a city with no coming film sends none and has no section.
-  const cards = comingCards(comingIn(city));
+  const cards = comingCards(comingIn(city), soldBy(presalesIn(city)));
   const coming = cards.length > 0 ? { coming: cards } : {};
   return <FilmsScreen data={{ ...toListData(loadCity(city)), days: loadDays(city) }} city={city} bg={pageColours()} {...coming} />;
 }

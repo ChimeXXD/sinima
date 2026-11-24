@@ -1,4 +1,5 @@
 import { lagosDayKey } from "../time/lagos.ts";
+import { publicBookingPage } from "./bookingPage.ts";
 import { stillComing } from "./coming.ts";
 import type { ShowtimesFile } from "./types.ts";
 
@@ -243,6 +244,11 @@ export function validateShowtimes(input: unknown, options: ValidateOptions = {})
     // A missing link or price is unknown, and unknown is null (types.ts), so no reader sees undefined.
     showing.bookingUrl ??= null;
     showing.price ??= null;
+    if (typeof showing.bookingUrl === "string") {
+      const cut = publicBookingPage(showing.bookingUrl);
+      if (cut !== showing.bookingUrl) log.push(`Cut the booking link of showing ${String(showing.id)} back from the cinema's checkout (rule 5)`);
+      showing.bookingUrl = cut;
+    }
     if (showing.bookingUrl !== null) {
       const problem = bookingProblem(showing.bookingUrl, cinemaById.get(showing.cinemaId) as Row);
       if (problem) {
@@ -291,5 +297,12 @@ export function validateShowtimes(input: unknown, options: ValidateOptions = {})
     log.push(`sample was false but ${fromFixtures} ${fromFixtures === 1 ? "showing comes" : "showings come"} from a fixture, so it is now true`);
   }
 
+  // Showings on sale before a film opens (D-194): each held to every rule a showing is.
+  if (file.presales !== undefined) {
+    const inner = validateShowtimes({ ...(input as Row), showings: (input as Row).presales, presales: undefined, featured: undefined, coming: undefined }, options);
+    if (!inner.ok) return { ok: false, errors: inner.errors.map((error) => `presales: ${error}`) };
+    log.push(...inner.log.map((line) => `presales: ${line}`));
+    file.presales = inner.file.showings;
+  }
   return { ok: true, file: file as unknown as ShowtimesFile, log };
 }

@@ -22,6 +22,7 @@ Written 6 Nov 2026. `data/showtimes.json` is what the pages build from. `data/ci
 
 `featured` (optional) lists films a chain's page features without times; see §Featured films without times (D-131).
 `coming` (optional) lists films a sinima lists as coming, with its first date; see §Coming films (D-151).
+`presales` (optional) lists showings already on sale on a coming film's first date, after the shown days; see §Tickets on sale before a film opens (D-194).
 
 Unknown keys are ignored, so a newer writer can add fields without breaking an older reader. Any change that breaks a reader bumps `schemaVersion`.
 
@@ -335,6 +336,18 @@ Before a build, `npm run build` runs `refresh --build`: it copies `data/live/sho
 **TMDB (D-151).** A film that is only coming (no showing in the live or sample data) is matched by `pickComingMatch`: the same title, a TMDB release year within one year of `firstDay`'s (TMDB's dates differ from Nigeria's: Doomsday 16 Dec there, 18 Dec at Filmhouse), and exactly one such film; otherwise no poster, and the UI shows the NoPoster face. Checked against TMDB on 18 Nov 2026: Doomsday, Dune: Part Three and Jumanji: Open World match; "THE FOUR" finds "The Fantastic 4: First Steps" and stays unmatched. An undated coming film is matched like a showing film (`pickMatch`, from today).
 
 **Sample data.** The saved home page's coming films keep their distance from the day it was saved (17 Nov): a film first on 18 Dec opens 31 days after the sample's today (`sampleDay`).
+
+## Tickets on sale before a film opens (D-194)
+
+`presales` (optional, left out when empty): showings on a coming film's first date that fall after the five shown days, already on sale. Each is a showing in every field and is checked by every rule a showing is (the validator runs its showing checks over them; a broken one refuses the file, a bad link is removed). They are never in `showings`, so a film on sale is still coming (D-154).
+
+**What is read.** Each run, Lagocine's reader also reads `https://lagocine.com/day/<date>/` for every coming film's first date after its five days, from the last run's `coming` list, one page per date. A date with no page yet, or one with no films, is noted and skipped. The pipeline keeps a row after the shown days when its film is coming and its evening (a 00:30 show counts as the night before) is that film's first date; any other row that far ahead is dropped with a log line. A failed read keeps its last good presales with its showings (D-119).
+
+**Booking links.** Lagocine links a Filmhouse opening day into Filmhouse's checkout (`…/showtimes/<date>/<cinema>/select-tickets?showtime=…`), which Filmhouse's robots.txt disallows and rule 5 forbids. `publicBookingPage` (`scripts/sources/lagocine.ts`) cuts it back to the film's public showtimes page for the day, `…/movies/<film>/showtimes/<date>`, on every Lagocine row.
+
+**Where they live.** Only in `showtimes.json` and `all.json`, which no page loads (build time). City, area and day files never carry them (`inCity`, `splitByArea`, `laterDays`), so the page budget is unchanged. At build, `presalesIn(city)` (`src/lib/data/filmPages.ts`) cuts them to a city; `soldBy` gives the Coming soon card its "Tickets on sale" sticker and who sells ("6 Filmhouses"), and `presaleData` gives the film's page its opening day's times (`OpeningTimes`).
+
+**Sample data.** `tests/fixtures/lagocine/2026-11-24-day-2026-12-18.html` (index entry `"opening": true`): each row moves onto its film's sample first date at its own clock time, with no booking link, as every sample row.
 
 ## Sample data (D-20, D-45)
 

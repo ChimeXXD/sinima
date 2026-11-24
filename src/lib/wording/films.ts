@@ -5,6 +5,8 @@ import { formatTime } from "@/lib/time/lagos";
 
 /** Coming soon, under Now showing (D-151). "save the date!" is set in Story Script, which holds its letters. */
 export const COMING_SECTION = { title: "Coming soon", note: "First dates from the sinimas' own pages", hand: "save the date!" } as const;
+/** The sticker on a coming film's poster when its tickets are already on sale (D-194). */
+export const ON_SALE = "Tickets on sale";
 
 export const filmCount = (n: number) => `${n} ${n === 1 ? "film" : "films"}`;
 

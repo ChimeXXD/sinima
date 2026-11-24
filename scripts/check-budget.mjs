@@ -26,7 +26,9 @@ const BUDGET = {
   // old pages still carry the old components. Re-measure after build unit 12 and set it tighter.
   // 167 for five days (D-153, Chime 19 Nov 2026): the day row and the later-day fetch put the
   // Cinemas, cinema and film pages 0.3-0.8 KB over 165.
-  jsKb: 167,
+  // 168 for tickets on sale (D-195, Chime 24 Nov 2026): the opening day's section on a coming film's
+  // page put every film page at 167.3.
+  jsKb: 168,
   // 225 from the motion pass (D-104, Chime 16 Nov 2026): Starting soon was 217.1 before any motion,
   // and the twelve motions (D-103) need about 4-6 KB; the day's data moves pages a few tenths too.
   // 228 for five days (D-153): Cinemas measured 226.8 and Films 225.5.

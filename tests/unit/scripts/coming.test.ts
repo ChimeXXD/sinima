@@ -44,6 +44,28 @@ function scratch(): string {
   return dir;
 }
 
+// D-194: the run reads Lagocine's page for each coming film's first date after the five days, from the
+// last run's coming list, and keeps that film's showings on it as presales.
+describe("refreshLive with tickets on sale before a film opens", () => {
+  const opening = readFileSync(join(root, "tests/fixtures/lagocine/2026-11-24-day-2026-12-18.html"), "utf8");
+  it("reads the opening day the last run's coming list names, and keeps its showings for coming films as presales", async () => {
+    const dir = scratch();
+    const first = await refreshLive({ now: NOW, root: dir, fetchText, readers: readers(async () => homePage()) });
+    mkdirSync(join(dir, LIVE_DIR), { recursive: true });
+    writeFileSync(join(dir, LIVE_DIR, "showtimes.json"), JSON.stringify(main(first.files)));
+    const asked: string[] = [];
+    const net = async (url: string) => (asked.push(url), url.endsWith("/2026-12-18/") ? opening : fetchText(url));
+    const file = main((await refreshLive({ now: NOW, root: dir, fetchText: net, readers: readers(async () => homePage()) })).files);
+    expect(asked.filter((url) => url.endsWith("/2026-12-18/"))).toHaveLength(1);
+    expect(asked.filter((url) => url.endsWith("/2026-11-12/"))).toHaveLength(1); // Tomorrow's Film is inside the five days
+    const on = (id: string) => file.presales!.filter((row) => row.filmId === id);
+    expect(on("dune-part-three")).toHaveLength(15);
+    expect(on("avengers-doomsday")).toHaveLength(22);
+    expect(file.presales!.every((row) => !row.bookingUrl || !/select-tickets/.test(row.bookingUrl))).toBe(true);
+    expect(file.showings.some((row) => row.startsAt.startsWith("2026-12-18"))).toBe(false);
+  });
+});
+
 describe("refreshLive with Filmhouse's coming films", () => {
   it("lists each coming film once, by first date (no date last), for Filmhouse's 7, and puts each film in `films` with its id matched (D-119)", async () => {
     const file = main((await refreshLive({ now: NOW, root: scratch(), fetchText, readers: readers(async () => homePage()) })).files);

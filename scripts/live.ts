@@ -51,8 +51,10 @@ export const READERS: Record<string, Reader> = {
   // One day page holds every showing in Lagos that day. A later day Lagocine hasn't published yet
   // (404, or a page with no films) ends the read with the days before it; today's page missing or
   // empty, or any refusal, fails it.
-  lagocine: async ({ now, days, fetchText }) => {
+  // Then each coming film's first date after those days, once: its showings already on sale (D-194).
+  lagocine: async ({ now, days, fetchText, openings = [] }) => {
     const pages: ParsedPage[] = [];
+    const lastDay = lagosDayKey(utcString(utcMs(now) + (days - 1) * DAY));
     for (let day = 0; day < days; day += 1) {
       const key = lagosDayKey(utcString(utcMs(now) + day * DAY));
       let html: string | null;
@@ -67,6 +69,28 @@ export const READERS: Record<string, Reader> = {
         break;
       }
       pages.push(parseLagocineDay(html));
+    }
+    // An extra page: one that fails is noted and skipped, never failing the days already read.
+    for (const key of [...new Set(openings)].filter((date) => date > lastDay).sort()) {
+      let html: string | null;
+      try {
+        html = await fetchText(`https://lagocine.com/day/${key}/`);
+      } catch (error) {
+        if (!pageMissingOrSlow(error)) {
+          pages[pages.length - 1]!.notes = [...(pages[pages.length - 1]!.notes ?? []), `opening day ${key} could not be read (${error instanceof Error ? error.message : String(error)})`];
+          continue;
+        }
+        html = null;
+      }
+      if (html === null || !lagocineHasFilms(html)) {
+        pages[pages.length - 1]!.notes = [...(pages[pages.length - 1]!.notes ?? []), `no page for opening day ${key} yet`];
+        continue;
+      }
+      try {
+        pages.push(parseLagocineDay(html));
+      } catch (error) {
+        pages[pages.length - 1]!.notes = [...(pages[pages.length - 1]!.notes ?? []), `opening day ${key} could not be read (${error instanceof Error ? error.message : String(error)})`];
+      }
     }
     return pages;
   },
@@ -116,7 +140,8 @@ function keptBatch(previous: ShowtimesFile | null, sourceId: string, given: Set<
   if (!previous) return null;
   const today = toLagos(now);
   const dayStart = lagosLocalToUtc({ year: today.year, month: today.month, day: today.day, hour: 0, minute: 0 });
-  const rows = previous.showings.filter((row) => row.sourceId === sourceId && given.has(row.cinemaId) && row.startsAt >= dayStart);
+  // Its presales too (D-194): the pipeline sorts them apart again.
+  const rows = [...previous.showings, ...(previous.presales ?? [])].filter((row) => row.sourceId === sourceId && given.has(row.cinemaId) && row.startsAt >= dayStart);
   const list = previous.featured?.find((entry) => entry.sourceId === sourceId && entry.day >= lagosDayKey(now) && entry.cinemaIds.some((id) => featuredFor.has(id)));
   const featured = list ? { cinemaIds: list.cinemaIds.filter((id) => featuredFor.has(id)), day: list.day, titles: list.films.map((film) => film.title) } : undefined;
   const films = new Map(previous.films.map((film) => [film.id, film]));
@@ -169,7 +194,10 @@ export async function refreshLive(input: {
     try {
       // Each cinema's own page on this source, for the cinemas it feeds (data/sources.json `cinemaPages`).
       const own = (map: Record<string, string> = {}) => Object.fromEntries(Object.entries(map).filter(([cinemaId]) => given.has(cinemaId)));
-      pages = await reader({ now, days: source.daysAhead ?? DAYS_AHEAD, fetchText, renderText, pages: own(source.cinemaPages), sites: own(source.bookingSites), names: own(source.pageNames) });
+      // Coming films' first dates, from the last run's list: a source reads those after its days too (D-194).
+      previous ??= previousLive(root);
+      const openings = (previous?.coming ?? []).flatMap((entry) => (entry.firstDay !== null && stillComing(entry, lagosDayKey(now)) ? [entry.firstDay] : []));
+      pages = await reader({ now, days: source.daysAhead ?? DAYS_AHEAD, fetchText, renderText, pages: own(source.cinemaPages), sites: own(source.bookingSites), names: own(source.pageNames), openings });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       failures.push(message);

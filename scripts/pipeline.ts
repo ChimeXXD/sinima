@@ -6,6 +6,7 @@ import { showingId } from "../src/lib/data/showingId.ts";
 import type { Cinema, Film, Showing, ShowtimesFile, Source, SourceHealth } from "../src/lib/data/types.ts";
 import { validateShowtimes } from "../src/lib/data/validate.ts";
 import { EVENING_ENDS_HOUR, lagosDayKey, lagosDaysFrom, lagosLocalToUtc, toLagos } from "../src/lib/time/lagos.ts";
+import { splitPresales } from "./presales.ts";
 import { comingFilms } from "./coming.ts";
 import { properTitle } from "./titles.ts";
 import { featuredFilms, listedTitles, listMatcher } from "./lists.ts";
@@ -252,31 +253,41 @@ export function buildShowtimes(input: {
     const own = filmIdFromTitle(spelling);
     films.set(id, { id, title, runtimeMin: null, rating, origin: null, tmdbId: null, credits: { ...UNKNOWN_CREDITS, sources: [] }, ...input.creditsFor?.(id, own === id ? [] : [own]) });
   });
+  // After the shown days, only a coming film's opening day is kept, apart, as tickets on sale (D-194).
+  const { shownNow, presales } = splitPresales(showings, coming, input.generatedAt, DAYS_SHOWN, log);
   const result = validateShowtimes({
     schemaVersion: 1, generatedAt: input.generatedAt, timeZone: "Africa/Lagos",
-    sources: input.sources, cinemas: input.cinemas, films: [...films.values()].map((film) => ({ ...film, title: properTitle(film.title, input.titleFor?.(film.id)) })).sort((a, b) => a.id.localeCompare(b.id)), showings,
+    sources: input.sources, cinemas: input.cinemas, films: [...films.values()].map((film) => ({ ...film, title: properTitle(film.title, input.titleFor?.(film.id)) })).sort((a, b) => a.id.localeCompare(b.id)), showings: shownNow,
     ...(featured.length > 0 ? { featured } : {}),
     ...(coming.length > 0 ? { coming } : {}),
+    ...(presales.length > 0 ? { presales } : {}),
   });
   if (!result.ok) throw new Error(`The data file was refused:\n${result.errors.join("\n")}`);
-  return { file: only(result.file, result.file.cinemas, () => true), log: [...log, ...result.log] };
+  return { file: only(result.file, result.file.cinemas, () => true, true), log: [...log, ...result.log] };
 }
 
-/** The file cut down to some cinemas and showings, with only the films and sources those showings (and featured and coming films) use. */
-function only(file: ShowtimesFile, cinemas: Cinema[], keep: (showing: Showing) => boolean): ShowtimesFile {
+/**
+ * The file cut down to some cinemas and showings, with only the films and sources those showings (and
+ * featured and coming films, and presales when kept) use. Presales stay only where `presales` is true (D-194).
+ */
+function only(file: ShowtimesFile, cinemas: Cinema[], keep: (showing: Showing) => boolean, keepPresales = false): ShowtimesFile {
   const cinemaIds = new Set(cinemas.map((cinema) => cinema.id));
   const showings = file.showings.filter((showing) => cinemaIds.has(showing.cinemaId) && keep(showing));
+  const presales = keepPresales ? (file.presales ?? []).filter((showing) => cinemaIds.has(showing.cinemaId)) : [];
   const featured = cutFeatured(file, cinemaIds);
   const coming = cutComing(file, cinemaIds);
-  const filmIds = new Set([...showings, ...coming].map((row) => row.filmId));
-  const sourceIds = new Set([...showings, ...featured, ...coming].map((row) => row.sourceId));
-  return withComing(withFeatured({
+  const filmIds = new Set([...showings, ...presales, ...coming].map((row) => row.filmId));
+  const sourceIds = new Set([...showings, ...presales, ...featured, ...coming].map((row) => row.sourceId));
+  const out: ShowtimesFile = withComing(withFeatured({
     ...file,
     sources: file.sources.filter((source) => sourceIds.has(source.id)),
     cinemas,
     films: file.films.filter((film) => filmIds.has(film.id)),
     showings,
+    presales,
   }, featured), coming);
+  if (presales.length === 0) delete out.presales;
+  return out;
 }
 
 /** How many days the site shows, today first (D-142): today and tomorrow in each page, the rest in day files (D-147). */
@@ -310,7 +321,7 @@ export function splitByArea(whole: ShowtimesFile, areaSlugs: string[], now: stri
   const end = lagosLocalToUtc({ ...lagosDate(now, 2), hour: EVENING_ENDS_HOUR, minute: 0 });
   const soon = (showing: Showing) => showing.startsAt < end;
   const file = { ...whole, coming: whole.coming?.filter((entry) => stillComing(entry, lagosDayKey(now))) };
-  const files = new Map([["all", only(file, file.cinemas, soon)]]);
+  const files = new Map([["all", only(file, file.cinemas, soon, true)]]);
   for (const slug of areaSlugs) files.set(slug, only(file, file.cinemas.filter((cinema) => cinema.area === slug), soon));
   return files;
 }

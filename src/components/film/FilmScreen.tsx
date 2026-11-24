@@ -8,25 +8,25 @@ import { DayLoad, DaySentence } from "@/components/ui/DayParts";
 import { DayRow, dayTiles } from "@/components/ui/DayRow";
 import { Icon } from "@/components/ui/Icon";
 import { PageNotice } from "@/components/ui/Notices";
-import { TimeChip } from "@/components/ui/Status";
-import { LogoSticker, TicketFaceSticker } from "@/components/ui/Stickers";
+import { TicketFaceSticker } from "@/components/ui/Stickers";
 import { useDayPicker } from "@/components/ui/useDayPicker";
 import { useSwapIn } from "@/components/ui/useSwapIn";
 import { CITY_NAMES, type City } from "@/lib/city";
 import { cityWords } from "@/lib/wording/city";
 import { shareLink, useHash, useQuery, useSavedArea } from "@/lib/browser";
-import { areaGroups, cinemasOn, startedEarlier, type CinemaTimes } from "@/lib/data/filmPage";
+import { areaGroups, cinemasOn, startedEarlier } from "@/lib/data/filmPage";
 import { formatLabel } from "@/lib/data/format";
 import type { Area } from "@/lib/data/load";
 import { dayDates } from "@/lib/data/programme";
-import { pageBanner, type ListData, type ListRow } from "@/lib/data/select";
-import { minutesFromStart } from "@/lib/time/countdown";
+import { pageBanner, type ListData } from "@/lib/data/select";
 import { eveningDayKey } from "@/lib/time/lagos";
 import { useNow } from "@/lib/time/useNow";
 import { dayWords } from "@/lib/wording/day";
-import { areaTag, earlierLine, filmFacts, heroNote, noTimes, shareText, shortAddress, timesSubtitle, trailerLink } from "@/lib/wording/filmPage";
+import { earlierLine, filmFacts, heroNote, noTimes, shareText, timesSubtitle, trailerLink } from "@/lib/wording/filmPage";
 import type { ComingPage } from "@/lib/data/comingPage";
+import { AreaList } from "./CinemaCard";
 import { FilmHero } from "./FilmHero";
+import { OpeningTimes } from "./OpeningTimes";
 import { showingHash, useLazySheet } from "./useLazySheet";
 import s from "./film.module.css";
 
@@ -64,8 +64,11 @@ export function FilmScreen({ data, areas, city, bg, coming }: { data: ListData; 
   const home = areas.find((area) => area.slug === saved) ?? null;
 
   // The picked day's rows first: a later day's showing is only in its own file (D-147).
-  const linked = hash.startsWith("#s=") ? (view.rows.find((row) => showingHash(view, row) === hash) ?? data.rows.find((row) => showingHash(data, row) === hash) ?? null) : null;
-  const sheet = useLazySheet(view, linked);
+  const opening = coming?.opening?.data;
+  // A shared opening-day showing (D-194) opens from the opening day's rows.
+  const linked = hash.startsWith("#s=") ? (view.rows.find((row) => showingHash(view, row) === hash) ?? data.rows.find((row) => showingHash(data, row) === hash) ?? (opening && opening.rows.find((row) => showingHash(opening, row) === hash)) ?? null) : null;
+  // A coming film on sale (D-194): its opening day's times open the sheet.
+  const sheet = useLazySheet(opening ?? view, linked);
 
   const dates = dayDates(data.rows, now);
   const on = dayWords(day, current.date, live).on;
@@ -140,7 +143,9 @@ export function FilmScreen({ data, areas, city, bg, coming }: { data: ListData; 
           </div>
         </div>
 
-        {coming ? (
+        {coming?.opening ? (
+          <OpeningTimes opening={coming.opening} title={words.times} notice={<PageNotice banner={pageBanner(coming.opening.data, clock)} now={clock} />} calendar={coming.calendar} home={home} areaName={areaName} onOpen={sheet.openRow} />
+        ) : coming ? (
           // Times aren't up yet: the words and the calendar button stand in for them.
           <section className={s.showings} aria-labelledby="film.times">
             <div className={s.heading}>
@@ -185,29 +190,7 @@ export function FilmScreen({ data, areas, city, bg, coming }: { data: ListData; 
                 {noTimes(film.title, on, live && day === 0 && today.showings > 0)}
               </p>
             )}
-            <div className={s.areas} data-swap>
-              {groups.map((group) => {
-                const tag = areaTag(group.tag, home?.name ?? "");
-                return (
-                  <section key={group.area} className={s.area} data-wide={group.cinemas.length > 1 || undefined} aria-labelledby={`area.${group.area}`} data-testid={`area.${group.area}`}>
-                    <h3 id={`area.${group.area}`} className={s.areaName}>
-                      <Icon name="map-pin" size={18} />
-                      {areaName(group.area)}
-                      {tag && (
-                        <span className={s.tag} data-tag={group.tag}>
-                          {tag}
-                        </span>
-                      )}
-                    </h3>
-                    <div className={s.cinemas}>
-                      {group.cinemas.map((times) => (
-                        <CinemaCard key={times.cinema} data={view} times={times} now={day === 0 ? clock : null} onOpen={sheet.openRow} />
-                      ))}
-                    </div>
-                  </section>
-                );
-              })}
-            </div>
+            <AreaList groups={groups} data={view} now={day === 0 ? clock : null} onOpen={sheet.openRow} homeName={home?.name ?? ""} areaName={areaName} swap />
             {earlier && (
               <p className={s.earlier} data-testid="film.earlier" data-swap>
                 {earlier}
@@ -228,35 +211,3 @@ const CalendarIcon = () => (
     <path d="M8 2V6M16 2V6M3 10H21M19 4H5C3.89543 4 3 4.89543 3 6V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V6C21 4.89543 20.1046 4 19 4Z" />
   </svg>
 );
-
-/** One cinema's times: its name, address when known, logo sticker, and a chip per time. */
-function CinemaCard({ data, times, now, onOpen }: { data: ListData; times: CinemaTimes; now: string | null; onOpen: (row: ListRow) => void }) {
-  const cinema = data.cinemas[times.cinema]!;
-  const first = now === null ? null : times.rows.find((row) => minutesFromStart(row.at, now).state !== "started");
-  return (
-    <article className={s.cinema} data-testid={`venue.${cinema.id}`}>
-      <div className={s.cinemaHead}>
-        <div className={s.cinemaText}>
-          <Link href={`/cinema/${cinema.id}`} className={s.cinemaName}>
-            {cinema.name}
-          </Link>
-          {cinema.address && <p className={s.address}>{shortAddress(cinema.address)}</p>}
-        </div>
-        <LogoSticker chain={cinema.chain} scale={52 / 72} />
-      </div>
-      <div className={s.times}>
-        {times.rows.map((row) => (
-          <TimeChip
-            key={row.at}
-            startsAt={row.at}
-            format={formatLabel(row.format)}
-            now={now}
-            soonest={row === first && now !== null && minutesFromStart(row.at, now).minutes <= 60}
-            onOpen={() => onOpen(row)}
-            testId={`time.${cinema.id}.${row.at}`}
-          />
-        ))}
-      </div>
-    </article>
-  );
-}

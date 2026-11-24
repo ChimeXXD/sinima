@@ -614,6 +614,21 @@
       "verify": "npx playwright test tests/e2e/consent.spec.ts",
       "passes": true,
       "evidence": "24 Nov 2026 (D-191): `npx playwright test tests/e2e/consent.spec.ts` 8 pass; unit tests/unit/lib/consent.test.ts and wording/consent.test.ts 18 pass. Live counting not yet checked: Analytics must be enabled in the Vercel dashboard."
+    },
+    {
+      "id": "D194-1",
+      "day": "after-day-7",
+      "priority": "should",
+      "title": "Tickets on sale before a film opens: sticker on the Coming soon card, opening day's times on the film's page",
+      "criteria": [
+        "a coming film with opening-day showings on sale wears 'Tickets on sale' and names who sells",
+        "its page lists the opening day's times by area as any film's",
+        "no page file but the film's own carries presales",
+        "Filmhouse checkout links are cut to the public showtimes page"
+      ],
+      "verify": "npx playwright test tests/e2e/presales.spec.ts",
+      "passes": true,
+      "evidence": "24 Nov 2026 (D-194): `npx playwright test tests/e2e/presales.spec.ts` 6 pass on the sample (red with the opening section or the seller switched off); unit tests for the read, the pipeline split, the link cut and the build data pass (1047 in all). Live: from the next refresh."
     }
   ]
 }

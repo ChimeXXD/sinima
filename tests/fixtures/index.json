@@ -23,6 +23,16 @@
       "sample": true
     },
     {
+      "file": "lagocine/2026-11-24-day-2026-12-18.html",
+      "sourceId": "lagocine",
+      "page": "lagocine-day",
+      "pageUrl": "https://lagocine.com/day/2026-12-18/",
+      "savedAt": "2026-11-24T00:05:05Z",
+      "sample": true,
+      "opening": true,
+      "why": "Tickets on sale before a film opens (D-194): Dune: Part Three (15 showings, 6 Filmhouses) and Avengers: Doomsday (22, 7) on their opening day, read 24 days ahead. In the sample each row moves onto its film's sample first date, not with the day page above."
+    },
+    {
       "file": "silverbird/2026-11-11-ikeja.html",
       "sourceId": "silverbird",
       "page": "veezi-sessions",

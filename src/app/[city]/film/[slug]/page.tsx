@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { FilmScreen } from "@/components/film/FilmScreen";
-import { comingPage } from "@/lib/data/comingPage";
-import { comingIn, filmIn, filmPageParams } from "@/lib/data/filmPages";
+import { comingPage, presaleData } from "@/lib/data/comingPage";
+import { comingIn, filmIn, filmPageParams, presalesIn } from "@/lib/data/filmPages";
 import { areasIn, cityParam, loadCity, loadDays, loadLater } from "@/lib/data/load";
 import { listFilm, toListData } from "@/lib/data/listData";
 import { filmMeta } from "@/lib/share/meta";
@@ -33,7 +33,7 @@ export default async function FilmPage({ params }: Props) {
   const films = data.films[0] ? data.films : (loadLater(city).map((later) => toListData(later.file, { filmId: slug }).films).find((found) => found.length > 0) ?? []);
   // A film with a showing in any shown day is never "coming" there (D-154): comingIn leaves it out.
   const coming = films[0] ? undefined : comingIn(city).find((entry) => entry.film.id === slug);
-  if (coming) return <FilmScreen data={{ ...data, films: [listFilm(coming.film)], days: loadDays(city) }} areas={areasIn(city)} city={city} bg={pageColours()} coming={comingPage(coming, city)} />;
+  if (coming) return <FilmScreen data={{ ...data, films: [listFilm(coming.film)], days: loadDays(city) }} areas={areasIn(city)} city={city} bg={pageColours()} coming={comingPage(coming, city, coming.firstDay ? presaleData(presalesIn(city), slug, coming.firstDay) : null)} />;
   if (!films[0]) throw new Error(`No film "${slug}" in ${city}'s data`);
   return <FilmScreen data={{ ...data, films, days: loadDays(city) }} areas={areasIn(city)} city={city} bg={pageColours()} />;
 }

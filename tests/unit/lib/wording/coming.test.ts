@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { calendarAction, COMING_SECTION, comingCalendar, leafWords, opensChip, opensLine, timesNotUp } from "@/lib/wording/coming";
+import { calendarAction, COMING_SECTION, comingCalendar, leafWords, ON_SALE, onSaleLine, openingSubtitle, openingTile, opensChip, opensLine, opensOnSaleChip, timesNotUp } from "@/lib/wording/coming";
 
 // Coming soon's words (D-151): the section on Films, each card's line and date sticker, and a coming
 // film's page. A date is the sinima's own, a Lagos date ("2026-12-18"), shown in Lagos whatever the
@@ -70,5 +70,25 @@ describe("a coming film's page", () => {
       description: "Filmhouse lists Avengers: Doomsday from Fri 18 Dec. Its times will be on Sinima as soon as Filmhouse puts them up: https://sinima.com.ng/lagos/film/avengers-doomsday",
       alert: "Avengers: Doomsday opens today at Filmhouse",
     });
+  });
+});
+
+// Tickets on sale before a film opens (D-194, mockup/presales/, card A and page 1).
+describe("tickets on sale", () => {
+  const fh = (name: string) => ({ name, chain: "Filmhouse" });
+  it("the sticker", () => {
+    expect(ON_SALE).toBe("Tickets on sale");
+  });
+  it("who sells them: one sinima by name, one chain's several as its plural, several chains as sinimas", () => {
+    expect(onSaleLine([fh("Filmhouse Circle Mall")])).toBe("Filmhouse Circle Mall");
+    expect(onSaleLine(["Circle Mall", "Landmark", "Lekki IMAX", "Oniru", "Palms Mall Lekki", "Surulere"].map((n) => fh(`Filmhouse ${n}`)))).toBe("6 Filmhouses");
+    expect(onSaleLine([fh("Filmhouse Oniru"), fh("Filmhouse Ikota"), { name: "Silverbird Cinemas Ikeja", chain: "Silverbird" }])).toBe("3 sinimas");
+    // A chain whose name ends in s takes no s: "4 sinimas", never "4 Genesiss".
+    expect(onSaleLine(["Lekki", "Ikeja", "Festac", "Maryland"].map((n) => ({ name: `Genesis ${n}`, chain: "Genesis" })))).toBe("4 sinimas");
+  });
+  it("the chip, the line under Times in Lagos and the one day tile", () => {
+    expect(opensOnSaleChip("2026-12-18")).toBe("Opens Fri 18 Dec · tickets on sale");
+    expect(openingSubtitle("2026-12-18")).toBe("Friday 18 December · opening day · tickets on sale");
+    expect(openingTile("2026-12-18")).toEqual({ weekday: "Opens", date: "Fri 18", label: "Opening day, Friday 18 December" });
   });
 });

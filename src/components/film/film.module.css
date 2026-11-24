@@ -287,3 +287,11 @@
     padding-top: 0;
   }
 }
+
+/* The opening day's one tile (D-194, mockup/presales/ page 1): a tile's width, not the row's. */
+.openingDay {
+  width: min(100%, 200px);
+}
+.openingCalendar {
+  align-self: flex-start; /* its own width, as on a coming film's page */
+}

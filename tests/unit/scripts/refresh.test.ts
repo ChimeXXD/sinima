@@ -381,3 +381,25 @@ describe("buildShowtimes: credits", () => {
     expect(file.films.find((f) => f.id === "clayface")).toMatchObject({ tmdbId: null, runtimeMin: null, credits: { after: "unknown", sources: [] } });
   });
 });
+
+// D-194 in the sample: Lagocine's page for 18 Dec, saved 24 Nov, gives Dune: Part Three and Avengers:
+// Doomsday their opening day's showings, each moved onto its film's sample first date (coming dates keep
+// their distance, D-151), with no booking links as every sample row (D-20). Only the build's files hold them.
+describe("refresh --fixtures with tickets on sale", () => {
+  const { files } = refreshFromFixtures({ now: EARLY, root });
+  const whole = files.get("data/showtimes.json") as ShowtimesFile;
+  const firstDay = (filmId: string) => whole.coming!.find((entry) => entry.filmId === filmId)!.firstDay!;
+  it("puts each coming film's opening-day showings on its sample first date, as presales", () => {
+    for (const [filmId, count, cinemas] of [["dune-part-three", 15, 6], ["avengers-doomsday", 22, 7]] as const) {
+      const rows = whole.presales!.filter((row) => row.filmId === filmId);
+      expect(rows, filmId).toHaveLength(count);
+      expect(new Set(rows.map((row) => row.cinemaId)).size, filmId).toBe(cinemas);
+      expect(new Set(rows.map((row) => eveningDayKey(row.startsAt))), filmId).toEqual(new Set([firstDay(filmId)]));
+    }
+    expect(whole.presales!.every((row) => row.bookingUrl === null)).toBe(true);
+  });
+  it("keeps them in all.json and out of every city, area and day file", () => {
+    expect((files.get("public/data/all.json") as ShowtimesFile).presales).toHaveLength(37);
+    for (const [path, file] of files) if (path.startsWith("public/data/") && path !== "public/data/all.json") expect(file.presales, path).toBeUndefined();
+  });
+});

@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { parseLagocineCinema, parseLagocineDay } from "../../../../scripts/sources/lagocine";
+import { parseLagocineCinema, parseLagocineDay, publicBookingPage } from "../../../../scripts/sources/lagocine";
 
 // Real pages saved on 11 Nov 2026 and cut down (D-24). Counts were taken from the saved pages
 // with a separate script, not from the parser.
@@ -48,8 +48,9 @@ describe("parseLagocineDay", () => {
       rating: null, // the page marks Ramayana "NR"
       startsAt: "2026-11-11T09:00:00Z",
       format: "IMAX 2D",
-      bookingUrl:
-        "https://www.filmhouseng.com/movies/ramayana-2026/showtimes/2026-11-11/circlemall/select-tickets?showtime=MHhpNlRTN0ttNlB5Y09LN09iZUZVdz09",
+      // Lagocine links into Filmhouse's checkout (".../circlemall/select-tickets?showtime=…"); since D-194 the
+      // link is cut back to the film's public showtimes page for the day (rule 5).
+      bookingUrl: "https://www.filmhouseng.com/movies/ramayana-2026/showtimes/2026-11-11",
     });
     expect(count(page.showings.map((s) => s.format))).toEqual({ null: 301, "2D": 43, "IMAX 2D": 7, MX4D: 2 });
     expect(page.showings.filter((s) => s.bookingUrl !== null)).toHaveLength(207);
@@ -121,5 +122,45 @@ describe("parseLagocineCinema", () => {
     expect(() => parseLagocineCinema("<html></html>", "silverbird-ikeja")).toThrow(
       "Lagocine cinema page: no programme rows found. Has the page layout changed?",
     );
+  });
+});
+
+// Tickets on sale before a film opens (D-194): Lagocine's page for Friday 18 December, saved on
+// 24 Nov 2026 and cut down. Counts from the saved page with a separate script: Dune: Part Three 15
+// showings at 6 Filmhouses, Avengers: Doomsday 22 at 7.
+describe("an opening day sold ahead", () => {
+  const page = parseLagocineDay(fixture("2026-11-24-day-2026-12-18.html"));
+  const of = (title: RegExp) => page.showings.filter((row) => title.test(row.filmTitle));
+
+  it("reads both films' opening-day showings and the Filmhouses selling them", () => {
+    expect(of(/DUNE/)).toHaveLength(15);
+    expect(new Set(of(/DUNE/).map((row) => row.cinemaId)).size).toBe(6);
+    expect(of(/DOOMSDAY/)).toHaveLength(22);
+    expect(new Set(of(/DOOMSDAY/).map((row) => row.cinemaId)).size).toBe(7);
+    expect(of(/DUNE/).find((row) => row.cinemaId === "filmhouse-circle-mall")).toMatchObject({ startsAt: "2026-12-18T09:30:00Z", format: "IMAX 2D" });
+  });
+
+  it("cuts each Filmhouse checkout link back to the film's public showtimes page for that day (rule 5)", () => {
+    const links = new Set(page.showings.map((row) => row.bookingUrl));
+    expect([...links].sort()).toEqual([
+      "https://www.filmhouseng.com/movies/avengersdoomsday-2026/showtimes/2026-12-18",
+      "https://www.filmhouseng.com/movies/dunepartthree-2026/showtimes/2026-12-18",
+    ]);
+  });
+});
+
+describe("publicBookingPage", () => {
+  it("cuts a Filmhouse checkout or seat-plan link to the showtimes page, keeping the day", () => {
+    expect(publicBookingPage("https://www.filmhouseng.com/movies/dunepartthree-2026/showtimes/2026-12-18/circlemall/select-tickets?showtime=QWpz")).toBe("https://www.filmhouseng.com/movies/dunepartthree-2026/showtimes/2026-12-18");
+    expect(publicBookingPage("https://www.filmhouseng.com/movies/x/showtimes/2026-12-18/lekki/seat-plan")).toBe("https://www.filmhouseng.com/movies/x/showtimes/2026-12-18");
+  });
+  it("cuts any spelling of Filmhouse's host, and drops a checkout link it can't make a page from", () => {
+    expect(publicBookingPage("https://filmhouseng.com/movies/x/showtimes/2026-12-18/lekki/select-tickets?showtime=1")).toBe("https://www.filmhouseng.com/movies/x/showtimes/2026-12-18");
+    expect(publicBookingPage("https://www.filmhouseng.com/lekki/select-tickets?showtime=1")).toBeNull();
+  });
+  it("leaves every other link as it is, and nothing as nothing", () => {
+    expect(publicBookingPage("https://ticketing.eu.veezi.com/purchase/123?siteToken=abc")).toBe("https://ticketing.eu.veezi.com/purchase/123?siteToken=abc");
+    expect(publicBookingPage("https://www.filmhouseng.com/movies/x/showtimes/2026-12-18")).toBe("https://www.filmhouseng.com/movies/x/showtimes/2026-12-18");
+    expect(publicBookingPage(null)).toBeNull();
   });
 });

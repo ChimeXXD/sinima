@@ -106,7 +106,9 @@ test("search finds a film that is only coming, says when it opens, and opens its
   await page.getByTestId("search.scope.lagos").click();
   await page.getByTestId("search.hit.dune-part-three").click();
   await expect(page).toHaveURL(/\/lagos\/film\/dune-part-three$/);
-  await expect(page.getByTestId("coming.chip")).toContainText("at Filmhouse");
+  // Its page: the coming chip with its date. The sample also sells it ahead (D-194), so the chip says
+  // "· tickets on sale" there and the cinemas are named with their times.
+  await expect(page.getByTestId("coming.chip")).toContainText(/^Opens \w{3} \d{1,2} \w{3}/);
 });
 
 // Enter lists today's matches on Films; with only a coming film matching, Films would list nothing,
@@ -121,7 +123,8 @@ test("Enter with only a coming film matching opens that film, not an empty Films
   await page.keyboard.press("Enter");
   await expect(page).toHaveURL(/\/lagos\/film\/dune-part-three$/);
   await expect(page.getByTestId("search.panel")).toHaveCount(0);
-  await expect(page.getByTestId("coming.chip")).toContainText("at Filmhouse");
+  // The coming film's page, by its chip's date (on sale in the sample, D-194: "· tickets on sale").
+  await expect(page.getByTestId("coming.chip")).toContainText(/^Opens \w{3} \d{1,2} \w{3}/);
 });
 
 test("Enter with nothing matching stays in search, which says so", async ({ page }) => {
