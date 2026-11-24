@@ -2,109 +2,6 @@
   "schemaVersion": 1,
   "about": "Written by scripts/tmdb.ts. TMDB ids, runtimes and keyword ids for the films showing, keyed by film id. Kept at most 6 months (D-31). This product uses the TMDB API but is not endorsed or certified by TMDB.",
   "tmdb": {
-    "avengers-doomsday": {
-      "tmdbId": 1003596,
-      "tmdbTitle": "Avengers: Doomsday",
-      "runtimeMin": 165,
-      "posterPath": "/zHTxblqPcqRpA93ex2Hj0RdpVBs.jpg",
-      "trailerKey": "X1aFkAkFASk",
-      "keywordIds": [
-        9715,
-        9717,
-        9663,
-        155030,
-        180547,
-        302711,
-        336874
-      ],
-      "checkedAt": "2026-11-19T00:44:41Z"
-    },
-    "dune-part-three": {
-      "tmdbId": 1170608,
-      "tmdbTitle": "Dune: Part Three",
-      "runtimeMin": 150,
-      "posterPath": "/d43fvHQsIMa4kpyhKXw0haEJIvI.jpg",
-      "trailerKey": "uJqaGLmZpGo",
-      "keywordIds": [
-        818,
-        7534,
-        9663,
-        9882,
-        13194,
-        18034,
-        161176,
-        195114,
-        295922,
-        298532
-      ],
-      "checkedAt": "2026-11-19T00:44:41Z"
-    },
-    "focker-in-law": {
-      "tmdbId": 1400336,
-      "tmdbTitle": "Focker In-Law",
-      "runtimeMin": 105,
-      "posterPath": "/iHJhSfqFpDMOyeMc6h6BOeHxse2.jpg",
-      "trailerKey": "9CKu3WoMYCg",
-      "keywordIds": [
-        9799,
-        10235,
-        9663,
-        154796,
-        252875
-      ],
-      "checkedAt": "2026-11-23T05:29:05Z"
-    },
-    "hershey": {
-      "tmdbId": 1461490,
-      "tmdbTitle": "Hershey",
-      "runtimeMin": 110,
-      "posterPath": "/ojd8Gu2bPsOzdMz6Ip5AYDu4Vki.jpg",
-      "trailerKey": "NsHJw58wWRg",
-      "keywordIds": [
-        715,
-        5683,
-        9672,
-        340972,
-        343974
-      ],
-      "checkedAt": "2026-11-23T05:29:05Z"
-    },
-    "jumanji-open-world": {
-      "tmdbId": 1260649,
-      "tmdbTitle": "Jumanji: Open World",
-      "runtimeMin": 126,
-      "posterPath": "/ntjF2gemedf3ZcWzARGt6cuZlnJ.jpg",
-      "trailerKey": "nIw1O3zvOfE",
-      "keywordIds": [
-        818,
-        282,
-        1442,
-        9663,
-        10787,
-        33721
-      ],
-      "checkedAt": "2026-11-19T00:44:41Z"
-    },
-    "the-hunger-games-sunrise-on-the-reaping": {
-      "tmdbId": 1300968,
-      "tmdbTitle": "The Hunger Games: Sunrise on the Reaping",
-      "runtimeMin": 159,
-      "posterPath": "/j1MNyNNgNQL6f27cb3m3uKaPKd6.jpg",
-      "trailerKey": "Dr060OLTodE",
-      "keywordIds": [
-        818,
-        4565,
-        4458,
-        3104,
-        9663,
-        9675,
-        246466,
-        286995,
-        293198,
-        325762
-      ],
-      "checkedAt": "2026-11-18T15:25:48Z"
-    },
     "agbara-nla-the-return": {
       "tmdbId": 1792115,
       "tmdbTitle": "Agbara Nla: The Return",
@@ -125,6 +22,23 @@
         15285
       ],
       "checkedAt": "2026-11-24T05:30:03Z"
+    },
+    "avengers-doomsday": {
+      "tmdbId": 1003596,
+      "tmdbTitle": "Avengers: Doomsday",
+      "runtimeMin": 165,
+      "posterPath": "/zHTxblqPcqRpA93ex2Hj0RdpVBs.jpg",
+      "trailerKey": "X1aFkAkFASk",
+      "keywordIds": [
+        9715,
+        9717,
+        9663,
+        155030,
+        180547,
+        302711,
+        336874
+      ],
+      "checkedAt": "2026-11-19T00:44:41Z"
     },
     "clayface": {
       "tmdbId": 1400940,
@@ -159,6 +73,26 @@
       "keywordIds": [],
       "checkedAt": "2026-11-24T05:30:03Z"
     },
+    "dune-part-three": {
+      "tmdbId": 1170608,
+      "tmdbTitle": "Dune: Part Three",
+      "runtimeMin": 150,
+      "posterPath": "/d43fvHQsIMa4kpyhKXw0haEJIvI.jpg",
+      "trailerKey": "uJqaGLmZpGo",
+      "keywordIds": [
+        818,
+        7534,
+        9663,
+        9882,
+        13194,
+        18034,
+        161176,
+        195114,
+        295922,
+        298532
+      ],
+      "checkedAt": "2026-11-19T00:44:41Z"
+    },
     "five-figurines": {
       "tmdbId": 1755500,
       "tmdbTitle": "Five Figurines",
@@ -167,6 +101,21 @@
       "trailerKey": null,
       "keywordIds": [],
       "checkedAt": "2026-11-24T05:30:03Z"
+    },
+    "focker-in-law": {
+      "tmdbId": 1400336,
+      "tmdbTitle": "Focker In-Law",
+      "runtimeMin": 105,
+      "posterPath": "/iHJhSfqFpDMOyeMc6h6BOeHxse2.jpg",
+      "trailerKey": "9CKu3WoMYCg",
+      "keywordIds": [
+        9799,
+        10235,
+        9663,
+        154796,
+        252875
+      ],
+      "checkedAt": "2026-11-23T05:29:05Z"
     },
     "ghost-soldier": {
       "tmdbId": 1562642,
@@ -188,6 +137,21 @@
       ],
       "checkedAt": "2026-11-24T05:30:03Z"
     },
+    "hershey": {
+      "tmdbId": 1461490,
+      "tmdbTitle": "Hershey",
+      "runtimeMin": 110,
+      "posterPath": "/ojd8Gu2bPsOzdMz6Ip5AYDu4Vki.jpg",
+      "trailerKey": "NsHJw58wWRg",
+      "keywordIds": [
+        715,
+        5683,
+        9672,
+        340972,
+        343974
+      ],
+      "checkedAt": "2026-11-23T05:29:05Z"
+    },
     "how-to-rob-a-bank": {
       "tmdbId": 1437511,
       "tmdbTitle": "How to Rob a Bank",
@@ -204,6 +168,22 @@
         370881
       ],
       "checkedAt": "2026-11-24T05:30:03Z"
+    },
+    "jumanji-open-world": {
+      "tmdbId": 1260649,
+      "tmdbTitle": "Jumanji: Open World",
+      "runtimeMin": 126,
+      "posterPath": "/ntjF2gemedf3ZcWzARGt6cuZlnJ.jpg",
+      "trailerKey": "nIw1O3zvOfE",
+      "keywordIds": [
+        818,
+        282,
+        1442,
+        9663,
+        10787,
+        33721
+      ],
+      "checkedAt": "2026-11-19T00:44:41Z"
     },
     "phoenix-fury": {
       "tmdbId": 1532702,
@@ -306,6 +286,26 @@
         325844
       ],
       "checkedAt": "2026-11-24T05:30:03Z"
+    },
+    "the-hunger-games-sunrise-on-the-reaping": {
+      "tmdbId": 1300968,
+      "tmdbTitle": "The Hunger Games: Sunrise on the Reaping",
+      "runtimeMin": 159,
+      "posterPath": "/j1MNyNNgNQL6f27cb3m3uKaPKd6.jpg",
+      "trailerKey": "Dr060OLTodE",
+      "keywordIds": [
+        818,
+        4565,
+        4458,
+        3104,
+        9663,
+        9675,
+        246466,
+        286995,
+        293198,
+        325762
+      ],
+      "checkedAt": "2026-11-18T15:25:48Z"
     },
     "alahun-the-weaver": {
       "tmdbId": 1755101,
