@@ -3,8 +3,9 @@ import { validateShowtimes } from "@/lib/data/validate";
 import { inCity } from "@/lib/data/cities";
 import { buildShowtimes, splitByArea } from "../../../scripts/pipeline.ts";
 
-// Tickets on sale before a film opens (D-194): a showing after the five shown days, on a coming film's
-// first date, is kept apart as a presale; any other showing that far ahead is dropped. Presales stay in
+// Tickets on sale before a film opens (D-194, D-199): a showing after the five shown days, on a coming
+// film's first date or one of the four days after it, is kept apart as a presale; any other showing that
+// far ahead is dropped. Presales stay in
 // the whole file and "all" (build time) and never reach a city, area or day file a page carries.
 
 const NOW = "2026-11-24T07:00:00Z"; // 08:00 in Lagos, Tuesday 24 November
@@ -24,7 +25,9 @@ function build() {
           row("filmhouse-circle-mall", "Agbara Nla", "2026-11-24T18:00:00Z"), // today
           row("filmhouse-circle-mall", "DUNE : PART THREE", "2026-12-18T09:30:00Z"), // its opening day
           row("filmhouse-surulere", "DUNE : PART THREE", "2026-12-18T14:45:00Z"),
-          row("filmhouse-surulere", "DUNE : PART THREE", "2026-12-19T14:45:00Z"), // the day after: not its first date
+          row("filmhouse-surulere", "DUNE : PART THREE", "2026-12-19T14:45:00Z"), // the day after: on sale too (D-199)
+          row("filmhouse-surulere", "DUNE : PART THREE", "2026-12-22T19:30:00Z"), // its fifth day, the last kept
+          row("filmhouse-surulere", "DUNE : PART THREE", "2026-12-23T09:30:00Z"), // its sixth day: dropped
           row("filmhouse-surulere", "Some Other Film", "2026-12-18T15:00:00Z"), // not coming
         ],
       },
@@ -34,14 +37,16 @@ function build() {
 }
 
 describe("presales in the pipeline (D-194)", () => {
-  it("keeps a coming film's opening-day showings apart, and only those", () => {
+  it("keeps a coming film's showings on its first five days apart, and only those (D-199)", () => {
     const { file, log } = build();
     expect(file.showings.map((s) => s.filmId)).toEqual(["agbara-nla"]);
     expect(file.presales?.map((s) => [s.filmId, s.cinemaId, s.startsAt])).toEqual([
       ["dune-part-three", "filmhouse-circle-mall", "2026-12-18T09:30:00Z"],
       ["dune-part-three", "filmhouse-surulere", "2026-12-18T14:45:00Z"],
+      ["dune-part-three", "filmhouse-surulere", "2026-12-19T14:45:00Z"],
+      ["dune-part-three", "filmhouse-surulere", "2026-12-22T19:30:00Z"],
     ]);
-    expect(log).toContain("lagocine: dropped 2 showings after the shown days that are not a coming film's opening day");
+    expect(log).toContain("lagocine: dropped 2 showings after the shown days that are not in a coming film's first 5 days");
     // Dune is still coming: its presales don't make it a film that is showing.
     expect(file.coming?.map((entry) => entry.filmId)).toEqual(["dune-part-three"]);
   });
@@ -54,7 +59,7 @@ describe("presales in the pipeline (D-194)", () => {
   it("keeps presales in 'all' (build time only) and out of every area and city file a page loads", () => {
     const { file } = build();
     const parts = splitByArea(file, ["lekki", "surulere"], NOW);
-    expect(parts.get("all")!.presales).toHaveLength(2);
+    expect(parts.get("all")!.presales).toHaveLength(4);
     expect(parts.get("lekki")!.presales).toBeUndefined();
     expect(parts.get("surulere")!.presales).toBeUndefined();
     expect(inCity(parts.get("all")!, "lagos", () => "lagos").presales).toBeUndefined();

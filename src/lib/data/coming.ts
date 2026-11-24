@@ -16,6 +16,13 @@ export function withComing<T extends Pick<ShowtimesFile, "coming">>(file: T, lis
   return out;
 }
 
+/** How many days from a coming film's first date its tickets on sale are kept: as many as a listing shows (D-199). */
+export const PRESALE_DAYS = 5;
+
+/** A coming film's first PRESALE_DAYS days from `firstDay`, as Lagos dates (yyyy-mm-dd), in order (D-199). */
+export const presaleDays = (firstDay: string): string[] =>
+  Array.from({ length: PRESALE_DAYS }, (_, offset) => new Date(Date.parse(`${firstDay}T00:00:00Z`) + offset * 86_400_000).toISOString().slice(0, 10));
+
 /** True while a coming film's first date is still after `today` (a Lagos date); an undated one stays. */
 export const stillComing = (entry: Pick<Coming, "firstDay">, today: string) => entry.firstDay === null || entry.firstDay > today;
 

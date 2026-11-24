@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: CityProps): Promise<Metadata>
 export default async function FilmsPage({ params }: CityProps) {
   const city = cityParam((await params).city);
   // Coming soon (D-151): its cards' words are made here; a city with no coming film sends none and has no section.
-  const cards = comingCards(comingIn(city), soldBy(presalesIn(city)));
+  const cards = comingCards(comingIn(city), soldBy(presalesIn(city), comingIn(city)));
   const coming = cards.length > 0 ? { coming: cards } : {};
   return <FilmsScreen data={{ ...toListData(loadCity(city)), days: loadDays(city) }} city={city} bg={pageColours()} {...coming} />;
 }

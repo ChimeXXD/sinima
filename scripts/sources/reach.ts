@@ -7,7 +7,8 @@
 // cinema's own site, where tickets are sold. The page names the cinema it shows, which must be ours.
 import * as cheerio from "cheerio";
 import type { RenderText, Tapped } from "./browser.ts";
-import { clock12, isoDay, MONTH_ORDINAL, monthOrdinal, shortMonth, shortWeekday, showStart, type Day } from "./dates.ts";
+import { presaleDays } from "../../src/lib/data/coming.ts";
+import { clock12, isoDay, lagosDay, MONTH_ORDINAL, monthOrdinal, shortMonth, shortWeekday, showStart, type Day } from "./dates.ts";
 import { clean, type RawShowing, type Reader } from "./raw.ts";
 import { readEachDay } from "./tabbed.ts";
 
@@ -210,7 +211,7 @@ export async function bookingLinks(renderText: RenderText, read: { cinemaId: str
  * cinema with no times on any day read fails the source (its last good showings are kept, D-119):
  * an empty page and one whose times did not load look the same.
  */
-export const readReach: Reader = async ({ now, days, renderText, pages, names = {} }) => {
+export const readReach: Reader = async ({ now, days, renderText, pages, names = {}, openings = [] }) => {
   const dated: Parameters<typeof bookingLinks>[1] = [];
   const read = await readEachDay("Reach", { now, days, pages }, async (cinemaId, page, day) => {
     const name = Object.hasOwn(names, cinemaId) ? names[cinemaId] : undefined;
@@ -224,5 +225,48 @@ export const readReach: Reader = async ({ now, days, renderText, pages, names = 
   // The showings are the same objects in `read`: their links are filled in place (D-176).
   const notes: string[] = [];
   await bookingLinks(renderText, dated, notes);
-  return notes.length > 0 ? read.map((page) => ({ ...page, notes: [...(page.notes ?? []), ...notes] })) : read;
+  const ahead = await readAhead(renderText, { now, days, pages, names, openings }, notes);
+  const all = ahead.length > 0 ? [...read, { showings: ahead, builtAt: null }] : read;
+  return notes.length > 0 ? all.map((page, i) => (i === 0 ? { ...page, notes: [...(page.notes ?? []), ...notes] } : page)) : all;
 };
+
+/**
+ * Tickets on sale before a film opens (D-194, D-199): each coming film's opening date after the days
+ * read, at a dated page's own address (Viva, Nova), then each next day up to PRESALE_DAYS while it has
+ * times. One page load each; a day with no slide yet is no times. Anything else (a timeout, another day
+ * shown) ends that cinema's read ahead with a note, never the source's read. The rows keep the film page
+ * as their link: no film page is opened for them.
+ */
+async function readAhead(renderText: RenderText, input: { now: string; days: number; pages: Record<string, string>; names: Record<string, string>; openings: string[] }, notes: string[]): Promise<RawShowing[]> {
+  const lastDay = isoDay(lagosDay(input.now, input.days - 1));
+  const dates = [...new Set(input.openings)].filter((date) => date > lastDay).sort();
+  const rows: RawShowing[] = [];
+  for (const [cinemaId, page] of Object.entries(input.pages)) {
+    if (!new URL(page).searchParams.has("cinemaId") || !Object.hasOwn(input.names, cinemaId)) continue;
+    // Days read with times, and days with none: another opening's days skip the first and stop at the second.
+    const read = new Set<string>();
+    const empty = new Set<string>();
+    cinema: for (const opening of dates) {
+      for (const key of presaleDays(opening)) {
+        if (empty.has(key)) break;
+        if (read.has(key)) continue;
+        const [year, month, date] = key.split("-").map(Number) as [number, number, number];
+        const day: Day = { year, month, day: date };
+        let showings: RawShowing[];
+        try {
+          showings = parseReachDay(await renderText(reachDayUrl(page, day)), { cinemaId, name: input.names[cinemaId]!, origin: new URL(page).origin, day });
+        } catch (error) {
+          notes.push(`${cinemaId}: stopped reading ahead at ${isoDay(day)} (${error instanceof Error ? error.message : String(error)})`);
+          break cinema;
+        }
+        if (showings.length === 0) {
+          empty.add(key);
+          break;
+        }
+        read.add(key);
+        rows.push(...showings);
+      }
+    }
+  }
+  return rows;
+}

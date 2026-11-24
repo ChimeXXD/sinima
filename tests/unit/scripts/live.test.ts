@@ -52,12 +52,40 @@ describe("refreshLive", () => {
     expect(net.asked).toEqual(["11", "12", "13", "14", "15"].map((d) => `https://lagocine.com/day/2026-11-${d}/`));
   });
 
-  // D-194: a coming film's first date after the five days is read too, once, for its showings on sale.
-  it("also reads each coming film's opening day after the five days, once, and skips one inside them", async () => {
+  // D-194: a coming film's first date after the five days is read too, once, for its showings on sale;
+  // D-199: then the four days after it, while Lagocine has a page for each.
+  it("also reads each coming film's opening day after the five days and the four after it, once, and skips one inside them", async () => {
     const asked: string[] = [];
     const fetchText = async (url: string) => (asked.push(url), dayPage);
     await READERS.lagocine!({ now: NOW, days: 5, fetchText, renderText: async () => "", pages: {}, openings: ["2026-12-18", "2026-11-13", "2026-12-18"] });
-    expect(asked).toEqual([...["11", "12", "13", "14", "15"].map((d) => `https://lagocine.com/day/2026-11-${d}/`), "https://lagocine.com/day/2026-12-18/"]);
+    expect(asked).toEqual([...["11", "12", "13", "14", "15"].map((d) => `https://lagocine.com/day/2026-11-${d}/`), ...["18", "19", "20", "21", "22"].map((d) => `https://lagocine.com/day/2026-12-${d}/`)]);
+  });
+
+  it("stops at the first day after an opening day Lagocine has no page for, and reads a day two openings share once (D-199)", async () => {
+    const asked: string[] = [];
+    const fetchText = async (url: string) => {
+      asked.push(url);
+      if (url.endsWith("/2026-12-20/") || url.endsWith("/2026-12-25/")) throw new PageError(url, 404);
+      return dayPage;
+    };
+    const pages = await READERS.lagocine!({ now: NOW, days: 5, fetchText, renderText: async () => "", pages: {}, openings: ["2026-12-18", "2026-12-19"] });
+    expect(asked.slice(5)).toEqual(["https://lagocine.com/day/2026-12-18/", "https://lagocine.com/day/2026-12-19/", "https://lagocine.com/day/2026-12-20/"]);
+    expect(pages).toHaveLength(7);
+    expect(pages.at(-1)!.notes ?? []).not.toContain("no page for opening day 2026-12-19 yet");
+  });
+
+  it("a later day that errors ends that opening's days with a note, and is not asked for again by another opening (D-199)", async () => {
+    const asked: string[] = [];
+    const fetchText = async (url: string) => {
+      asked.push(url);
+      if (url.endsWith("/2026-12-20/")) throw new PageError(url, 500);
+      return dayPage;
+    };
+    const pages = await READERS.lagocine!({ now: NOW, days: 5, fetchText, renderText: async () => "", pages: {}, openings: ["2026-12-18", "2026-12-19"] });
+    expect(asked.filter((url) => url.endsWith("/2026-12-20/"))).toHaveLength(1);
+    expect(asked.slice(5)).toEqual(["https://lagocine.com/day/2026-12-18/", "https://lagocine.com/day/2026-12-19/", "https://lagocine.com/day/2026-12-20/"]);
+    expect(pages).toHaveLength(7);
+    expect(pages.at(-1)!.notes!.filter((line) => /2026-12-20, after opening day 2026-12-18, could not be read/.test(line))).toHaveLength(1);
   });
 
   it("an opening day that errors is skipped with a note; the five days read stand", async () => {

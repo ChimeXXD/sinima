@@ -28,7 +28,7 @@ export function leafWords(firstDay: string): { month: string; day: string } {
 export const opensChip = (firstDay: string | null, sinimas: string[]) => (firstDay ? `Opens ${opening(firstDay)} at ${list(sinimas)}` : `Coming to ${list(sinimas)}, date not announced`);
 
 // Tickets on sale before a film opens (D-194, mockup/presales/): the sticker on its card, who sells
-// them, and its page's chip, line and one day tile.
+// them, and its page's chip, and each day's line and tile (D-199).
 
 /** Under the card's date: one sinima by name, one chain's several as "6 Filmhouses", else "8 sinimas". */
 export function onSaleLine(cinemas: { name: string; chain: string }[]): string {
@@ -42,13 +42,17 @@ export function onSaleLine(cinemas: { name: string; chain: string }[]): string {
 /** The chip under the title: "Opens Fri 18 Dec · tickets on sale". */
 export const opensOnSaleChip = (firstDay: string) => `Opens ${opening(firstDay)} · ${ON_SALE.toLowerCase()}`;
 
-/** Under Times in Lagos: "Friday 18 December · opening day · tickets on sale". */
-export const openingSubtitle = (firstDay: string) => `${longDate(lagosNoon(firstDay))} · opening day · ${ON_SALE.toLowerCase()}`;
+/**
+ * Under Times in Lagos for a day on sale (D-199): "Friday 18 December · opening day · tickets on sale" on
+ * the opening day, "Saturday 19 December · tickets on sale" after it.
+ */
+export const openingSubtitle = (day: string, firstDay: string = day) => `${longDate(lagosNoon(day))}${day === firstDay ? " · opening day" : ""} · ${ON_SALE.toLowerCase()}`;
 
-/** The page's one day tile: "Opens" over "Fri 18". */
-export function openingTile(firstDay: string): { weekday: string; date: string; label: string } {
-  const [weekday, day] = opening(firstDay).split(" ");
-  return { weekday: "Opens", date: `${weekday} ${day}`, label: `Opening day, ${longDate(lagosNoon(firstDay))}` };
+/** A day's tile on a coming film's page: "Opens" over "Fri 18" on the opening day (D-194), else "Sat" over "19" as any day's (D-199). */
+export function openingTile(day: string, firstDay: string = day): { weekday: string; date: string; label: string } {
+  const [weekday, date] = opening(day).split(" ");
+  if (day === firstDay) return { weekday: "Opens", date: `${weekday} ${date}`, label: `Opening day, ${longDate(lagosNoon(day))}` };
+  return { weekday: weekday!, date: date!, label: longDate(lagosNoon(day)) };
 }
 
 /** Who lists it, and who will put the times up: one sinima by name, more as "they". */

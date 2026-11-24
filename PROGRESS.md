@@ -2,6 +2,16 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 24 Nov 2026 (evening, Lagos) — tickets on sale for a coming film's first five days (D-199)
+
+- **Asked:** Chime: "Okay, so what's next?" (after O-25: more days of tickets on sale, sold out, the other sinimas).
+- **Changed:** `PRESALE_DAYS` (5) and `presaleDays(firstDay)` live in `src/lib/data/coming.ts`, shared by the pipeline (`scripts/presales.ts` keeps rows on those days), both readers and the page. `scripts/live.ts` Lagocine reads the days after each opening day until one has no page (a failed day is never asked for twice); `scripts/sources/reach.ts` `readAhead`: Viva and Nova open each opening date and the next days while they have times (an empty day stops every opening at it). `comingPage.ts`: `Opening` is `{ days, data }` (each day's line, tile and row count); `soldBy(file, coming)` counts only presales inside each film's five days from the city's own first date (`[city]/page.tsx` passes `comingIn(city)`); `OpeningTimes.tsx` a tile per day with the M1 swap (D-103, reused; no new motion). Wording `openingSubtitle`/`openingTile` take the day.
+- **Review (medium):** 6 found, 5 fixed (sticker could show with no times on the page; the window written four times; Lagocine could re-ask a failed day; Reach read past an empty day; Reach's own day maths), 1 skipped (the page cuts days by row count: correct while rows are sorted by start, and keeps date code off the page). Verifier: no wrong behaviour; asked for tests on three paths and true docs, both done (Lagocine later-day error asked once; Reach empty day stops and read-ahead rows keep the film page, no film page opened; the card's window counts 3 of 4 sinimas).
+- **Checked:** tests changed on purpose for D-199 (the pipeline's 19 Dec row now kept; one tile became a list of days; Lagocine reads 18–22 Dec), red then green; new tests: Lagocine stops at the first missing day and reads a shared day once; Reach reads ahead and stops on another day shown. Unit 1060 pass; lint 0 errors; typecheck clean; presales e2e 6 pass; a throwaway build with Dune on three days (not committed): tiles Opens Fri 25 / Sat 26 / Sun 27, 15 → 9 → 4 times, no sideways scroll at 390 and 360, arrow keys move the day.
+- **Found, not this change:** a local `npm run build` on live data puts Lagos's home (233.6 KB), Cinemas (231.2) and Starting soon (229.6) over the 229 KB total budget; the same on the last commit without this change. CI and the gate build on sample data, so nothing fails; the live pages are just over.
+- **Not verified:** no live source lists a second day yet (Lagocine 19–25 Dec 404; Reach unknown), so the next refreshes show the code's notes, not new days.
+- **Next:** sold-out mark (mockups for Chime); the live page budget.
+
 ## 24 Nov 2026 (late afternoon, Lagos) — Lagocine's robots.txt closed; read under its owner's written yes (D-198); presale days and sold-out looked into (O-25)
 
 - **Asked:** Chime: why Doomsday and Dune show one day of tickets ("Filmhouse have up to five days or more"), sold-out times shown as sold out, and why only Filmhouse sells them: "let us fix all these things".

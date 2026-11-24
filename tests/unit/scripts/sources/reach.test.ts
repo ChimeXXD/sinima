@@ -150,6 +150,63 @@ describe("readReach", () => {
     await expect(read).rejects.toThrow("Reach page for ozone-yaba: no times on any day read. Has the page layout changed?");
   });
 
+  // D-199: a coming film's opening date after the days read, and the days after it while they have times,
+  // each at its own address; its rows go on as read (the pipeline keeps them as tickets on sale).
+  it("reads each coming film's opening date ahead at a dated address, then the next day until one shows nothing or fails", async () => {
+    const asked: string[] = [];
+    const pages: Record<string, string> = {
+      [`${OZONE}&date=Tue+Nov+17+2026`]: fixture("reachcinema/2026-11-17-ozone.html"),
+      [`${OZONE}&date=Wed+Nov+18+2026`]: fixture("reachcinema/2026-11-17-ozone-nov-18.html"),
+      // The 19th's address answering with the 17th still picked: not that day, so it ends the read ahead.
+      [`${OZONE}&date=Thu+Nov+19+2026`]: fixture("reachcinema/2026-11-17-ozone.html"),
+    };
+    const renderText = Object.assign(
+      async (url: string) => {
+        asked.push(url);
+        if (url.includes("/movies/")) throw Object.assign(new Error("film page not served"), { name: "TimeoutError" });
+        const page = pages[url];
+        if (page === undefined) throw new Error(`unexpected render ${url}`);
+        return page;
+      },
+      { close: async () => {} },
+    );
+    const read = await readReach({ now: "2026-11-17T01:44:00Z", days: 1, fetchText: async () => "", renderText, pages: { "ozone-yaba": OZONE }, names: { "ozone-yaba": "Ozone Cinemas" }, openings: ["2026-11-18", "2026-11-17"] });
+    const rows = read.flatMap((page) => page.showings);
+    expect(asked.filter((url) => !url.includes("/movies/"))).toEqual([`${OZONE}&date=Tue+Nov+17+2026`, `${OZONE}&date=Wed+Nov+18+2026`, `${OZONE}&date=Thu+Nov+19+2026`]);
+    expect(rows.filter((row) => row.startsAt >= "2026-11-17T23:00:00Z")).toHaveLength(20);
+    expect(read.flatMap((page) => page.notes ?? []).join(" ")).toMatch(/ozone-yaba: stopped reading ahead at 2026-11-19 \(Reach page for ozone-yaba: the page shows "Nov 17 Tue", not "Nov 19 Thu"\.\)/);
+  });
+
+  it("stops an opening's days at one with no slide yet, keeps the film page as each row's link, and opens no film page for them (D-199)", async () => {
+    const asked: string[] = [];
+    // Viva's page with no slide for 19 Nov: nothing published for that day yet.
+    const noSlide = fixture("reachcinema/2026-11-17-ozone.html").replace(/Nov<\/span>\s*<span[^>]*>19<\/span>/g, "Nov</span><span>99</span>");
+    const pages: Record<string, string> = {
+      [`${OZONE}&date=Tue+Nov+17+2026`]: fixture("reachcinema/2026-11-17-ozone.html"),
+      [`${OZONE}&date=Wed+Nov+18+2026`]: fixture("reachcinema/2026-11-17-ozone-nov-18.html"),
+      [`${OZONE}&date=Thu+Nov+19+2026`]: noSlide,
+    };
+    const renderText = Object.assign(
+      async (url: string) => {
+        asked.push(url);
+        if (url.includes("/movies/")) throw Object.assign(new Error("film page not served"), { name: "TimeoutError" });
+        const page = pages[url];
+        if (page === undefined) throw new Error(`unexpected render ${url}`);
+        return page;
+      },
+      { close: async () => {} },
+    );
+    const read = await readReach({ now: "2026-11-17T01:44:00Z", days: 1, fetchText: async () => "", renderText, pages: { "ozone-yaba": OZONE }, names: { "ozone-yaba": "Ozone Cinemas" }, openings: ["2026-11-18", "2026-11-19"] });
+    const ahead = read.flatMap((page) => page.showings).filter((row) => row.startsAt >= "2026-11-17T23:00:00Z");
+    // 18th read, 19th empty: neither opening goes on to the 20th.
+    expect(asked.filter((url) => !url.includes("/movies/"))).toEqual([`${OZONE}&date=Tue+Nov+17+2026`, `${OZONE}&date=Wed+Nov+18+2026`, `${OZONE}&date=Thu+Nov+19+2026`]);
+    expect(ahead).toHaveLength(20);
+    expect(ahead.every((row) => /^https:\/\/[^/]+\/movies\/[0-9a-f-]{36}$/.test(row.bookingUrl ?? ""))).toBe(true);
+    // Film pages are opened only for the days read, never for the 18th's rows read ahead.
+    expect(asked.filter((url) => url.includes("/movies/")).every((url) => url.endsWith("?date=2026-11-17"))).toBe(true);
+    expect(read.flatMap((page) => page.notes ?? []).join(" ")).not.toMatch(/stopped reading ahead/);
+  });
+
   it("needs the name each cinema has on its page", async () => {
     const renderText = Object.assign(async () => "", { close: async () => {} });
     const read = readReach({ now: "2026-11-17T01:44:00Z", days: 2, fetchText: async () => "", renderText, pages: { "ozone-yaba": OZONE }, names: {} });

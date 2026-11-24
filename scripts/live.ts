@@ -8,7 +8,7 @@ import { join } from "node:path";
 import type { ShowtimesFile } from "../src/lib/data/types.ts";
 import { lagosDayKey, lagosLocalToUtc, toLagos, utcMs, utcString } from "../src/lib/time/lagos.ts";
 import { COMPILERS } from "../src/lib/data/about.ts";
-import { stillComing } from "../src/lib/data/coming.ts";
+import { presaleDays, stillComing } from "../src/lib/data/coming.ts";
 import { validateShowtimes } from "../src/lib/data/validate.ts";
 import { assemble, creditsLookup, pageFiles, readJson, readSources, SAMPLE_PATHS, type Paths } from "./assemble.ts";
 import { DAYS_SHOWN, type Batch } from "./pipeline.ts";
@@ -51,7 +51,7 @@ export const READERS: Record<string, Reader> = {
   // One day page holds every showing in Lagos that day. A later day Lagocine hasn't published yet
   // (404, or a page with no films) ends the read with the days before it; today's page missing or
   // empty, or any refusal, fails it.
-  // Then each coming film's first date after those days, once: its showings already on sale (D-194).
+  // Then each coming film's first date after those days and the days after it, once: its showings already on sale (D-194, D-199).
   lagocine: async ({ now, days, fetchText, openings = [] }) => {
     const pages: ParsedPage[] = [];
     const lastDay = lagosDayKey(utcString(utcMs(now) + (days - 1) * DAY));
@@ -70,26 +70,41 @@ export const READERS: Record<string, Reader> = {
       }
       pages.push(parseLagocineDay(html));
     }
-    // An extra page: one that fails is noted and skipped, never failing the days already read.
-    for (const key of [...new Set(openings)].filter((date) => date > lastDay).sort()) {
-      let html: string | null;
-      try {
-        html = await fetchText(`https://lagocine.com/day/${key}/`);
-      } catch (error) {
-        if (!pageMissingOrSlow(error)) {
-          pages[pages.length - 1]!.notes = [...(pages[pages.length - 1]!.notes ?? []), `opening day ${key} could not be read (${error instanceof Error ? error.message : String(error)})`];
-          continue;
+    // Extra pages: each opening day, then the days after it up to PRESALE_DAYS (D-199) while Lagocine has
+    // a page for each. One that fails is noted and ends that opening's days, never failing the days read.
+    const note = (text: string) => (pages[pages.length - 1]!.notes = [...(pages[pages.length - 1]!.notes ?? []), text]);
+    const read = new Set<string>();
+    const missing = new Set<string>();
+    for (const opening of [...new Set(openings)].filter((date) => date > lastDay).sort()) {
+      for (const [offset, key] of presaleDays(opening).entries()) {
+        if (missing.has(key)) break;
+        if (read.has(key)) continue;
+        const what = offset === 0 ? `opening day ${key}` : `${key}, after opening day ${opening},`;
+        let html: string | null;
+        try {
+          html = await fetchText(`https://lagocine.com/day/${key}/`);
+        } catch (error) {
+          if (!pageMissingOrSlow(error)) {
+            // Not asked again for another opening's days this run.
+            missing.add(key);
+            note(`${what} could not be read (${error instanceof Error ? error.message : String(error)})`);
+            break;
+          }
+          html = null;
         }
-        html = null;
-      }
-      if (html === null || !lagocineHasFilms(html)) {
-        pages[pages.length - 1]!.notes = [...(pages[pages.length - 1]!.notes ?? []), `no page for opening day ${key} yet`];
-        continue;
-      }
-      try {
-        pages.push(parseLagocineDay(html));
-      } catch (error) {
-        pages[pages.length - 1]!.notes = [...(pages[pages.length - 1]!.notes ?? []), `opening day ${key} could not be read (${error instanceof Error ? error.message : String(error)})`];
+        if (html === null || !lagocineHasFilms(html)) {
+          missing.add(key);
+          if (offset === 0) note(`no page for opening day ${key} yet`);
+          break;
+        }
+        try {
+          pages.push(parseLagocineDay(html));
+          read.add(key);
+        } catch (error) {
+          missing.add(key);
+          note(`${what} could not be read (${error instanceof Error ? error.message : String(error)})`);
+          break;
+        }
       }
     }
     return pages;
