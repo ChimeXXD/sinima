@@ -1,6 +1,18 @@
 # Handoff: read this first when you pick the project back up
 
-## Now: session of 24 Nov 2026 (night, Lagos): the Cookie bite banner and counting visits (latest)
+## Now: session of 24 Nov 2026 (afternoon, Lagos): Viva/Nova tomorrow links, outreach follow-ups (latest)
+
+**Where we stopped, exactly:** the Viva/Nova fix (D-196) is committed and pushed with its tests, review and verifier (PROGRESS 24 Nov afternoon). Since the last rewrite of this file: tickets on sale before a film opens (D-194, D-195, live: Dune, Doomsday, The Four), the night data limit back to 24 KB (D-193, so the local build passes too), the format-chip fix. Chime enabled Web Analytics and it counts. The launch video is on hold (D-197): neither draft 19 nor 20.
+
+**Next, in order:**
+1. **Chime: read and send the three follow-up drafts** in Gmail (ekpenduchimezie1 account; Filmhouse, FilmOne, CINEsync; OUTREACH §4). Log any reply in OUTREACH and `data/sources.json`.
+2. **Check the 16:17 refresh** (or the next one Viva answers): Viva's and Nova's tomorrow should have exact `/book/` links near today's (today Nova 34/41, Viva 12/16). If tomorrow's still fail, probe one film page live with a tap (`?date=` page, tap, then look at the date slides); the cause is inferred, not watched.
+3. **Launch video:** waits for Chime (D-197).
+4. Save the launch-week analytics numbers within the month (Hobby keeps one month).
+
+**Watch out:** memory. Dia, Brave and Figma together hold 10–14 GB; with them open, tests and builds are refused by proof's 85% ceiling. Viva's back end (fusionintel) goes down for hours at a time; a probe then times out and proves nothing.
+
+## Earlier: session of 24 Nov 2026 (night, Lagos): the Cookie bite banner and counting visits
 
 **Where we stopped, exactly:** the banner, counting and About › Privacy are built, checked and committed (D-191, D-192; PROGRESS 24 Nov). Sessions since this file was last rewritten: 22 Nov, the Viva/Nova booking-link fixes (`9ef5cbe`, `31c50ff`; day two is still 1 of 18 exact links, PROGRESS 22 Nov) and the launch video up to drafts 19 and 20 (D-177 to D-190).
 

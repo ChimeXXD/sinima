@@ -96,8 +96,27 @@ export function parseReachTabs(html: string, options: Options): RawShowing[] {
   return readCards($, cards, options, (card) => clean(card.find('a[href^="/movies/"]').first().text()), () => null);
 }
 
-/** At most this many film pages a cinema a run for booking links (D-176): Nova Lagos showed 13 films on 21 Nov. */
+/** At most this many films a cinema a run for booking links (D-176): Nova Lagos showed 13 films on 21 Nov. */
 export const MAX_FILM_PAGES = 25;
+
+/**
+ * Booking links for the first this many days read; later days keep the film page (D-196). Each day is
+ * its own film page load, and five days of them would near the refresh job's 30 minutes.
+ */
+export const BOOKING_DAYS = 2;
+
+/**
+ * This many film pages timing out in a row end a cinema's film pages for the run (D-196): its back
+ * end has stopped answering (22 Nov 2026: 26 of the job's 30 minutes). One slow page alone doesn't.
+ */
+const STOP_AFTER_TIMEOUTS = 2;
+
+/** A film page opened on `day`: the site's own address for it, which opens with that day picked. */
+export function filmDayUrl(film: string, day: Day): string {
+  const url = new URL(film);
+  url.searchParams.set("date", isoDay(day));
+  return url.href;
+}
 
 /**
  * A film page's date slide reads "Mon23 Nov" (the weekday, then the day and month). Inside a quoted
@@ -123,33 +142,49 @@ export function tapsOf(html: string): Map<string, Tapped[] | null> {
 /**
  * Viva's and Nova's own booking page for each showing (Chime, 21 Nov 2026; D-176). The listing links
  * only a film's page; there a visitor picks the cinema, taps a day, then a time, which opens
- * /book/<showing>. Each film's page is opened once (one page load, paced like any other); the times
- * are tapped and each address noted unopened (politeBrowser's `tap`). A showing whose time is found
- * gets that address; any other keeps its film page. A film page that fails leaves a note, not a failed read.
+ * /book/<showing>. Each film's page is opened once a day, at that day's own address (a page load,
+ * paced like any other), for the first BOOKING_DAYS days; the times are tapped and each address noted
+ * unopened (politeBrowser's `tap`). A showing whose time is found gets that address; any other keeps
+ * its film page. A film page that fails leaves a note, not a failed read; two that time out in a row
+ * end the cinema's film pages for the run, so a back end that has stopped answering can't use up the job.
  *
  * A day's times are tapped only while the page shows that day picked: on 21 Nov a date that could
  * not be picked left the page on the day before, and its times went to the next day's showings at
- * the same hour. A booking page is one showing's, so one found for two showings goes to neither,
+ * the same hour. Once a time was tapped the page's dates stopped answering (24 Nov), so each day is a
+ * fresh page. A booking page is one showing's, so one found for two showings goes to neither,
  * and a showing given two booking pages keeps its film page.
  */
 export async function bookingLinks(renderText: RenderText, read: { cinemaId: string; name: string; origin: string; day: Day; showings: RawShowing[] }[], notes: string[]): Promise<void> {
   for (const cinemaId of new Set(read.map((entry) => entry.cinemaId))) {
     const mine = read.filter((entry) => entry.cinemaId === cinemaId);
     const { name, origin } = mine[0]!;
-    const films = [...new Set(mine.flatMap((entry) => entry.showings.map((showing) => showing.bookingUrl!)))];
+    const booked = new Set([...new Set(mine.map(({ day }) => isoDay(day)))].sort().slice(0, BOOKING_DAYS));
+    const dated = mine.filter((entry) => booked.has(isoDay(entry.day)));
+    // Only films showing on a booked day take a place under the cap or count as not opened.
+    const films = [...new Set(dated.flatMap((entry) => entry.showings.map((showing) => showing.bookingUrl!)))];
     if (films.length > MAX_FILM_PAGES) notes.push(`${cinemaId}: ${films.length - MAX_FILM_PAGES} films over the cap keep their film page as the link`);
     const found = new Map<RawShowing, string | null>(); // null: two booking pages for one showing, so neither
-    for (const film of films.slice(0, MAX_FILM_PAGES)) {
-      const days = mine.filter((entry) => entry.showings.some((showing) => showing.bookingUrl === film));
-      const steps = [{ click: `text="${name}"` }, ...days.flatMap(({ day }) => [{ click: filmDateSelector(day) }, { tap: `section:has(:text-is("${name}")) button`, capture: "/book/", label: isoDay(day), when: pickedDateSelector(day) }])];
-      let taps: Map<string, Tapped[] | null>;
-      try {
-        taps = tapsOf(await renderText(film, { steps }));
-      } catch (error) {
-        notes.push(`${cinemaId}: ${film} kept as the link (${error instanceof Error ? error.message : String(error)})`);
-        continue;
-      }
+    const opened = films.slice(0, MAX_FILM_PAGES);
+    let timeouts = 0; // in a row
+    pages: for (const [index, film] of opened.entries()) {
+      const days = dated.filter((entry) => entry.showings.some((showing) => showing.bookingUrl === film));
       for (const { day, showings } of days) {
+        const steps = [{ click: `text="${name}"` }, { click: filmDateSelector(day) }, { tap: `section:has(:text-is("${name}")) button`, capture: "/book/", label: isoDay(day), when: pickedDateSelector(day) }];
+        let taps: Map<string, Tapped[] | null>;
+        try {
+          taps = tapsOf(await renderText(filmDayUrl(film, day), { steps }));
+        } catch (error) {
+          notes.push(`${cinemaId}: ${film} kept as the link (${error instanceof Error ? error.message : String(error)})`);
+          const timedOut = error instanceof Error && error.name === "TimeoutError";
+          timeouts = timedOut ? timeouts + 1 : 0;
+          if (timeouts === STOP_AFTER_TIMEOUTS) {
+            const left = opened.length - index - 1;
+            if (left > 0) notes.push(`${cinemaId}: two film pages timed out in a row; ${left} more not opened this run, so their showings keep the film page`);
+            break pages;
+          }
+          continue;
+        }
+        timeouts = 0;
         if (taps.get(isoDay(day)) === null) notes.push(`${cinemaId}: ${film} could not be moved to ${isoDay(day)}; its showings keep the film page`);
         for (const tap of taps.get(isoDay(day)) ?? []) {
           const time = clock12(/\d{1,2}:\d{2}\s*[AP]M/i.exec(tap.text)?.[0] ?? "");

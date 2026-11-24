@@ -2,6 +2,17 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 24 Nov 2026 (afternoon, Lagos) — Viva's and Nova's tomorrow links (D-196); outreach follow-ups drafted; video on hold (D-197)
+
+- **Asked:** Chime: Web Analytics "showed up" (enabled and counting); the launch video is on hold ("not really sold on any of them", D-197); "which outreach? … do what you have not done. Let's start working."
+- **Checked first:** Vercel status success for `b4c8cb8` and `3dc8cf6`; the 12:17 refresh wrote 54 presales (Dune 15, Doomsday 22 on 18 Dec, The Four 17 on 11 Dec); the live film pages show "Opens Fri 18 Dec · tickets on sale" and Filmhouse times. Local `refresh.ts --build` passes the data budget now (Lagos 13.7 of 24 KB): HANDOFF's "local build stops" was the 20 KB limit, fixed by D-193.
+- **Outreach:** Gmail searched: no reply from Filmhouse, FilmOne or CINEsync since 17 Nov. Three follow-ups saved as drafts in their threads (OUTREACH §4), not sent; Chime sends.
+- **Found (Viva/Nova):** live data at 12:17: exact links today Nova 34/41, Viva 12/16; tomorrow Nova 2/48, Viva 3/18; the day after 0. The run's notes and data: a film with no time tapped on day one got day two's links, then lost day three after tapping day two, so a tap stops the film page's date slides. Probe at 13:02–13:09 (our bot, paced): the page writes its day into its address (`?date=2026-11-24`); opened at `?date=2026-11-25` it shows Wed 25 picked. Viva's back end stopped answering at about 13:00 (times never filled in, the listing never went quiet), so a tap could not be watched live: the cause is inferred.
+- **Changed:** `scripts/sources/reach.ts` `bookingLinks`: each film page opened once per day at `filmDayUrl` (`?date=`), for the first `BOOKING_DAYS` (2) days read; later days keep the film page; two timeouts in a row end the cinema's film pages for the run (`STOP_AFTER_TIMEOUTS`). D-196.
+- **Checked:** new tests red on the old reader (5 failed: 3 new, 2 changed on purpose: the one-load test's address and readReach's film-page address pattern), then green; reach + browser 43 pass; typecheck clean.
+- **Review (/code-review medium --fix):** 5 findings. Fixed by the review: the cap and the "not opened" count only count films on booked days; a labelled break instead of a flag. Then, by Claude: stop after **two** timeouts in a row, not one (a slow click alone no longer costs the cinema; test first, red then green); D-196 says "first two days read". Kept on purpose: the date click after opening at `?date=` (fallback if the site ignores it). **Verifier:** PASS on 7 checks, including that every timeout path in browser.ts is named TimeoutError.
+- **Not verified:** a live run with the new reader (Viva's back end was down). The next refresh (16:17 Lagos) shows it: expect tomorrow's exact links near today's.
+
 ## 24 Nov 2026 (morning, Lagos) — Tickets on sale before a film opens (D-194)
 
 - **Asked:** "Dune … you can now pre-order or buy the tickets on Filmhouse … How are we going to display that information on our site?"; picks from `mockup/presales/` (built on the live site with Lagocine's real 18 Dec times): "card A, page 1".
