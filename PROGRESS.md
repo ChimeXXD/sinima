@@ -2,6 +2,14 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 24 Nov 2026 (03:00, Lagos) — Films: format chips no longer wrap beside the yesterday notice; the consent deploy failed
+
+- **Asked:** Chime on sinima.com.ng (desktop): "why is the buttons not aligned properly?" — 4D on a second line; "I did not see the cookie".
+- **Found:** since 19 Nov (`23c0b61`), from 1200 px the day row, chips and notice share one unwrapped row; with four days and "Some times are from yesterday…" the notice squeezed the chips and 4D wrapped. Live at 1200–1680 px: chips on 2 rows. Not from the consent change. The consent commit `6a1f737` never went live: Vercel's build failed (the live-data step: lagos.json 21.3 KB over its 20 KB limit at night; reproduced locally with VERCEL=1).
+- **Changed:** `films.module.css` from 1200 px: `.chips { flex: none }`, the notice `flex: 0 1 auto; min-width: 0` (its words wrap).
+- **Checked:** new e2e "at 1200/1280/1440 px the format chips stay on one line beside the yesterday notice" (day row at the live 324 px): red (`Expected: 1, Received: 2` rows), then green; films-screen.spec 16 pass; screenshot at 1280.
+- **Next:** the data limit, so a night deploy goes through (Chime's call).
+
 ## 24 Nov 2026 (night, Lagos) — Cookie bite banner, counting visits with consent, About › Privacy (D-191, D-192)
 
 - **Asked:** "if we're going to be using cookies, can we use this animation" (Design Bookmark's Cookie Bite), then "I want us to integrate cookies to our website, and analytics … please let us integrate both". Sinima sets no cookies (checked: none from the live site), so the banner asks to count the visit instead: "Cookies? Not here." Mockup `mockup/consent/` approved by Chime ("Approved.").

@@ -132,3 +132,31 @@ for (const width of [360, 390]) {
     expect(overlaps).toEqual([]);
   });
 }
+
+// Chime, 24 Nov 2026 (sinima.com.ng after midnight, a desktop window): with "Some times are from
+// yesterday" in the row, the long notice squeezed the format chips and 4D fell to a second line.
+// The chips keep their width; the notice's words wrap instead.
+for (const width of [1200, 1280, 1440]) {
+  test(`at ${width} px the format chips stay on one line beside the yesterday notice`, async ({ page, request }) => {
+    const now = await sampleTime(request, "18:00");
+    const stamp = new Date(now.getTime() - 30 * HOUR).toISOString().replace(".000Z", "Z");
+    await page.route("**/lagos", async (route) => {
+      const response = await route.fetch();
+      const body = (await response.text())
+        .replace(/(fetchedAt\\?":\\?")[0-9T:Z-]+/g, `$1${stamp}`)
+        .replace(/(method\\?":\\?")fixture/g, "$1public-page")
+        .replace(/(sample\\?":)true/g, "$1false");
+      await route.fulfill({ response, body });
+    });
+    await freeze(page, now);
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/lagos");
+    await expect(page.getByTestId("banner.stale")).toBeVisible();
+    // Four days, as live that night: the sample has two, so its day row takes the live row's 324 px.
+    await page.addStyleTag({ content: '[data-testid="films.day"] { min-width: 324px; flex: none; }' });
+    const chips = page.getByRole("group", { name: "Format" }).getByRole("button");
+    const tops = await chips.evaluateAll((all) => all.map((chip) => Math.round(chip.getBoundingClientRect().top)));
+    expect(tops.length).toBeGreaterThanOrEqual(3);
+    expect(new Set(tops).size).toBe(1);
+  });
+}

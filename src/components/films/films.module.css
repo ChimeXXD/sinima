@@ -172,7 +172,14 @@
     gap: var(--space-16);
     padding-block: 0;
   }
+  /* The day row and the chips keep their width; a long notice ("Some times are from yesterday…")
+     takes what is left and wraps its words, so 4D never drops to a second line (Chime, 24 Nov 2026). */
+  .chips {
+    flex: none;
+  }
   .notice {
+    flex: 0 1 auto;
+    min-width: 0;
     margin-left: auto;
   }
   .section {
