@@ -12,9 +12,9 @@
       "method": "public-page",
       "status": "cleared",
       "robots": {
-        "checkedAt": "2026-11-11",
-        "allowsListing": true,
-        "quote": "User-agent: * / Allow: / / Sitemap: https://lagocine.com/sitemap.xml"
+        "checkedAt": "2026-11-24",
+        "allowsListing": false,
+        "quote": "User-agent: * / Disallow: / (24 Nov 2026, from the rebuild at 15:09 Lagos at the latest; on 11 Nov it was User-agent: * / Allow: / / Sitemap: https://lagocine.com/sitemap.xml). It turns every bot away and names none; read under the owner's written yes (permission.overridesRobots, D-198)."
       },
       "terms": {
         "url": null,
@@ -25,7 +25,8 @@
       "permission": {
         "askedAt": "2026-11-11",
         "repliedAt": "2026-11-11",
-        "summary": "Asked by email to contact@lagocine.com from Chimezie on 11 Nov 2026. Paul Sergent replied the same day: \"you can use it freely as much as you want\", asking for a link on every page; Chime chose to credit Lagocine with a link on the About page instead (D-130, D-132)."
+        "summary": "Asked by email to contact@lagocine.com from Chimezie on 11 Nov 2026. Paul Sergent replied the same day: \"you can use it freely as much as you want\", asking for a link on every page; Chime chose to credit Lagocine with a link on the About page instead (D-130, D-132).",
+        "overridesRobots": true
       },
       "rateLimit": {
         "minSecondsBetweenRequests": 5,

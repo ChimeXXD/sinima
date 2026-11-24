@@ -2,6 +2,15 @@
 
 Build log for the one-week plan (`docs/PLAN.md`). Newest entry first. Each entry: **Changed**, **Checked** (with real numbers), **Not verified**, **Next**.
 
+## 24 Nov 2026 (late afternoon, Lagos) — Lagocine's robots.txt closed; read under its owner's written yes (D-198); presale days and sold-out looked into (O-25)
+
+- **Asked:** Chime: why Doomsday and Dune show one day of tickets ("Filmhouse have up to five days or more"), sold-out times shown as sold out, and why only Filmhouse sells them: "let us fix all these things".
+- **Found:** Lagocine publishes a day page for 18 Dec only (19–25 Dec: 404) and no sold-out mark; no other sinima sells dated tickets for either film yet (O-25 has each one). **Lagocine's robots.txt changed today** to `User-agent: * / Disallow: /` (it allowed everything on 11 Nov; the 12:17 run read it). Asked: Chime chose "Their email is our permission" (Paul Sergent, 11 Nov: "you can use it freely as much as you want").
+- **Changed:** `polite.ts`: `permitted` origins and a private `robotsRule` (`namesUs`); a permitted site is read past a whole-site block on every bot, never past a path rule or a group naming SinimaBot (tightened by the review). `assemble.ts` `permittedSites` from `permission.overridesRobots` in `data/sources.json` (Lagocine only, robots quote updated); `refresh.ts` passes it to the run's rules. CLAUDE.md rule 6 names the exception. D-198, O-25.
+- **Checked:** the new polite test red before the change, then green (13 pass); a registry test keeps Lagocine the only source with the exception, with a dated reply; typecheck clean. Live: with the exception, today's Lagocine day page read (21 films); without it, refused with the robots.txt message.
+- **Not verified:** the 16:17 run started before this was pushed, so it refuses Lagocine and keeps its last good times (D-119); the next run reads it again.
+- **Next:** O-25: keep every presale day from the opening date on; Reach reads opening dates ahead; sold-out mark (mockups for Chime first).
+
 ## 24 Nov 2026 (afternoon, Lagos) — Viva's and Nova's tomorrow links (D-196); outreach follow-ups drafted; video on hold (D-197)
 
 - **Asked:** Chime: Web Analytics "showed up" (enabled and counting); the launch video is on hold ("not really sold on any of them", D-197); "which outreach? … do what you have not done. Let's start working."

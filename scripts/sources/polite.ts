@@ -46,10 +46,11 @@ function patternToRegex(pattern: string): RegExp {
 }
 
 /**
- * Whether robots.txt lets `userAgent` read `path` (RFC 9309): the group naming our bot if there is
- * one, else the one for everyone; the longest matching rule wins, and Allow wins a tie.
+ * The rule robots.txt applies when `userAgent` reads `path` (RFC 9309): the group naming our bot if
+ * there is one, else the one for everyone; the longest matching rule wins, and Allow wins a tie.
+ * `namesUs` says whether that rule came from a group naming our bot.
  */
-export function robotsAllows(robotsTxt: string, userAgent: string, path: string): boolean {
+function robotsRule(robotsTxt: string, userAgent: string, path: string): { rule: Rule | null; namesUs: boolean } {
   const token = (userAgent.split("/")[0] ?? "").trim().toLowerCase();
   const groups = parseRobots(robotsTxt);
   // An empty "User-agent:" names no one; it must not stand in for our bot.
@@ -60,12 +61,28 @@ export function robotsAllows(robotsTxt: string, userAgent: string, path: string)
     if (!patternToRegex(rule.pattern).test(path)) continue;
     if (!best || rule.pattern.length > best.pattern.length || (rule.pattern.length === best.pattern.length && rule.allow)) best = rule;
   }
-  return best?.allow ?? true;
+  return { rule: best, namesUs: ours.length > 0 };
 }
+
+/** Whether robots.txt lets `userAgent` read `path` (RFC 9309). */
+export const robotsAllows = (robotsTxt: string, userAgent: string, path: string): boolean => robotsRule(robotsTxt, userAgent, path).rule?.allow ?? true;
+
+/**
+ * A rule that covers every path on the site. Only such a block, in the group for every bot, is read
+ * past on a site whose owner said yes in writing (D-198); a group naming our bot, or a rule aimed at
+ * certain paths, never is.
+ */
+const WHOLE_SITE = new Set(["/", "/*", "*"]);
 
 export type PoliteOptions = {
   userAgent: string;
   minGapMs: number;
+  /**
+   * Sites (origins) whose owner told us in writing that we may read them (`permission` in
+   * data/sources.json): a robots.txt block on the whole site for every bot does not stop us there;
+   * a group naming our bot, or a rule aimed at certain paths, still does (D-198).
+   */
+  permitted?: string[];
   fetch?: typeof globalThis.fetch;
   wait?: (ms: number) => Promise<void>;
   now?: () => number;
@@ -78,12 +95,12 @@ export type PoliteRules = {
   pace: (host: string) => Promise<void>;
   /** One paced request with our name, no redirect followed, 30 s to answer. */
   request: (url: string) => Promise<Response>;
-  /** Throws unless `url` is on the same site as `from` and robots.txt lets us read its path. */
+  /** Throws unless `url` is on the same site as `from` and robots.txt (or the owner's written yes, D-198) lets us read its path. */
   check: (url: string, from: string) => Promise<void>;
 };
 
 export function politeRules(options: PoliteOptions): PoliteRules {
-  const { userAgent, minGapMs, fetch = globalThis.fetch, wait = (ms) => new Promise((done) => setTimeout(done, ms)), now = Date.now } = options;
+  const { userAgent, minGapMs, permitted = [], fetch = globalThis.fetch, wait = (ms) => new Promise((done) => setTimeout(done, ms)), now = Date.now } = options;
   const lastAt = new Map<string, number>();
   const robots = new Map<string, Promise<string>>();
 
@@ -117,7 +134,10 @@ export function politeRules(options: PoliteOptions): PoliteRules {
   async function check(url: string, from: string): Promise<void> {
     const { origin, pathname, search } = new URL(url);
     if (origin !== new URL(from).origin) throw new Error(`${from} redirected to another site (${origin}). Not read.`);
-    if (!robotsAllows(await robotsFor(origin), userAgent, pathname + search)) throw new Error(`${url}: robots.txt asks bots not to read this path. Not read.`);
+    const { rule, namesUs } = robotsRule(await robotsFor(origin), userAgent, pathname + search);
+    if (!rule || rule.allow) return;
+    if (permitted.includes(origin) && !namesUs && WHOLE_SITE.has(rule.pattern)) return;
+    throw new Error(`${url}: robots.txt asks bots not to read this path. Not read.`);
   }
 
   return { userAgent, pace, request, check };

@@ -20,7 +20,12 @@ export type RegistrySource = {
   pageNames?: Record<string, string>;
   /** The cinemas whose featured films this source gives, without times (D-131); it then feeds no showings. */
   featuredFor?: string[];
+  /** The owner's written answer; `overridesRobots` when it lets us read past a robots.txt that turns every bot away (D-198). */
+  permission?: { overridesRobots?: boolean };
 };
+
+/** The sites whose owner's written yes stands for a robots.txt block on every bot (D-198). */
+export const permittedSites = (sources: RegistrySource[]) => sources.filter((source) => source.permission?.overridesRobots === true).map((source) => new URL(source.homepage).origin);
 
 export const readJson = <T>(path: string) => JSON.parse(readFileSync(path, "utf8")) as T;
 export const readSources = (root: string) => readJson<{ sources: RegistrySource[] }>(join(root, "data/sources.json")).sources;

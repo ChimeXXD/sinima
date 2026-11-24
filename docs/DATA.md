@@ -192,6 +192,8 @@ Filled on Day 0 by the data-source audit. One entry per source.
 
 `bookingSites` (D-124, optional): the name the source's booking links give each cinema, by cinema id, where a reader needs it to tell which cinema a link is for. Genesis's film pages list a film at every location, each time linking to `/<site>/booknow/<id>`, and Lekki's page is `/freedom-way-lekki/` while its links say `lekki-purple`; so the map is data, not learned from the day's rows (a location with nothing on today would lose its tomorrow). Only cinemas in `cinemaIds` may have one, each name once (`tests/unit/registry.test.ts`). A location page whose links name another site fails the read.
 
+`permission.overridesRobots` (D-198, optional): `true` when the owner's written yes stands for a robots.txt block on every bot. `politeRules` then reads that site (its `homepage` origin) past a whole-site block (`Disallow: /`) in the group for every bot, never past a group naming our bot or a rule aimed at certain paths. Only Lagocine has it, and any source that has it needs a dated `permission.repliedAt` (`tests/unit/registry.test.ts`).
+
 `status` becomes `cleared` only when **either** `permission.summary` records a yes, **or** `robots.allowsListing` is `true` **and** `terms.allowsAutomated` is not `false` with the clause quoted. Chime confirms each change to `cleared` (log it in DECISIONS).
 
 ## Freshness: rules and wording (D-04)
@@ -250,7 +252,7 @@ The chip never says "Go" without a source that says so.
 
 ## Live data (D-116)
 
-`npm run refresh -- --live` reads every source in `data/sources.json` that is `cleared` and has a reader in `scripts/live.ts`, through `scripts/sources/polite.ts` (our bot name and contact link, robots.txt checked for each path, at most one request per 5 s per host, a refusal is final). Each source feeds only the cinemas in its `cinemaIds`. Rows carry the source's real booking links (the validator's host rule above), every source's `method` is `public-page`, `fetchedAt` is the time of the run, and `sample` is `false`. The files go to `data/live/` (`showtimes.json`, `all.json`, `lagos.json`, `abuja.json`, `area/<slug>.json`), which is committed by the scheduled job.
+`npm run refresh -- --live` reads every source in `data/sources.json` that is `cleared` and has a reader in `scripts/live.ts`, through `scripts/sources/polite.ts` (our bot name and contact link, robots.txt checked for each path except where `permission.overridesRobots` says otherwise, at most one request per 5 s per host, a refusal is final). Each source feeds only the cinemas in its `cinemaIds`. Rows carry the source's real booking links (the validator's host rule above), every source's `method` is `public-page`, `fetchedAt` is the time of the run, and `sample` is `false`. The files go to `data/live/` (`showtimes.json`, `all.json`, `lagos.json`, `abuja.json`, `area/<slug>.json`), which is committed by the scheduled job.
 
 A listing built by script is read with `scripts/sources/browser.ts` (`politeBrowser`, D-119): a headless Chromium under the same rules and the same shared pieces as `polite.ts` (our bot name as the browser's user agent, robots.txt checked before the page is opened, 5 s between page loads to a host, 30 s to answer and 30 s to render, a non-2xx page is final, each redirect hop checked and one to another site refused). Images, fonts and media are not downloaded, and a script that moves the page elsewhere is stopped. One browser per run, started by the first reader that needs it and closed at the end.
 

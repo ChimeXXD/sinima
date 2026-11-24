@@ -12,7 +12,7 @@ import { CITIES } from "../src/lib/city.ts";
 import { withoutShowingIds } from "../src/lib/data/showingId.ts";
 import type { ShowtimesFile } from "../src/lib/data/types.ts";
 import { EVENING_ENDS_HOUR, lagosDayKey, lagosLocalToUtc, lagosNoon, toLagos, utcMs, utcString } from "../src/lib/time/lagos.ts";
-import { assemble, readJson, readSources, SAMPLE_PATHS } from "./assemble.ts";
+import { assemble, permittedSites, readJson, readSources, SAMPLE_PATHS } from "./assemble.ts";
 import { comingTitle, sampleDay } from "./coming.ts";
 import { LIVE_DIR, liveBuildFiles, refreshLive } from "./live.ts";
 import { filmIdFromTitle, toSampleDays, type Batch } from "./pipeline.ts";
@@ -207,8 +207,9 @@ export function main(argv: string[]): number | Promise<number> {
   const root = join(dirname(fileURLToPath(import.meta.url)), "..");
   if (argv.includes("--live")) {
     const now = new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
-    // One set of rules for both readers, so the 5 s gap to a host holds whichever one asks.
-    const rules = politeRules({ userAgent: process.env.FETCH_USER_AGENT || USER_AGENT, minGapMs: 5000 });
+    // One set of rules for both readers, so the 5 s gap to a host holds whichever one asks. A site whose
+    // owner said yes in writing is read past a robots.txt that turns every bot away (Lagocine, D-198).
+    const rules = politeRules({ userAgent: process.env.FETCH_USER_AGENT || USER_AGENT, minGapMs: 5000, permitted: permittedSites(readSources(root)) });
     // The browser starts only if a reader needs it, and is always closed (memory is tight).
     const renderText = politeBrowser({ rules });
     return refreshLive({ now, root, fetchText: politeFetcher({ rules }), renderText })

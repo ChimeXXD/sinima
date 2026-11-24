@@ -9,6 +9,13 @@ describe("data registries", () => {
     expect(orphans).toEqual([]);
   });
 
+  it("reads past robots.txt only where the owner said yes in writing, and only Lagocine so far (D-198)", () => {
+    type Entry = { id: string; permission?: { repliedAt?: string | null; overridesRobots?: boolean } };
+    const overriding = (sources.sources as Entry[]).filter((source) => source.permission?.overridesRobots === true);
+    expect(overriding.map((source) => source.id)).toEqual(["lagocine"]);
+    for (const source of overriding) expect(source.permission?.repliedAt, source.id).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  });
+
   it("gives every cinema a unique id", () => {
     const ids = cinemas.cinemas.map((c) => c.id);
     expect(new Set(ids).size).toBe(ids.length);

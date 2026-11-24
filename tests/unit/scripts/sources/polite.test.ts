@@ -75,6 +75,30 @@ describe("politeFetcher", () => {
     expect(net.requests.map((r) => r.url)).toEqual(["https://www.filmhouseng.com/robots.txt"]);
   });
 
+  // D-198: Lagocine's owner wrote "you can use it freely as much as you want" (11 Nov); its robots.txt
+  // turned every bot away on 24 Nov. The written yes stands for a block on everyone, never one naming us.
+  it("reads a site whose owner said yes in writing past a block on every bot, but not past one naming our bot", async () => {
+    const day = "https://lagocine.com/day/2026-11-24/";
+    const everyone = fakeNet({ "https://lagocine.com/robots.txt": { status: 200, body: "User-agent: *\nDisallow: /" }, [day]: { status: 200, body: "page" } });
+    const permitted = politeFetcher({ userAgent: UA, minGapMs: 5000, fetch: everyone.fetch, wait: everyone.wait, now: everyone.now, permitted: ["https://lagocine.com"] });
+    await expect(permitted(day)).resolves.toBe("page");
+
+    const named = fakeNet({ "https://lagocine.com/robots.txt": { status: 200, body: "User-agent: *\nAllow: /\n\nUser-agent: SinimaBot\nDisallow: /" } });
+    const refused = politeFetcher({ userAgent: UA, minGapMs: 5000, fetch: named.fetch, wait: named.wait, now: named.now, permitted: ["https://lagocine.com"] });
+    await expect(refused(day)).rejects.toThrow(/robots\.txt/);
+    expect(named.requests.map((r) => r.url)).toEqual(["https://lagocine.com/robots.txt"]);
+
+    // A rule aimed at the listing pages is not a block on the whole site: it is obeyed.
+    const aimed = fakeNet({ "https://lagocine.com/robots.txt": { status: 200, body: "User-agent: *\nAllow: /\nDisallow: /day/" } });
+    const pathBlocked = politeFetcher({ userAgent: UA, minGapMs: 5000, fetch: aimed.fetch, wait: aimed.wait, now: aimed.now, permitted: ["https://lagocine.com"] });
+    await expect(pathBlocked(day)).rejects.toThrow(/robots\.txt/);
+    expect(aimed.requests.map((r) => r.url)).toEqual(["https://lagocine.com/robots.txt"]);
+
+    const other = fakeNet({ "https://example.com/robots.txt": { status: 200, body: "User-agent: *\nDisallow: /" } });
+    const elsewhere = politeFetcher({ userAgent: UA, minGapMs: 5000, fetch: other.fetch, wait: other.wait, now: other.now, permitted: ["https://lagocine.com"] });
+    await expect(elsewhere("https://example.com/day/")).rejects.toThrow(/robots\.txt/);
+  });
+
   it("checks a redirect before following it: another site or a disallowed path is never requested", async () => {
     const net = fakeNet({
       "https://example.com/robots.txt": { status: 200, body: "User-agent: *\nDisallow: /private/" },
