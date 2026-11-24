@@ -211,6 +211,32 @@
       ],
       "checkedAt": "2026-11-24T05:30:03Z"
     },
+    "resident-evil": {
+      "tmdbId": 1423191,
+      "tmdbTitle": "Resident Evil",
+      "runtimeMin": 94,
+      "posterPath": "/gAgWJhUSQWCgtKR8170nMkYlBda.jpg",
+      "trailerKey": "mNd1gb19A-c",
+      "keywordIds": [
+        1533,
+        4884,
+        9744,
+        10349,
+        11181,
+        10794,
+        12377,
+        41645,
+        50009,
+        161184,
+        186565,
+        188839,
+        188957,
+        283085,
+        360949,
+        388461
+      ],
+      "checkedAt": "2026-11-24T05:30:03Z"
+    },
     "spider-man-brand-new-day": {
       "tmdbId": 969681,
       "tmdbTitle": "Spider-Man: Brand New Day",
@@ -393,32 +419,6 @@
         240315,
         256183,
         272553
-      ],
-      "checkedAt": "2026-11-24T05:30:03Z"
-    },
-    "resident-evil": {
-      "tmdbId": 1423191,
-      "tmdbTitle": "Resident Evil",
-      "runtimeMin": 94,
-      "posterPath": "/gAgWJhUSQWCgtKR8170nMkYlBda.jpg",
-      "trailerKey": "mNd1gb19A-c",
-      "keywordIds": [
-        1533,
-        4884,
-        9744,
-        10349,
-        11181,
-        10794,
-        12377,
-        41645,
-        50009,
-        161184,
-        186565,
-        188839,
-        188957,
-        283085,
-        360949,
-        388461
       ],
       "checkedAt": "2026-11-24T05:30:03Z"
     },
