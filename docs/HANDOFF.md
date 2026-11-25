@@ -1,6 +1,55 @@
 # Handoff: read this first when you pick the project back up
 
-## Now: session of 24 Nov 2026 (afternoon, Lagos): Viva/Nova tomorrow links, outreach follow-ups (latest)
+## Now: sessions of 24 Nov (late afternoon) to 25 Nov 2026 (15:30, Lagos): Lagocine's robots.txt, presale days, Filmhouse checked by hand (latest)
+
+**Where we stopped, exactly:** Filmhouse's later days are live. Dune and Doomsday show seven day tiles, Opens Fri 18 to Thu 24 Dec, and The Four shows 11–17 Dec, with every Lagos Filmhouse's times. This was checked by curl on sinima.com.ng after `70ff801` (Vercel success). The code is `35e1f9e` (D-200) and the data push is `70ff801`. Nothing is running. The next scheduled refresh is 16:17 Lagos; it reads `data/filmhouse-checked.json` itself, so it keeps the hand-checked times.
+
+**Next, in order:**
+1. **The sold-out look (O-25, D-200 d):** make mockups of how a "Closed" time could look (an HTML pick page, opened in Dia), Chime picks, then build it. Until then the 8 Closed times look bookable; their link opens Filmhouse's page, which says Closed. Viva, Nova, Ozone and Sky grey out sold-out times too (Reach's disabled buttons), so the same look can serve them once their readers keep the mark.
+2. **Re-check Filmhouse by hand every day or two, only when Chime asks** (D-200 g). The 25 Nov check (dated 11:15Z) leads until the end of Thu 26 Nov in Lagos. From Fri 27 its times read "old" and can't be booked, and Lagocine's times take over wherever Lagocine read the cinema more recently (today only 18 Dec). How to do it is under "How a hand check is done" below.
+3. **Chime: send the follow-up drafts** in Gmail (ekpenduchimezie1 account; Filmhouse, FilmOne, CINEsync; OUTREACH §4). A yes from Filmhouse or CINEsync is the way to a proper read; log any reply in OUTREACH and `data/sources.json`.
+4. **Live page budget:** with live data, Lagos home (232.9 KB), Cinemas (231.2) and Starting soon (229.5) are over the 229 KB total. They were over before D-199 too. CI and the gate build on sample data, so nothing fails.
+5. **Flaky e2e:** the consent banner spec measures the banner while it is still sliding in (3–4 px off). It blocked one commit; alone it passed 8 of 8. The fix is to wait for the entrance to finish before measuring.
+6. Still open from 24 Nov: whether Viva's and Nova's tomorrow links are exact after D-196 (check the next run's `/book/` count); the launch video (D-197, on hold); save the launch-week analytics numbers within the month.
+
+### What Chime asked, and what was done
+
+1. **24 Nov, "Read the handoff file and let me know where we stopped"**, then "the web analytics showed up … For the launch video, let's hold on … do what you have not done". Web Analytics confirmed counting. Video on hold (D-197). Outreach follow-ups drafted (24 Nov afternoon section below).
+2. **24 Nov, "why am I seeing just one day? … Filmhouse have up to five days or more … if a time is already sold out, we should be able to show it … why is it only Filmhouse … let us fix all these things".** Found (O-25): Lagocine had a day page for 18 Dec only and carries no sold-out mark. No other sinima sold dated Dune or Doomsday tickets yet. Also found: **Lagocine's robots.txt changed that day to block every bot.** Chime chose "Their email is our permission", so `polite.ts` reads past a whole-site block on every bot for a permitted origin (Lagocine only), never past a path rule or a group naming SinimaBot (**D-198**, CLAUDE.md rule 6 updated, `be25cad`).
+3. **24 Nov, "Okay, so what's next?"**: tickets on sale for a coming film's first days, a tile per day; Lagocine reads each next day until a 404; Viva and Nova read opening dates ahead; the sticker counts only presales inside the window (**D-199**, `740e62e`). Live sources still listed one day, so it was checked on a throwaway build.
+4. **25 Nov, "Read the export file and let me know where we stop and where we're at."** Summarised from the 24 Nov export.
+5. **25 Nov, "users not being able to see the next day on Filmhouse, only one day, it doesn't make sense … Filmhouse is currently the most popular cinema now in Lagos … all the times of 18th of December are all sold out … you are the one that will do the manual stuff. So you go to each site, collect the time collect the link."** Offered a hand check, Chime typing times in, or waiting for Filmhouse. Chime picked **"I check by hand"** (**D-200**, `35e1f9e`):
+   - Claude read about 140 of Filmhouse's public day pages in Chime's Chrome (12:15–13:02 Lagos): Doomsday and Dune 18–24 Dec, The Four 11–17 Dec, at all 7 Lagos Filmhouses. That gave 363 times, 8 of them Closed. The bot still never reads Filmhouse (CINEsync 403s it; rule 6).
+   - New source `filmhouse-checked` (`method: "hand-checked"`), reader `scripts/sources/checked.ts` (reads the file, no network), and `scripts/checkedFirst.ts`. The check outranks Lagocine for each film evening at every Filmhouse while it is under two Lagos days old; after that, the newer read wins.
+   - `closed?: true` on showings, validated and kept through a failed read. `PRESALE_DAYS` 5 → 7. Booking links go to the film's day page with `?location=`.
+   - /code-review medium --fix found 8 issues. The review fixed 4, Claude fixed 2 more (coverage at every Filmhouse it feeds; an old check still leads over an older read), and 2 are left (the Closed look; `pipeline.ts` at 334 lines).
+6. **Chime closed Antigravity, Dia and Spotify** so tests could run (memory). Claude also stopped proof's monitor daemon (925 MB, running 2 days) and an orphan `serve-out.mjs` on port 4173.
+7. **"I can't see the new dates for Dune and Doomsday on the site. Why? Can we push that to the site?"**
+   - **Why:** the site's times change only when the scheduled refresh writes `data/live`. The 12:17 run was before the code went live at 13:40.
+   - **What was done:** `data/live` was rebuilt from the 12:17 read already in the repo, with only the hand-checked file added. No cinema site was fetched, because a fourth Lagocine read would break its 3-a-day limit. Every other source kept its read time and health, and 34 showings that had already started dropped out. Pushed as `70ff801`; Vercel success; the live Dune and Doomsday pages show Fri 18 to Thu 24.
+   - The rebuild script is `merge-checked.ts` in the session scratchpad, so it will be gone; it ran `refreshLive` with every reader except `filmhouse-checked` throwing, then restored each other source's health and `lastOkAt` from the previous file.
+8. **"Add everything we have done to the handoff file"**: this section.
+
+### How a hand check is done (D-200)
+
+- **Page:** `https://www.filmhouseng.com/movies/<page>/showtimes/<yyyy-mm-dd>?location=<slug>`. Film pages are `avengersdoomsday-2026`, `dunepartthree-2026` and `thefour-2026` (see `data/filmhouse-checked.json`). Location slugs: lekki, surulere, circlemall, ikota, palmslekki, oniru, landmark.
+- **A wrong slug silently shows the last cinema picked**, so check the cinema name in the page heading on every read.
+- Frames and pop-ups are blocked: use one tab, page by page. Keep each `browser_batch` to about 14 actions (42 timed out), and keep each reading in the page's localStorage so a timeout loses nothing.
+- Write times as `"HH:MM"` or `"HH:MM Closed"` on the day page that listed them (12:45 AM on the 19 Dec page is `"00:45"` under 19 Dec; inferred, not confirmed). Set `checkedAt` to when the check began, in UTC. Build the file from the readings with a script, never by retyping.
+- Then run `npm test -- checked` and commit. The next scheduled refresh carries it. To show it at once without fetching, rebuild `data/live` as in item 7 above.
+
+### Decisions this session
+
+D-198 (Lagocine read past its whole-site robots block under the owner's written yes), D-199 (presale days, a tile per day), D-200 (Filmhouse checked by hand, Closed in the data, seven days on sale). O-25 updated: (a) is done for Filmhouse; the sold-out look is open.
+
+### Watch out
+
+- **Memory:** with Dia, Brave, Figma or Antigravity open, proof's 85% ceiling refuses tests and builds. Ask Chime which apps they can close; never close them for Chime.
+- **Commits:** the gate refuses a command that runs `node -e` or edits files and commits in one go. Run `git add … && git commit` on its own. If a commit is blocked, the files come back unstaged, so stage them again.
+- **The hand check goes old.** Two Lagos days after the check, its times read "old" and can't be booked (rule 2: shown, never hidden). Lagocine only has 18 Dec for Dune and Doomsday, so the later days have nothing fresher until the check is redone.
+- **Lagocine, Filmhouse and Filmhouse's home page each allow 3 runs a day** (`maxRunsPerDay`). Don't run `npm run refresh` by hand on a day the three scheduled runs have already read them.
+
+## Earlier: session of 24 Nov 2026 (afternoon, Lagos): Viva/Nova tomorrow links, outreach follow-ups
 
 **Where we stopped, exactly:** the Viva/Nova fix (D-196) is committed and pushed with its tests, review and verifier (PROGRESS 24 Nov afternoon). Since the last rewrite of this file: tickets on sale before a film opens (D-194, D-195, live: Dune, Doomsday, The Four), the night data limit back to 24 KB (D-193, so the local build passes too), the format-chip fix. Chime enabled Web Analytics and it counts. The launch video is on hold (D-197): neither draft 19 nor 20.
 
