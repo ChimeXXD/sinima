@@ -322,26 +322,6 @@
       ],
       "checkedAt": "2026-11-24T05:30:03Z"
     },
-    "the-hunger-games-sunrise-on-the-reaping": {
-      "tmdbId": 1300968,
-      "tmdbTitle": "The Hunger Games: Sunrise on the Reaping",
-      "runtimeMin": 159,
-      "posterPath": "/j1MNyNNgNQL6f27cb3m3uKaPKd6.jpg",
-      "trailerKey": "Dr060OLTodE",
-      "keywordIds": [
-        818,
-        4565,
-        4458,
-        3104,
-        9663,
-        9675,
-        246466,
-        286995,
-        293198,
-        325762
-      ],
-      "checkedAt": "2026-11-18T15:25:48Z"
-    },
     "alahun-the-weaver": {
       "tmdbId": 1755101,
       "tmdbTitle": "Alahun: The Weaver",
@@ -466,6 +446,28 @@
         336497
       ],
       "checkedAt": "2026-11-24T05:30:03Z"
+    },
+    "the-hunger-games-sunrise-on-the-reaping": {
+      "tmdbId": 1300968,
+      "tmdbTitle": "The Hunger Games: Sunrise on the Reaping",
+      "runtimeMin": 159,
+      "posterPath": "/5ffVOGY3x3Sn3jovzvycJeizpks.jpg",
+      "trailerKey": "Dr060OLTodE",
+      "keywordIds": [
+        818,
+        4565,
+        4458,
+        3104,
+        9663,
+        9675,
+        246466,
+        286995,
+        293198,
+        323809,
+        325775,
+        372064
+      ],
+      "checkedAt": "2026-11-25T15:31:57Z"
     }
   }
 }
