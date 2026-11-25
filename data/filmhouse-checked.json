@@ -1,0 +1,719 @@
+{
+  "about": "Filmhouse's times for films whose tickets are on sale before they open, read by hand on Filmhouse's own site in a browser, because Filmhouse's ticket system turns our bot away (D-200). Each film's day page, www.filmhouseng.com/movies/<page>/showtimes/<date>?location=<location>, for each Lagos cinema. A time is HH:MM (24-hour, Lagos) on the day page that listed it; \" Closed\" where Filmhouse marks the time Closed and greys it out. A cinema missing from a day had no times for the film that day. Each check replaces the whole file and its checkedAt. Read by scripts/sources/checked.ts.",
+  "checkedAt": "2026-11-25T11:15:00Z",
+  "checkedBy": "Claude, in Chime's Chrome, page by page (12:15–13:02 Lagos); checkedAt is when the check began",
+  "locations": {
+    "filmhouse-lekki-imax": "lekki",
+    "filmhouse-surulere": "surulere",
+    "filmhouse-circle-mall": "circlemall",
+    "filmhouse-ikota": "ikota",
+    "filmhouse-palms-lekki": "palmslekki",
+    "filmhouse-oniru": "oniru",
+    "filmhouse-landmark": "landmark"
+  },
+  "films": [
+    {
+      "title": "THE FOUR",
+      "page": "thefour-2026",
+      "days": {
+        "2026-12-11": {
+          "filmhouse-lekki-imax": [
+            "16:30",
+            "19:30",
+            "22:30"
+          ],
+          "filmhouse-surulere": [
+            "13:45",
+            "16:40",
+            "19:30",
+            "22:30"
+          ],
+          "filmhouse-circle-mall": [
+            "11:15",
+            "14:10",
+            "17:10",
+            "20:00"
+          ],
+          "filmhouse-ikota": [
+            "17:15",
+            "20:15"
+          ],
+          "filmhouse-palms-lekki": [
+            "17:05"
+          ],
+          "filmhouse-oniru": [
+            "19:00"
+          ],
+          "filmhouse-landmark": [
+            "17:30",
+            "20:20"
+          ]
+        },
+        "2026-12-12": {
+          "filmhouse-lekki-imax": [
+            "16:30",
+            "19:30",
+            "22:30"
+          ],
+          "filmhouse-surulere": [
+            "13:45",
+            "16:40",
+            "19:30",
+            "22:30"
+          ],
+          "filmhouse-circle-mall": [
+            "11:15",
+            "14:10",
+            "17:10",
+            "20:00"
+          ],
+          "filmhouse-ikota": [
+            "17:15",
+            "20:15"
+          ],
+          "filmhouse-palms-lekki": [
+            "17:05"
+          ],
+          "filmhouse-oniru": [
+            "19:00"
+          ],
+          "filmhouse-landmark": [
+            "17:30",
+            "20:20"
+          ]
+        },
+        "2026-12-13": {
+          "filmhouse-lekki-imax": [
+            "16:30",
+            "19:30",
+            "22:30"
+          ],
+          "filmhouse-surulere": [
+            "13:45",
+            "16:40",
+            "19:30",
+            "22:30"
+          ],
+          "filmhouse-circle-mall": [
+            "11:15",
+            "14:10",
+            "17:10",
+            "20:00"
+          ],
+          "filmhouse-ikota": [
+            "17:15",
+            "20:15"
+          ],
+          "filmhouse-palms-lekki": [
+            "17:05"
+          ],
+          "filmhouse-oniru": [
+            "19:00"
+          ],
+          "filmhouse-landmark": [
+            "17:30",
+            "20:20"
+          ]
+        },
+        "2026-12-14": {
+          "filmhouse-lekki-imax": [
+            "16:30",
+            "19:30",
+            "22:30"
+          ],
+          "filmhouse-surulere": [
+            "13:45",
+            "16:40",
+            "19:30",
+            "22:30"
+          ],
+          "filmhouse-circle-mall": [
+            "11:15",
+            "14:10",
+            "17:10",
+            "20:00"
+          ],
+          "filmhouse-ikota": [
+            "17:15",
+            "20:15"
+          ],
+          "filmhouse-palms-lekki": [
+            "17:05"
+          ],
+          "filmhouse-oniru": [
+            "19:00"
+          ],
+          "filmhouse-landmark": [
+            "17:30",
+            "20:20"
+          ]
+        },
+        "2026-12-15": {
+          "filmhouse-lekki-imax": [
+            "16:30",
+            "19:30",
+            "22:30"
+          ],
+          "filmhouse-surulere": [
+            "13:45",
+            "16:40",
+            "19:30",
+            "22:30"
+          ],
+          "filmhouse-circle-mall": [
+            "11:15",
+            "14:10",
+            "17:10",
+            "20:00"
+          ],
+          "filmhouse-ikota": [
+            "17:15",
+            "20:15"
+          ],
+          "filmhouse-palms-lekki": [
+            "17:05"
+          ],
+          "filmhouse-oniru": [
+            "19:00"
+          ],
+          "filmhouse-landmark": [
+            "17:30",
+            "20:20"
+          ]
+        },
+        "2026-12-16": {
+          "filmhouse-lekki-imax": [
+            "16:30",
+            "19:30",
+            "22:30"
+          ],
+          "filmhouse-surulere": [
+            "13:45",
+            "16:40",
+            "19:30",
+            "22:30"
+          ],
+          "filmhouse-circle-mall": [
+            "11:15",
+            "14:10",
+            "17:10",
+            "20:00"
+          ],
+          "filmhouse-ikota": [
+            "17:15",
+            "20:15"
+          ],
+          "filmhouse-palms-lekki": [
+            "17:05"
+          ],
+          "filmhouse-oniru": [
+            "19:00"
+          ],
+          "filmhouse-landmark": [
+            "17:30",
+            "20:20"
+          ]
+        },
+        "2026-12-17": {
+          "filmhouse-lekki-imax": [
+            "16:30",
+            "19:30",
+            "22:30"
+          ],
+          "filmhouse-surulere": [
+            "13:45",
+            "16:40",
+            "19:30",
+            "22:30"
+          ],
+          "filmhouse-circle-mall": [
+            "11:15",
+            "14:10",
+            "17:10",
+            "20:00"
+          ],
+          "filmhouse-ikota": [
+            "17:15",
+            "20:15"
+          ],
+          "filmhouse-palms-lekki": [
+            "17:05"
+          ],
+          "filmhouse-oniru": [
+            "19:00"
+          ],
+          "filmhouse-landmark": [
+            "17:30",
+            "20:20"
+          ]
+        }
+      }
+    },
+    {
+      "title": "AVENGERS: DOOMSDAY",
+      "page": "avengersdoomsday-2026",
+      "days": {
+        "2026-12-18": {
+          "filmhouse-lekki-imax": [
+            "12:30 Closed",
+            "15:45 Closed",
+            "19:00 Closed",
+            "22:15 Closed"
+          ],
+          "filmhouse-surulere": [
+            "12:30",
+            "13:15",
+            "15:40",
+            "16:30",
+            "18:50",
+            "19:40",
+            "22:00",
+            "22:50"
+          ],
+          "filmhouse-circle-mall": [
+            "16:00",
+            "19:15"
+          ],
+          "filmhouse-ikota": [
+            "16:45",
+            "20:00"
+          ],
+          "filmhouse-palms-lekki": [
+            "20:40"
+          ],
+          "filmhouse-oniru": [
+            "18:30"
+          ],
+          "filmhouse-landmark": [
+            "19:30 Closed",
+            "22:45 Closed"
+          ]
+        },
+        "2026-12-19": {
+          "filmhouse-lekki-imax": [
+            "12:30",
+            "15:45 Closed",
+            "19:00",
+            "22:15"
+          ],
+          "filmhouse-surulere": [
+            "12:30",
+            "13:15",
+            "15:40",
+            "16:30",
+            "18:50",
+            "19:40",
+            "22:00",
+            "22:50"
+          ],
+          "filmhouse-circle-mall": [
+            "16:00",
+            "19:15"
+          ],
+          "filmhouse-ikota": [
+            "20:00"
+          ],
+          "filmhouse-palms-lekki": [
+            "21:00"
+          ],
+          "filmhouse-oniru": [
+            "18:30"
+          ],
+          "filmhouse-landmark": [
+            "19:30 Closed",
+            "22:45"
+          ]
+        },
+        "2026-12-20": {
+          "filmhouse-lekki-imax": [
+            "12:30",
+            "15:45",
+            "19:00",
+            "22:15"
+          ],
+          "filmhouse-surulere": [
+            "12:30",
+            "13:15",
+            "15:40",
+            "16:30",
+            "18:50",
+            "19:40",
+            "22:00"
+          ],
+          "filmhouse-circle-mall": [
+            "16:00",
+            "19:15"
+          ],
+          "filmhouse-ikota": [
+            "20:00"
+          ],
+          "filmhouse-palms-lekki": [
+            "20:40"
+          ],
+          "filmhouse-oniru": [
+            "18:30"
+          ],
+          "filmhouse-landmark": [
+            "19:30",
+            "22:45"
+          ]
+        },
+        "2026-12-21": {
+          "filmhouse-lekki-imax": [
+            "12:30",
+            "15:45",
+            "19:00",
+            "22:15"
+          ],
+          "filmhouse-surulere": [
+            "12:30",
+            "13:15",
+            "15:40",
+            "16:30",
+            "18:50",
+            "19:40",
+            "22:00"
+          ],
+          "filmhouse-circle-mall": [
+            "16:00",
+            "19:15"
+          ],
+          "filmhouse-ikota": [
+            "20:00"
+          ],
+          "filmhouse-palms-lekki": [
+            "20:40"
+          ],
+          "filmhouse-oniru": [
+            "18:30"
+          ],
+          "filmhouse-landmark": [
+            "19:30",
+            "22:45"
+          ]
+        },
+        "2026-12-22": {
+          "filmhouse-lekki-imax": [
+            "12:30",
+            "15:45",
+            "19:00",
+            "22:15"
+          ],
+          "filmhouse-surulere": [
+            "12:30",
+            "13:15",
+            "15:40",
+            "16:30",
+            "18:50",
+            "19:40",
+            "22:00"
+          ],
+          "filmhouse-circle-mall": [
+            "16:00",
+            "19:15"
+          ],
+          "filmhouse-ikota": [
+            "20:00"
+          ],
+          "filmhouse-palms-lekki": [
+            "20:40"
+          ],
+          "filmhouse-oniru": [
+            "18:30"
+          ],
+          "filmhouse-landmark": [
+            "19:30",
+            "22:45"
+          ]
+        },
+        "2026-12-23": {
+          "filmhouse-lekki-imax": [
+            "12:30",
+            "15:45",
+            "19:00",
+            "22:15"
+          ],
+          "filmhouse-surulere": [
+            "12:30",
+            "13:15",
+            "15:40",
+            "16:30",
+            "18:50",
+            "19:40",
+            "22:00"
+          ],
+          "filmhouse-circle-mall": [
+            "16:00",
+            "19:15"
+          ],
+          "filmhouse-ikota": [
+            "20:00"
+          ],
+          "filmhouse-palms-lekki": [
+            "20:40"
+          ],
+          "filmhouse-oniru": [
+            "18:30"
+          ],
+          "filmhouse-landmark": [
+            "19:30",
+            "22:45"
+          ]
+        },
+        "2026-12-24": {
+          "filmhouse-lekki-imax": [
+            "12:30",
+            "15:45",
+            "19:00",
+            "22:15"
+          ],
+          "filmhouse-surulere": [
+            "12:30",
+            "13:15",
+            "15:40",
+            "16:30",
+            "18:50",
+            "19:40",
+            "22:00"
+          ],
+          "filmhouse-circle-mall": [
+            "16:00",
+            "19:15"
+          ],
+          "filmhouse-ikota": [
+            "20:00"
+          ],
+          "filmhouse-palms-lekki": [
+            "20:40"
+          ],
+          "filmhouse-oniru": [
+            "18:30"
+          ],
+          "filmhouse-landmark": [
+            "19:30",
+            "22:45"
+          ]
+        }
+      }
+    },
+    {
+      "title": "DUNE : PART THREE",
+      "page": "dunepartthree-2026",
+      "days": {
+        "2026-12-18": {
+          "filmhouse-lekki-imax": [
+            "13:00",
+            "16:00",
+            "22:00"
+          ],
+          "filmhouse-surulere": [
+            "14:00",
+            "16:50",
+            "19:45"
+          ],
+          "filmhouse-circle-mall": [
+            "10:30",
+            "13:30",
+            "16:20",
+            "19:25",
+            "22:20"
+          ],
+          "filmhouse-palms-lekki": [
+            "17:45"
+          ],
+          "filmhouse-oniru": [
+            "15:45"
+          ],
+          "filmhouse-landmark": [
+            "13:30",
+            "16:30"
+          ]
+        },
+        "2026-12-19": {
+          "filmhouse-lekki-imax": [
+            "00:45",
+            "10:00",
+            "13:00",
+            "16:00",
+            "19:00",
+            "22:00"
+          ],
+          "filmhouse-surulere": [
+            "14:00",
+            "16:50",
+            "19:45"
+          ],
+          "filmhouse-circle-mall": [
+            "10:30",
+            "13:30",
+            "16:20",
+            "19:25",
+            "22:20"
+          ],
+          "filmhouse-palms-lekki": [
+            "17:45"
+          ],
+          "filmhouse-oniru": [
+            "15:45"
+          ],
+          "filmhouse-landmark": [
+            "13:30",
+            "16:30"
+          ]
+        },
+        "2026-12-20": {
+          "filmhouse-lekki-imax": [
+            "00:45",
+            "10:00",
+            "13:00",
+            "16:00",
+            "19:00",
+            "22:00"
+          ],
+          "filmhouse-surulere": [
+            "14:00",
+            "16:50",
+            "19:45"
+          ],
+          "filmhouse-circle-mall": [
+            "10:30",
+            "13:30",
+            "16:20",
+            "19:25",
+            "22:20"
+          ],
+          "filmhouse-palms-lekki": [
+            "17:45"
+          ],
+          "filmhouse-oniru": [
+            "15:45"
+          ],
+          "filmhouse-landmark": [
+            "13:30",
+            "16:30"
+          ]
+        },
+        "2026-12-21": {
+          "filmhouse-lekki-imax": [
+            "13:00",
+            "16:00",
+            "19:00",
+            "22:00"
+          ],
+          "filmhouse-surulere": [
+            "14:00",
+            "16:50",
+            "19:45"
+          ],
+          "filmhouse-circle-mall": [
+            "10:30",
+            "13:30",
+            "16:20",
+            "19:25",
+            "22:20"
+          ],
+          "filmhouse-palms-lekki": [
+            "17:45"
+          ],
+          "filmhouse-oniru": [
+            "15:45"
+          ],
+          "filmhouse-landmark": [
+            "13:30",
+            "16:30"
+          ]
+        },
+        "2026-12-22": {
+          "filmhouse-lekki-imax": [
+            "13:00",
+            "16:00",
+            "19:00",
+            "22:00"
+          ],
+          "filmhouse-surulere": [
+            "14:00",
+            "16:50",
+            "19:45"
+          ],
+          "filmhouse-circle-mall": [
+            "10:30",
+            "13:30",
+            "16:20",
+            "19:25",
+            "22:20"
+          ],
+          "filmhouse-palms-lekki": [
+            "17:45"
+          ],
+          "filmhouse-oniru": [
+            "15:45"
+          ],
+          "filmhouse-landmark": [
+            "13:30",
+            "16:30"
+          ]
+        },
+        "2026-12-23": {
+          "filmhouse-lekki-imax": [
+            "13:00",
+            "16:00",
+            "19:00",
+            "22:00"
+          ],
+          "filmhouse-surulere": [
+            "14:00",
+            "16:50",
+            "19:45"
+          ],
+          "filmhouse-circle-mall": [
+            "10:30",
+            "13:30",
+            "16:20",
+            "19:25",
+            "22:20"
+          ],
+          "filmhouse-palms-lekki": [
+            "17:45"
+          ],
+          "filmhouse-oniru": [
+            "15:45"
+          ],
+          "filmhouse-landmark": [
+            "13:30",
+            "16:30"
+          ]
+        },
+        "2026-12-24": {
+          "filmhouse-lekki-imax": [
+            "13:00",
+            "16:00",
+            "19:00",
+            "22:00"
+          ],
+          "filmhouse-surulere": [
+            "14:00",
+            "16:50",
+            "19:45"
+          ],
+          "filmhouse-circle-mall": [
+            "10:30",
+            "13:30",
+            "16:20",
+            "19:25",
+            "22:20"
+          ],
+          "filmhouse-palms-lekki": [
+            "17:45"
+          ],
+          "filmhouse-oniru": [
+            "15:45"
+          ],
+          "filmhouse-landmark": [
+            "13:30",
+            "16:30"
+          ]
+        }
+      }
+    }
+  ]
+}

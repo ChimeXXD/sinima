@@ -128,6 +128,46 @@
       "notes": "D-131 (17 Nov 2026): a stopgap while Filmhouse's times can't be read. One request a run to the public home page, which answers our named bot with 200 (robots.txt allows /; it disallows /api/ and every /select-tickets page, which we never fetch). Its \"Now Showing\" list is empty in the HTML: the browser fills it from filmhouseng.api.cinesync.io, the CINEsync host that refuses our bot (403), so we never call it (D-77). What the page itself carries is its banner's data: 9 films on 17 Nov, each with runtime, rating and the nearest date it has showtimes (its is_coming_soon flag was false for all 9, Avengers: Doomsday included, so it is not used). A film whose nearest date is today in Lagos is featured today: 4 on 17 Nov (Ghost Soldier, How to Rob a Bank, Five Figurines, Dear Ajayi). The banner is a promotion, not the whole programme, and it is for every location (\"All\"), so the site says \"Filmhouse's home page features ... today\", never \"Filmhouse is showing\", never \"and N more\", never per cinema. Feeds no showings (`cinemaIds` is empty), only the featured films for the cinemas in `featuredFor`, shown only on those with no times (Lagocine's times win). The filmhouse entry stays pending and Lagocine stays the source of Filmhouse's times."
     },
     {
+      "id": "filmhouse-checked",
+      "name": "Filmhouse's site (checked by hand)",
+      "owner": "Filmhouse Cinemas (FilmOne Entertainment)",
+      "homepage": "https://www.filmhouseng.com/",
+      "listingUrlPattern": "https://www.filmhouseng.com/movies/<film>/showtimes/<yyyy-mm-dd>?location=<cinema>",
+      "method": "hand-checked",
+      "status": "cleared",
+      "robots": {
+        "checkedAt": "2026-11-11",
+        "allowsListing": true,
+        "quote": "Allows public pages; disallows /api/ and every /select-tickets page. A person reads the public /movies/<film>/showtimes/<date> pages in a browser; nothing here fetches Filmhouse."
+      },
+      "terms": {
+        "url": "https://www.filmhouseng.com/terms-conditions",
+        "checkedAt": "2026-11-11",
+        "allowsAutomated": null,
+        "quote": "Nothing on automated access."
+      },
+      "permission": {
+        "askedAt": "2026-11-11",
+        "repliedAt": null,
+        "summary": "Asked by email on 11 Nov 2026 (onlinesupport@filmhouseng.com); no reply yet. Not needed for a person reading public pages; the follow-up draft is in Chime's Gmail."
+      },
+      "rateLimit": {
+        "minSecondsBetweenRequests": 5,
+        "maxRunsPerDay": null
+      },
+      "daysAhead": null,
+      "cinemaIds": [
+        "filmhouse-lekki-imax",
+        "filmhouse-surulere",
+        "filmhouse-circle-mall",
+        "filmhouse-ikota",
+        "filmhouse-palms-lekki",
+        "filmhouse-oniru",
+        "filmhouse-landmark"
+      ],
+      "notes": "D-200 (Chime, 25 Nov 2026): Filmhouse's times for films on sale before they open, checked by hand on Filmhouse's own site when Chime asks, because CINEsync answers our bot with 403 and the bot never works around a block (rule 6). The reader (scripts/sources/checked.ts) reads data/filmhouse-checked.json only. Its rows are as old as the check (checkedAt), outrank Lagocine for the cinema, film and evening they cover while under two Lagos days old, and carry Filmhouse's \"Closed\" mark."
+    },
+    {
       "id": "genesis",
       "name": "Genesis's site",
       "owner": "Genesis Deluxe Cinemas",

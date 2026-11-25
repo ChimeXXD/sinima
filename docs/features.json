@@ -628,7 +628,7 @@
       ],
       "verify": "npx playwright test tests/e2e/presales.spec.ts",
       "passes": true,
-      "evidence": "24 Nov 2026 (D-194): `npx playwright test tests/e2e/presales.spec.ts` 6 pass on the sample (red with the opening section or the seller switched off); unit tests for the read, the pipeline split, the link cut and the build data pass (1047 in all). Live: from the next refresh."
+      "evidence": "24 Nov 2026 (D-194): `npx playwright test tests/e2e/presales.spec.ts` 6 pass on the sample (red with the opening section or the seller switched off); unit tests for the read, the pipeline split, the link cut and the build data pass (1047 in all). Live: from the next refresh. 25 Nov 2026 (D-200): seven days on sale; Filmhouse's days and Closed marks from a hand check of its own site (data/filmhouse-checked.json); unit 1073 pass; dry run 363 hand-checked rows, 8 closed; Doomsday page seven tiles, no sideways scroll at 390/360 px."
     }
   ]
 }

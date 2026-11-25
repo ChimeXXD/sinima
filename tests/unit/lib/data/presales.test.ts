@@ -3,8 +3,8 @@ import { comingCards, comingPage, presaleData, soldBy } from "@/lib/data/comingP
 import type { ComingFilm } from "@/lib/data/coming";
 import type { ShowtimesFile } from "@/lib/data/types";
 
-// Tickets on sale before a film opens (D-194, mockup/presales/ card A and page 1; D-199: each of its first
-// five days), as the build makes them: the card's sticker and who sells, the page's chip, a tile for each
+// Tickets on sale before a film opens (D-194, mockup/presales/ card A and page 1; D-199, D-200: each of its first
+// seven days), as the build makes them: the card's sticker and who sells, the page's chip, a tile for each
 // day on sale and the times as list data.
 
 const AT = "2026-11-24T07:00:00Z";
@@ -20,15 +20,15 @@ const sold = {
   showings: [showing("circle-mall", "2026-12-18T09:30:00Z"), showing("surulere", "2026-12-18T14:45:00Z"), showing("circle-mall", "2026-12-18T18:45:00Z")],
 } as unknown as ShowtimesFile;
 // The same with the day after on sale too, its late show at 00:30 on the 20th (Saturday's evening), and one
-// past the five days (left out, D-199).
+// past the seven days (left out, D-199, D-200).
 const days = {
   ...sold,
   cinemas: [cinema("circle-mall"), cinema("surulere", "surulere"), { ...cinema("genesis-lekki"), name: "Genesis Lekki", chain: "Genesis" }, cinema("oniru")],
   showings: [
     showing("circle-mall", "2026-12-18T09:30:00Z"), showing("surulere", "2026-12-18T14:45:00Z"),
     showing("genesis-lekki", "2026-12-19T12:00:00Z"), showing("circle-mall", "2026-12-19T23:30:00Z"),
-    // Past the five days, at a cinema selling nothing in them: counted only without the window.
-    showing("oniru", "2026-12-23T12:00:00Z"),
+    // Past the seven days, at a cinema selling nothing in them: counted only without the window.
+    showing("oniru", "2026-12-25T12:00:00Z"),
   ],
 } as unknown as ShowtimesFile;
 const entry: ComingFilm = { film, firstDay: "2026-12-18", sinimas: ["Filmhouse"] } as unknown as ComingFilm;
@@ -75,9 +75,9 @@ describe("tickets on sale at build time (D-194)", () => {
 
   it("with nothing on sale the page is as before: no opening, the chip names the sinima", () => {
     expect(presaleData(sold, "another-film", "2026-12-18")).toBeNull();
-    // Only the first five days' rows: earlier or later ones are not this page's.
+    // Only the first seven days' rows (D-200): earlier or later ones are not this page's.
     expect(presaleData(sold, film.id, "2026-12-19")).toBeNull();
-    expect(presaleData(sold, film.id, "2026-12-13")).toBeNull();
+    expect(presaleData(sold, film.id, "2026-12-11")).toBeNull();
     const page = comingPage(entry, "lagos", null);
     expect(page.opening).toBeUndefined();
     expect(page.chip).toBe("Opens Fri 18 Dec at Filmhouse");

@@ -137,6 +137,8 @@ export function validateShowtimes(input: unknown, options: ValidateOptions = {})
     needUtc(showing.startsAt, `${at}.startsAt`);
     // A missing fetchedAt drops the row (below); one that is there must still be UTC.
     if (showing.fetchedAt !== undefined && showing.fetchedAt !== null) needUtc(showing.fetchedAt, `${at}.fetchedAt`);
+    // Only a time the cinema marks closed carries the key (D-200).
+    if (showing.closed !== undefined && showing.closed !== true) errors.push(`${at}.closed must be true or left out, got ${show(showing.closed)}`);
     if (showing.via !== undefined && showing.via !== null) {
       if (!isRow(showing.via)) return errors.push(`${at}.via must be an object, got ${show(showing.via)}`);
       needText(showing.via.name, `${at}.via.name`);

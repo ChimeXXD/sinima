@@ -14,6 +14,8 @@ export type RawShowing = {
   startsAt: string;
   format: string | null;
   bookingUrl: string | null;
+  /** The cinema's own page marks the time closed to sales ("Closed" on Filmhouse's, D-200); left out otherwise. */
+  closed?: true;
 };
 
 /** A film a chain's own page features for a day, without times (D-131). */
@@ -33,6 +35,8 @@ export type ParsedPage = {
   coming?: ComingFilm[];
   /** When the listing says it was built, in UTC; null when it does not say. */
   builtAt: string | null;
+  /** When the page was read, when that was before the run: a hand check (D-200). The run's time otherwise. */
+  readAt?: string;
   /** What the reader left out and why, for the run's log (D-122). */
   notes?: string[];
 };
@@ -55,6 +59,8 @@ export type Reader = (input: {
   names?: Record<string, string>;
   /** Coming films' first dates (Lagos, yyyy-mm-dd) to read too when they fall after the days asked for (D-194). */
   openings?: string[];
+  /** The run's folder, for a reader of a file kept in the repo (D-200). */
+  root?: string;
 }) => Promise<ParsedPage[]>;
 
 const OFFSET_TIME = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\+01:00$/;

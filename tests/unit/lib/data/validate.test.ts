@@ -87,6 +87,11 @@ describe("validateShowtimes: rules that refuse the file", () => {
     expect(refused(broken((f) => (f.sources[0].method = "scrape")))).toMatch(/^sources\[0\]\.method must be one of/);
   });
 
+  it("keeps a showing the cinema marks closed, and refuses a closed mark that is anything but true (D-200)", () => {
+    expect(accepted(broken((f) => (f.showings[0].closed = true))).file.showings[0]).toMatchObject({ closed: true });
+    expect(refused(broken((f) => (f.showings[0].closed = false)))).toBe("showings[0].closed must be true or left out, got false");
+  });
+
   it("fails a scheduled run that includes a source that is not cleared", () => {
     expect(refused(example, { scheduled: true })).toBe(
       'sources[0] "filmhouse" is pending: only cleared sources run on a schedule (D-08)\n' +

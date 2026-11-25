@@ -53,12 +53,12 @@ describe("refreshLive", () => {
   });
 
   // D-194: a coming film's first date after the five days is read too, once, for its showings on sale;
-  // D-199: then the four days after it, while Lagocine has a page for each.
-  it("also reads each coming film's opening day after the five days and the four after it, once, and skips one inside them", async () => {
+  // D-199, D-200: then the six days after it, while Lagocine has a page for each.
+  it("also reads each coming film's opening day after the five days and the six after it, once, and skips one inside them", async () => {
     const asked: string[] = [];
     const fetchText = async (url: string) => (asked.push(url), dayPage);
     await READERS.lagocine!({ now: NOW, days: 5, fetchText, renderText: async () => "", pages: {}, openings: ["2026-12-18", "2026-11-13", "2026-12-18"] });
-    expect(asked).toEqual([...["11", "12", "13", "14", "15"].map((d) => `https://lagocine.com/day/2026-11-${d}/`), ...["18", "19", "20", "21", "22"].map((d) => `https://lagocine.com/day/2026-12-${d}/`)]);
+    expect(asked).toEqual([...["11", "12", "13", "14", "15"].map((d) => `https://lagocine.com/day/2026-11-${d}/`), ...["18", "19", "20", "21", "22", "23", "24"].map((d) => `https://lagocine.com/day/2026-12-${d}/`)]);
   });
 
   it("stops at the first day after an opening day Lagocine has no page for, and reads a day two openings share once (D-199)", async () => {
@@ -187,8 +187,8 @@ describe("refreshLive", () => {
 });
 
 describe("each cinema's own reader (D-76, D-122)", () => {
-  it("reads Silverbird's Veezi pages, Genesis, Grand, Blue Pictures and the script-built sites from their own sites, beside Lagocine; and Filmhouse's home page for its featured films (D-131)", () => {
-    expect(Object.keys(READERS).sort()).toEqual(["bluepictures", "ebonylife", "filmhouse-home", "filmworld", "genesis", "grand", "lagocine", "magnificent", "nova", "reachcinema", "silverbird", "thc", "viva"]);
+  it("reads Silverbird's Veezi pages, Genesis, Grand, Blue Pictures and the script-built sites from their own sites, beside Lagocine; Filmhouse's home page for its featured films (D-131); and Filmhouse's hand-checked times (D-200)", () => {
+    expect(Object.keys(READERS).sort()).toEqual(["bluepictures", "ebonylife", "filmhouse-checked", "filmhouse-home", "filmworld", "genesis", "grand", "lagocine", "magnificent", "nova", "reachcinema", "silverbird", "thc", "viva"]);
   });
 
   it("gives the Reach Cinema readers each cinema's name on its page, from data/sources.json pageNames (D-125)", async () => {
@@ -245,17 +245,19 @@ describe("each cinema's own reader (D-76, D-122)", () => {
     expect(log).toContain("grand: https://example.test/film showed no times; that film has today's times only");
   });
 
-  it("every cinema a reader feeds has its own page in the source's cinemaPages (Lagocine reads its day pages instead)", () => {
-    const registry = JSON.parse(readFileSync(join(root, "data/sources.json"), "utf8")) as { sources: { id: string; cinemaIds: string[]; cinemaPages?: Record<string, string> }[] };
-    for (const source of registry.sources.filter((s) => s.id !== "lagocine" && Object.hasOwn(READERS, s.id))) {
+  it("every cinema a reader feeds has its own page in the source's cinemaPages (Lagocine reads its day pages instead; a hand check reads a file in the repo, D-200)", () => {
+    const registry = JSON.parse(readFileSync(join(root, "data/sources.json"), "utf8")) as { sources: { id: string; method: string; cinemaIds: string[]; cinemaPages?: Record<string, string> }[] };
+    for (const source of registry.sources.filter((s) => s.id !== "lagocine" && s.method !== "hand-checked" && Object.hasOwn(READERS, s.id))) {
       expect(Object.keys(source.cinemaPages ?? {}), source.id).toEqual(source.cinemaIds);
     }
   });
 
-  it("no cinema is fed by Lagocine and by its own reader at once, so no showing is listed twice", () => {
-    const registry = JSON.parse(readFileSync(join(root, "data/sources.json"), "utf8")) as { sources: { id: string; status: string; cinemaIds: string[] }[] };
+  // A hand check overlaps Lagocine on purpose: it covers a few films' days, and checkedFirst keeps one
+  // set of times per cinema, film and evening (D-200, tests/unit/scripts/checked-first.test.ts).
+  it("no cinema is fed by Lagocine and by its own reader at once, so no showing is listed twice (a hand check aside)", () => {
+    const registry = JSON.parse(readFileSync(join(root, "data/sources.json"), "utf8")) as { sources: { id: string; status: string; method: string; cinemaIds: string[] }[] };
     const lagocine = new Set(registry.sources.find((s) => s.id === "lagocine")!.cinemaIds);
-    const own = registry.sources.filter((s) => s.id !== "lagocine" && s.status === "cleared" && Object.hasOwn(READERS, s.id)).flatMap((s) => s.cinemaIds);
+    const own = registry.sources.filter((s) => s.id !== "lagocine" && s.method !== "hand-checked" && s.status === "cleared" && Object.hasOwn(READERS, s.id)).flatMap((s) => s.cinemaIds);
     expect(own.filter((id) => lagocine.has(id))).toEqual([]);
   });
 });
@@ -413,5 +415,28 @@ describe("liveBuildFiles (the build step)", () => {
   it("gives nothing when there is no live data, so the caller makes sample data", () => {
     const dir = mkdtempSync(join(tmpdir(), "sinima-live-"));
     expect(liveBuildFiles(dir, NOW)).toBeNull();
+  });
+});
+
+describe("refreshLive with a hand-checked source (D-200)", () => {
+  const CHECK = "2026-11-11T06:10:00Z"; // 07:10 in Lagos, before the run
+  const ROW = { cinemaId: "filmhouse-landmark", filmTitle: "Whalefall", rating: null, startsAt: "2026-11-11T18:30:00Z", format: null, bookingUrl: null, closed: true as const };
+  const main = (files: Map<string, ShowtimesFile>) => files.get(`${LIVE_DIR}/showtimes.json`) as ShowtimesFile;
+
+  it("dates its rows by the check, not the run, and keeps the cinema's closed mark, also when the next read fails", async () => {
+    const dir = rootWithLagocine();
+    const readers = { ...LAGOCINE_ONLY, "filmhouse-checked": async () => [{ showings: [ROW], builtAt: null, readAt: CHECK }] };
+    const first = main((await refreshLive({ now: NOW, root: dir, fetchText: fakeLagocine().fetchText, readers })).files);
+    expect(first.sources.find((s) => s.id === "filmhouse-checked")).toMatchObject({ fetchedAt: CHECK, health: "ok" });
+    const checked = first.showings.filter((s) => s.sourceId === "filmhouse-checked");
+    expect(checked).toHaveLength(1);
+    expect(checked[0]).toMatchObject({ cinemaId: "filmhouse-landmark", fetchedAt: CHECK, closed: true });
+
+    mkdirSync(join(dir, LIVE_DIR), { recursive: true });
+    writeFileSync(join(dir, LIVE_DIR, "showtimes.json"), JSON.stringify(first));
+    const broken = { ...readers, "filmhouse-checked": async () => { throw new Error("data/filmhouse-checked.json is not an object"); } };
+    const { files, log } = await refreshLive({ now: NOW, root: dir, fetchText: fakeLagocine().fetchText, readers: broken });
+    expect(log).toContain(`filmhouse-checked: could not be read (data/filmhouse-checked.json is not an object); kept its last good showings from ${CHECK}`);
+    expect(main(files).showings.filter((s) => s.sourceId === "filmhouse-checked")).toEqual([expect.objectContaining({ fetchedAt: CHECK, closed: true })]);
   });
 });

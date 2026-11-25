@@ -16,6 +16,7 @@ import { readBluePictures } from "./sources/bluepictures.ts";
 import type { RenderText } from "./sources/browser.ts";
 import { genesisReader, MAX_FILM_PAGES } from "./sources/genesis.ts";
 import { readEbonyLife } from "./sources/ebonylife.ts";
+import { readChecked } from "./sources/checked.ts";
 import { readFilmhouseHome } from "./sources/filmhouse.ts";
 import { readGrand } from "./sources/grand.ts";
 import { lagocineHasFilms, parseLagocineDay } from "./sources/lagocine.ts";
@@ -128,6 +129,8 @@ export const READERS: Record<string, Reader> = {
   magnificent: readMagnificent,
   // Filmhouse's home page: the films it features today, no times, for Filmhouse's 7 (D-131).
   "filmhouse-home": readFilmhouseHome,
+  // Filmhouse's own times for coming films, checked by hand on its site (D-200): a file in the repo, no network.
+  "filmhouse-checked": readChecked,
 };
 
 /** A run with no browser (tests, or no reader that needs one) refuses a page built by script. */
@@ -151,7 +154,7 @@ function previousLive(root: string): ShowtimesFile | null {
  * featured films too (D-131), for the cinemas it still features them for, only while their day
  * lasts, and its coming films (D-151) while their first date is still ahead. Null when nothing is left to keep.
  */
-function keptBatch(previous: ShowtimesFile | null, sourceId: string, given: Set<string>, featuredFor: Set<string>, now: string): Batch | null {
+function keptBatch(previous: ShowtimesFile | null, sourceId: string, given: Set<string>, featuredFor: Set<string>, now: string, checked = false): Batch | null {
   if (!previous) return null;
   const today = toLagos(now);
   const dayStart = lagosLocalToUtc({ year: today.year, month: today.month, day: today.day, hour: 0, minute: 0 });
@@ -169,10 +172,10 @@ function keptBatch(previous: ShowtimesFile | null, sourceId: string, given: Set<
   const fetchedAt = entry?.fetchedAt ?? list?.fetchedAt ?? ahead[0]?.fetchedAt ?? (rows.map((row) => row.fetchedAt).sort().at(-1) as string);
   return {
     sourceId, fetchedAt, builtAt: rows.find((row) => row.via)?.via?.fetchedAt ?? null, through: COMPILERS.has(sourceId),
-    health: "failing", lastOkAt: entry ? entry.lastOkAt : fetchedAt,
+    health: "failing", lastOkAt: entry ? entry.lastOkAt : fetchedAt, ...(checked ? { checked: true } : {}),
     showings: rows.map((row) => ({
       cinemaId: row.cinemaId, filmTitle: films.get(row.filmId)?.title ?? row.filmId, rating: films.get(row.filmId)?.rating ?? null,
-      startsAt: row.startsAt, format: row.format, bookingUrl: row.bookingUrl,
+      startsAt: row.startsAt, format: row.format, bookingUrl: row.bookingUrl, ...(row.closed ? { closed: true as const } : {}),
     })),
     ...(featured ? { featured } : {}),
     ...(coming ? { coming } : {}),
@@ -205,6 +208,8 @@ export async function refreshLive(input: {
     if (source.status !== "cleared" || !reader || (source.cinemaIds.length === 0 && featuredFor.size === 0)) continue;
     // A compiled listing also lists cinemas we read elsewhere; it only feeds the ones it is given.
     const given = new Set(source.cinemaIds);
+    // A hand check of the cinema's own site outranks the others for what it covers (D-200).
+    const handChecked = source.method === "hand-checked";
     let pages: ParsedPage[];
     try {
       // Each cinema's own page on this source, for the cinemas it feeds (data/sources.json `cinemaPages`).
@@ -212,12 +217,12 @@ export async function refreshLive(input: {
       // Coming films' first dates, from the last run's list: a source reads those after its days too (D-194).
       previous ??= previousLive(root);
       const openings = (previous?.coming ?? []).flatMap((entry) => (entry.firstDay !== null && stillComing(entry, lagosDayKey(now)) ? [entry.firstDay] : []));
-      pages = await reader({ now, days: source.daysAhead ?? DAYS_AHEAD, fetchText, renderText, pages: own(source.cinemaPages), sites: own(source.bookingSites), names: own(source.pageNames), openings });
+      pages = await reader({ now, days: source.daysAhead ?? DAYS_AHEAD, fetchText, renderText, pages: own(source.cinemaPages), sites: own(source.bookingSites), names: own(source.pageNames), openings, root });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       failures.push(message);
       previous ??= previousLive(root);
-      const kept = keptBatch(previous, source.id, given, featuredFor, now);
+      const kept = keptBatch(previous, source.id, given, featuredFor, now, handChecked);
       if (kept) batches.push(kept);
       log.push(`${source.id}: could not be read (${message}); ${kept ? `kept its last good ${keptWhat(kept)} from ${kept.fetchedAt}` : "no earlier showings to keep"}`);
       continue;
@@ -232,7 +237,9 @@ export async function refreshLive(input: {
     // Coming films (D-151) are for the cinemas the page speaks for, as its featured films are.
     const comingList = pages.flatMap((page) => page.coming ?? []);
     const coming = comingList.length > 0 && featuredFor.size > 0 ? { coming: { cinemaIds: [...featuredFor], films: comingList } } : {};
-    batches.push({ sourceId: source.id, fetchedAt: now, builtAt: pages.map((page) => page.builtAt).find((stamp) => stamp !== null) ?? null, through: COMPILERS.has(source.id), showings: kept, ...featured, ...coming });
+    // A hand check is as old as the check, not the run (D-200).
+    const readAt = pages.map((page) => page.readAt).find((stamp) => stamp !== undefined) ?? now;
+    batches.push({ sourceId: source.id, fetchedAt: readAt, builtAt: pages.map((page) => page.builtAt).find((stamp) => stamp !== null) ?? null, through: COMPILERS.has(source.id), showings: kept, ...featured, ...coming, ...(handChecked ? { checked: true } : {}) });
   }
   // Every source failing is a problem with the run (or the network), not with one site.
   if (read === 0 && failures.length > 0) throw new Error(`No source could be read: ${failures.join("; ")}.`);

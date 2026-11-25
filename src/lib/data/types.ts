@@ -83,6 +83,8 @@ export type Showing = {
   sourceId: string;
   via?: Via | null;
   fetchedAt: string;
+  /** The cinema's own page marks the time closed to sales ("Closed" on Filmhouse's, D-200); left out otherwise. */
+  closed?: true;
 };
 
 /**

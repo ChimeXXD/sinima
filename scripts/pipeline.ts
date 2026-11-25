@@ -7,6 +7,7 @@ import type { Cinema, Film, Showing, ShowtimesFile, Source, SourceHealth } from 
 import { validateShowtimes } from "../src/lib/data/validate.ts";
 import { EVENING_ENDS_HOUR, lagosDayKey, lagosDaysFrom, lagosLocalToUtc, toLagos } from "../src/lib/time/lagos.ts";
 import { splitPresales } from "./presales.ts";
+import { checkedFirst } from "./checkedFirst.ts";
 import { comingFilms } from "./coming.ts";
 import { properTitle } from "./titles.ts";
 import { featuredFilms, listedTitles, listMatcher } from "./lists.ts";
@@ -30,6 +31,8 @@ export type Batch = {
   featured?: { cinemaIds: string[]; day: string; titles: string[] };
   /** Films the source's page lists as coming, with the sinima's first date, for `cinemaIds` (D-151). */
   coming?: { cinemaIds: string[]; films: ComingFilm[] };
+  /** True for a hand check of the cinema's own site: it outranks the others for what it covers (D-200). */
+  checked?: boolean;
 };
 
 // "(IMAX)", "[3D]", "(IMAX 2D)" at the end of a title: a format, not part of the film's name.
@@ -232,13 +235,17 @@ export function buildShowtimes(input: {
           ? { via: { name: `${cinema.chain}'s site`, ...(cinema.website ? { url: cinema.website } : {}), fetchedAt: batch.builtAt ?? batch.fetchedAt } }
           : {}),
         fetchedAt: batch.fetchedAt,
+        ...(row.closed ? { closed: true as const } : {}),
       });
     }
     for (const [cinemaId, count] of unknown) log.push(`${batch.sourceId}: dropped ${count} showings at "${cinemaId}", which is not in data/cinemas.json`);
     if (repeats > 0) log.push(`${batch.sourceId}: ${repeats} showings were listed more than once; kept one of each`);
   }
 
-  showings.sort((a, b) => a.startsAt.localeCompare(b.startsAt) || a.id.localeCompare(b.id));
+  // Each hand-checked source with the cinemas it feeds (D-200).
+  const fedBy = new Map(input.batches.filter((batch) => batch.checked).map((batch) => [batch.sourceId, new Set(input.cinemas.filter((c) => c.sourceIds.includes(batch.sourceId)).map((c) => c.id))]));
+  const settled = checkedFirst(showings, fedBy, input.generatedAt, log);
+  settled.sort((a, b) => a.startsAt.localeCompare(b.startsAt) || a.id.localeCompare(b.id));
   // Titles are matched again with the lists' only when some batch has a list (the match is not free).
   const lists = listedTitles(input.batches);
   const match = lists.length === 0 ? () => { throw new Error("No list to match"); } : listMatcher(matchFilms([...titles, ...lists], input.aliases ?? {}).films, titles, matched.films, films);
@@ -254,7 +261,7 @@ export function buildShowtimes(input: {
     films.set(id, { id, title, runtimeMin: null, rating, origin: null, tmdbId: null, credits: { ...UNKNOWN_CREDITS, sources: [] }, ...input.creditsFor?.(id, own === id ? [] : [own]) });
   });
   // After the shown days, only a coming film's opening day is kept, apart, as tickets on sale (D-194).
-  const { shownNow, presales } = splitPresales(showings, coming, input.generatedAt, DAYS_SHOWN, log);
+  const { shownNow, presales } = splitPresales(settled, coming, input.generatedAt, DAYS_SHOWN, log);
   const result = validateShowtimes({
     schemaVersion: 1, generatedAt: input.generatedAt, timeZone: "Africa/Lagos",
     sources: input.sources, cinemas: input.cinemas, films: [...films.values()].map((film) => ({ ...film, title: properTitle(film.title, input.titleFor?.(film.id)) })).sort((a, b) => a.id.localeCompare(b.id)), showings: shownNow,

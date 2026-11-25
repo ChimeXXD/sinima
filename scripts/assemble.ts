@@ -12,6 +12,8 @@ import { titleLookup } from "./titles.ts";
 export type RegistryCinema = Omit<Cinema, "sourceIds"> & Record<string, unknown>;
 export type RegistrySource = {
   id: string; name: string; homepage: string; status: Source["status"]; cinemaIds: string[]; daysAhead?: number | null;
+  /** How we read it; "hand-checked" for a person reading the cinema's own site (D-200). */
+  method?: string;
   /** Each cinema's own listing page on this source, by cinema id (D-122). */
   cinemaPages?: Record<string, string>;
   /** The name this source's booking links give each cinema, by cinema id (Genesis, D-124). */
