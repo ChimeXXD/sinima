@@ -194,6 +194,15 @@
       ],
       "checkedAt": "2026-11-26T05:31:49Z"
     },
+    "phoenix-fury": {
+      "tmdbId": 1532702,
+      "tmdbTitle": "Phoenix Fury",
+      "runtimeMin": 131,
+      "posterPath": "/g6orCbnrC5xcuLIqiKhHHVhlxnq.jpg",
+      "trailerKey": "n1H5zThWiyQ",
+      "keywordIds": [],
+      "checkedAt": "2026-11-24T05:30:03Z"
+    },
     "ramayana": {
       "tmdbId": 656908,
       "tmdbTitle": "Ramayana: Rise of a Legend",
@@ -309,22 +318,6 @@
       ],
       "checkedAt": "2026-11-25T15:31:57Z"
     },
-    "verity": {
-      "tmdbId": 1283515,
-      "tmdbTitle": "Verity",
-      "runtimeMin": 117,
-      "posterPath": "/rmaNMA1seHqpjtnYKzyynFAr1g8.jpg",
-      "trailerKey": "xdPMKhjMSFs",
-      "keywordIds": [
-        818,
-        12565,
-        155251,
-        180724,
-        207767,
-        210726
-      ],
-      "checkedAt": "2026-11-24T05:30:03Z"
-    },
     "alahun-the-weaver": {
       "tmdbId": 1755101,
       "tmdbTitle": "Alahun: The Weaver",
@@ -414,15 +407,6 @@
       ],
       "checkedAt": "2026-11-24T05:30:03Z"
     },
-    "phoenix-fury": {
-      "tmdbId": 1532702,
-      "tmdbTitle": "Phoenix Fury",
-      "runtimeMin": 131,
-      "posterPath": "/g6orCbnrC5xcuLIqiKhHHVhlxnq.jpg",
-      "trailerKey": "n1H5zThWiyQ",
-      "keywordIds": [],
-      "checkedAt": "2026-11-24T05:30:03Z"
-    },
     "resident-evil": {
       "tmdbId": 1423191,
       "tmdbTitle": "Resident Evil",
@@ -446,6 +430,22 @@
         283085,
         360949,
         388461
+      ],
+      "checkedAt": "2026-11-24T05:30:03Z"
+    },
+    "verity": {
+      "tmdbId": 1283515,
+      "tmdbTitle": "Verity",
+      "runtimeMin": 117,
+      "posterPath": "/rmaNMA1seHqpjtnYKzyynFAr1g8.jpg",
+      "trailerKey": "xdPMKhjMSFs",
+      "keywordIds": [
+        818,
+        12565,
+        155251,
+        180724,
+        207767,
+        210726
       ],
       "checkedAt": "2026-11-24T05:30:03Z"
     },
