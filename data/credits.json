@@ -170,15 +170,6 @@
       ],
       "checkedAt": "2026-11-26T05:31:49Z"
     },
-    "phoenix-fury": {
-      "tmdbId": 1532702,
-      "tmdbTitle": "Phoenix Fury",
-      "runtimeMin": 131,
-      "posterPath": "/g6orCbnrC5xcuLIqiKhHHVhlxnq.jpg",
-      "trailerKey": "n1H5zThWiyQ",
-      "keywordIds": [],
-      "checkedAt": "2026-11-24T05:30:03Z"
-    },
     "ramayana": {
       "tmdbId": 656908,
       "tmdbTitle": "Ramayana: Rise of a Legend",
@@ -407,6 +398,15 @@
       ],
       "checkedAt": "2026-11-24T05:30:03Z"
     },
+    "phoenix-fury": {
+      "tmdbId": 1532702,
+      "tmdbTitle": "Phoenix Fury",
+      "runtimeMin": 131,
+      "posterPath": "/g6orCbnrC5xcuLIqiKhHHVhlxnq.jpg",
+      "trailerKey": "n1H5zThWiyQ",
+      "keywordIds": [],
+      "checkedAt": "2026-11-24T05:30:03Z"
+    },
     "resident-evil": {
       "tmdbId": 1423191,
       "tmdbTitle": "Resident Evil",
@@ -468,6 +468,24 @@
         336497
       ],
       "checkedAt": "2026-11-24T05:30:03Z"
+    },
+    "the-secret-lives-of-baba-segis-wives": {
+      "tmdbId": 1744003,
+      "tmdbTitle": "The Secret Lives of Baba Segi's Wives",
+      "runtimeMin": 119,
+      "posterPath": "/7qdPexxBHG8XWbyqGmYzxDIJqp8.jpg",
+      "trailerKey": "he-8lGWptak",
+      "keywordIds": [
+        818,
+        4677,
+        7587,
+        11829,
+        155794,
+        186849,
+        284361,
+        337236
+      ],
+      "checkedAt": "2026-11-28T05:33:51Z"
     }
   }
 }
